@@ -1,0 +1,12 @@
+<%= @page.content.html_safe %>
+
+<div id="news">
+    <% @news.each do |item| %>
+    <div class="news_item" id="<%= item.id %>">
+        <div class="title"><%= item.title %>
+        <div class="published_date">Published on <%= item.published_time %></div>
+        <div class="short"><%= item.short %></div>
+        <div class="long"><%= item.long.html_safe %></div>
+    </div>
+    <% end %>
+</div>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TSNAlpha</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<div id="container">
+<div id="notice"><p><%= notice %></p></div>
+<div id="alert"><p><%= alert %></p></div>
+<%= render 'devise/menu/devise_top_bar' %>
+<%= render 'layouts/nav_bar' %>
+<%= yield %>
+</div>
+</body>
+</html>

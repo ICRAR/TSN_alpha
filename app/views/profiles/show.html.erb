@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>First name:</b>
+  <%= @profile.first_name %>
+</p>
+
+<p>
+  <b>Second name:</b>
+  <%= @profile.second_name %>
+</p>
+
+<p>
+  <b>Country:</b>
+  <%= @profile.country %>
+</p>
+<p>
+  <b>Alliance:</b>
+  <% if user_signed_in? && current_user.id == @profile.user_id %>
+      <% if  @profile.alliance %>
+        <%= link_to(@profile.alliance.name,@profile.alliance) %>
+      <% else %>
+      You are not part of an alliance yet click here to create one or here to find an existing alliance to join
+      <% end %>
+  <% else %>
+    <%= @profile.alliance ? link_to(@profile.alliance.name,@profile.alliance) : 'Flying Solo' %>
+  <% end %>
+</p>
+
+<%= link_to 'Edit', edit_profile_path(@profile) %> |
+<%= link_to 'Back', profiles_path %>

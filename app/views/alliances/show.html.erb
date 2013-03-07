@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @alliance.name %>
+</p>
+
+<p>
+  <b>Ranking:</b>
+  <%= @alliance.ranking %>
+</p>
+
+
+<%= link_to 'Edit', edit_alliance_path(@alliance) %> |
+<%= link_to 'Back', alliances_path %>
