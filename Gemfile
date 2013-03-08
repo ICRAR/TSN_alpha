@@ -32,6 +32,7 @@ gem "paperclip"
 
 group :development do
   gem 'rack-mini-profiler'
+  gem 'rails-footnotes', '>= 3.7.9'
 end
 
 # To use ActiveModel has_secure_password

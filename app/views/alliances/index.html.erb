@@ -4,6 +4,7 @@
   <tr>
     <th>Name</th>
     <th>Ranking</th>
+    <th>Leader</th>
     <th></th>
     <th></th>
     <th></th>
@@ -13,13 +14,13 @@
   <tr>
     <td><%= alliance.name %></td>
     <td><%= alliance.ranking %></td>
+    <td><%= link_to alliance.leader.name, alliance.leader %></td>
     <td><%= link_to 'Show', alliance %></td>
-    <td><%= link_to 'Edit', edit_alliance_path(alliance) %></td>
-    <td><%= link_to 'Destroy', alliance, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <% if user_signed_in? && !current_user.profile.alliance %>
+        <td><%= link_to 'Join', join_alliance_path(alliance) %></td>
+    <% end %>
+
   </tr>
 <% end %>
 </table>
 
-<br />
-
-<%= link_to 'New Alliance', new_alliance_path %>

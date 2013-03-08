@@ -4,8 +4,22 @@ class Profile < ActiveRecord::Base
   belongs_to :alliance
   attr_accessible :country, :first_name, :second_name
 
-  def alliance_link
-    alliance ? link_to(alliance.name,alliance) : 'Flying Solo'
+  def name
+    if (first_name && second_name)
+      return first_name + ' ' + second_name
+    elsif (first_name)
+      return first_name
+    elsif (second_name)
+      return second_name
+    else
+      return user.email
+    end
+  end
+
+
+  def join_alliance(alliance)
+    alliance.members << self
+    alliance_join_date = Time.now
   end
 
 end

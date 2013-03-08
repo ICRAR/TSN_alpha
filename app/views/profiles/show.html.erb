@@ -18,9 +18,10 @@
   <b>Alliance:</b>
   <% if user_signed_in? && current_user.id == @profile.user_id %>
       <% if  @profile.alliance %>
-        <%= link_to(@profile.alliance.name,@profile.alliance) %>
-      <% else %>
-      You are not part of an alliance yet click here to create one or here to find an existing alliance to join
+        <%= link_to(@profile.alliance.name,@profile.alliance) %>  <%= (current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@profile.alliance)) : link_to("Leave", leave_alliances_path) %>
+
+<% else %>
+      You are not part of an alliance yet click <%= link_to 'here', new_alliance_path %> to create one or here to find an existing alliance to join
       <% end %>
   <% else %>
     <%= @profile.alliance ? link_to(@profile.alliance.name,@profile.alliance) : 'Flying Solo' %>

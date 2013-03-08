@@ -17,7 +17,14 @@ TSNAlpha::Application.routes.draw do
   get "/profile/edit" => "profiles#edit", :as => 'edit_profile'
 
 
-  resources :alliances
+  resources :alliances do
+    member do
+       get 'join'
+    end
+    collection do
+      get 'leave'
+    end
+  end
   get "/alliance" => "alliances#show", :as => 'my_alliance'
 
   # The priority is based upon order of creation:

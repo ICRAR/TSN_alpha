@@ -1,6 +1,30 @@
 <h1>Editing alliance</h1>
 
-<%= render 'form' %>
+<%= form_for(@alliance) do |f| %>
+    <% if @alliance.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@alliance.errors.count, "error") %> prohibited this alliance from being saved:</h2>
+
+          <ul>
+            <% @alliance.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div class="field">
+      <%= f.label :name %><br />
+      <%= f.text_field :name %>
+    </div>
+    <div class="field">
+      <%= f.label :leader %><br />
+      <%= f.collection_select(:leader, @alliance.members, :id, :name,{:selected => @alliance.leader.id}) %>
+    </div>
+    <div class="actions">
+      <%= f.submit %>
+    </div>
+<% end %>
 
 <%= link_to 'Show', @alliance %> |
 <%= link_to 'Back', alliances_path %>

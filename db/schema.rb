@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130307015620) do
+ActiveRecord::Schema.define(:version => 20130307054435) do
 
   create_table "alliances", :force => true do |t|
     t.string   "name"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20130307015620) do
     t.datetime "updated_at",         :null => false
     t.integer  "alliance_id"
     t.integer  "alliance_leader_id"
+    t.datetime "alliance_join_date"
   end
 
   create_table "rails_admin_histories", :force => true do |t|

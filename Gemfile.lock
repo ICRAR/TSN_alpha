@@ -111,6 +111,8 @@ GEM
       activesupport (= 3.2.11)
       bundler (~> 1.0)
       railties (= 3.2.11)
+    rails-footnotes (3.7.9)
+      rails (>= 3.0.0)
     rails_admin (0.4.5)
       bootstrap-sass (~> 2.2)
       builder (~> 3.0)
@@ -173,6 +175,7 @@ DEPENDENCIES
   pg
   rack-mini-profiler
   rails (= 3.2.11)
+  rails-footnotes (>= 3.7.9)
   rails_admin
   sass-rails (~> 3.2.3)
   uglifier (>= 1.0.3)

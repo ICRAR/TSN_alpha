@@ -3,7 +3,7 @@ class AlliancesController < ApplicationController
   # GET /alliances.json
   load_and_authorize_resource
   def index
-    @alliances = Alliance.all
+    @alliances = Alliance.includes(:leader)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -14,7 +14,7 @@ class AlliancesController < ApplicationController
   # GET /alliances/1
   # GET /alliances/1.json
   def show
-    @alliance = Alliance.find(params[:id])
+    @alliance = Alliance.find(params[:id], :include => 'members')
 
     respond_to do |format|
       format.html # show.html.erb
@@ -39,7 +39,7 @@ class AlliancesController < ApplicationController
 
   # GET /alliances/1/edit
   def edit
-    @alliance = Alliance.find(params[:id])
+    @alliance = Alliance.find(params[:id], :include => 'members')
   end
 
   # POST /alliances
@@ -51,9 +51,13 @@ class AlliancesController < ApplicationController
     end
 
     @alliance = Alliance.new(params[:alliance])
-    @alliance.rank = Alliance.calculate(:maximum,'ranking'
+    @alliance.ranking = Alliance.calculate(:maximum,'ranking') + 1
     respond_to do |format|
       if @alliance.save
+        @alliance.members << current_user.profile
+
+        @alliance.leader = current_user.profile
+
         format.html { redirect_to @alliance, notice: 'Alliance was successfully created.' }
         format.json { render json: @alliance, status: :created, location: @alliance }
       else
@@ -67,9 +71,13 @@ class AlliancesController < ApplicationController
   # PUT /alliances/1.json
   def update
     @alliance = Alliance.find(params[:id])
+    if params[:alliance][:leader] != @alliance.leader.id
+      #change leader
+      flash[:alert] = @alliance.leader = Profile.find(params[:alliance][:leader])
+    end
 
     respond_to do |format|
-      if @alliance.update_attributes(params[:alliance])
+      if @alliance.update_attributes(params[:alliance].except('leader'))
         format.html { redirect_to @alliance, notice: 'Alliance was successfully updated.' }
         format.json { head :no_content }
       else
@@ -89,5 +97,37 @@ class AlliancesController < ApplicationController
       format.html { redirect_to alliances_url }
       format.json { head :no_content }
     end
+  end
+
+  def join
+      @alliance = Alliance.find(params[:id])
+      #check that the current user isn't already part of an alliance
+      if current_user.profile.alliance
+        flash[:notice] = 'Sorry you can only be part of a single alliance'
+
+      else
+        current_user.profile.join_alliance @alliance
+        flash[:notice] = "Welcome to the #{@alliance.name} Alliance"
+      end
+
+      redirect_to my_profile_path
+  end
+
+  def leave
+    @alliance = current_user.profile.alliance
+
+    #first check that the user has a current alliance membership
+    if !@alliance
+      flash[:notice] = 'Sorry you must join an alliance before you can leave an alliance'
+    #check that user is not the alliance leader
+    elsif current_user.profile.alliance_leader
+      flash[:notice] = 'Sorry the current leader cannot leave an alliance'
+    else
+    #remove user from alliance
+    current_user.profile.alliance = nil
+    current_user.profile.save
+    flash[:notice] = "You have left the #{@alliance.name} alliance"
+    end
+    redirect_to my_profile_path
   end
 end
