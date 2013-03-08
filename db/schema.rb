@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130307054435) do
+ActiveRecord::Schema.define(:version => 20130308032745) do
 
   create_table "alliances", :force => true do |t|
     t.string   "name"
@@ -66,6 +66,14 @@ ActiveRecord::Schema.define(:version => 20130307054435) do
     t.datetime "alliance_join_date"
   end
 
+  create_table "profiles_trophies", :id => false, :force => true do |t|
+    t.integer "trophy_id"
+    t.integer "profile_id"
+  end
+
+  add_index "profiles_trophies", ["profile_id", "trophy_id"], :name => "index_profiles_trophies_on_profile_id_and_trophy_id"
+  add_index "profiles_trophies", ["trophy_id", "profile_id"], :name => "index_profiles_trophies_on_trophy_id_and_profile_id"
+
   create_table "rails_admin_histories", :force => true do |t|
     t.text     "message"
     t.string   "username"
@@ -78,6 +86,18 @@ ActiveRecord::Schema.define(:version => 20130307054435) do
   end
 
   add_index "rails_admin_histories", ["item", "table", "month", "year"], :name => "index_rails_admin_histories"
+
+  create_table "trophies", :force => true do |t|
+    t.string   "title"
+    t.text     "desc"
+    t.integer  "credits"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "",    :null => false

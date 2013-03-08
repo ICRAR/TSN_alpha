@@ -16,7 +16,7 @@
     <td><%= alliance.ranking %></td>
     <td><%= link_to alliance.leader.name, alliance.leader %></td>
     <td><%= link_to 'Show', alliance %></td>
-    <% if user_signed_in? && !current_user.profile.alliance %>
+    <% if user_signed_in? && !current_user.profile.alliance_id %>
         <td><%= link_to 'Join', join_alliance_path(alliance) %></td>
     <% end %>
 

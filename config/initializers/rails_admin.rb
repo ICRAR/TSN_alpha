@@ -166,7 +166,7 @@ RailsAdmin.config do |config|
   #     # using `field` instead of `configure` will exclude all other fields and force the ordering
   # end
 
-
+  config.attr_accessible_role  { :admin }
   config.authorize_with :cancan
 
   config.actions do

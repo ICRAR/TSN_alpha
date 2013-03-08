@@ -15,7 +15,7 @@ class ProfilesController < ApplicationController
   # GET /profiles/1.json
   def show
     if params[:id]
-      @profile = Profile.find(params[:id])
+      @profile = Profile.find(params[:id], include: :trophies)
     elsif user_signed_in?
       @profile = current_user.profile
     else

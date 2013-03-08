@@ -3,6 +3,8 @@ TSNAlpha::Application.routes.draw do
 
 
 
+  get "trophies/show"
+
   root :to => 'pages#index'
   mount Ckeditor::Engine => '/ckeditor'
 
@@ -26,6 +28,8 @@ TSNAlpha::Application.routes.draw do
     end
   end
   get "/alliance" => "alliances#show", :as => 'my_alliance'
+
+  resources :trophies, :only => [:show]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -1,0 +1,4 @@
+<h1><%= @trophy.title %></h1>
+<%= image_tag @trophy.image.url %>
+<p><%= @trophy.desc.html_safe %></p>
+<p>This trophy has been won be <%= @trophy.profiles.size %> users</p>
