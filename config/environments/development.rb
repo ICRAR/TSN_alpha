@@ -36,4 +36,7 @@ TSNAlpha::Application.configure do
   config.assets.debug = true
 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+
+  $statsd = Statsd.new 'localhost', 8125
+  $statsd.namespace = 'TSN_dev'
 end

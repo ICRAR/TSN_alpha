@@ -35,6 +35,10 @@ group :development do
   gem 'rails-footnotes', '>= 3.7.9'
 end
 
+
+#stats tracking
+gem "statsd-ruby", :require => "statsd"
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
