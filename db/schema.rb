@@ -11,13 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130308032745) do
+ActiveRecord::Schema.define(:version => 20130311071347) do
 
   create_table "alliances", :force => true do |t|
     t.string   "name"
     t.integer  "ranking"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "boinc_stats_items", :force => true do |t|
+    t.integer  "boinc_id"
+    t.integer  "credit"
+    t.integer  "RAC"
+    t.integer  "rank"
+    t.integer  "general_stats_item_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
 
   create_table "ckeditor_assets", :force => true do |t|
@@ -35,6 +45,15 @@ ActiveRecord::Schema.define(:version => 20130308032745) do
 
   add_index "ckeditor_assets", ["assetable_type", "assetable_id"], :name => "idx_ckeditor_assetable"
   add_index "ckeditor_assets", ["assetable_type", "type", "assetable_id"], :name => "idx_ckeditor_assetable_type"
+
+  create_table "general_stats_items", :force => true do |t|
+    t.integer  "total_credit"
+    t.integer  "recent_avg_credit"
+    t.integer  "rank"
+    t.integer  "profile_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
 
   create_table "news", :force => true do |t|
     t.string   "title"
