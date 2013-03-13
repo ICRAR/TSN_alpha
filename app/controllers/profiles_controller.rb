@@ -44,8 +44,9 @@ class ProfilesController < ApplicationController
   def edit
     if user_signed_in?
       @profile = current_user.profile
+
     else
-      redirect_to root_url, notice: 'You must be logged in to view your own profile.'
+      redirect_to root_url, notice: 'You must be logged in to update your own profile.'
       return
     end
   end
@@ -91,6 +92,16 @@ class ProfilesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to profiles_url }
       format.json { head :no_content }
+    end
+  end
+  def update_boinc_id
+    if user_signed_in?
+      @profile = current_user.profile
+      @profile.general_stats_item.boinc_stats_item = BoincStatsItem.where(:boinc_id => params[:boinc_id]).first
+      redirect_to @profile
+    else
+      redirect_to root_url, notice: 'You must be logged in to update your own profile.'
+      return
     end
   end
 end

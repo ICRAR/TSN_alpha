@@ -40,7 +40,7 @@ class Ability
   if user.id #user is not a quest user
     can :create, Alliance
     can :manage, Alliance, :id => user.profile.alliance_leader_id
-    can :update, Profile, :user_id => user.id
+    can :manage, Profile, :user_id => user.id
     can :join, Alliance
     can :leave, Alliance
   end

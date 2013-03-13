@@ -160,6 +160,7 @@ GEM
     uglifier (1.3.0)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    upsert (1.1.7)
     warden (1.2.1)
       rack (>= 1.0)
 
@@ -172,6 +173,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   devise
   jquery-rails
+  nokogiri
   paperclip
   pg
   rack-mini-profiler
@@ -181,3 +183,4 @@ DEPENDENCIES
   sass-rails (~> 3.2.3)
   statsd-ruby
   uglifier (>= 1.0.3)
+  upsert

@@ -36,6 +36,10 @@ group :development do
 end
 
 
+#for use with importing data from external sites
+gem 'nokogiri'
+gem 'upsert'
+
 #stats tracking
 gem "statsd-ruby", :require => "statsd"
 

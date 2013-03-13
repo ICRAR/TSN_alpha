@@ -14,8 +14,9 @@
 /log/*.log
 /tmp
 
-#Hide db config file (contains plain text passwords)
+#Hide config file (contains plain text passwords)
 /config/database.yml
+/config/custom_config.yml
 
 # Ignore image upload files
 /public/ckeditor_assets/*
