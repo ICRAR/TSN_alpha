@@ -1,8 +1,8 @@
 <ul id="nav_bar">
   <li><%= link_to "Home", main_app.root_url %></li>
   <li><%= link_to "About", {:controller => "/pages", :action => "show", :slug => "about"} %></li>
-  <li><%=  link_to "List All users", profiles_path%></li>
-  <li><%= link_to "List Alliances", alliances_path %></li>
+  <li><%=  link_to "Ladders (Users)", profiles_path%></li>
+  <li><%= link_to "Ladders (Alliances)", alliances_path %></li>
   <% if user_signed_in? %>
     <li><%= link_to 'My Profile', my_profile_path %></li>
   <% end %>

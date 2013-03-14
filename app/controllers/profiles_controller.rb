@@ -3,7 +3,7 @@ class ProfilesController < ApplicationController
   # GET /profiles.json
   load_and_authorize_resource
   def index
-    @profiles = Profile.all(:include => :alliance)
+    @profiles = Profile.for_leader_boards
 
     respond_to do |format|
       format.html # index.html.erb

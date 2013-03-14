@@ -34,6 +34,7 @@ GEM
       sass (~> 3.2)
     builder (3.0.4)
     cancan (1.6.9)
+    chronic (0.9.1)
     ckeditor (3.7.3)
       mime-types
       orm_adapter
@@ -163,6 +164,9 @@ GEM
     upsert (1.1.7)
     warden (1.2.1)
       rack (>= 1.0)
+    whenever (0.8.2)
+      activesupport (>= 2.3.4)
+      chronic (>= 0.6.3)
 
 PLATFORMS
   ruby
@@ -184,3 +188,4 @@ DEPENDENCIES
   statsd-ruby
   uglifier (>= 1.0.3)
   upsert
+  whenever

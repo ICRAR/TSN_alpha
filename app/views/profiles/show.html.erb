@@ -15,6 +15,10 @@
   <%= @profile.country %>
 </p>
 <p>
+  <b>Credit:</b>
+  <%= @profile.general_stats_item.total_credit %>
+</p>
+<p>
   <b>Alliance:</b>
   <% if user_signed_in? && current_user.id == @profile.user_id %>
       <% if  @profile.alliance %>
@@ -40,10 +44,14 @@
      boinc = @profile.general_stats_item.boinc_stats_item
      if boinc == nil
   %>
-        <%= form_tag('/profile/update_boinc_id', :method => 'put') do %>
-              <%= label_tag(:boinc_id, "Update Boinc ID:") %>
-              <%= text_field_tag(:boinc_id) %>
-              <%= submit_tag("update") %>
+        <% if user_signed_in? && @profile == current_user.profile %>
+            <%= form_tag('/profile/update_boinc_id', :method => 'put') do %>
+                  <%= label_tag(:boinc_id, "Update Boinc ID:") %>
+                  <%= text_field_tag(:boinc_id) %>
+                  <%= submit_tag("update") %>
+            <% end %>
+        <% else %>
+            User not using boinc.
         <% end %>
   <% else %>
     <%= "credit = #{boinc.credit}" %>

@@ -13,6 +13,14 @@
   <b>Ranking:</b>
   <%= @alliance.ranking %>
 </p>
+<p>
+  <b>Total Members:</b>
+  <%= @alliance.members.size %>
+</p>
+<p>
+  <b>Total Credit:</b>
+  <%= @alliance.credit %>
+</p>
 
 <p>
   <b>Members:</b>
@@ -20,12 +28,17 @@
 <table>
   <tr>
     <th>Name</th>
+    <th>Credit</th>
+    <th>Alliance Rank</th>
 
   </tr>
-
-  <% @alliance.members.all.each do |member| %>
+  <% rank = 1 %>
+  <% @alliance.members.each do |member| %>
       <tr>
         <td><%= link_to member.name, member %></td>
+        <td><%= member.general_stats_item.total_credit %></td>
+        <td><%= rank %></td>
+        <% rank +=1 %>
       </tr>
   <% end %>
 </table>

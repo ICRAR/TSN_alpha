@@ -4,6 +4,7 @@
   <tr>
     <th>Name</th>
     <th>Ranking</th>
+    <th>Credit</th>
     <th>Leader</th>
     <th></th>
     <th></th>
@@ -14,6 +15,7 @@
   <tr>
     <td><%= alliance.name %></td>
     <td><%= alliance.ranking %></td>
+    <td><%= alliance.credit %></td>
     <td><%= link_to alliance.leader.name, alliance.leader %></td>
     <td><%= link_to 'Show', alliance %></td>
     <% if user_signed_in? && !current_user.profile.alliance_id %>

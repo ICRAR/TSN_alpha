@@ -5,9 +5,9 @@
     <th>First name</th>
     <th>Second name</th>
     <th>Country</th>
+    <th>Rank</th>
+    <th>Total Credit</th>
     <th>Alliance</th>
-    <th></th>
-    <th></th>
     <th></th>
   </tr>
 
@@ -16,6 +16,8 @@
     <td><%= profile.first_name %></td>
     <td><%= profile.second_name %></td>
     <td><%= profile.country %></td>
+    <td><%= profile.rank %></td>
+    <td><%= profile.credits %></td>
     <td><%= profile.alliance ? link_to(profile.alliance.name,profile.alliance) : 'Flying Solo' %></td>
     <td><%= link_to 'Show', profile %></td>
   </tr>

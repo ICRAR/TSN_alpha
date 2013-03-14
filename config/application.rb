@@ -64,5 +64,8 @@ module TSNAlpha
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # autoload lib modules
+    config.autoload_paths += %W(#{config.root}/lib)
   end
 end

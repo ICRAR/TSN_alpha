@@ -3,10 +3,15 @@
 <div id="news">
     <% @news.each do |item| %>
     <div class="news_item" id="<%= item.id %>">
-        <div class="title"><%= item.title %>
+        <div class="title"><%= item.title %></div>
         <div class="published_date">Published on <%= item.published_time %></div>
         <div class="short"><%= item.short %></div>
         <div class="long"><%= item.long.html_safe %></div>
     </div>
     <% end %>
+</div>
+
+<div id="stats">
+    <%= image_tag(BoincStatsItem.render_credit_total_url) %>
+  <%= image_tag(BoincStatsItem.render_total_users_url) %>
 </div>

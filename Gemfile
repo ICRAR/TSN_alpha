@@ -57,3 +57,7 @@ gem "statsd-ruby", :require => "statsd"
 
 # To use debugger
 # gem 'debugger'
+
+
+#not loaded when running rails used to make generating cron jobs easy
+gem 'whenever', :require => false

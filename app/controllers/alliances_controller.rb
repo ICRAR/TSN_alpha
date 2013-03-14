@@ -3,7 +3,7 @@ class AlliancesController < ApplicationController
   # GET /alliances.json
   load_and_authorize_resource
   def index
-    @alliances = Alliance.includes(:leader)
+    @alliances = Alliance.ranked.includes(:leader)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -14,7 +14,7 @@ class AlliancesController < ApplicationController
   # GET /alliances/1
   # GET /alliances/1.json
   def show
-    @alliance = Alliance.find(params[:id], :include => 'members')
+    @alliance = Alliance.for_show(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb

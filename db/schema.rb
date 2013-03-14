@@ -11,13 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130311071347) do
+ActiveRecord::Schema.define(:version => 20130314041051) do
 
   create_table "alliances", :force => true do |t|
     t.string   "name"
     t.integer  "ranking"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "credit"
   end
 
   create_table "boinc_stats_items", :force => true do |t|
