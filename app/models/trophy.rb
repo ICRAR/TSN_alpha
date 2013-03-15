@@ -4,5 +4,5 @@ class Trophy < ActiveRecord::Base
   has_and_belongs_to_many :profiles
   validates_presence_of  :desc, :title, :image
 
-
+ #ToDo add a method to add a new trophy to existing users
 end

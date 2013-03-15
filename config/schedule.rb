@@ -18,6 +18,7 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+# update crontab with whenever -w run from root_dir
 
 set :environment, 'development'
 
@@ -25,4 +26,5 @@ every :hour do
   rake "stats:update_boinc"
   rake "stats:update_general"
   rake "stats:update_alliances"
+  rake "stats:update_trophy"
 end

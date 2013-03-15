@@ -97,7 +97,7 @@ class ProfilesController < ApplicationController
   def update_boinc_id
     if user_signed_in?
       @profile = current_user.profile
-      @profile.general_stats_item.boinc_stats_item = BoincStatsItem.where(:boinc_id => params[:boinc_id]).first
+      @profile.general_stats_item.boinc_stats_item = BoincStatsItem.find_by_boinc_auth(params['boinc_user'],params['boinc_password'])
       redirect_to @profile
     else
       redirect_to root_url, notice: 'You must be logged in to update your own profile.'

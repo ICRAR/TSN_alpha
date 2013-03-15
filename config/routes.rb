@@ -17,7 +17,7 @@ TSNAlpha::Application.routes.draw do
   resources :profiles, :only => [:index, :show, :update]
   get "/profile" => "profiles#show",  :as => 'my_profile'
   get "/profile/edit" => "profiles#edit", :as => 'edit_profile'
-  put "/profile/update_boinc_id"  => "profiles#update_boinc_id", :as => 'update_boinc_id'
+  post "/profile/update_boinc_id"  => "profiles#update_boinc_id", :as => 'update_boinc_id'
 
 
   resources :alliances do

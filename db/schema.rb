@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130314041051) do
+ActiveRecord::Schema.define(:version => 20130315063205) do
 
   create_table "alliances", :force => true do |t|
     t.string   "name"
@@ -52,8 +52,9 @@ ActiveRecord::Schema.define(:version => 20130314041051) do
     t.integer  "recent_avg_credit"
     t.integer  "rank"
     t.integer  "profile_id"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
+    t.integer  "last_trophy_credit_value", :default => 0, :null => false
   end
 
   create_table "news", :force => true do |t|

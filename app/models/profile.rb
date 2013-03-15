@@ -8,8 +8,9 @@ class Profile < ActiveRecord::Base
   attr_accessible :user_id, :alliance_leader_id, :alliance_id, :alliance_join_date, :trophy_ids, :general_stats_item_id, as: :admin
 
   scope :for_leader_boards, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits").where('general_stats_items.rank IS NOT NULL').order("rank ASC").includes(:alliance)
+  scope :for_trophies, joins(:general_stats_item).select("profiles.*, general_stats_items.last_trophy_credit_value as last_trophy_credit_value, general_stats_items.total_credit as credits, general_stats_items.id as stats_id").where('general_stats_items.total_credit IS NOT NULL')
 
- before_create :build_general_stats_item
+  before_create :build_general_stats_item
 
   def name
     if (first_name && second_name)

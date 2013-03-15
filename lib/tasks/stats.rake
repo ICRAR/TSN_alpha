@@ -8,7 +8,7 @@ namespace :stats do
 
       bench.report('1') {
         #load xml file (note is gziped for size)
-        remote_file = Zlib::GzipReader.new(open(APP_CONFIG['boinc_stats_xml_url']))
+        remote_file = Zlib::GzipReader.new(open(APP_CONFIG['boinc_url']+APP_CONFIG['boinc_users_xml']))
         xml = Nokogiri::XML(remote_file)
 
         #start direct connection to DB for upsert
@@ -129,6 +129,55 @@ namespace :stats do
         end
 
       }
+      statsd_batch.flush
+    end
+  end
+
+  desc "updates credits trophies"
+  task :update_trophy => :environment do
+    statsd_batch = Statsd::Batch.new($statsd)
+    bench_time = Benchmark.bm do |bench|
+      bench.report('update trophies') {
+        #load all trophies
+        all_trophies = Trophy.where("credits IS NOT NULL").order("credits ASC")
+        trophies_credit_only = Trophy.where("credits IS NOT NULL").order("credits ASC").pluck(:credits)
+
+        #load all profiles with general stats data
+        profiles = Profile.for_trophies
+
+        #check through all profiles adding upsert where needed and adding new profiles_trophies items
+        connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])
+        table_name = :general_stats_items
+        profiles_trophies_inserts = []
+        Upsert.batch(connection,table_name) do |upsert|
+          profiles.each do |profile|
+            changed = false
+            trophy_index  = trophies_credit_only.index(profile.last_trophy_credit_value.to_i)
+            #check for new users with no existing trophy ie last_trophy_credit_value = 0
+            trophy_index = trophy_index == nil ? -1: trophy_index
+            required_for_next = all_trophies[trophy_index+1].try(:credits)
+            while required_for_next != nil && required_for_next.to_i < profile.credits.to_i
+              changed = true
+              trophy_index += 1
+              #add values to profiles_trophies (trophy_id,profile_id)
+              profiles_trophies_inserts.push("(#{all_trophies[trophy_index].id}, #{profile.id})")
+              required_for_next = all_trophies[trophy_index+1].try(:credits)
+            end
+            if changed
+              upsert.row({:id => profile.stats_id}, :last_trophy_credit_value => all_trophies[trophy_index].credits, :created_at => Time.now, :updated_at => Time.now)
+            end
+          end
+
+        end
+        #add new rows to profiles_trophies
+        if profiles_trophies_inserts != []
+          sql = "INSERT INTO profiles_trophies (trophy_id , profile_id) VALUES #{profiles_trophies_inserts.join(", ")}"
+          db_conn = ActiveRecord::Base.connection
+          db_conn.execute sql
+        end
+
+      }
+
       statsd_batch.flush
     end
   end

@@ -1,6 +1,6 @@
 <%= @page.content.html_safe %>
 
-<div id="news">
+<div id="news" xmlns="http://www.w3.org/1999/html">
     <% @news.each do |item| %>
     <div class="news_item" id="<%= item.id %>">
         <div class="title"><%= item.title %></div>
@@ -14,4 +14,6 @@
 <div id="stats">
     <%= image_tag(BoincStatsItem.render_credit_total_url) %>
   <%= image_tag(BoincStatsItem.render_total_users_url) %>
+  <br />
+  <%= image_tag(BoincStatsItem.render_tflops_url) %>
 </div>
