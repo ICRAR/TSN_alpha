@@ -23,5 +23,11 @@
   </tr>
 <% end %>
 </table>
+<div class="digg_pagination">
+  <div class="page_info">
+    <%= page_entries_info @profiles %>
+  </div>
+  <%= will_paginate @profiles, :container => false %>
+</div>
 
 <br />

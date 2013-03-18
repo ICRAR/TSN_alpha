@@ -1,4 +1,7 @@
 class Alliance < ActiveRecord::Base
+
+  include GraphiteUrlModule
+
   attr_accessible :name, :as => [:default, :admin]
   attr_accessible :ranking, :credit, as: :admin
 
@@ -9,6 +12,10 @@ class Alliance < ActiveRecord::Base
   has_many :members, :class_name => 'Profile'
 
   def self.for_show(id)
-    where(:id => id).includes(:members=> [:general_stats_item]).includes(:leader).first
+    where(:id => id).includes(:leader).first
+  end
+
+  def render_credit
+    simple_graph("stats.gauges.TSN_dev.alliance.#{id}.credit")
   end
 end

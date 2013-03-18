@@ -3,6 +3,6 @@ module GraphiteUrlModule
     APP_CONFIG['graphite_url'] + "render?from=#{from}&until=now&width=#{width}&height=#{height}&target=#{target}&title=#{title}"
   end
   def simple_graph(target)
-    graph_url(target,400,250,'-24hours',target)
+    graph_url(target,400,250,'-7days',target)
   end
 end

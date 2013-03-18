@@ -57,6 +57,13 @@ GEM
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    factory_girl (4.2.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.2.1)
+      factory_girl (~> 4.2.0)
+      railties (>= 3.0.0)
+    faker (1.1.2)
+      i18n (~> 0.5)
     font-awesome-sass-rails (3.0.2.2)
       railties (>= 3.1.1)
       sass-rails (>= 3.1.1)
@@ -167,6 +174,7 @@ GEM
     whenever (0.8.2)
       activesupport (>= 2.3.4)
       chronic (>= 0.6.3)
+    will_paginate (3.0.4)
 
 PLATFORMS
   ruby
@@ -176,6 +184,8 @@ DEPENDENCIES
   ckeditor
   coffee-rails (~> 3.2.1)
   devise
+  factory_girl_rails
+  faker
   jquery-rails
   nokogiri
   paperclip
@@ -189,3 +199,4 @@ DEPENDENCIES
   uglifier (>= 1.0.3)
   upsert
   whenever
+  will_paginate (~> 3.0.0)

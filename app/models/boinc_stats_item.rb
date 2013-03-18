@@ -16,7 +16,7 @@ class BoincStatsItem < ActiveRecord::Base
     simple_graph("stats.gauges.TSN_dev.boinc.stat.active_users")
   end
   def self.render_tflops_url
-    graph_url('scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)',400,250,'-24hours','Approx_Current_Tflops')
+    graph_url('scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)',400,250,'-7days','Approx_Current_Tflops')
   end
 
   def self.find_by_boinc_auth(email, password)

@@ -28,11 +28,17 @@ end
 gem 'jquery-rails'
 gem "ckeditor"        #note requries imageMagick for image uploads
 gem "paperclip"
-
+gem 'will_paginate', '~> 3.0.0'
 
 group :development do
   gem 'rack-mini-profiler'
   gem 'rails-footnotes', '>= 3.7.9'
+
+end
+
+group :development, :test do
+  gem 'factory_girl_rails'
+  gem 'faker'
 end
 
 

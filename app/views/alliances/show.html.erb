@@ -30,18 +30,20 @@
     <th>Name</th>
     <th>Credit</th>
     <th>Alliance Rank</th>
+    <th>Overall Rank</th>
 
   </tr>
   <% rank = 1 %>
-  <% @alliance.members.each do |member| %>
+  <% @members.each do |member| %>
       <tr>
         <td><%= link_to member.name, member %></td>
-        <td><%= member.general_stats_item.total_credit %></td>
+        <td><%= member.credits %></td>
         <td><%= rank %></td>
+        <td><%= member.rank %></td>
         <% rank +=1 %>
       </tr>
   <% end %>
 </table>
-
+<%= image_tag(@alliance.render_credit) %>
 <%= link_to('Manage |', edit_alliance_path(@alliance)) if  (user_signed_in? && current_user.profile.alliance_leader == @alliance) %>
 <%= link_to 'Back', alliances_path %>

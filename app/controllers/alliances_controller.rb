@@ -15,6 +15,7 @@ class AlliancesController < ApplicationController
   # GET /alliances/1.json
   def show
     @alliance = Alliance.for_show(params[:id])
+    @members = Profile.for_alliance(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb

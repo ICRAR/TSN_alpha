@@ -42,7 +42,7 @@ namespace :stats do
               total_RAC += RAC
               users_with_RAC += (RAC > 10) ? 1 : 0
               #update DB object
-              upsert.row({:boinc_id => id}, :credit => credit, :RAC => RAC, :created_at => Time.now, :updated_at => Time.now)
+              upsert.row({:boinc_id => id}, :credit => credit, :RAC => RAC, :updated_at => Time.now, :created_at => Time.now)
               #send to statsd
               statsd_batch.gauge("boinc.users.#{id}.credit",credit)
               statsd_batch.gauge("boinc.users.#{id}.rac",RAC)
@@ -75,7 +75,7 @@ namespace :stats do
         #start upsert batch for all
         Upsert.batch(connection,table_name) do |upsert|
           boinc_stats.each do |stat|
-            upsert.row({:id => stat.general_stats_item_id}, :total_credit => stat.credit, :recent_avg_credit => stat.RAC, :created_at => Time.now, :updated_at => Time.now)
+            upsert.row({:id => stat.general_stats_item_id}, :total_credit => stat.credit, :recent_avg_credit => stat.RAC, :updated_at => Time.now, :created_at => Time.now)
           end
         end
       }
@@ -89,7 +89,7 @@ namespace :stats do
         Upsert.batch(connection,table_name) do |upsert|
           rank = 1
           stats.each do |stat|
-            upsert.row({:id => stat.id}, :rank => rank, :created_at => Time.now, :updated_at => Time.now)
+            upsert.row({:id => stat.id}, :rank => rank, :updated_at => Time.now, :created_at => Time.now)
             rank += 1
           end
         end
@@ -108,7 +108,7 @@ namespace :stats do
         alliances = Alliance.temp_credit
         Upsert.batch(connection,table_name) do |upsert|
           alliances.each do |alliance|
-            upsert.row({:id => alliance.id}, :credit => alliance.temp_credit, :created_at => Time.now, :updated_at => Time.now)
+            upsert.row({:id => alliance.id}, :credit => alliance.temp_credit, :updated_at => Time.now, :created_at => Time.now)
             statsd_batch.gauge("alliance.#{alliance.id}.credit",alliance.temp_credit)
             statsd_batch.gauge("alliance.#{alliance.id}.total_members",alliance.total_members)
           end
@@ -122,7 +122,7 @@ namespace :stats do
         alliances = Alliance.ranked
         Upsert.batch(connection,table_name) do |upsert|
           alliances.each do |alliance|
-            upsert.row({:id => alliance.id}, :ranking => rank, :created_at => Time.now, :updated_at => Time.now)
+            upsert.row({:id => alliance.id}, :ranking => rank, :updated_at => Time.now, :created_at => Time.now)
             statsd_batch.gauge("alliance.#{alliance.id}.rank", rank)
             rank += 1
           end
@@ -164,7 +164,7 @@ namespace :stats do
               required_for_next = all_trophies[trophy_index+1].try(:credits)
             end
             if changed
-              upsert.row({:id => profile.stats_id}, :last_trophy_credit_value => all_trophies[trophy_index].credits, :created_at => Time.now, :updated_at => Time.now)
+              upsert.row({:id => profile.stats_id}, :last_trophy_credit_value => all_trophies[trophy_index].credits, :updated_at => Time.now, :created_at => Time.now)
             end
           end
 

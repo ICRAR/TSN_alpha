@@ -3,7 +3,7 @@ class ProfilesController < ApplicationController
   # GET /profiles.json
   load_and_authorize_resource
   def index
-    @profiles = Profile.for_leader_boards
+    @profiles = Profile.for_leader_boards.page(params[:page]).per_page(10)
 
     respond_to do |format|
       format.html # index.html.erb

@@ -41,4 +41,9 @@ class Profile < ActiveRecord::Base
   def general_stats_item_id=(id)
     self.general_stats_item = GeneralStatsItem.find_by_id(id)
   end
+
+  def self.for_alliance(alliance_id)
+    joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits").where("general_stats_items.rank IS NOT NULL AND profiles.alliance_id = #{alliance_id}").order("rank ASC")
+  end
+
 end
