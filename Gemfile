@@ -6,6 +6,7 @@ gem 'rails', '3.2.11'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pg'
+gem 'mysql2' #for connecting with nereus db
 
 #gems for user auth
 gem 'devise'
@@ -28,7 +29,8 @@ end
 gem 'jquery-rails'
 gem "ckeditor"        #note requries imageMagick for image uploads
 gem "paperclip"
-gem 'will_paginate', '~> 3.0.0'
+#gem 'will_paginate', '~> 3.0.0'
+gem 'kaminari'
 
 group :development do
   gem 'rack-mini-profiler'

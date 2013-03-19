@@ -12,8 +12,16 @@
 </div>
 
 <div id="stats">
+  <h2>Current Global Boinc Stats</h2>
     <%= image_tag(BoincStatsItem.render_credit_total_url) %>
   <%= image_tag(BoincStatsItem.render_total_users_url) %>
   <br />
   <%= image_tag(BoincStatsItem.render_tflops_url) %>
+
+  <br/>
+  <h2>Current Global Nereus Stats</h2>
+  <%= image_tag(NereusStatsItem.render_credit_total_url) %>
+  <%= image_tag(NereusStatsItem.render_total_users_url) %>
+  <br />
+  <%= image_tag(NereusStatsItem.render_tflops_url) %>
 </div>

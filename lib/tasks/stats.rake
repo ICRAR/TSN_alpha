@@ -2,6 +2,7 @@ namespace :stats do
 
   desc "loads data from external site"
   task :update_boinc => :environment do
+    #start statsd batch
     statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|
 
@@ -19,7 +20,7 @@ namespace :stats do
         total_credit = 0
         total_RAC = 0
         users_with_RAC = 0
-        #start statsd batch
+
 
 
         # Slice xml file into parts to speed up processing
@@ -64,18 +65,22 @@ namespace :stats do
 
   desc "copy stats into general"
   task :update_general => :environment do
-
+    #start statsd batch
+    statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|
       bench.report('copy credit') {
         #start direct connection to DB for upsert
         connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])
         table_name = :general_stats_items
 
-        boinc_stats = BoincStatsItem.connected
+        combined_credits = GeneralStatsItem.for_update_credits
         #start upsert batch for all
         Upsert.batch(connection,table_name) do |upsert|
-          boinc_stats.each do |stat|
-            upsert.row({:id => stat.general_stats_item_id}, :total_credit => stat.credit, :recent_avg_credit => stat.RAC, :updated_at => Time.now, :created_at => Time.now)
+          combined_credits.each do |stat|
+            total_credits = stat.nereus_credit.to_i+stat.boinc_credit.to_i
+            #todo add average credit to general update
+            upsert.row({:id => stat.id}, :total_credit => total_credits, :updated_at => Time.now, :created_at => Time.now)
+            statsd_batch.gauge("general.users.#{stat.id}.credit",total_credits)
           end
         end
       }
@@ -84,13 +89,22 @@ namespace :stats do
         connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])
         table_name = :general_stats_items
 
-        stats = GeneralStatsItem.ranked
+        stats = GeneralStatsItem.has_credit
         #start upsert batch for all
         Upsert.batch(connection,table_name) do |upsert|
           rank = 1
           stats.each do |stat|
             upsert.row({:id => stat.id}, :rank => rank, :updated_at => Time.now, :created_at => Time.now)
+            statsd_batch.gauge("general.users.#{stat.id}.rank",rank)
             rank += 1
+          end
+        end
+
+        stats = GeneralStatsItem.no_credit
+        #start upsert batch for all
+        Upsert.batch(connection,table_name) do |upsert|
+          stats.each do |stat|
+            upsert.row({:id => stat.id}, :rank => nil, :updated_at => Time.now, :created_at => Time.now)
           end
         end
       }

@@ -1,9 +1,12 @@
 class GeneralStatsItem < ActiveRecord::Base
   attr_accessible :rank, :recent_avg_credit, :total_credit, :last_trophy_credit_value, as: :admin
 
-  scope :ranked, where("total_credit IS NOT NULL").order("total_credit DESC")
+  scope :has_credit, where("total_credit IS NOT NULL AND total_credit != 0").order("total_credit DESC")
+  scope :no_credit,  where("total_credit IS NULL OR total_credit = 0")
+  scope :for_update_credits, joins('LEFT JOIN "boinc_stats_items" ON "boinc_stats_items"."general_stats_item_id" = "general_stats_items"."id" LEFT JOIN "nereus_stats_items" ON "nereus_stats_items"."general_stats_item_id" = "general_stats_items"."id"').select("general_stats_items.id as id, boinc_stats_items.credit as boinc_credit, nereus_stats_items.credit as nereus_credit")
 
   has_one :boinc_stats_item
+  has_one :nereus_stats_item
   belongs_to :profile
 
 

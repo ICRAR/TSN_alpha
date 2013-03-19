@@ -3,7 +3,7 @@ class ProfilesController < ApplicationController
   # GET /profiles.json
   load_and_authorize_resource
   def index
-    @profiles = Profile.for_leader_boards.page(params[:page]).per_page(10)
+    @profiles = Profile.for_leader_boards.page(params[:page]).per(10)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -99,6 +99,21 @@ class ProfilesController < ApplicationController
       @profile = current_user.profile
       @profile.general_stats_item.boinc_stats_item = BoincStatsItem.find_by_boinc_auth(params['boinc_user'],params['boinc_password'])
       redirect_to @profile
+    else
+      redirect_to root_url, notice: 'You must be logged in to update your own profile.'
+      return
+    end
+  end
+  def update_nereus_id
+    if user_signed_in?
+      @profile = current_user.profile
+      nereus = NereusStatsItem.where(:nereus_id => params['nereus_id']).try(:first)
+      if nereus != nil
+        @profile.general_stats_item.nereus_stats_item = nereus
+        redirect_to @profile, notice: 'Success accounts are now linked :).'
+      else
+        redirect_to @profile, notice: 'Sorry we could not find that ID.'
+      end
     else
       redirect_to root_url, notice: 'You must be logged in to update your own profile.'
       return

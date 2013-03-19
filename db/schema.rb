@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130315063205) do
+ActiveRecord::Schema.define(:version => 20130319015844) do
 
   create_table "alliances", :force => true do |t|
     t.string   "name"
@@ -55,6 +55,16 @@ ActiveRecord::Schema.define(:version => 20130315063205) do
     t.datetime "created_at",                              :null => false
     t.datetime "updated_at",                              :null => false
     t.integer  "last_trophy_credit_value", :default => 0, :null => false
+  end
+
+  create_table "nereus_stats_items", :force => true do |t|
+    t.integer  "nereus_id"
+    t.integer  "credit"
+    t.integer  "daily_credit"
+    t.integer  "rank"
+    t.integer  "general_stats_item_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
 
   create_table "news", :force => true do |t|

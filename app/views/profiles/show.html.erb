@@ -66,6 +66,31 @@
 
 </p>
 
+<p><b>Nereus</b>
+  <%
+     nereus = @profile.general_stats_item.nereus_stats_item
+     if nereus == nil
+  %>
+      <% if user_signed_in? && @profile == current_user.profile %>
+        <p>Enter your sky net (nereus) account details to sync your nereus account</p>
+        <%= form_tag('/profile/update_nereus_id', :method => 'post') do %>
+            <%= label_tag(:nereus_id, "theSkyNet Account ID (nereus):") %>
+            <%= text_field_tag(:nereus_id) %>
+            <%= submit_tag("update") %>
+
+        <% end %>
+    <% else %>
+        User not using nereus.
+    <% end %>
+<% else %>
+    <%= "credit = #{nereus.credit}" %>
+    <br />
+    <%= image_tag(nereus.render_credit_graph_url) %>
+<% end %>
+
+
+</p>
+
 
 <%= link_to 'Edit', edit_profile_path(@profile) %> |
 <%= link_to 'Back', profiles_path %>
