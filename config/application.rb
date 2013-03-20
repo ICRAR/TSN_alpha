@@ -67,5 +67,8 @@ module TSNAlpha
 
     # autoload lib modules
     config.autoload_paths += %W(#{config.root}/lib)
+
+    #fix for using pgsearch
+    config.active_record.schema_format = :sql
   end
 end

@@ -87,10 +87,31 @@
     <br />
     <%= image_tag(nereus.render_credit_graph_url) %>
 <% end %>
-
+<style>
+    #chart_container {
+        position: relative;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    #chart {
+        position: relative;
+        left: 40px;
+    }
+    #y_axis {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 40px;
+    }
+</style>
+<div id="chart_container">
+  <div id="y_axis"></div>
+  <div id="chart"></div>
+</div>
 
 </p>
 
+<div id="placeholder" class="demo-placeholder" style="width: 400px; height:300px;"></div>
+<span id="hoverdata"></span>
 
 <%= link_to 'Edit', edit_profile_path(@profile) %> |
 <%= link_to 'Back', profiles_path %>

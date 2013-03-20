@@ -80,7 +80,7 @@ namespace :stats do
             total_credits = stat.nereus_credit.to_i+stat.boinc_credit.to_i
             #todo add average credit to general update
             upsert.row({:id => stat.id}, :total_credit => total_credits, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.users.#{stat.id}.credit",total_credits)
+            statsd_batch.gauge("general.users.#{stat.profile_id}.#{stat.id}.credit",total_credits)
           end
         end
       }
@@ -95,7 +95,7 @@ namespace :stats do
           rank = 1
           stats.each do |stat|
             upsert.row({:id => stat.id}, :rank => rank, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.users.#{stat.id}.rank",rank)
+            statsd_batch.gauge("general.users.#{stat.profile_id}.#{stat.id}.rank",rank)
             rank += 1
           end
         end
@@ -105,6 +105,7 @@ namespace :stats do
         Upsert.batch(connection,table_name) do |upsert|
           stats.each do |stat|
             upsert.row({:id => stat.id}, :rank => nil, :updated_at => Time.now, :created_at => Time.now)
+            statsd_batch.gauge("general.users.#{stat.profile_id}.#{stat.id}.rank",0)
           end
         end
       }

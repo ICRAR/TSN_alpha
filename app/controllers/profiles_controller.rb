@@ -18,6 +18,7 @@ class ProfilesController < ApplicationController
       @profile = Profile.find(params[:id], include: :trophies)
     elsif user_signed_in?
       @profile = current_user.profile
+      params[:id] = current_user.profile.id
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'
       return

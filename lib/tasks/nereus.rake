@@ -7,7 +7,7 @@ namespace :nereus do
 
     #connect to remote db
     #todo add nerus data too config file
-    remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host'], :username => PP_CONFIG['username'], :database => PP_CONFIG['database'], :password => PP_CONFIG['password'])
+    remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host'], :username => APP_CONFIG['nereus_username'], :database => APP_CONFIG['nereus_database'], :password => APP_CONFIG['nereus_password'])
 
     #start direct connection to local DB for upsert
     connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])

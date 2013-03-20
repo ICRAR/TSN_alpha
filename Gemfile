@@ -32,6 +32,8 @@ gem "paperclip"
 #gem 'will_paginate', '~> 3.0.0'
 gem 'kaminari'
 
+gem 'pg_search'
+
 group :development do
   gem 'rack-mini-profiler'
   gem 'rails-footnotes', '>= 3.7.9'
