@@ -30,7 +30,7 @@ namespace :nereus do
 
 
           #get usage data
-          results = remote_client.query("SELECT `skynetID`, sum(`uploaded`) as uploaded, sum(`downloaded`) as downloaded, sum(`millisecondsOnline`) as online, sum(`millisecondsDisabled`) as offline FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 200000 != 0 GROUP BY `skynetID` ", :cache_rows => false)
+          results = remote_client.query("SELECT `skynetID`, sum(`uploaded`) as uploaded, sum(`downloaded`) as downloaded, sum(`millisecondsOnline`) as online, sum(`millisecondsDisabled`) as offline FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 200000 GROUP BY `skynetID` ", :cache_rows => false)
 
           #iterate across results and update local data
           #start upsert batch for this slice
@@ -52,11 +52,11 @@ namespace :nereus do
       }
       bench.report('daily') {
         #then estimate daily credits
-          #get usage data
-          results = remote_client.query("SELECT `skynetID`, uploaded, downloaded, millisecondsOnline as online, millisecondsDisabled as offline FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 200000 AND day = #{Time.now.to_i/86400} ", :cache_rows => false)
+          #get usage data for today (part of) and yesterday (full)
+          results = remote_client.query("SELECT `skynetID`, sum(`uploaded`) as uploaded, sum(`downloaded`) as downloaded, sum(`millisecondsOnline`) as online, sum(`millisecondsDisabled`) as offline  FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 200000 AND (day = #{Time.now.to_i/86400} OR day = #{Time.now.to_i/86400 -1}) GROUP BY `skynetID`", :cache_rows => false)
 
-          #get percentage of today
-          per_day = Time.now.hour/24.0 + Time.now.min/(24.0*60.0)
+          #get percentage of today and yesterday
+          per_day = Time.now.hour/48.0 + Time.now.min/(48.0*60.0) + 0.5
 
           #iterate across results and update local data
           #start upsert batch for this slice
@@ -65,7 +65,7 @@ namespace :nereus do
               id = row['skynetID'].to_i
               #credits = credits for network + credit for time
               credit_to_now = (row['uploaded'].to_i + row['downloaded'].to_i)/15728640 + (row['online'].to_i - row['offline'].to_i)/900000
-              daily_credit =  (credit_to_now / per_day).to_i
+              daily_credit =  (credit_to_now / per_day /2 ).to_i  #esitmate for 2 full days then divided by 2 to get daily average
               total_daily_credit += daily_credit
               #update DB object
               if  daily_credit > 0

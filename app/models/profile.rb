@@ -1,4 +1,10 @@
 class Profile < ActiveRecord::Base
+  include PgSearch
+  pg_search_scope :search_by_name, :against => [:first_name, :second_name],
+                  :using => {:tsearch  => {:prefix => true,:dictionary => "english"},
+                             :dmetaphone => {},
+                             :trigram => {}}
+
   belongs_to :user
   belongs_to :alliance_leader, :class_name => 'Alliance', :foreign_key => 'alliance_leader_id', inverse_of: :leader
   belongs_to :alliance

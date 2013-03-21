@@ -14,7 +14,11 @@ TSNAlpha::Application.routes.draw do
   get "/pages/home" => "pages#home", :as => 'home'
   get "/pages/:slug" => "pages#show", :as => 'page'
 
-  resources :profiles, :only => [:index, :show, :update]
+  resources :profiles, :only => [:index, :show, :update] do
+    collection do
+      get 'search'
+    end
+  end
   get "/profile" => "profiles#show",  :as => 'my_profile'
   get "/profile/edit" => "profiles#edit", :as => 'edit_profile'
   post "/profile/update_nereus_id"  => "profiles#update_nereus_id", :as => 'update_nereus_id'
@@ -27,6 +31,7 @@ TSNAlpha::Application.routes.draw do
     end
     collection do
       get 'leave'
+      get 'search'
     end
   end
   get "/alliance" => "alliances#show", :as => 'my_alliance'

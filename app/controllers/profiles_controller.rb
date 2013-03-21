@@ -120,4 +120,12 @@ class ProfilesController < ApplicationController
       return
     end
   end
+  def search
+    @profiles = Profile.search_by_name(params['search']).for_leader_boards.page(params[:page]).per(10)
+
+    respond_to do |format|
+      format.html { render :index} # index.html.erb
+      format.json { render json: @profiles }
+    end
+  end
 end

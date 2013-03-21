@@ -3,7 +3,7 @@ class AlliancesController < ApplicationController
   # GET /alliances.json
   load_and_authorize_resource
   def index
-    @alliances = Alliance.ranked.includes(:leader)
+    @alliances = Alliance.ranked.includes(:leader).page(params[:page]).per(10)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -130,5 +130,13 @@ class AlliancesController < ApplicationController
     flash[:notice] = "You have left the #{@alliance.name} alliance"
     end
     redirect_to my_profile_path
+  end
+  def search
+    @alliances = Alliance.search_by_name(params[:search]).includes(:leader).page(params[:page]).per(10)
+
+    respond_to do |format|
+      format.html { render :index }
+      format.js { @alliances }
+    end
   end
 end
