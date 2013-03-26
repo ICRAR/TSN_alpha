@@ -44,6 +44,6 @@
       </tr>
   <% end %>
 </table>
-<%= image_tag(@alliance.render_credit) %>
+<div id="alliance_graph"></div>
 <%= link_to('Manage |', edit_alliance_path(@alliance)) if  (user_signed_in? && current_user.profile.alliance_leader == @alliance) %>
 <%= link_to 'Back', alliances_path %>

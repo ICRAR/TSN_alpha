@@ -23,9 +23,10 @@
 set :environment, 'development'
 
 every :hour do
-  rake "stats:update_boinc"
+  rake "boinc:update_boinc"
+  rake "nereus:update_nereus"
   rake "stats:update_general"
   rake "stats:update_alliances"
   rake "stats:update_trophy"
-  rake "nereus:update_nereus"
+
 end

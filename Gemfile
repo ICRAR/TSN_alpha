@@ -5,7 +5,7 @@ gem 'rails', '3.2.11'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'pg'
+gem 'pg'     #main db driver
 gem 'mysql2' #for connecting with nereus db
 
 #gems for user auth
@@ -21,12 +21,14 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer', :platforms => :ruby
+  gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
 end
 
+#general use gems
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem "ckeditor"        #note requries imageMagick for image uploads
 gem "paperclip"
 #gem 'will_paginate', '~> 3.0.0'
@@ -40,9 +42,17 @@ group :development do
 
 end
 
+#Gems required for testing
 group :development, :test do
+  gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'faker'
+end
+
+group :test do
+  gem 'capybara'
+#  gem 'guard-rspec'
+  gem 'launchy'
 end
 
 

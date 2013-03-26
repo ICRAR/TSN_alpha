@@ -1,13 +1,15 @@
 # BoincStat  factory definition
 
 FactoryGirl.define do
-  sequence :boinc_id do |n|
+  sequence :g_boinc_id do |n|
     n+100
   end
-  sequence :test_email do |n|
-    Faker::Name.first_name + "name.#{n}@test.com"
+  sequence :g_test_email do |n|
+    "#{Faker::Name.first_name}.#{Faker::Name.last_name}.#{n}@test.com"
   end
-
+  sequence :g_nereus_id do |n|
+    n+10100
+  end
 
   factory :general_stats_item do
     rank 0
@@ -16,7 +18,8 @@ FactoryGirl.define do
     last_trophy_credit_value 0
 
     after(:create) {|general_stats_item|
-      general_stats_item.boinc_stats_item = BoincStatsItem.where(:id => generate(:boinc_id)).first
+      general_stats_item.boinc_stats_item = BoincStatsItem.where(:boinc_id => generate(:g_boinc_id)).first
+      general_stats_item.nereus_stats_item = NereusStatsItem.where(:nereus_id => generate(:g_nereus_id)).first
     }
   end
 
@@ -31,7 +34,7 @@ FactoryGirl.define do
   end
 
   factory :user do
-    email { generate(:test_email) }
+    email { generate(:g_test_email) }
     password 'password'
     admin false
 

@@ -30,7 +30,7 @@ namespace :nereus do
 
 
           #get usage data
-          results = remote_client.query("SELECT `skynetID`, sum(`uploaded`) as uploaded, sum(`downloaded`) as downloaded, sum(`millisecondsOnline`) as online, sum(`millisecondsDisabled`) as offline FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 200000 GROUP BY `skynetID` ", :cache_rows => false)
+          results = remote_client.query("SELECT `skynetID`, sum(`uploaded`) as uploaded, sum(`downloaded`) as downloaded, sum(`millisecondsOnline`) as online, sum(`millisecondsDisabled`) as offline FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 900000 GROUP BY `skynetID` ", :cache_rows => false)
 
           #iterate across results and update local data
           #start upsert batch for this slice
@@ -38,7 +38,8 @@ namespace :nereus do
             results.each do |row|
               id = row['skynetID'].to_i
               #credits = credits for network + credit for time
-              credit = (row['uploaded'].to_i + row['downloaded'].to_i)/15728640 + (row['online'].to_i - row['offline'].to_i)/900000
+              credit = (row['uploaded'].to_i + row['downloaded'].to_i)/15728640.0 + (row['online'].to_i - row['offline'].to_i)/900000.0
+              credit = credit.to_i
               total_credit += credit
               #update DB object
               if credit > 0
@@ -52,8 +53,9 @@ namespace :nereus do
       }
       bench.report('daily') {
         #then estimate daily credits
+          Time
           #get usage data for today (part of) and yesterday (full)
-          results = remote_client.query("SELECT `skynetID`, sum(`uploaded`) as uploaded, sum(`downloaded`) as downloaded, sum(`millisecondsOnline`) as online, sum(`millisecondsDisabled`) as offline  FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 200000 AND (day = #{Time.now.to_i/86400} OR day = #{Time.now.to_i/86400 -1}) GROUP BY `skynetID`", :cache_rows => false)
+          results = remote_client.query("SELECT `skynetID`, sum(`uploaded`) as uploaded, sum(`downloaded`) as downloaded, sum(`millisecondsOnline`) as online, sum(`millisecondsDisabled`) as offline  FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 900000 AND (day = #{(Time.now.to_i+8*60*60)/86400} OR day = #{(Time.now.to_i+8*60*60)/86400 -1}) GROUP BY `skynetID`", :cache_rows => false)
 
           #get percentage of today and yesterday
           per_day = Time.now.hour/48.0 + Time.now.min/(48.0*60.0) + 0.5
@@ -64,7 +66,7 @@ namespace :nereus do
             results.each do |row|
               id = row['skynetID'].to_i
               #credits = credits for network + credit for time
-              credit_to_now = (row['uploaded'].to_i + row['downloaded'].to_i)/15728640 + (row['online'].to_i - row['offline'].to_i)/900000
+              credit_to_now = (row['uploaded'].to_i + row['downloaded'].to_i)/15728640.0 + (row['online'].to_i - row['offline'].to_i)/900000.0
               daily_credit =  (credit_to_now / per_day /2 ).to_i  #esitmate for 2 full days then divided by 2 to get daily average
               total_daily_credit += daily_credit
               #update DB object

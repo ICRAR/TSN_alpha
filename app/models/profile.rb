@@ -11,7 +11,7 @@ class Profile < ActiveRecord::Base
   has_and_belongs_to_many :trophies
   has_one :general_stats_item, :dependent => :destroy, :inverse_of => :profile
   attr_accessible :country, :first_name, :second_name, :as => [:default, :admin]
-  attr_accessible :user_id, :alliance_leader_id, :alliance_id, :alliance_join_date, :trophy_ids, :general_stats_item_id, as: :admin
+  attr_accessible :user_id, :alliance_leader_id, :alliance_id, :alliance_join_date, :trophy_ids, :general_stats_item_id, :new_profile_step, as: :admin
 
   scope :for_leader_boards, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits").where('general_stats_items.rank IS NOT NULL').order("rank ASC").includes(:alliance)
   scope :for_trophies, joins(:general_stats_item).select("profiles.*, general_stats_items.last_trophy_credit_value as last_trophy_credit_value, general_stats_items.total_credit as credits, general_stats_items.id as stats_id").where('general_stats_items.total_credit IS NOT NULL')

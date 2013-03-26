@@ -769,7 +769,8 @@ CREATE TABLE profiles (
     updated_at timestamp without time zone NOT NULL,
     alliance_id integer,
     alliance_leader_id integer,
-    alliance_join_date timestamp without time zone
+    alliance_join_date timestamp without time zone,
+    new_profile_step integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1199,3 +1200,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130319073328');
 INSERT INTO schema_migrations (version) VALUES ('20130319073329');
 
 INSERT INTO schema_migrations (version) VALUES ('20130319075654');
+
+INSERT INTO schema_migrations (version) VALUES ('20130322062339');

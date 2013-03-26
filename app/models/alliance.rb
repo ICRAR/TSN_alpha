@@ -5,7 +5,6 @@ class Alliance < ActiveRecord::Base
                              :dmetaphone => {},
                              :trigram => {}}
 
-  include GraphiteUrlModule
 
   attr_accessible :name, :as => [:default, :admin]
   attr_accessible :ranking, :credit, as: :admin
@@ -20,7 +19,4 @@ class Alliance < ActiveRecord::Base
     where(:id => id).includes(:leader).first
   end
 
-  def render_credit
-    simple_graph("stats.gauges.TSN_dev.alliance.#{id}.credit")
-  end
 end

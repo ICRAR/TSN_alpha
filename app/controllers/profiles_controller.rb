@@ -19,15 +19,31 @@ class ProfilesController < ApplicationController
     elsif user_signed_in?
       @profile = current_user.profile
       params[:id] = current_user.profile.id
+
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'
       return
     end
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @profile }
+    if current_user.profile != @profile || @profile.new_profile_step < 2
+      if @profile.new_profile_step < 1
+        respond_to do |format|
+          format.html { render :new_profile_step_1}
+          format.json { render json: @profile }
+        end
+      else
+        respond_to do |format|
+          format.html { render :new_profile_step_2}
+          format.json { render json: @profile }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html # show.html.erb
+        format.json { render json: @profile }
+      end
     end
+
   end
 
   # GET /profiles/new
@@ -73,15 +89,21 @@ class ProfilesController < ApplicationController
   def update
     @profile = Profile.find(params[:id])
 
-    respond_to do |format|
-      if @profile.update_attributes(params[:profile])
+
+    if @profile.update_attributes(params[:profile])
+      @profile.new_profile_step = [1,@profile.new_profile_step].max
+      @profile.save
+      respond_to do |format|
         format.html { redirect_to @profile, notice: 'Profile was successfully updated.' }
         format.json { head :no_content }
-      else
+      end
+    else
+      respond_to do |format|
         format.html { render action: "edit" }
         format.json { render json: @profile.errors, status: :unprocessable_entity }
       end
     end
+
   end
 
   # DELETE /profiles/1
@@ -98,10 +120,47 @@ class ProfilesController < ApplicationController
   def update_boinc_id
     if user_signed_in?
       @profile = current_user.profile
-      @profile.general_stats_item.boinc_stats_item = BoincStatsItem.find_by_boinc_auth(params['boinc_user'],params['boinc_password'])
-      redirect_to @profile
+      boinc = BoincStatsItem.find_by_boinc_auth(params['boinc_user'],params['boinc_password'])
+      if boinc.new_record?
+        redirect_to @profile, alert: boinc.errors.full_messages.to_sentence
+      else
+        @profile.general_stats_item.boinc_stats_item = boinc
+        @profile.new_profile_step = [2,@profile.new_profile_step].max
+        @profile.save
+        redirect_to @profile, notice: 'Success your account has been joined'
+      end
+
     else
-      redirect_to root_url, notice: 'You must be logged in to update your own profile.'
+      redirect_to root_url, alert: 'You must be logged in to update your own profile.'
+      return
+    end
+  end
+  def create_boinc_id
+    if user_signed_in?
+      @profile = current_user.profile
+      #check that password is correct
+      if  current_user.valid_password?(params['password'])
+        @profile = current_user.profile
+
+        boinc = BoincStatsItem.create_new_account(current_user.email,params['password'])
+        if boinc.new_record?
+          redirect_to @profile, alert: boinc.errors.full_messages.to_sentence
+        else
+          @profile.general_stats_item.boinc_stats_item = boinc
+          @profile.new_profile_step = [2,@profile.new_profile_step].max
+          @profile.save
+          #todo create boinc welcome page
+          respond_to do |format|
+            format.html { render :boinc_welcome} # index.html.erb
+            format.json { render json: @profiles }
+          end
+        end
+      else
+        redirect_to @profile, alert: 'Incorrect password.'
+        return
+      end
+    else
+      redirect_to root_url, alert: 'You must be logged in to update your own profile.'
       return
     end
   end
@@ -111,12 +170,14 @@ class ProfilesController < ApplicationController
       nereus = NereusStatsItem.where(:nereus_id => params['nereus_id']).try(:first)
       if nereus != nil
         @profile.general_stats_item.nereus_stats_item = nereus
+        @profile.new_profile_step = [2,@profile.new_profile_step].max
+        @profile.save
         redirect_to @profile, notice: 'Success accounts are now linked :).'
       else
         redirect_to @profile, notice: 'Sorry we could not find that ID.'
       end
     else
-      redirect_to root_url, notice: 'You must be logged in to update your own profile.'
+      redirect_to root_url, alert: 'You must be logged in to update your own profile.'
       return
     end
   end

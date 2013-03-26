@@ -9,8 +9,10 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :admin, :mod
   # attr_accessible :title, :body
 
+
+
   has_one :profile, :dependent => :destroy, :inverse_of => :user
-  before_create :build_profile
+ # before_create :build_profile
 
   def is_admin?
     return self.admin

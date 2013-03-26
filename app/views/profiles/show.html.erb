@@ -1,5 +1,3 @@
-<p id="notice"><%= notice %></p>
-
 <p>
   <b>First name:</b>
   <%= @profile.first_name %>
@@ -25,7 +23,7 @@
         <%= link_to(@profile.alliance.name,@profile.alliance) %>  <%= (current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@profile.alliance)) : link_to("Leave", leave_alliances_path) %>
 
 <% else %>
-      You are not part of an alliance yet click <%= link_to 'here', new_alliance_path %> to create one or here to find an existing alliance to join
+      You are not part of an alliance yet click <%= link_to 'here', new_alliance_path %> to create one or <%= link_to 'here', alliances_path %> to find an existing alliance to join
       <% end %>
   <% else %>
     <%= @profile.alliance ? link_to(@profile.alliance.name,@profile.alliance) : 'Flying Solo' %>
@@ -45,22 +43,12 @@
      if boinc == nil
   %>
         <% if user_signed_in? && @profile == current_user.profile %>
-          <p>Enter your POGS Boinc account details to sync your boinc account</p>
-            <%= form_tag('/profile/update_boinc_id', :method => 'post') do %>
-              <%= label_tag(:boinc_user, "Boinc User:") %>
-              <%= text_field_tag(:boinc_user) %>    <br/>
-              <%= label_tag(:boinc_password, "Boinc Password:") %>
-              <%= password_field_tag(:boinc_password) %> <br/>
-              <%= submit_tag("update") %>
-
-            <% end %>
+          <%= render 'boinc_forms' %>
         <% else %>
             User not using boinc.
         <% end %>
   <% else %>
     <%= "credit = #{boinc.credit}" %>
-      <br />
-    <%= image_tag(boinc.render_credit_graph_url) %>
   <% end %>
 
 
@@ -72,46 +60,18 @@
      if nereus == nil
   %>
       <% if user_signed_in? && @profile == current_user.profile %>
-        <p>Enter your sky net (nereus) account details to sync your nereus account</p>
-        <%= form_tag('/profile/update_nereus_id', :method => 'post') do %>
-            <%= label_tag(:nereus_id, "theSkyNet Account ID (nereus):") %>
-            <%= text_field_tag(:nereus_id) %>
-            <%= submit_tag("update") %>
-
-        <% end %>
+          <%= render 'nereus_form' %>
     <% else %>
         User not using nereus.
     <% end %>
 <% else %>
     <%= "credit = #{nereus.credit}" %>
-    <br />
-    <%= image_tag(nereus.render_credit_graph_url) %>
 <% end %>
-<style>
-    #chart_container {
-        position: relative;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-    #chart {
-        position: relative;
-        left: 40px;
-    }
-    #y_axis {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 40px;
-    }
-</style>
-<div id="chart_container">
-  <div id="y_axis"></div>
-  <div id="chart"></div>
-</div>
-
 </p>
 
-<div id="placeholder" class="demo-placeholder" style="width: 400px; height:300px;"></div>
-<span id="hoverdata"></span>
+<div id="chart_container" <%=  boinc ? "data-boinc_id=#{boinc.boinc_id}" : "" %> <%=  nereus ? "data-nereus_id=#{nereus.nereus_id}" : "" %> > </div>
+
+
 
 <%= link_to 'Edit', edit_profile_path(@profile) %> |
 <%= link_to 'Back', profiles_path %>

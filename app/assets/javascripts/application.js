@@ -11,7 +11,10 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 
-// require jquery
+//= require jquery
 //= require jquery_ujs
+//= require jquery.ui.all
 //= require init.js.coffee
-//= require_tree .
+//= require_tree ./vendor
+//= require_tree ./general
+//= require_tree ./controllers

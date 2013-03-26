@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  Rack::MiniProfiler.authorize_request
+  if Rails.env.development?
+    Rack::MiniProfiler.authorize_request
+  end
 
   rescue_from CanCan::AccessDenied do |exception|
     flash[:alert] = exception.message

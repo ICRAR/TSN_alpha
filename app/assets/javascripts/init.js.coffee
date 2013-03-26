@@ -16,4 +16,5 @@ init: ->
   Util.exec controller, action
 }
 
+
 $(document).ready Util.init
