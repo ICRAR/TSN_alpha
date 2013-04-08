@@ -21,3 +21,6 @@
 # Ignore image upload files
 /public/ckeditor_assets/*
 /public/system/*
+
+#IDE files
+/.idea
