@@ -12,7 +12,7 @@
 #  rickshaw_graph(metrics,name,$("#chart"),'-5days',color)
 #
 TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
-  url = "http://127.0.0.1:8080/render?from=#{time}&until=now&target=group("
+  url = "<%= APP_CONFIG['graphite_url']%>render?from=#{time}&until=now&target=group("
   url += metrics.join(',')
   url +=")&format=json&jsonp=?"
   div.css('position', 'relative')
