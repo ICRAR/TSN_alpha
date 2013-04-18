@@ -24,3 +24,6 @@
 
 #IDE files
 /.idea
+
+#vendor files
+/vendor*
