@@ -80,6 +80,8 @@ module TSNAlpha
                        :controller_specs => true,
                        :request_specs => true
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
+
+      SafeYAML::OPTIONS[:deserialize_symbols]
     end
   end
 end
