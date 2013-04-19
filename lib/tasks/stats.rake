@@ -1,10 +1,15 @@
 namespace :stats do
+  task :update_all => :environment do
+    Rake::Task["stats:update_general"].execute
+    Rake::Task["stats:update_alliances"].execute
+    Rake::Task["stats:update_trophy"].execute
+  end
   desc "copy stats into general"
   task :update_general => :environment do
     #start statsd batch
     statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|
-      bench.report('copy credit') {
+      bench.report('copy credit user') {
         #start direct connection to DB for upsert
         connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :general_stats_items
@@ -21,7 +26,7 @@ namespace :stats do
         end
       }
 
-      bench.report('update ranks') {
+      bench.report('update ranks user') {
         connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :general_stats_items
 
@@ -52,7 +57,7 @@ namespace :stats do
   task :update_alliances => :environment do
     statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|
-      bench.report('update credit') {
+      bench.report('update credit alliance') {
         connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :alliances
 
@@ -66,7 +71,7 @@ namespace :stats do
         end
       }
 
-      bench.report('update rank') {
+      bench.report('update rank alliance') {
         connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :alliances
         rank = 1
