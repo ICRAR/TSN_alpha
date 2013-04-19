@@ -6,7 +6,7 @@ namespace :stats do
     bench_time = Benchmark.bm do |bench|
       bench.report('copy credit') {
         #start direct connection to DB for upsert
-        connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])
+        connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :general_stats_items
 
         combined_credits = GeneralStatsItem.for_update_credits

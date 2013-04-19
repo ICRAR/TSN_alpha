@@ -10,7 +10,7 @@ namespace :nereus do
     remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host'], :username => APP_CONFIG['nereus_username'], :database => APP_CONFIG['nereus_database'], :password => APP_CONFIG['nereus_password'])
 
     #start direct connection to local DB for upsert
-    connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])
+    connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
     table_name = :nereus_stats_items
 
     #first update the total credit numbers
