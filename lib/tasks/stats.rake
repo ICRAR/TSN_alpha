@@ -22,7 +22,7 @@ namespace :stats do
       }
 
       bench.report('update ranks') {
-        connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])
+        connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :general_stats_items
 
         stats = GeneralStatsItem.has_credit
@@ -53,7 +53,7 @@ namespace :stats do
     statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|
       bench.report('update credit') {
-        connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])
+        connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :alliances
 
         alliances = Alliance.temp_credit
@@ -67,7 +67,7 @@ namespace :stats do
       }
 
       bench.report('update rank') {
-        connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])
+        connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :alliances
         rank = 1
         alliances = Alliance.ranked
@@ -97,7 +97,7 @@ namespace :stats do
         profiles = Profile.for_trophies
 
         #check through all profiles adding upsert where needed and adding new profiles_trophies items
-        connection = PG.connect(:dbname => Rails.configuration.database_configuration[Rails.env]["database"])
+        connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :general_stats_items
         profiles_trophies_inserts = []
         Upsert.batch(connection,table_name) do |upsert|
