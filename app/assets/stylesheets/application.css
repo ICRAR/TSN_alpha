@@ -9,25 +9,8 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require_tree .
+ *= require_tree ./controllers
+ *= require_tree ./vendor
+ *= require general.css.scss
+ *= require_tree ./general
  */
-#container {
-    width:900px;
-    margin:auto;
-}
-#chart {
-    position: relative;
-    left: 40px;
-    z-index:1;
-}
-#y_axis {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 40px;
-}
-#legend {
-    z-index:2;
-    top:50px;
-    float:right
-}

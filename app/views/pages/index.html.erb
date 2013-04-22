@@ -1,22 +1,61 @@
-<%= @page.content.html_safe %>
+<%content_for(:title_home) do %>
+    <div id="intro-home" style="cursor:pointer;" onclick="run(getQueryVariable('userID'))">
+        <div id="intro-home-wrap" style="cursor:pointer;" onClick="run(getQueryVariable('userID'))">
+            <h1 class="fontface">Play your part and help discover our Universe!</h1>
+            <p>Have a computer? Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!</p>
 
-<div id="news" xmlns="http://www.w3.org/1999/html">
-    <% @news.each do |item| %>
-    <div class="news_item" id="<%= item.id %>">
-        <div class="title"><%= item.title %></div>
-        <div class="published_date">Published on <%= item.published_time %></div>
-        <div class="short"><%= item.short %></div>
-        <div class="long"><%= item.long.html_safe %></div>
+
+
+        </div>
+
+        <span id="intro-img" onclick="run(getQueryVariable('userID'))">&nbsp;</span>
+
     </div>
-    <% end %>
-</div>
 
-<div id="stats">
-  <h2>Current Global Boinc Stats</h2>
-  <div id="boinc_graphs"></div>
+    <span class="ribbon">
 
-  <br/>
-  <h2>Current Global Nereus Stats</h2>
-  <div id="nereus_graphs"></div>
+        <div id="ribbon-content">
+            <%= link_to(new_user_session_path, :class => "signupbutton") do %>
+                Sign up now
+            <% end %>
+            <p>
+                <a href="#" onClick="run()">or click here run theSkyNet without having to register.</a>
+            </p>
+            <div id="ribbonsocial">
+                <a href="http://www.facebook.com/pages/TheSkyNet/214061585306810"><img src="./assets/images/social_fb.png" style="margin-right:10px;" height="32" width="32" alt="Become a Facebook Fan" /></a>
+                <a href="http://www.twitter.com/#!/_theSkyNet"><img src="./assets/images/social_tw.png" height="32" width="32" alt="Follow us on Twitter" /></a>
+            </div>
 
-</div>
+        </div>
+
+    </span>
+<% end %>
+
+<%content_for(:content) do %>
+
+    <div id="content-wrap-home">
+        <%= @page.content.html_safe %>
+    </div>
+
+    <div id="content-wrap-news" xmlns="http://www.w3.org/1999/html">
+        <% @news.each do |item| %>
+        <div class="news_item" id="<%= item.id %>">
+            <div class="title"><%= item.title %></div>
+            <div class="published_date">Published on <%= item.published_time %></div>
+            <div class="short"><%= item.short %></div>
+            <div class="long"><%= item.long.html_safe %></div>
+        </div>
+        <% end %>
+    </div>
+
+    <div id="content-wrap-stats">
+      <h2>Current Global Boinc Stats</h2>
+      <div id="boinc_graphs"></div>
+
+      <br/>
+      <h2>Current Global Nereus Stats</h2>
+      <div id="nereus_graphs"></div>
+
+    </div>
+
+<% end %>

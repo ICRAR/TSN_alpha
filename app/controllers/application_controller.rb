@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  if Rails.env.development?
+  if Rails.env.development?  && false
     Rack::MiniProfiler.authorize_request
   end
 

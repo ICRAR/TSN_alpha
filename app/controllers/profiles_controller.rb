@@ -25,7 +25,7 @@ class ProfilesController < ApplicationController
       return
     end
 
-    if user_signed_in? && (current_user.profile != @profile || @profile.new_profile_step < 2)
+    if user_signed_in? && (current_user.profile == @profile && @profile.new_profile_step < 2)
       if @profile.new_profile_step < 1
         respond_to do |format|
           format.html { render :new_profile_step_1}

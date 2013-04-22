@@ -732,7 +732,8 @@ CREATE TABLE pages (
     content text,
     slug character varying(255),
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    parent_id integer
 );
 
 
@@ -1202,3 +1203,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130319073329');
 INSERT INTO schema_migrations (version) VALUES ('20130319075654');
 
 INSERT INTO schema_migrations (version) VALUES ('20130322062339');
+
+INSERT INTO schema_migrations (version) VALUES ('20130422034513');

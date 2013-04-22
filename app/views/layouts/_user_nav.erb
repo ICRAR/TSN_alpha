@@ -1,0 +1,5 @@
+<ul id="nav">
+    <li <%=  'class=on' if (@user_page == 'dashboard') %>><%= link_to('Dashboard', my_profile_path)  %></li>
+    <li <%=  'class=on' if (@user_page == 'leaderboard') %>><%= link_to('Leaderboards', profiles_path)  %></li>
+    <li <%=  'class=on' if (@user_page == 'alliance') %>><%= link_to('Alliances', alliances_path)  %></li>
+</ul>

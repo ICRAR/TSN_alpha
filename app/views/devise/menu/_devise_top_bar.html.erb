@@ -1,21 +1,33 @@
-<ul class="top_menu">
+<div id="login-top">
 
-<% if user_signed_in? %>
-    <p>Welcome back, <%= current_user.email %></p>
-    <li>
-        <%= link_to('Edit registration', edit_user_registration_path) %>
-    </li>
-    <li><%= link_to 'Edit my profile', edit_profile_path %></li>
-    <li>
-      <%= link_to('Logout', destroy_user_session_path, :method => :delete) %>
-    </li>
-<% else %>
-    <li>
-      <%= link_to('Login', new_user_session_path)  %>
-    </li>
-    <li>
-    <%= link_to('Register', new_user_registration_path)  %>
-    </li>
-<% end %>
+    <% if user_signed_in? %>
+        <%= link_to(destroy_user_session_path, :method => :delete, :class => "button small blue") do %>
+            <span>Logout</span>
+        <% end %>
 
-</ul>
+        <%= link_to(edit_profile_path, :class => "button small blue") do %>
+            <span>Edit my profile</span>
+        <% end %>
+
+
+        <%= link_to(edit_user_registration_path, :class => "button small blue") do %>
+            <span>Edit registration</span>
+        <% end %>
+
+
+        <p>Welcome back, <%= current_user.email %></p>
+
+
+
+    <% else %>
+        <%= link_to(new_user_registration_path, :method => :delete, :class => "button small blue") do %>
+            <span>Register</span>
+        <% end %>
+
+        <%= link_to(new_user_session_path, :class => "button small blue") do %>
+            <span>Login</span>
+        <% end %>
+        <p>You are not logged in</p>
+    <% end %>
+
+</div>
