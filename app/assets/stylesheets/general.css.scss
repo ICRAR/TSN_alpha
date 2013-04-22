@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'YanoneKaffeesatzRegular';
-  src: url('./fonts/YanoneKaffeesatz-Regular-webfont.eot');
-  src: url('./fonts/YanoneKaffeesatz-Regular-webfont.eot?#iefix') format('eot'),
-  url('./fonts/YanoneKaffeesatz-Regular-webfont.woff') format('woff'),
-  url('./fonts/YanoneKaffeesatz-Regular-webfont.ttf') format('truetype'),
-  url('./fonts/YanoneKaffeesatz-Regular-webfont.svg#webfonthKXnaAjv') format('svg');
+  src: url('/assets/fonts/YanoneKaffeesatz-Regular-webfont.eot');
+  src: url('/assets/fonts/YanoneKaffeesatz-Regular-webfont.eot?#iefix') format('eot'),
+  url('/assets/fonts/YanoneKaffeesatz-Regular-webfont.woff') format('woff'),
+  url('/assets/fonts/YanoneKaffeesatz-Regular-webfont.ttf') format('truetype'),
+  url('/assets/fonts/YanoneKaffeesatz-Regular-webfont.svg#webfonthKXnaAjv') format('svg');
   font-weight: normal;
   font-style: normal;
 
@@ -12,11 +12,11 @@
 
 @font-face {
   font-family: 'LatoBold';
-  src: url('./fonts/Lato-Bold-webfont.eot');
-  src: url('./fonts/Lato-Bold-webfont.eot?#iefix') format('embedded-opentype'),
-  url('./fonts/Lato-Bold-webfont.woff') format('woff'),
-  url('./fonts/Lato-Bold-webfont.ttf') format('truetype'),
-  url('./fonts/Lato-Bold-webfont.svg#LatoLight') format('svg');
+  src: url('/assets/fonts/Lato-Bold-webfont.eot');
+  src: url('/assets/fonts/Lato-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+  url('/assets/fonts/Lato-Bold-webfont.woff') format('woff'),
+  url('/assets/fonts/Lato-Bold-webfont.ttf') format('truetype'),
+  url('/assets/fonts/Lato-Bold-webfont.svg#LatoLight') format('svg');
   font-weight: normal;
   font-style: normal;
 
@@ -24,11 +24,11 @@
 
 @font-face {
   font-family: 'LatoLight';
-  src: url('./fonts/Lato-Light-webfont.eot');
-  src: url('./fonts/Lato-Light-webfont.eot?#iefix') format('embedded-opentype'),
-  url('./fonts/Lato-Light-webfont.woff') format('woff'),
-  url('./fonts/Lato-Light-webfont.ttf') format('truetype'),
-  url('./fonts/Lato-Light-webfont.svg#LatoLight') format('svg');
+  src: url('/assets/fonts/Lato-Light-webfont.eot');
+  src: url('/assets/fonts/Lato-Light-webfont.eot?#iefix') format('embedded-opentype'),
+  url('/assets/fonts/Lato-Light-webfont.woff') format('woff'),
+  url('/assets/fonts/Lato-Light-webfont.ttf') format('truetype'),
+  url('/assets/fonts/Lato-Light-webfont.svg#LatoLight') format('svg');
   font-weight: normal;
   font-style: normal;
 
@@ -39,7 +39,7 @@
   margin:auto;
 }
 body {
-  background:#000000 url('./images/bodybg.jpg') top center no-repeat;
+  background:#000000 url('/assets/images/bodybg.jpg') top center no-repeat;
   margin:0;
   padding:0;
   font-family: Arial,Helvetica,sans-serif;
@@ -66,7 +66,7 @@ a:hover {color:#97418b;}
 #content-wrap-dashboard a:hover {color:#ad4a8b;}
 #wrapper {width:960px; margin:0 auto;}
 #header {float:left; height:160px; margin-top:20px;}
-#header a:link, #header a:visited {background:url('./images/logo.png') 0 0 no-repeat; display:block; width:170px; height:134px; margin-left:50px; text-indent:-9999px;}
+#header a:link, #header a:visited {background:url('/assets/images/logo.png') 0 0 no-repeat; display:block; width:170px; height:134px; margin-left:50px; text-indent:-9999px;}
 .return a:link {font: 22px/40px 'LatoLight',Arial,sans-serif;}
 
 
@@ -84,41 +84,41 @@ ul#globalnav li.on a:visited {font: 23px/50px 'LatoBold', Arial, sans-serif;}
 ul#globalnav li.on a:hover {font: 23px/50px 'LatoBold', Arial, sans-serif;}
 
 
-ul#nav {background: url("./images/navbg.jpg") repeat-x scroll 0 0 transparent; height:50px; list-style-type:none; margin:30px auto; padding-left:15px; width:856px;font-family: Arial,Helvetica,sans-serif;}
-ul#nav li {display: block; float: left;line-height: 50px; background:url("../images/nav-r.jpg") top right no-repeat; }
-ul#nav li.on {background: url("./images/navbg-on.jpg") repeat-x;display: block;}
+ul#nav {background: url("/assets/images/navbg.jpg") repeat-x scroll 0 0 transparent; height:50px; list-style-type:none; margin:30px auto; padding-left:15px; width:856px;font-family: Arial,Helvetica,sans-serif;}
+ul#nav li {display: block; float: left;line-height: 50px; background:url("/assets/images/nav-r.jpg") top right no-repeat; }
+ul#nav li.on {background: url("/assets/images/navbg-on.jpg") repeat-x;display: block;}
 ul#nav li a {color:#ffffff; font-size:1em;display: block;display:block}
-ul#nav li a:hover {background: url("./images/navbg-on.jpg") repeat-x;}
+ul#nav li a:hover {background: url("/assets/images/navbg-on.jpg") repeat-x;}
 ul#nav a, ul#nav a:link, ul#nav a:visited { color:#ffffff;display: block;font-size: 1em;padding: 0 15px;text-decoration: none;}
-ul#nav li.on a {background: url("./images/subnavon.png") bottom center no-repeat;}
+ul#nav li.on a {background: url("/assets/images/subnavon.png") bottom center no-repeat;}
 
-#content {width:960px; background:url("./images/contentbg.jpg") repeat-x scroll center top #D1D1D1; overflow:hidden;}
-#content-wrap {width:870px; margin: 0 auto; background:url('./images/contenttop.jpg') top center no-repeat;}
+#content {width:960px; background:url("/assets/images/contentbg.jpg") repeat-x scroll center top #D1D1D1; overflow:hidden;}
+#content-wrap {width:870px; margin: 0 auto; background:url('/assets/images/contenttop.jpg') top center no-repeat;}
 #content-wrap-dashboard {width:870px; margin: 20px auto;}
-#content-wrap-news {width:870px; margin:20px 0 auto; padding:40px 45px 20px; background:#e7e7e7 url('../images/homenewsbg.jpg') top repeat-x; border-top:1px solid #cacaca;}
-#content-wrap-home {width:870px; margin: 0 auto; background:url('./images/contenttop2.jpg') top center no-repeat; padding-top:60px;}
+#content-wrap-news {width:870px; margin:20px 0 auto; padding:40px 45px 20px; background:#e7e7e7 url('/assets/images/homenewsbg.jpg') top repeat-x; border-top:1px solid #cacaca;}
+#content-wrap-home {width:870px; margin: 0 auto; background:url('/assets/images/contenttop2.jpg') top center no-repeat; padding-top:60px;}
 #content h2 {font-family: Helvetica, Helvetica Neue, Arial, sans-serif; color:#3a3a3a; margin:0; font-size:1.4em; font-weight:normal;}
 #content h3 {font-family: Helvetica, Helvetica Neue, Arial, sans-serif; color:#3a3a3a; margin:0; font-size:1.1em; font-weight:bold;}
 #content h4 {font-family: Helvetica, Helvetica Neue, Arial, sans-serif; color:#3a3a3a; margin:0; font-size:1.1em; font-weight:normal;}
-#content h3.info-home {padding-left:30px; padding-top:3px; background:url('./images/icon-home.jpg') 0 0 no-repeat;}
-#content h3.info-schools {padding-left:30px; padding-top:3px; background:url('./images/icon-schools.jpg') 0 0 no-repeat;}
-#content h3.info-universities {padding-left:30px; padding-top:3px; background:url('./images/icon-universities.jpg') 0 0 no-repeat;}
-#content h3.info-businesses {padding-left:30px; padding-top:3px; background:url('./images/icon-businesses.jpg') 0 0 no-repeat;}
+#content h3.info-home {padding-left:30px; padding-top:3px; background:url('/assets/images/icon-home.jpg') 0 0 no-repeat;}
+#content h3.info-schools {padding-left:30px; padding-top:3px; background:url('/assets/images/icon-schools.jpg') 0 0 no-repeat;}
+#content h3.info-universities {padding-left:30px; padding-top:3px; background:url('/assets/images/icon-universities.jpg') 0 0 no-repeat;}
+#content h3.info-businesses {padding-left:30px; padding-top:3px; background:url('/assets/images/icon-businesses.jpg') 0 0 no-repeat;}
 #content-inner {padding:25px;}
 #content-inner-account, #content-inner-account-padding {padding:20px;}
 #content-inner-account.no-padding {padding:0px;}
 
-#footer {width:960px; background:#353535 url('./images/footerbg.jpg') top center repeat-x; overflow:hidden; margin-bottom:35px;}
+#footer {width:960px; background:#353535 url('/assets/images/footerbg.jpg') top center repeat-x; overflow:hidden; margin-bottom:35px;}
 #footer-icrar {float:left; padding-bottom:15px;}
 #footer-map {float:right; margin-right:45px; padding-top:15px; margin-top:15px; padding-bottom:45px;}
-#footer-social {float:right; margin-right:45px; background:url('./images/footersocialbg.jpg') top left no-repeat; margin-top:15px; padding-left:45px; padding-top:15px; padding-bottom:45px;}
+#footer-social {float:right; margin-right:45px; background:url('/assets/images/footersocialbg.jpg') top left no-repeat; margin-top:15px; padding-left:45px; padding-top:15px; padding-bottom:45px;}
 #footer a:hover {color:#cccccc;}
 #footer a {color:#828282; text-decoration:none;font-size:0.75em; line-height:1.8em; font-family: Arial,Helvetica,sans-serif; border:0;}
 #footer img {border:0;}
 #footer a.icon {background-position: left center; background-repeat: no-repeat;padding-left: 25px;}
-#footer a.twitter {background-image: url('./images/twitter.gif');}
-#footer a.facebook {background-image: url('./images/facebook.gif');}
-#footer a.rss {background-image: url('./images/rss.gif');}
+#footer a.twitter {background-image: url('/assets/images/twitter.gif');}
+#footer a.facebook {background-image: url('/assets/images/facebook.gif');}
+#footer a.rss {background-image: url('/assets/images/rss.gif');}
 
 .inner-boundary {background-color: #ffffff; background-repeat: repeat-x; border: 1px solid #BBBBBB; margin: -2px 0 0 -2px;overflow:hidden;}
 .inner-boundary-soon {background-color: #ffffff; background-repeat: repeat-x; border: 1px solid #BBBBBB; margin: -2px 0 0 -2px;min-height:232px;}
@@ -126,18 +126,18 @@ ul#nav li.on a {background: url("./images/subnavon.png") bottom center no-repeat
 .inner-boundary-soon .inner-border { border: 1px solid #FEFEFE;}
 .shadowed { border: 1px solid #BBBBBB;}
 
-#content {width:960px; background:url("./images/contentbg.jpg") repeat-x scroll center top #D1D1D1; overflow:hidden;}
-#content-wrap {width:870px; margin: 0 auto; background:url('./images/contenttop.jpg') top center no-repeat;}
+#content {width:960px; background:url("/assets/images/contentbg.jpg") repeat-x scroll center top #D1D1D1; overflow:hidden;}
+#content-wrap {width:870px; margin: 0 auto; background:url('/assets/images/contenttop.jpg') top center no-repeat;}
 #content-wrap-dashboard {width:870px; margin: 20px auto;}
-#content-wrap-news {width:870px; margin:20px 0 auto; padding:40px 45px 20px; background:#e7e7e7 url('./images/homenewsbg.jpg') top repeat-x; border-top:1px solid #cacaca;}
-#content-wrap-home {width:870px; margin: 0 auto; background:url('./images/contenttop2.jpg') top center no-repeat; padding-top:60px;}
+#content-wrap-news {width:870px; margin:20px 0 auto; padding:40px 45px 20px; background:#e7e7e7 url('/assets/images/homenewsbg.jpg') top repeat-x; border-top:1px solid #cacaca;}
+#content-wrap-home {width:870px; margin: 0 auto; background:url('/assets/images/contenttop2.jpg') top center no-repeat; padding-top:60px;}
 #content h2 {font-family: Helvetica, Helvetica Neue, Arial, sans-serif; color:#3a3a3a; margin:0; font-size:1.4em; font-weight:normal;}
 #content h3 {font-family: Helvetica, Helvetica Neue, Arial, sans-serif; color:#3a3a3a; margin:0; font-size:1.1em; font-weight:bold;}
 #content h4 {font-family: Helvetica, Helvetica Neue, Arial, sans-serif; color:#3a3a3a; margin:0; font-size:1.1em; font-weight:normal;}
-#content h3.info-home {padding-left:30px; padding-top:3px; background:url('./images/icon-home.jpg') 0 0 no-repeat;}
-#content h3.info-schools {padding-left:30px; padding-top:3px; background:url('./images/icon-schools.jpg') 0 0 no-repeat;}
-#content h3.info-universities {padding-left:30px; padding-top:3px; background:url('./images/icon-universities.jpg') 0 0 no-repeat;}
-#content h3.info-businesses {padding-left:30px; padding-top:3px; background:url('./images/icon-businesses.jpg') 0 0 no-repeat;}
+#content h3.info-home {padding-left:30px; padding-top:3px; background:url('/assets/images/icon-home.jpg') 0 0 no-repeat;}
+#content h3.info-schools {padding-left:30px; padding-top:3px; background:url('/assets/images/icon-schools.jpg') 0 0 no-repeat;}
+#content h3.info-universities {padding-left:30px; padding-top:3px; background:url('/assets/images/icon-universities.jpg') 0 0 no-repeat;}
+#content h3.info-businesses {padding-left:30px; padding-top:3px; background:url('/assets/images/icon-businesses.jpg') 0 0 no-repeat;}
 #content-inner {padding:25px;}
 #content-inner-account, #content-inner-account-padding {padding:20px;}
 #content-inner-account.no-padding {padding:0px;}
