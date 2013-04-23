@@ -521,7 +521,8 @@ CREATE TABLE alliances (
     ranking integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    credit integer
+    credit integer,
+    "RAC" integer
 );
 
 
@@ -1205,3 +1206,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130319075654');
 INSERT INTO schema_migrations (version) VALUES ('20130322062339');
 
 INSERT INTO schema_migrations (version) VALUES ('20130422034513');
+
+INSERT INTO schema_migrations (version) VALUES ('20130423061116');

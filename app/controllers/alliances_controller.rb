@@ -2,8 +2,10 @@ class AlliancesController < ApplicationController
   # GET /alliances
   # GET /alliances.json
   load_and_authorize_resource
+  helper_method :sort_column, :sort_direction
+
   def index
-    @alliances = Alliance.ranked.includes(:leader).page(params[:page]).per(10)
+    @alliances = Alliance.for_leaderboard.page(params[:page]).per(10).order("\"" + sort_column + "\"" " " + sort_direction)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -139,4 +141,15 @@ class AlliancesController < ApplicationController
       format.js { @alliances }
     end
   end
+
+  private
+
+  def sort_column
+    %w[ranking RAC credit].include?(params[:sort]) ? params[:sort] : "ranking"
+  end
+
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+  end
+
 end

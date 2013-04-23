@@ -1,0 +1,99 @@
+<%content_for(:title_bar) do %>
+    <div id="intro-sml-wrap">
+        <h1 class="fontface">Dashboard</h1>
+    </div>
+    <% @user_page =  'dashboard' %>
+    <%=  render 'layouts/user_nav' %>
+<% end %>
+
+<%content_for(:content) do %>
+
+    <div id="content-wrap">
+
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <p>
+                        <b>First name:</b>
+                        <%= @profile.first_name %>
+                    </p>
+
+                    <p>
+                        <b>Second name:</b>
+                        <%= @profile.second_name %>
+                    </p>
+
+                    <p>
+                        <b>Country:</b>
+                        <%= @profile.country %>
+                    </p>
+                    <p>
+                        <b>Credit:</b>
+                        <%= @profile.general_stats_item.total_credit %>
+                    </p>
+                    <p>
+                        <b>Alliance:</b>
+                        <% if user_signed_in? && current_user.id == @profile.user_id %>
+                            <% if  @profile.alliance %>
+                                <%= link_to(@profile.alliance.name,@profile.alliance) %>  <%= (current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@profile.alliance)) : link_to("Leave", leave_alliances_path) %>
+
+                            <% else %>
+                                You are not part of an alliance yet click <%= link_to 'here', new_alliance_path %> to create one or <%= link_to 'here', alliances_path %> to find an existing alliance to join
+                            <% end %>
+                        <% else %>
+                            <%= @profile.alliance ? link_to(@profile.alliance.name,@profile.alliance) : 'Flying Solo' %>
+                        <% end %>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <p><b>Trophies</b>
+                        <% @profile.trophies.each do |trophy| %>
+                            <%= link_to (image_tag trophy.image.url), trophy %>
+                            <%= link_to trophy.title,  trophy %>
+                        <% end %>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <p><b>Boinc</b>
+            <%
+               boinc = @profile.general_stats_item.boinc_stats_item
+               if boinc == nil
+            %>
+                <% if user_signed_in? && @profile == current_user.profile %>
+                    <%= render 'boinc_forms' %>
+                <% else %>
+                    User not using boinc.
+                <% end %>
+            <% else %>
+                <%= "credit = #{boinc.credit}" %>
+            <% end %>
+
+
+        </p>
+
+        <p><b>Nereus</b>
+            <%
+               nereus = @profile.general_stats_item.nereus_stats_item
+               if nereus == nil
+            %>
+                <% if user_signed_in? && @profile == current_user.profile %>
+                    <%= render 'nereus_form' %>
+                <% else %>
+                    User not using nereus.
+                <% end %>
+            <% else %>
+                <%= "credit = #{nereus.credit}" %>
+            <% end %>
+        </p>
+
+        <div id="chart_container" <%=  boinc ? "data-boinc_id=#{boinc.boinc_id}" : "" %> <%=  nereus ? "data-nereus_id=#{nereus.nereus_id}" : "" %> > </div>
+
+    </div>
+    </div>
+<% end %>

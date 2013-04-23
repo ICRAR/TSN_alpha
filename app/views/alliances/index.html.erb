@@ -1,34 +1,52 @@
-<h1>Listing alliances</h1>
-<%= form_tag(search_alliances_path, :method => "get") do %>
-    <%= label_tag(:search, "Search for:") %>
-    <%= text_field_tag(:search) %>
-    <%= submit_tag("Search") %>
+<%content_for(:title_bar) do %>
+    <div id="intro-sml-wrap">
+        <h1 class="fontface">Alliance Leaderboard</h1>
+    </div>
+    <% @user_page =  'alliance_leaderboard' %>
+    <%=  render 'layouts/user_nav' %>
 <% end %>
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Ranking</th>
-    <th>Credit</th>
-    <th>Leader</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
 
-<% @alliances.each do |alliance| %>
-  <tr>
-    <td><%= alliance.name %></td>
-    <td><%= alliance.ranking %></td>
-    <td><%= alliance.credit %></td>
-    <td><%= link_to alliance.leader.name, alliance.leader %></td>
-    <td><%= link_to 'Show', alliance %></td>
-    <% if user_signed_in? && !current_user.profile.alliance_id %>
-        <td><%= link_to 'Join', join_alliance_path(alliance) %></td>
-    <% end %>
+<%content_for(:content) do %>
+    <div id="content-wrap">
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <%= form_tag(search_alliances_path, :method => "get") do %>
+                        <%= label_tag(:search, "Search for:") %>
+                        <%= text_field_tag(:search) %>
+                        <%= submit_tag("Search") %>
+                    <% end %>
+                    <table>
+                      <tr>
+                        <th>Name</th>
+                          <th><%= sortable "ranking", "Rank"%></th>
+                          <th><%= sortable "credit", "Total Credit" %></th>
+                          <th><%= sortable "RAC", "Average Daily Credit" %></th>
+                        <th>Leader</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                      </tr>
 
-  </tr>
+                    <% @alliances.each do |alliance| %>
+                      <tr>
+                        <td><%= alliance.name %></td>
+                        <td><%= alliance.ranking %></td>
+                        <td><%= alliance.credit %></td>
+                        <td><%= alliance.RAC %></td>
+                        <td><%= link_to alliance.leader.name, alliance.leader %></td>
+                        <td><%= link_to 'Show', alliance %></td>
+                        <% if user_signed_in? && !current_user.profile.alliance_id %>
+                            <td><%= link_to 'Join', join_alliance_path(alliance) %></td>
+                        <% end %>
+
+                      </tr>
+                    <% end %>
+                    </table>
+                    <%= paginate @alliances %>
+                    <%= page_entries_info @alliances %>
+                </div>
+            </div>
+        </div>
+    </div>
 <% end %>
-</table>
-<%= paginate @alliances %>
-<%= page_entries_info @alliances %>
-

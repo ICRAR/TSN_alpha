@@ -1,8 +1,8 @@
 <%content_for(:title_bar) do %>
     <div id="intro-sml-wrap">
-        <h1 class="fontface">Dashboard</h1>
+        <h1 class="fontface"><%= @profile.name %></h1>
     </div>
-    <% @user_page =  'dashboard' %>
+    <% @user_page =  'leaderboard' %>
     <%=  render 'layouts/user_nav' %>
 <% end %>
 
@@ -33,16 +33,7 @@
                     </p>
                     <p>
                       <b>Alliance:</b>
-                      <% if user_signed_in? && current_user.id == @profile.user_id %>
-                          <% if  @profile.alliance %>
-                            <%= link_to(@profile.alliance.name,@profile.alliance) %>  <%= (current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@profile.alliance)) : link_to("Leave", leave_alliances_path) %>
-
-                    <% else %>
-                          You are not part of an alliance yet click <%= link_to 'here', new_alliance_path %> to create one or <%= link_to 'here', alliances_path %> to find an existing alliance to join
-                          <% end %>
-                      <% else %>
                         <%= @profile.alliance ? link_to(@profile.alliance.name,@profile.alliance) : 'Flying Solo' %>
-                      <% end %>
                     </p>
                 </div>
             </div>

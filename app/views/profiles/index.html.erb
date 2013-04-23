@@ -9,38 +9,44 @@
 <%content_for(:content) do %>
     <div id="content-wrap">
         <div class="shadowed">
-            <%= form_tag(search_profiles_path, :method => "get") do %>
-                <%= label_tag(:search, "Search for:") %>
-                <%= text_field_tag(:search) %>
-                <%= submit_tag("Search") %>
-            <% end %>
-            <table>
-              <tr>
-                <th>First name</th>
-                <th>Second name</th>
-                <th>Country</th>
-                <th>Rank</th>
-                <th>Total Credit</th>
-                <th>Alliance</th>
-                <th></th>
-              </tr>
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <%= form_tag(search_profiles_path, :method => "get") do %>
+                        <%= label_tag(:search, "Search for:") %>
+                        <%= text_field_tag(:search) %>
+                        <%= submit_tag("Search") %>
+                    <% end %>
+                    <table>
+                      <tr>
+                        <th>First name</th>
+                        <th>Second name</th>
+                        <th>Country</th>
+                        <th><%= sortable "rank", "Rank"%></th>
+                        <th><%= sortable "credits", "Total Credit" %></th>
+                        <th><%= sortable "rac", "Average Daily Credit" %></th>
+                        <th>Alliance</th>
+                        <th></th>
+                      </tr>
 
-            <% @profiles.each do |profile| %>
-              <tr>
-                <td><%= profile.first_name %></td>
-                <td><%= profile.second_name %></td>
-                <td><%= profile.country %></td>
-                <td><%= profile.rank %></td>
-                <td><%= profile.credits %></td>
-                <td><%= profile.alliance ? link_to(profile.alliance.name,profile.alliance) : 'Flying Solo' %></td>
-                <td><%= link_to 'Show', profile %></td>
-              </tr>
-            <% end %>
-            </table>
-            <%= paginate @profiles %>
-            <%= page_entries_info @profiles %>
+                    <% @profiles.each do |profile| %>
+                      <tr>
+                        <td><%= profile.first_name %></td>
+                        <td><%= profile.second_name %></td>
+                        <td><%= profile.country %></td>
+                        <td><%= profile.rank %></td>
+                        <td><%= profile.credits %></td>
+                        <td><%= profile.rac %></td>
+                        <td><%= profile.alliance ? link_to(profile.alliance.name,profile.alliance) : 'Flying Solo' %></td>
+                        <td><%= link_to 'Show', profile %></td>
+                      </tr>
+                    <% end %>
+                    </table>
+                    <%= paginate @profiles %>
+                    <%= page_entries_info @profiles %>
 
-            <br />
+                    <br />
+                </div>
+            </div>
         </div>
     </div>
 <% end %>

@@ -2,8 +2,9 @@ class ProfilesController < ApplicationController
   # GET /profiles
   # GET /profiles.json
   load_and_authorize_resource
+  helper_method :sort_column, :sort_direction
   def index
-    @profiles = Profile.for_leader_boards.page(params[:page]).per(10)
+    @profiles = Profile.for_leader_boards.page(params[:page]).per(10).order(sort_column + " " + sort_direction)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -25,15 +26,22 @@ class ProfilesController < ApplicationController
       return
     end
 
-    if user_signed_in? && (current_user.profile == @profile && @profile.new_profile_step < 2)
-      if @profile.new_profile_step < 1
-        respond_to do |format|
-          format.html { render :new_profile_step_1}
-          format.json { render json: @profile }
+    if user_signed_in? && (current_user.profile == @profile)
+      if @profile.new_profile_step < 2
+        if @profile.new_profile_step < 1
+          respond_to do |format|
+            format.html { render :new_profile_step_1}
+            format.json { render json: @profile }
+          end
+        else
+          respond_to do |format|
+            format.html { render :new_profile_step_2}
+            format.json { render json: @profile }
+          end
         end
       else
         respond_to do |format|
-          format.html { render :new_profile_step_2}
+          format.html { render :dashboard}
           format.json { render json: @profile }
         end
       end
@@ -188,5 +196,15 @@ class ProfilesController < ApplicationController
       format.html { render :index} # index.html.erb
       format.json { render json: @profiles }
     end
+  end
+
+  private
+
+  def sort_column
+    %w[rank rac credits].include?(params[:sort]) ? params[:sort] : "rank"
+  end
+
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
   end
 end

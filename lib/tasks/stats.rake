@@ -64,7 +64,7 @@ namespace :stats do
         alliances = Alliance.temp_credit
         Upsert.batch(connection,table_name) do |upsert|
           alliances.each do |alliance|
-            upsert.row({:id => alliance.id}, :credit => alliance.temp_credit, :updated_at => Time.now, :created_at => Time.now)
+            upsert.row({:id => alliance.id}, :credit => alliance.temp_credit,:RAC => alliance.temp_rac, :updated_at => Time.now, :created_at => Time.now)
             statsd_batch.gauge("alliance.#{alliance.id}.credit",alliance.temp_credit)
             statsd_batch.gauge("alliance.#{alliance.id}.total_members",alliance.total_members)
           end
