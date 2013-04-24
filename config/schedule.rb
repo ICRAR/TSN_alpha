@@ -22,11 +22,18 @@
 
 set :environment, 'development'
 
-every :hour do
+every '0 * * * *' do
   rake "boinc:update_boinc"
+end
+every '5 * * * *' do
   rake "nereus:update_nereus"
+end
+every '10 * * * *' do
   rake "stats:update_general"
+end
+every '15 * * * *' do
   rake "stats:update_alliances"
+end
+every '20 * * * *' do
   rake "stats:update_trophy"
-
 end
