@@ -4,16 +4,11 @@ namespace :custom do
   task :update_profile => :environment do
 
     print "\n Starting fix \n"
-    profiles = Profile.all
-    profiles.each do |profile|
-      print "profile = #{profile.name} \n"
-        if profile.general_stats_item
-          print "Profile #{profile.id} is good\n"
-        else
-          profile.build_general_stats_item
-          profile.save
-          print "Profile #{profile.id} was updated\n"
-        end
+    stats = GeneralStatsItem.all
+    stats.each do |item|
+      print "profile = #{item.id} \n"
+      item.last_trophy_credit_value = 0
+      item.save
     end
   end
 end

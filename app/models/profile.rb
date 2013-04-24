@@ -8,13 +8,15 @@ class Profile < ActiveRecord::Base
   belongs_to :user
   belongs_to :alliance_leader, :class_name => 'Alliance', :foreign_key => 'alliance_leader_id', inverse_of: :leader
   belongs_to :alliance
-  has_and_belongs_to_many :trophies
+  has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
+  has_many :trophies, :through => :profiles_trophies
   has_one :general_stats_item, :dependent => :destroy, :inverse_of => :profile
   attr_accessible :country, :first_name, :second_name, :as => [:default, :admin]
   attr_accessible :user_id, :alliance_leader_id, :alliance_id, :alliance_join_date, :trophy_ids, :general_stats_item_id, :new_profile_step, as: :admin
 
   scope :for_leader_boards, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").where('general_stats_items.rank IS NOT NULL').includes(:alliance)
   scope :for_trophies, joins(:general_stats_item).select("profiles.*, general_stats_items.last_trophy_credit_value as last_trophy_credit_value, general_stats_items.total_credit as credits, general_stats_items.id as stats_id").where('general_stats_items.total_credit IS NOT NULL')
+
 
   before_create :build_general_stats_item
 
@@ -50,6 +52,12 @@ class Profile < ActiveRecord::Base
 
   def self.for_alliance(alliance_id)
     joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits").where("general_stats_items.rank IS NOT NULL AND profiles.alliance_id = #{alliance_id}").order("rank ASC")
+  end
+
+  rails_admin do
+    configure :block_grid_associations do
+      visible(false)
+    end
   end
 
 end

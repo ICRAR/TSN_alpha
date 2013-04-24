@@ -117,7 +117,7 @@ namespace :stats do
               changed = true
               trophy_index += 1
               #add values to profiles_trophies (trophy_id,profile_id)
-              profiles_trophies_inserts.push("(#{all_trophies[trophy_index].id}, #{profile.id})")
+              profiles_trophies_inserts.push("(#{all_trophies[trophy_index].id}, #{profile.id}, '#{Time.now}', '#{Time.now}')")
               required_for_next = all_trophies[trophy_index+1].try(:credits)
             end
             if changed
@@ -128,9 +128,10 @@ namespace :stats do
         end
         #add new rows to profiles_trophies
         if profiles_trophies_inserts != []
-          sql = "INSERT INTO profiles_trophies (trophy_id , profile_id) VALUES #{profiles_trophies_inserts.join(", ")}"
+          sql = "INSERT INTO profiles_trophies (trophy_id , profile_id, created_at, updated_at) VALUES #{profiles_trophies_inserts.join(", ")}"
           db_conn = ActiveRecord::Base.connection
           db_conn.execute sql
+          print sql
         end
 
       }

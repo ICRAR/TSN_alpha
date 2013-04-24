@@ -175,6 +175,43 @@ CREATE FUNCTION upsert_alliances_sel_id_set_created_at_a_id_a_ranking1386808332(
 
 
 --
+-- Name: upsert_alliances_sel_id_set_rac_a_created_at_a_credit1583318479(integer, integer, character varying, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION upsert_alliances_sel_id_set_rac_a_created_at_a_credit1583318479(id_sel integer, "RAC_set" integer, created_at_set character varying, credit_set integer, id_set integer, updated_at_set character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+          DECLARE
+            first_try INTEGER := 1;
+          BEGIN
+            LOOP
+              -- first try to update the key
+              UPDATE "alliances" SET "RAC" = "RAC_set", "created_at" = CAST("created_at_set" AS timestamp without time zone), "credit" = "credit_set", "id" = "id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+                WHERE "id" = "id_sel";
+              IF found THEN
+                RETURN;
+              END IF;
+              -- not there, so try to insert the key
+              -- if someone else inserts the same key concurrently,
+              -- we could get a unique-key failure
+              BEGIN
+                INSERT INTO "alliances"("RAC", "created_at", "credit", "id", "updated_at") VALUES ("RAC_set", CAST("created_at_set" AS timestamp without time zone), "credit_set", "id_set", CAST("updated_at_set" AS timestamp without time zone));
+                RETURN;
+              EXCEPTION WHEN unique_violation THEN
+                -- seamusabshere 9/20/12 only retry once
+                IF (first_try = 1) THEN
+                  first_try := 0;
+                ELSE
+                  RETURN;
+                END IF;
+                -- Do nothing, and loop to try the UPDATE again.
+              END;
+            END LOOP;
+          END;
+          $$;
+
+
+--
 -- Name: upsert_boinc_stats_items_sel_boinc_id_set_boinc_id_a_466734959(integer, integer, character varying, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -801,7 +838,9 @@ ALTER SEQUENCE profiles_id_seq OWNED BY profiles.id;
 
 CREATE TABLE profiles_trophies (
     trophy_id integer,
-    profile_id integer
+    profile_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -1208,3 +1247,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130322062339');
 INSERT INTO schema_migrations (version) VALUES ('20130422034513');
 
 INSERT INTO schema_migrations (version) VALUES ('20130423061116');
+
+INSERT INTO schema_migrations (version) VALUES ('20130424085100');

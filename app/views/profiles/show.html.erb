@@ -14,13 +14,8 @@
             <div class="inner-boundary">
                 <div id="content-inner">
                     <p>
-                      <b>First name:</b>
-                      <%= @profile.first_name %>
-                    </p>
-
-                    <p>
-                      <b>Second name:</b>
-                      <%= @profile.second_name %>
+                      <b>Name:</b>
+                      <%= @profile.name %>
                     </p>
 
                     <p>
@@ -28,13 +23,21 @@
                       <%= @profile.country %>
                     </p>
                     <p>
-                      <b>Credit:</b>
-                      <%= @profile.general_stats_item.total_credit %>
+                      <b>Total Credit:</b>
+                      <%= number_with_delimiter(@profile.general_stats_item.total_credit) %> cr
                     </p>
+                    <% if @profile.alliance %>
+                        <p>
+                            <b>Proud member of </b>
+                            <%= link_to(@profile.alliance.name,@profile.alliance) %>
+                        </p>
+                    <% end %>
                     <p>
-                      <b>Alliance:</b>
-                        <%= @profile.alliance ? link_to(@profile.alliance.name,@profile.alliance) : 'Flying Solo' %>
+                        <b>Latest Achievement:</b>
+                        <%= link_to (image_tag @profile.trophies.last.image.url), @profile.trophies.last %>
+                        <%= link_to @profile.trophies.last.title,  @profile.trophies.last %>
                     </p>
+
                 </div>
             </div>
         </div>
