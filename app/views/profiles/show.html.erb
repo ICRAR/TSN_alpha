@@ -33,27 +33,26 @@
                         </p>
                     <% end %>
                     <p>
+                        <b>Member Since:</b>
+                        <%= @profile.user.confirmation_sent_at %>
+                    </p>
+
+                    <p>
                         <b>Latest Achievement:</b>
                         <%= link_to (image_tag @profile.trophies.last.image.url), @profile.trophies.last %>
                         <%= link_to @profile.trophies.last.title,  @profile.trophies.last %>
                     </p>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="shadowed">
-            <div class="inner-boundary">
-                <div id="content-inner">
-                    <p><b>Trophies</b>
-                        <% @profile.trophies.each do |trophy| %>
-                           <%= link_to (image_tag trophy.image.url), trophy %>
-                           <%= link_to trophy.title,  trophy %>
+                    <p>
+                        <%= link_to  trophies_profile_path(@profile) do %>
+                            <%= @profile.name %> has been awarded <%= @profile.trophies.length %> <%= "trophy".pluralize(@profile.trophies.length) %>, click here to see them all.
                         <% end %>
                     </p>
+
                 </div>
             </div>
         </div>
+
+
             <p><b>Boinc</b>
               <%
                  boinc = @profile.general_stats_item.boinc_stats_item

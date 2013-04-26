@@ -1,0 +1,40 @@
+<%content_for(:title_bar) do %>
+    <div id="intro-sml-wrap">
+        <h1 class="fontface"><%= @profile.name.titlecase.possessive %> Trophy Cabinet</h1>
+    </div>
+    <% @user_page =  @profile == current_user.profile ? 'my_trophies' : 'leaderboard' %>
+    <%=  render 'layouts/user_nav' %>
+<% end %>
+
+<%content_for(:content) do %>
+
+    <div id="content-wrap">
+
+
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <p>
+                        <% i = 0 %>
+                        <% @profile.trophies.each do |trophy| %>
+                            <% if i==0 %>
+                                <div class="trophy_self">
+                            <% end %>
+                                <div class="trophy">
+                                    <%= link_to (image_tag trophy.image.url), trophy %>
+                                    <b><%= link_to trophy.title.titlecase,  trophy %></b>
+                                </div>
+                            <% if i == 2 %>
+                                </div>
+                                <% i=0 %>
+                            <% else %>
+                                <% i += 1%>
+                            <% end %>
+                        <% end %>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<% end %>

@@ -16,7 +16,7 @@ class ProfilesController < ApplicationController
   # GET /profiles/1.json
   def show
     if params[:id]
-      @profile = Profile.find(params[:id], include: :trophies)
+      @profile = Profile.for_show(params[:id])
     elsif user_signed_in?
       @profile = current_user.profile
       params[:id] = current_user.profile.id
@@ -51,6 +51,16 @@ class ProfilesController < ApplicationController
         format.json { render json: @profile }
       end
     end
+
+  end
+
+  def trophies
+    @profile = Profile.includes(:trophies).find(params[:id])
+    respond_to do |format|
+      format.html # trophies.html.erb
+      format.json { render json: @profile }
+    end
+
 
   end
 

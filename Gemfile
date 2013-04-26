@@ -31,6 +31,8 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem "ckeditor"        #note requries imageMagick for image uploads
 gem "paperclip"
+gem 'linguistics'
+gem "possessive"
 #gem 'will_paginate', '~> 3.0.0'
 gem 'kaminari'
 

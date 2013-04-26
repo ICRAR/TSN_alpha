@@ -14,12 +14,16 @@ TSNAlpha::Application.routes.draw do
     collection do
       get 'search'
     end
+    member do
+      get 'trophies'
+    end
   end
   get "/profile" => "profiles#show",  :as => 'my_profile'
   get "/profile/edit" => "profiles#edit", :as => 'edit_profile'
   post "/profile/update_nereus_id"  => "profiles#update_nereus_id", :as => 'update_nereus_id'
   post "/profile/create_boinc_id"  => "profiles#create_boinc_id", :as => 'create_boinc_id'
   post "/profile/update_boinc_id"  => "profiles#update_boinc_id", :as => 'update_boinc_id'
+
 
 
   resources :alliances do
