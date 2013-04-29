@@ -1,6 +1,24 @@
-<h1>Editing profile</h1>
+<%content_for(:title_bar) do %>
+    <div id="intro-sml-wrap">
+        <h1 class="fontface">Edit My Account</h1>
+    </div>
+    <%=  render 'layouts/user_nav' %>
+<% end %>
+<%content_for(:content) do %>
 
-<%= render 'form' %>
+    <div id="content-wrap">
 
-<%= link_to 'Show', @profile %> |
-<%= link_to 'Back', profiles_path %>
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <h2>Edit my login details</h2>
+                    <%= render 'devise/registrations/edit' %>
+
+                    <h2>Edit my profile details</h2>
+                    <%= render 'form' %>
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>
+

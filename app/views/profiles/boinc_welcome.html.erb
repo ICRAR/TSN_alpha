@@ -1,3 +1,22 @@
-<h2>Welcome to the boinc system.</h2>
-<p>To contribute to our boinc project you must download the software from <%= link_to 'here' "http://boinc.berkeley.edu/download.php" %>.</p>
-<p>When prompted enter <strong><%= APP_CONFIG['boinc_url'] %></strong> and your SkyNet username and password</p>
+<%content_for(:title_bar) do %>
+    <div id="intro-sml-wrap">
+        <h1 class="fontface">Welcome to theSkyNet</h1>
+    </div>
+    <%=  render 'layouts/user_nav' %>
+<% end %>
+<%content_for(:content) do %>
+
+    <div id="content-wrap">
+
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <h2>Welcome to the boinc system.</h2>
+                    <p>To contribute to our boinc project you must download the software from <%= link_to 'here' "http://boinc.berkeley.edu/download.php" %>.</p>
+                    <p>When prompted enter <strong><%= APP_CONFIG['boinc_url'] %></strong> and your SkyNet username and password</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>

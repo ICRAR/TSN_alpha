@@ -10,17 +10,22 @@
       </ul>
     </div>
   <% end %>
-
+    <div class="field">
+        <%= f.label :nickname %>, this name will be used in place of your full name. (optional)<br />
+        <%= f.text_field :nickname %>
+        <%= f.label(:use_full_name, "Display full name on leaderboards.") %>
+        <%= f.check_box(:use_full_name) %>
+    </div>
   <div class="field">
-    <%= f.label :first_name %><br />
+    <%= f.label :first_name %> (optional)<br />
     <%= f.text_field :first_name %>
   </div>
   <div class="field">
-    <%= f.label :second_name %><br />
+    <%= f.label :second_name %> (optional)<br />
     <%= f.text_field :second_name %>
   </div>
   <div class="field">
-    <%= f.label :country %><br />
+    <%= f.label :country %> (optional)<br />
     <%= f.text_field :country %>
   </div>
   <div class="actions">

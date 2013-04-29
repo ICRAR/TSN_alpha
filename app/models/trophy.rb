@@ -6,4 +6,8 @@ class Trophy < ActiveRecord::Base
   validates_presence_of  :desc, :title, :image
 
  #ToDo add a method to add a new trophy to existing users
+
+  def self.next_trophy(cr)
+    tr = Trophy.where("credits >= ?",cr).order("credits ASC").first
+  end
 end

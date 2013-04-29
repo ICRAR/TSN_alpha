@@ -19,6 +19,8 @@
 
 # Learn more: http://github.com/javan/whenever
 # update crontab with whenever -w run from root_dir
+# whenever --set 'environment=production' -w
+
 
 set :environment, 'development'
 

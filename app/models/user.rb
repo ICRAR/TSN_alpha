@@ -3,14 +3,21 @@ class User < ActiveRecord::Base
   # :token_authenticatable, ,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable,
+         :authentication_keys => [:login]
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :as => [:default, :admin]
+  attr_accessible :username, :email, :password, :password_confirmation, :remember_me, :as => [:default, :admin]
   attr_accessible :admin, :mod, as: :admin
   # attr_accessible :title, :body
 
+  #fix to allow login by either email or username/
+  attr_accessor :login
+  attr_accessible :login
 
+  validates :username, :uniqueness => true
+  validates :username, :presence => true
+  validates :email, :uniqueness => true
 
   has_one :profile, :dependent => :destroy, :inverse_of => :user
   before_create :build_profile
@@ -21,5 +28,20 @@ class User < ActiveRecord::Base
   def is_mod?
     return self.mod
   end
+
+  # app/models/user.rb
+
+  def self.find_first_by_auth_conditions(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      where(conditions).where(["lower(username) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+    else
+      where(conditions).first
+    end
+  end
+
+### This is the correct method you override with the code above
+### def self.find_for_database_authentication(warden_conditions)
+### end
 
 end

@@ -4,7 +4,16 @@ class ProfilesController < ApplicationController
   load_and_authorize_resource
   helper_method :sort_column, :sort_direction
   def index
-    @profiles = Profile.for_leader_boards.page(params[:page]).per(10).order(sort_column + " " + sort_direction)
+    page_per = 10
+    if (params[:rank] && !params[:page] )
+      rank = [[params[:rank].to_i,page_per/2+1].max,Profile.for_leader_boards.count].min
+      page_num = (rank-page_per/2) / page_per + 1
+      page_padding = (rank-page_per/2) % page_per-1
+    else
+      page_num = params[:page]
+      page_padding = 0;
+    end
+    @profiles = Profile.for_leader_boards.page(page_num).per(page_per).padding(page_padding).order(sort_column + " " + sort_direction)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -15,43 +24,39 @@ class ProfilesController < ApplicationController
   # GET /profiles/1
   # GET /profiles/1.json
   def show
-    if params[:id]
-      @profile = Profile.for_show(params[:id])
-    elsif user_signed_in?
-      @profile = current_user.profile
-      params[:id] = current_user.profile.id
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @profile }
+    end
+  end
 
+  def dashboard
+    if user_signed_in?
+      @profile = current_user.profile
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'
       return
     end
 
-    if user_signed_in? && (current_user.profile == @profile)
-      if @profile.new_profile_step < 2
-        if @profile.new_profile_step < 1
-          respond_to do |format|
-            format.html { render :new_profile_step_1}
-            format.json { render json: @profile }
-          end
-        else
-          respond_to do |format|
-            format.html { render :new_profile_step_2}
-            format.json { render json: @profile }
-          end
+    if @profile.new_profile_step < 2
+      if @profile.new_profile_step < 1
+        @profile.nickname = @profile.user.username
+        respond_to do |format|
+          format.html { render :new_profile_step_1}
+          format.json { render json: @profile }
         end
       else
         respond_to do |format|
-          format.html { render :dashboard}
+          format.html { render :new_profile_step_2}
           format.json { render json: @profile }
         end
       end
     else
       respond_to do |format|
-        format.html # show.html.erb
+        format.html { render :dashboard}
         format.json { render json: @profile }
       end
     end
-
   end
 
   def trophies
@@ -158,11 +163,9 @@ class ProfilesController < ApplicationController
       @profile = current_user.profile
       #check that password is correct
       if  current_user.valid_password?(params['password'])
-        @profile = current_user.profile
-
         boinc = BoincStatsItem.create_new_account(current_user.email,params['password'])
         if boinc.new_record?
-          redirect_to @profile, alert: boinc.errors.full_messages.to_sentence
+          redirect_to my_profile_path, alert: boinc.errors.full_messages.to_sentence
         else
           @profile.general_stats_item.boinc_stats_item = boinc
           @profile.new_profile_step = [2,@profile.new_profile_step].max
@@ -174,7 +177,7 @@ class ProfilesController < ApplicationController
           end
         end
       else
-        redirect_to @profile, alert: 'Incorrect password.'
+        redirect_to my_profile_path, alert: 'Incorrect password.'
         return
       end
     else
@@ -200,7 +203,7 @@ class ProfilesController < ApplicationController
     end
   end
   def search
-    @profiles = Profile.search_by_name(params['search']).for_leader_boards.page(params[:page]).per(10)
+    @profiles = Kaminari.paginate_array(Profile.for_leader_boards.search(params['search'])).page(params[:page]).per(10)
 
     respond_to do |format|
       format.html { render :index} # index.html.erb

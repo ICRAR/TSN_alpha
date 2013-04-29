@@ -29,7 +29,9 @@
                     </p>
                     <p>
                         <b>Credit:</b>
-                        <%= @profile.general_stats_item.total_credit %>
+                        <%= number_with_delimiter(@profile.general_stats_item.total_credit) %>
+                        <%=  link_to "Show my place in the leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank) %>    <br />
+                        Only <%=  number_with_delimiter(@profile.general_stats_item.credits_to_next_trophy) %>  credits to go until the your next trophy
                     </p>
                     <p>
                         <b>Alliance:</b>

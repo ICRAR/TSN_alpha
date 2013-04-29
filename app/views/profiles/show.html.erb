@@ -25,6 +25,7 @@
                     <p>
                       <b>Total Credit:</b>
                       <%= number_with_delimiter(@profile.general_stats_item.total_credit) %> cr
+                      <%=  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank) %>
                     </p>
                     <% if @profile.alliance %>
                         <p>

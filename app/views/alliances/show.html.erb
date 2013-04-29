@@ -1,49 +1,66 @@
-<p id="notice"><%= notice %></p>
+<%content_for(:title_bar) do %>
+    <div id="intro-sml-wrap">
+        <h1 class="fontface"><%= @alliance.name.titleize %></h1>
+    </div>
+    <% @user_page =  @alliance.members.include?(current_user.profile) ? 'my_alliance' : 'alliance_leaderboard' %>
+    <%=  render 'layouts/user_nav' %>
+<% end %>
+<%content_for(:content) do %>
 
-<p>
-  <b>Name:</b>
-  <%= @alliance.name %>
-</p>
-<p>
-  <b>Leader:</b>
-  <%= link_to @alliance.leader.name, @alliance.leader %>
-</p>
+    <div id="content-wrap">
 
-<p>
-  <b>Ranking:</b>
-  <%= @alliance.ranking %>
-</p>
-<p>
-  <b>Total Members:</b>
-  <%= @alliance.members.size %>
-</p>
-<p>
-  <b>Total Credit:</b>
-  <%= @alliance.credit %>
-</p>
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <p>
+                      <b>Name:</b>
+                      <%= @alliance.name.titleize %>
+                    </p>
+                    <p>
+                      <b>Leader:</b>
+                      <%= link_to @alliance.leader.name, @alliance.leader %>
+                    </p>
 
-<p>
-  <b>Members:</b>
-</p>
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Credit</th>
-    <th>Alliance Rank</th>
-    <th>Overall Rank</th>
+                    <p>
+                      <b>Ranking:</b>
+                      <%= @alliance.ranking %>
+                    </p>
+                    <p>
+                      <b>Total Members:</b>
+                      <%= @alliance.members.size %>
+                    </p>
+                    <p>
+                      <b>Total Credit:</b>
+                      <%= @alliance.credit %>
+                    </p>
 
-  </tr>
-  <% rank = 1 %>
-  <% @members.each do |member| %>
-      <tr>
-        <td><%= link_to member.name, member %></td>
-        <td><%= member.credits %></td>
-        <td><%= rank %></td>
-        <td><%= member.rank %></td>
-        <% rank +=1 %>
-      </tr>
-  <% end %>
-</table>
-<div id="alliance_graph"></div>
-<%= link_to('Manage |', edit_alliance_path(@alliance)) if  (user_signed_in? && current_user.profile.alliance_leader == @alliance) %>
-<%= link_to 'Back', alliances_path %>
+                    <p>
+                      <b>Members:</b>
+                    </p>
+                    <table>
+                      <tr>
+                        <th>Name</th>
+                        <th>Credit</th>
+                        <th>Alliance Rank</th>
+                        <th>Overall Rank</th>
+
+                      </tr>
+                      <% rank = 1 %>
+                      <% @members.each do |member| %>
+                          <tr>
+                            <td><%= link_to member.name, member %></td>
+                            <td><%= member.credits %></td>
+                            <td><%= rank %></td>
+                            <td><%= member.rank %></td>
+                            <% rank +=1 %>
+                          </tr>
+                      <% end %>
+                    </table>
+                    <div id="alliance_graph"></div>
+                    <%= link_to('Manage my alliance', edit_alliance_path(@alliance)) if  (user_signed_in? && current_user.profile.alliance_leader == @alliance) %>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>

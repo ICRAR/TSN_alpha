@@ -30,7 +30,7 @@
 
                     <% @alliances.each do |alliance| %>
                       <tr>
-                        <td><%= alliance.name %></td>
+                        <td><%= alliance.name.titleize %></td>
                         <td><%= alliance.ranking %></td>
                         <td><%= alliance.credit %></td>
                         <td><%= alliance.RAC %></td>

@@ -9,5 +9,8 @@ class GeneralStatsItem < ActiveRecord::Base
   has_one :nereus_stats_item
   belongs_to :profile
 
-
+  def credits_to_next_trophy
+    tr = Trophy.next_trophy(total_credit)
+    return tr.credits - total_credit
+  end
 end

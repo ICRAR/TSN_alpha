@@ -8,4 +8,7 @@
 
     <li <%=  'class=on' if (@user_page == 'leaderboard') %>><%= link_to('Leaderboards', profiles_path)  %></li>
     <li <%=  'class=on' if (@user_page == 'alliance_leaderboard') %>><%= link_to('Alliances Leaderboards', alliances_path)  %></li>
+    <% if  current_user.profile.alliance %>
+        <li <%=  'class=on' if (@user_page == 'my_alliance') %>><%= link_to('My Alliances', current_user.profile.alliance)  %></li>
+    <% end %>
 </ul>

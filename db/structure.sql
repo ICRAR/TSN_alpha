@@ -809,7 +809,9 @@ CREATE TABLE profiles (
     alliance_id integer,
     alliance_leader_id integer,
     alliance_join_date timestamp without time zone,
-    new_profile_step integer DEFAULT 0 NOT NULL
+    new_profile_step integer DEFAULT 0 NOT NULL,
+    nickname character varying(255),
+    use_full_name boolean DEFAULT true
 );
 
 
@@ -837,11 +839,31 @@ ALTER SEQUENCE profiles_id_seq OWNED BY profiles.id;
 --
 
 CREATE TABLE profiles_trophies (
+    id integer NOT NULL,
     trophy_id integer,
     profile_id integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
+
+
+--
+-- Name: profiles_trophies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE profiles_trophies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: profiles_trophies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE profiles_trophies_id_seq OWNED BY profiles_trophies.id;
 
 
 --
@@ -949,7 +971,8 @@ CREATE TABLE users (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     admin boolean DEFAULT false NOT NULL,
-    mod boolean DEFAULT false NOT NULL
+    mod boolean DEFAULT false NOT NULL,
+    username character varying(255)
 );
 
 
@@ -1026,6 +1049,13 @@ ALTER TABLE ONLY pages ALTER COLUMN id SET DEFAULT nextval('pages_id_seq'::regcl
 --
 
 ALTER TABLE ONLY profiles ALTER COLUMN id SET DEFAULT nextval('profiles_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY profiles_trophies ALTER COLUMN id SET DEFAULT nextval('profiles_trophies_id_seq'::regclass);
 
 
 --
@@ -1114,6 +1144,14 @@ ALTER TABLE ONLY profiles
 
 
 --
+-- Name: profiles_trophies_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY profiles_trophies
+    ADD CONSTRAINT profiles_trophies_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: rails_admin_histories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1194,6 +1232,13 @@ CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (re
 
 
 --
+-- Name: index_users_on_username; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_users_on_username ON users USING btree (username);
+
+
+--
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1249,3 +1294,7 @@ INSERT INTO schema_migrations (version) VALUES ('20130422034513');
 INSERT INTO schema_migrations (version) VALUES ('20130423061116');
 
 INSERT INTO schema_migrations (version) VALUES ('20130424085100');
+
+INSERT INTO schema_migrations (version) VALUES ('20130426053056');
+
+INSERT INTO schema_migrations (version) VALUES ('20130426055148');

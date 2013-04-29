@@ -11,7 +11,7 @@
         <div class="shadowed">
             <div class="inner-boundary">
                 <div id="content-inner">
-                    <table>
+                    <table id="leaderboard">
                       <tr>
                         <th>Name</th>
                         <th>Country</th>
@@ -23,7 +23,7 @@
                       </tr>
 
                     <% @profiles.each do |profile| %>
-                      <tr>
+                      <tr <%= 'class=selected' if profile.rank == params[:rank] %> >
                         <td><%= profile.name %></td>
                         <td><%= profile.country %></td>
                         <td><%= profile.rank %></td>
