@@ -24,6 +24,7 @@ group :assets do
   gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
+  gem "asset_sync"
 end
 
 #general use gems
@@ -31,6 +32,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem "ckeditor"        #note requries imageMagick for image uploads
 gem "paperclip"
+gem 'aws-sdk', '~> 1.5.7'
 gem 'linguistics'
 gem "possessive"
 #gem 'will_paginate', '~> 3.0.0'

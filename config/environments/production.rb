@@ -9,7 +9,7 @@ TSNAlpha::Application.configure do
   config.action_controller.perform_caching = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  config.serve_static_assets = true
+  config.serve_static_assets = false
 
   # Compress JavaScripts and CSS
   config.assets.compress = true
@@ -65,10 +65,26 @@ TSNAlpha::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
+  config.assets.initialize_on_precompile = true
+
   config.action_mailer.default_url_options = { :host => APP_CONFIG['site_host'] }
   config.action_mailer.delivery_method = :smtp
 
 
   $statsd = Statsd.new 'localhost', 8125
   $statsd.namespace = 'TSN_dev'
+
+  config.paperclip_defaults = {
+      :storage => :s3,
+      :s3_credentials => {
+          :bucket => APP_CONFIG['AWS_BUCKET'],
+          :access_key_id => APP_CONFIG['AWS_ACCESS_KEY_ID'],
+          :secret_access_key => APP_CONFIG['AWS_SECRET_ACCESS_KEY'],
+      },
+      :url => ':s3_domain_url',
+      :path => '/:class/:attachment/:id_partition/:style/:filename',
+  }
+  config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
+  config.assets.prefix = "/assets"
+
 end
