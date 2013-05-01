@@ -39,6 +39,9 @@ TSNAlpha::Application.routes.draw do
 
   resources :trophies, :only => [:show]
 
+  get "/check_auth" => "application#check_auth"
+  post "/check_auth" => "application#check_auth"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

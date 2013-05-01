@@ -44,5 +44,5 @@ TSNAlpha::Application.configure do
 
 
   #config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
-  config.assets.prefix = "/assets"
+  config.assets.prefix = "/assets_dev"
 end
