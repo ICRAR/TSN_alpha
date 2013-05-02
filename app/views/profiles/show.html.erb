@@ -56,42 +56,5 @@
                 </div>
             </div>
         </div>
-
-
-            <p><b>Boinc</b>
-              <%
-                 boinc = @profile.general_stats_item.boinc_stats_item
-                 if boinc == nil
-              %>
-                    <% if user_signed_in? && @profile == current_user.profile %>
-                      <%= render 'boinc_forms' %>
-                    <% else %>
-                        User not using boinc.
-                    <% end %>
-              <% else %>
-                <%= "credit = #{boinc.credit}" %>
-              <% end %>
-
-
-            </p>
-
-            <p><b>Nereus</b>
-              <%
-                 nereus = @profile.general_stats_item.nereus_stats_item
-                 if nereus == nil
-              %>
-                  <% if user_signed_in? && @profile == current_user.profile %>
-                      <%= render 'nereus_form' %>
-                <% else %>
-                    User not using nereus.
-                <% end %>
-            <% else %>
-                <%= "credit = #{nereus.credit}" %>
-            <% end %>
-            </p>
-
-            <div id="chart_container" <%=  boinc ? "data-boinc_id=#{boinc.boinc_id}" : "" %> <%=  nereus ? "data-nereus_id=#{nereus.nereus_id}" : "" %> > </div>
-
-        </div>
     </div>
 <% end %>
