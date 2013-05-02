@@ -40,6 +40,9 @@ class User < ActiveRecord::Base
     end
   end
 
+  def username_forum
+    username ? username : email
+  end
 ### This is the correct method you override with the code above
 ### def self.find_for_database_authentication(warden_conditions)
 ### end

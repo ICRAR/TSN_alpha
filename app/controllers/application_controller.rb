@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   #simple json check authentication for current user for phpbb integration
   def check_auth
     if current_user
-      return_data = {:username => current_user.username,
+      return_data = {:username => current_user.username_forum,
                      :email => current_user.email,
                      :admin => current_user.is_admin?,
                      :authenticated => true
@@ -25,5 +25,6 @@ class ApplicationController < ActionController::Base
     logger.debug return_data
 
     render json: return_data
+    return
   end
 end

@@ -11,4 +11,5 @@
     <% if  current_user.profile.alliance %>
         <li <%=  'class=on' if (@user_page == 'my_alliance') %>><%= link_to('My Alliances', current_user.profile.alliance)  %></li>
     <% end %>
+    <li><%= link_to('Forum', APP_CONFIG['forum_url'])  %></li>
 </ul>
