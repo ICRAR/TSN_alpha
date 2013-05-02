@@ -40,8 +40,12 @@
 
                     <p>
                         <b>Latest Achievement:</b>
-                        <%= link_to (image_tag @profile.trophies.last.image.url), @profile.trophies.last %>
-                        <%= link_to @profile.trophies.last.title,  @profile.trophies.last %>
+                        <% if @profile.trophies.empty? %>
+                            <%= @profile.name %> hasn't won any trophies yet.
+                        <% else %>
+                            <%= link_to (image_tag @profile.trophies.last.image.url), @profile.trophies.last %>
+                            <%= link_to @profile.trophies.last.title,  @profile.trophies.last %>
+                        <% end %>
                     </p>
                     <p>
                         <%= link_to  trophies_profile_path(@profile) do %>
