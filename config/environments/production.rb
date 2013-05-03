@@ -74,19 +74,7 @@ TSNAlpha::Application.configure do
   $statsd = Statsd.new 'localhost', 8125
   $statsd.namespace = 'TSN_dev'
 
-  config.paperclip_defaults = {
-      :storage => :s3,
-      :s3_credentials => {
-          :bucket => APP_CONFIG['AWS_BUCKET'],
-          :access_key_id => APP_CONFIG['AWS_ACCESS_KEY_ID'],
-          :secret_access_key => APP_CONFIG['AWS_SECRET_ACCESS_KEY'],
-      },
-      :url => ':s3_alias_url',
-      :s3_host_alias => APP_CONFIG['AWS_CDN_domain'],
-      #:path => '/:class/:attachment/:id_partition/:style/:filename',
-      :s3_headers => { 'Expires' => 1.day.from_now.httpdate },
-      :path => '/:class/:id_:timestamp.:style.:extension'
-  }
+
   config.action_controller.asset_host = "//#{APP_CONFIG['AWS_CDN_domain']}"
   #config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
   config.assets.prefix = "/assets"

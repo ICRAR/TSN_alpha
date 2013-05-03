@@ -5,7 +5,10 @@ TSN = this.TSN
 TSN.profiles = new Object;
 
 
-TSN.profiles.show = () ->
+TSN.profiles.show = () ->  profile_show_graphs()
+TSN.profiles.dashboard = () ->  profile_show_graphs()
+
+profile_show_graphs = () ->
   id = $(document.body).data("id")
 
   boinc_id = $("#chart_container").data("boinc_id")

@@ -53,6 +53,10 @@
                         <% end %>
                     </p>
 
+                    <% if @profile.general_stats_item.boinc_stats_item != nil %>
+                    <div id="chart_container" <%=  "data-boinc_id=#{ @profile.general_stats_item.boinc_stats_item.boinc_id}" %>> </div>
+                    <% end %>
+
                 </div>
             </div>
         </div>
