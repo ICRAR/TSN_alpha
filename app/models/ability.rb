@@ -35,6 +35,7 @@ class Ability
    #defult permissions for all users
    can :read, :all
    can :search, :all
+   can :trophies, Profile
    cannot :join, Alliance
    cannot :leave, Alliance
 

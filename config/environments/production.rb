@@ -81,10 +81,12 @@ TSNAlpha::Application.configure do
           :access_key_id => APP_CONFIG['AWS_ACCESS_KEY_ID'],
           :secret_access_key => APP_CONFIG['AWS_SECRET_ACCESS_KEY'],
       },
-      :url => ':s3_domain_url',
+      :url => ':s3_alias_url',
+      :s3_host_alias => APP_CONFIG['AWS_CDN_domain'],
       :path => '/:class/:attachment/:id_partition/:style/:filename',
   }
-  config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
+  config.action_controller.asset_host = "//#{APP_CONFIG['AWS_CDN_domain']}"
+  #config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
   config.assets.prefix = "/assets"
-
+  construction
 end

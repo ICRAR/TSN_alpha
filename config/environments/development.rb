@@ -42,7 +42,6 @@ TSNAlpha::Application.configure do
   $statsd = Statsd.new 'localhost', 8125
   $statsd.namespace = 'TSN_dev'
 
-
   #config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
   config.assets.prefix = "/assets_dev"
 end

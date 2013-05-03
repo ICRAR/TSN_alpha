@@ -1,5 +1,5 @@
 class News < ActiveRecord::Base
-  attr_accessible :long, :short, :title, :published, :published_time
+  attr_accessible :long, :short, :title, :published, :published_time, as: :admin
 
   def publish
       self.published = true
@@ -14,6 +14,8 @@ class News < ActiveRecord::Base
 
     field :title
     field :short
+    field :published
+    field :published_time
     field :long, :text do
       ckeditor true
     end

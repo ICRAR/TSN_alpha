@@ -15,7 +15,7 @@ class Profile < ActiveRecord::Base
     Profile.allows_full_name.search_by_full_name(str) + Profile.allows_full_name!.search_by_nickname_only(str)
   end
   belongs_to :user
-  belongs_to :alliance_leader, :class_name => 'Alliance', :foreign_key => 'alliance_leader_id', inverse_of: :leader
+  belongs_to :alliance_leader, :class_name => 'Alliance', inverse_of: :leader
   belongs_to :alliance
   has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
   has_many :trophies, :through => :profiles_trophies

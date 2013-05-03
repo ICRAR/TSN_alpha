@@ -2,7 +2,7 @@
     <div id="intro-sml-wrap">
         <h1 class="fontface"><%= @profile.name.titlecase.possessive %> Trophy Cabinet</h1>
     </div>
-    <% @user_page =  @profile == current_user.profile ? 'my_trophies' : 'leaderboard' %>
+    <% @user_page =  (user_signed_in? && @profile == current_user.profile) ? 'my_trophies' : 'leaderboard' %>
     <%=  render 'layouts/user_nav' %>
 <% end %>
 
