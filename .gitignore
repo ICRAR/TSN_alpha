@@ -5,25 +5,29 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 # Ignore bundler config
-/.bundle
+.bundle
 
 # Ignore the default SQLite database.
-/db/*.sqlite3
+db/*.sqlite3
 
 # Ignore all logfiles and tempfiles.
-/log/*.log
-/tmp
+log/*.log
+tmp
 
 #Hide config file (contains plain text passwords)
-/config/database.yml
-/config/custom_config.yml
+config/database.yml
+config/custom_config.yml
 
 # Ignore image upload files
-/public/ckeditor_assets/*
-/public/system/*
+public/ckeditor_assets/*
+public/system/*
 
 #IDE files
-/.idea
+.idea
 
 #vendor files
-/vendor*
+vendor*
+
+#ignore asset files but not the manifests files
+public/assets/*
+!public/assets/manifest.yml
