@@ -21,7 +21,16 @@ class AlliancesController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @alliance }
+      format.json {
+        result = @alliance.for_json
+        result[:num_members] = @members.count
+        result[:members] = Array.new
+        @members.each do |member|
+          result[:members] << member.for_json_basic
+        end
+
+        render json: result
+        }
     end
   end
 

@@ -471,6 +471,80 @@ CREATE FUNCTION upsert_general_stats_items_sel_id_set_created_at_a_id4172225045(
 
 
 --
+-- Name: upsert_nereus_stats_items_sel_nereus_id_set_active_a_145823217(integer, integer, character varying, integer, integer, integer, integer, integer, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_145823217(nereus_id_sel integer, active_set integer, created_at_set character varying, credit_set integer, mips_now_set integer, mips_today_set integer, monthly_network_usage_set integer, nereus_id_set integer, online_now_set integer, online_today_set integer, updated_at_set character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+          DECLARE
+            first_try INTEGER := 1;
+          BEGIN
+            LOOP
+              -- first try to update the key
+              UPDATE "nereus_stats_items" SET "active" = "active_set", "created_at" = CAST("created_at_set" AS timestamp without time zone), "credit" = "credit_set", "mips_now" = "mips_now_set", "mips_today" = "mips_today_set", "monthly_network_usage" = "monthly_network_usage_set", "nereus_id" = "nereus_id_set", "online_now" = "online_now_set", "online_today" = "online_today_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+                WHERE "nereus_id" = "nereus_id_sel";
+              IF found THEN
+                RETURN;
+              END IF;
+              -- not there, so try to insert the key
+              -- if someone else inserts the same key concurrently,
+              -- we could get a unique-key failure
+              BEGIN
+                INSERT INTO "nereus_stats_items"("active", "created_at", "credit", "mips_now", "mips_today", "monthly_network_usage", "nereus_id", "online_now", "online_today", "updated_at") VALUES ("active_set", CAST("created_at_set" AS timestamp without time zone), "credit_set", "mips_now_set", "mips_today_set", "monthly_network_usage_set", "nereus_id_set", "online_now_set", "online_today_set", CAST("updated_at_set" AS timestamp without time zone));
+                RETURN;
+              EXCEPTION WHEN unique_violation THEN
+                -- seamusabshere 9/20/12 only retry once
+                IF (first_try = 1) THEN
+                  first_try := 0;
+                ELSE
+                  RETURN;
+                END IF;
+                -- Do nothing, and loop to try the UPDATE again.
+              END;
+            END LOOP;
+          END;
+          $$;
+
+
+--
+-- Name: upsert_nereus_stats_items_sel_nereus_id_set_active_a_2167893291(integer, integer, character varying, integer, integer, integer, integer, integer, integer, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_2167893291(nereus_id_sel integer, active_set integer, created_at_set character varying, credit_set integer, daily_credit_set integer, mips_now_set integer, mips_today_set integer, monthly_network_usage_set integer, nereus_id_set integer, online_now_set integer, online_today_set integer, updated_at_set character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+          DECLARE
+            first_try INTEGER := 1;
+          BEGIN
+            LOOP
+              -- first try to update the key
+              UPDATE "nereus_stats_items" SET "active" = "active_set", "created_at" = CAST("created_at_set" AS timestamp without time zone), "credit" = "credit_set", "daily_credit" = "daily_credit_set", "mips_now" = "mips_now_set", "mips_today" = "mips_today_set", "monthly_network_usage" = "monthly_network_usage_set", "nereus_id" = "nereus_id_set", "online_now" = "online_now_set", "online_today" = "online_today_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+                WHERE "nereus_id" = "nereus_id_sel";
+              IF found THEN
+                RETURN;
+              END IF;
+              -- not there, so try to insert the key
+              -- if someone else inserts the same key concurrently,
+              -- we could get a unique-key failure
+              BEGIN
+                INSERT INTO "nereus_stats_items"("active", "created_at", "credit", "daily_credit", "mips_now", "mips_today", "monthly_network_usage", "nereus_id", "online_now", "online_today", "updated_at") VALUES ("active_set", CAST("created_at_set" AS timestamp without time zone), "credit_set", "daily_credit_set", "mips_now_set", "mips_today_set", "monthly_network_usage_set", "nereus_id_set", "online_now_set", "online_today_set", CAST("updated_at_set" AS timestamp without time zone));
+                RETURN;
+              EXCEPTION WHEN unique_violation THEN
+                -- seamusabshere 9/20/12 only retry once
+                IF (first_try = 1) THEN
+                  first_try := 0;
+                ELSE
+                  RETURN;
+                END IF;
+                -- Do nothing, and loop to try the UPDATE again.
+              END;
+            END LOOP;
+          END;
+          $$;
+
+
+--
 -- Name: upsert_nereus_stats_items_sel_nereus_id_set_created_a4012556711(integer, character varying, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -656,6 +730,178 @@ ALTER SEQUENCE ckeditor_assets_id_seq OWNED BY ckeditor_assets.id;
 
 
 --
+-- Name: engage_comments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE engage_comments (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    topic_id integer NOT NULL,
+    body text NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: engage_comments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE engage_comments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: engage_comments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE engage_comments_id_seq OWNED BY engage_comments.id;
+
+
+--
+-- Name: engage_followings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE engage_followings (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    topic_id integer NOT NULL,
+    token character varying(255) DEFAULT 0 NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: engage_followings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE engage_followings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: engage_followings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE engage_followings_id_seq OWNED BY engage_followings.id;
+
+
+--
+-- Name: engage_topics; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE engage_topics (
+    id integer NOT NULL,
+    title character varying(255) NOT NULL,
+    message text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    style character varying(16) DEFAULT 'question'::character varying NOT NULL,
+    user_id integer NOT NULL,
+    string character varying(255),
+    votes_count integer DEFAULT 0 NOT NULL,
+    status character varying(16) DEFAULT 'pending'::character varying NOT NULL,
+    comments_count integer DEFAULT 0 NOT NULL,
+    followers_count integer DEFAULT 0 NOT NULL,
+    private boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: engage_topics_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE engage_topics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: engage_topics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE engage_topics_id_seq OWNED BY engage_topics.id;
+
+
+--
+-- Name: engage_user_profiles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE engage_user_profiles (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    admin boolean DEFAULT false NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    username character varying(255),
+    email character varying(255)
+);
+
+
+--
+-- Name: engage_user_profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE engage_user_profiles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: engage_user_profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE engage_user_profiles_id_seq OWNED BY engage_user_profiles.id;
+
+
+--
+-- Name: engage_votes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE engage_votes (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    topic_id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: engage_votes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE engage_votes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: engage_votes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE engage_votes_id_seq OWNED BY engage_votes.id;
+
+
+--
 -- Name: general_stats_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -697,12 +943,20 @@ ALTER SEQUENCE general_stats_items_id_seq OWNED BY general_stats_items.id;
 CREATE TABLE nereus_stats_items (
     id integer NOT NULL,
     nereus_id integer,
-    credit integer,
-    daily_credit integer,
-    rank integer,
+    credit integer DEFAULT 0,
+    daily_credit integer DEFAULT 0,
+    rank integer DEFAULT 0,
     general_stats_item_id integer,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    network_limit integer DEFAULT 0,
+    monthly_network_usage bigint DEFAULT 0,
+    paused integer DEFAULT 0,
+    active integer,
+    online_today integer,
+    online_now integer,
+    mips_now integer,
+    mips_today integer
 );
 
 
@@ -1020,6 +1274,41 @@ ALTER TABLE ONLY ckeditor_assets ALTER COLUMN id SET DEFAULT nextval('ckeditor_a
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY engage_comments ALTER COLUMN id SET DEFAULT nextval('engage_comments_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY engage_followings ALTER COLUMN id SET DEFAULT nextval('engage_followings_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY engage_topics ALTER COLUMN id SET DEFAULT nextval('engage_topics_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY engage_user_profiles ALTER COLUMN id SET DEFAULT nextval('engage_user_profiles_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY engage_votes ALTER COLUMN id SET DEFAULT nextval('engage_votes_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY general_stats_items ALTER COLUMN id SET DEFAULT nextval('general_stats_items_id_seq'::regclass);
 
 
@@ -1101,6 +1390,46 @@ ALTER TABLE ONLY boinc_stats_items
 
 ALTER TABLE ONLY ckeditor_assets
     ADD CONSTRAINT ckeditor_assets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: engage_comments_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY engage_comments
+    ADD CONSTRAINT engage_comments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: engage_followings_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY engage_followings
+    ADD CONSTRAINT engage_followings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: engage_topics_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY engage_topics
+    ADD CONSTRAINT engage_topics_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: engage_user_profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY engage_user_profiles
+    ADD CONSTRAINT engage_user_profiles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: engage_votes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY engage_votes
+    ADD CONSTRAINT engage_votes_pkey PRIMARY KEY (id);
 
 
 --
@@ -1187,6 +1516,83 @@ CREATE INDEX idx_ckeditor_assetable ON ckeditor_assets USING btree (assetable_ty
 --
 
 CREATE INDEX idx_ckeditor_assetable_type ON ckeditor_assets USING btree (assetable_type, type, assetable_id);
+
+
+--
+-- Name: index_engage_followings_on_user_id_and_topic_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_engage_followings_on_user_id_and_topic_id ON engage_followings USING btree (user_id, topic_id);
+
+
+--
+-- Name: index_engage_topics_on_comments_count; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_topics_on_comments_count ON engage_topics USING btree (comments_count);
+
+
+--
+-- Name: index_engage_topics_on_followers_count; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_topics_on_followers_count ON engage_topics USING btree (followers_count);
+
+
+--
+-- Name: index_engage_topics_on_private; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_topics_on_private ON engage_topics USING btree (private);
+
+
+--
+-- Name: index_engage_topics_on_status; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_topics_on_status ON engage_topics USING btree (status);
+
+
+--
+-- Name: index_engage_topics_on_style; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_topics_on_style ON engage_topics USING btree (style);
+
+
+--
+-- Name: index_engage_topics_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_topics_on_user_id ON engage_topics USING btree (user_id);
+
+
+--
+-- Name: index_engage_topics_on_votes_count; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_topics_on_votes_count ON engage_topics USING btree (votes_count);
+
+
+--
+-- Name: index_engage_user_profiles_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_user_profiles_on_user_id ON engage_user_profiles USING btree (user_id);
+
+
+--
+-- Name: index_engage_votes_on_topic_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_votes_on_topic_id ON engage_votes USING btree (topic_id);
+
+
+--
+-- Name: index_engage_votes_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_engage_votes_on_user_id ON engage_votes USING btree (user_id);
 
 
 --
@@ -1298,3 +1704,15 @@ INSERT INTO schema_migrations (version) VALUES ('20130424085100');
 INSERT INTO schema_migrations (version) VALUES ('20130426053056');
 
 INSERT INTO schema_migrations (version) VALUES ('20130426055148');
+
+INSERT INTO schema_migrations (version) VALUES ('20130430021932');
+
+INSERT INTO schema_migrations (version) VALUES ('20130430021933');
+
+INSERT INTO schema_migrations (version) VALUES ('20130430021934');
+
+INSERT INTO schema_migrations (version) VALUES ('20130430021935');
+
+INSERT INTO schema_migrations (version) VALUES ('20130430021936');
+
+INSERT INTO schema_migrations (version) VALUES ('20130506053429');

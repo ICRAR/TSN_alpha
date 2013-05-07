@@ -79,22 +79,9 @@
 
         </p>
 
-        <p><b>Nereus</b>
-            <%
-               nereus = @profile.general_stats_item.nereus_stats_item
-               if nereus == nil
-            %>
-                <% if user_signed_in? && @profile == current_user.profile %>
-                    <%= render 'nereus_form' %>
-                <% else %>
-                    User not using nereus.
-                <% end %>
-            <% else %>
-                <%= "credit = #{nereus.credit}" %>
-            <% end %>
-        </p>
+        <%= render 'nereus_dashboard' %>
 
-        <div id="chart_container" <%=  boinc ? "data-boinc_id=#{boinc.boinc_id}" : "" %> <%=  nereus ? "data-nereus_id=#{nereus.nereus_id}" : "" %> > </div>
+        <div id="chart_container" <%=  boinc ? "data-boinc_id=#{boinc.boinc_id}" : "" %> <%=   @profile.general_stats_item.nereus_stats_item ? "data-nereus_id=#{@profile.general_stats_item.nereus_stats_item.nereus_id}" : "" %> > </div>
 
     </div>
     </div>

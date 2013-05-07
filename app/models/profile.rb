@@ -77,13 +77,23 @@ class Profile < ActiveRecord::Base
   end
 
   def self.for_alliance(alliance_id)
-    joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits").where("general_stats_items.rank IS NOT NULL AND profiles.alliance_id = #{alliance_id}").order("rank ASC")
+    joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits").where("profiles.alliance_id = #{alliance_id}").order("rank ASC")
   end
 
   rails_admin do
     configure :block_grid_associations do
       visible(false)
     end
+  end
+
+  def for_json_basic
+    result = Hash.new
+    result[:id] = id
+    result[:name] = self.name
+    result[:credit] = general_stats_item.total_credit
+    result[:rank] = general_stats_item.rank
+    result[:alliance_id] = alliance_id
+    return  result
   end
 
 end

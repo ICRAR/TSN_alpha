@@ -1,0 +1,49 @@
+<div id=""nereus-dashboard>
+    <p><b>Nereus</b> <br />
+        <%
+           nereus = @profile.general_stats_item.nereus_stats_item
+           if nereus == nil
+        %>
+            <% if user_signed_in? && @profile == current_user.profile %>
+                <%= render 'nereus_form' %>
+            <% else %>
+                User not using nereus.
+            <% end %>
+        <% else %>
+            <p>Credit:  <%= nereus.credit %>
+                Conections last 10 Mins (<abbr title="Million instructions per second">MIPS</abbr>): <%= "#{nereus.online_now} (#{nereus.mips_now} MIPS)" %> <br />
+                Conections total today (<abbr title="Million instructions per second">MIPS</abbr>):  <%= "#{nereus.online_today} (#{nereus.mips_today} MIPS)" %> <br />
+                Your Nereus ID is: <%= nereus.nereus_id %>
+            </p>
+            <% nereus_title = ''
+                nereus_para = ''
+            %>
+            <% if nereus.active? %>
+                <% if nereus.paused? %>
+                    <% nereus_title = 'Your contribution is currently paused.'
+                     %>
+                <% elsif nereus.online_now > 0 %>
+                    <% nereus_title = 'You are now contributing to theSkyNet.'
+                    %>
+
+                <% else %>
+                    <% nereus_title = 'Start theSkyNet'
+                    %>
+
+                <% end %>
+            <% else %>
+                <% if nereus.paused? %>
+                    <% nereus_title = 'Your account is currently paused.'
+                    %>
+                <% elsif nereus.limited? %>
+                    <% nereus_title = 'Your account is currently inactive due to reaching you network limit.'
+                    %>
+                <% else %>
+                    <% nereus_title = 'Your account is currently inactive.'
+                    %>
+                <% end %>
+            <% end %>
+
+        <p><%= nereus_title  %></p>
+    <% end %>
+</div>

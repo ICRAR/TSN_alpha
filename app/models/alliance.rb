@@ -32,4 +32,12 @@ class Alliance < ActiveRecord::Base
       visible(false)
     end
   end
+  def for_json
+    result = Hash.new
+    result[:id] = id
+    result[:name] = name
+    result[:rank] = ranking
+    result[:leader] = leader.try :for_json_basic
+    return  result
+  end
 end

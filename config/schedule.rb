@@ -24,18 +24,18 @@
 
 set :environment, 'development'
 
-every '0 * * * *' do
+every '10 * * * *' do
   rake "boinc:update_boinc"
 end
-every '5 * * * *' do
-  rake "nereus:update_nereus"
+every '20 * * * *' do
+  rake "nereus:update_all"
 end
-every '10 * * * *' do
+every '30 * * * *' do
   rake "stats:update_general"
 end
-every '15 * * * *' do
+every '40 * * * *' do
   rake "stats:update_alliances"
 end
-every '20 * * * *' do
+every '50 * * * *' do
   rake "stats:update_trophy"
 end
