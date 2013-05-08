@@ -23,6 +23,9 @@ TSNAlpha::Application.routes.draw do
   post "/profile/update_nereus_id"  => "profiles#update_nereus_id", :as => 'update_nereus_id'
   post "/profile/create_boinc_id"  => "profiles#create_boinc_id", :as => 'create_boinc_id'
   post "/profile/update_boinc_id"  => "profiles#update_boinc_id", :as => 'update_boinc_id'
+  put "/profile/update_nereus_setting" => "profiles#update_nereus_settings", :as => 'update_nereus_settings'
+  get "/profile/pause_nereus" => "profiles#pause_nereus", :as => 'pause_nereus'
+  get "/profile/resume_nereus" => "profiles#resume_nereus", :as => 'resume_nereus'
 
 
 

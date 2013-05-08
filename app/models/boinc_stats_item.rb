@@ -4,7 +4,13 @@ class BoincStatsItem < ActiveRecord::Base
   scope :connected, where('general_stats_item_id IS NOT NULL')
   belongs_to :general_stats_item
 
-
+  def for_json
+    result = Hash.new
+    result[:credit] = credit
+    result[:RAC] = self.RAC
+    result[:rank] = rank
+    return  result
+  end
   #using a users email and password (not hashed) looks up the account and if it exists
   # returns the corresponding boinc_stats_item or creates a new one
   def find_by_boinc_auth(email, password)

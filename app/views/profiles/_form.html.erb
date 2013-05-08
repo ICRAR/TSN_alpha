@@ -1,3 +1,4 @@
+<h2>Edit my profile details</h2>
 <%= form_for(@profile) do |f| %>
   <% if @profile.errors.any? %>
     <div id="error_explanation">
@@ -31,4 +32,17 @@
   <div class="actions">
     <%= f.submit %>
   </div>
+<% end %>
+
+<% if @profile.general_stats_item.nereus_stats_item %>
+    <h2>Edit my Nereus settings</h2>
+    <%= form_for(@profile.general_stats_item.nereus_stats_item, :as => 'nereus_stats_item', :url => update_nereus_settings_path, :html => { :method => :put }) do |f| %>
+        <div class="field">
+            <%= f.label :network_limit_mb %> in MegaBytes<br />
+            <%= f.text_field :network_limit_mb %>
+        </div>
+        <div class="actions">
+            <%= f.submit %>
+        </div>
+    <% end %>
 <% end %>

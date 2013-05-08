@@ -10,10 +10,11 @@
                 User not using nereus.
             <% end %>
         <% else %>
-            <p>Credit:  <%= nereus.credit %>
+            <p>Credit:  <%= nereus.credit %> <br />
                 Conections last 10 Mins (<abbr title="Million instructions per second">MIPS</abbr>): <%= "#{nereus.online_now} (#{nereus.mips_now} MIPS)" %> <br />
                 Conections total today (<abbr title="Million instructions per second">MIPS</abbr>):  <%= "#{nereus.online_today} (#{nereus.mips_today} MIPS)" %> <br />
                 Your Nereus ID is: <%= nereus.nereus_id %>
+                Monthly Downloads: <%= nereus.monthly_network_usage_mb %>mb, Network Limit: <%= nereus.network_limit_mb %>mb
             </p>
             <% nereus_title = ''
                 nereus_para = ''

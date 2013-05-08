@@ -471,10 +471,10 @@ CREATE FUNCTION upsert_general_stats_items_sel_id_set_created_at_a_id4172225045(
 
 
 --
--- Name: upsert_nereus_stats_items_sel_nereus_id_set_active_a_145823217(integer, integer, character varying, integer, integer, integer, integer, integer, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+-- Name: upsert_nereus_stats_items_sel_nereus_id_set_active_a_145823217(integer, integer, character varying, integer, integer, integer, bigint, integer, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_145823217(nereus_id_sel integer, active_set integer, created_at_set character varying, credit_set integer, mips_now_set integer, mips_today_set integer, monthly_network_usage_set integer, nereus_id_set integer, online_now_set integer, online_today_set integer, updated_at_set character varying) RETURNS void
+CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_145823217(nereus_id_sel integer, active_set integer, created_at_set character varying, credit_set integer, mips_now_set integer, mips_today_set integer, monthly_network_usage_set bigint, nereus_id_set integer, online_now_set integer, online_today_set integer, updated_at_set character varying) RETURNS void
     LANGUAGE plpgsql
     AS $$
           DECLARE
@@ -482,7 +482,7 @@ CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_145823217(n
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "nereus_stats_items" SET "active" = "active_set", "created_at" = CAST("created_at_set" AS timestamp without time zone), "credit" = "credit_set", "mips_now" = "mips_now_set", "mips_today" = "mips_today_set", "monthly_network_usage" = "monthly_network_usage_set", "nereus_id" = "nereus_id_set", "online_now" = "online_now_set", "online_today" = "online_today_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "nereus_stats_items" SET "active" = "active_set", "credit" = "credit_set", "mips_now" = "mips_now_set", "mips_today" = "mips_today_set", "monthly_network_usage" = "monthly_network_usage_set", "nereus_id" = "nereus_id_set", "online_now" = "online_now_set", "online_today" = "online_today_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "nereus_id" = "nereus_id_sel";
               IF found THEN
                 RETURN;
@@ -508,10 +508,10 @@ CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_145823217(n
 
 
 --
--- Name: upsert_nereus_stats_items_sel_nereus_id_set_active_a_2167893291(integer, integer, character varying, integer, integer, integer, integer, integer, integer, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+-- Name: upsert_nereus_stats_items_sel_nereus_id_set_active_a_2167893291(integer, integer, character varying, integer, integer, integer, integer, bigint, integer, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_2167893291(nereus_id_sel integer, active_set integer, created_at_set character varying, credit_set integer, daily_credit_set integer, mips_now_set integer, mips_today_set integer, monthly_network_usage_set integer, nereus_id_set integer, online_now_set integer, online_today_set integer, updated_at_set character varying) RETURNS void
+CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_2167893291(nereus_id_sel integer, active_set integer, created_at_set character varying, credit_set integer, daily_credit_set integer, mips_now_set integer, mips_today_set integer, monthly_network_usage_set bigint, nereus_id_set integer, online_now_set integer, online_today_set integer, updated_at_set character varying) RETURNS void
     LANGUAGE plpgsql
     AS $$
           DECLARE
@@ -519,7 +519,7 @@ CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_2167893291(
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "nereus_stats_items" SET "active" = "active_set", "created_at" = CAST("created_at_set" AS timestamp without time zone), "credit" = "credit_set", "daily_credit" = "daily_credit_set", "mips_now" = "mips_now_set", "mips_today" = "mips_today_set", "monthly_network_usage" = "monthly_network_usage_set", "nereus_id" = "nereus_id_set", "online_now" = "online_now_set", "online_today" = "online_today_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "nereus_stats_items" SET "active" = "active_set", "credit" = "credit_set", "daily_credit" = "daily_credit_set", "mips_now" = "mips_now_set", "mips_today" = "mips_today_set", "monthly_network_usage" = "monthly_network_usage_set", "nereus_id" = "nereus_id_set", "online_now" = "online_now_set", "online_today" = "online_today_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "nereus_id" = "nereus_id_sel";
               IF found THEN
                 RETURN;
@@ -529,6 +529,80 @@ CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_2167893291(
               -- we could get a unique-key failure
               BEGIN
                 INSERT INTO "nereus_stats_items"("active", "created_at", "credit", "daily_credit", "mips_now", "mips_today", "monthly_network_usage", "nereus_id", "online_now", "online_today", "updated_at") VALUES ("active_set", CAST("created_at_set" AS timestamp without time zone), "credit_set", "daily_credit_set", "mips_now_set", "mips_today_set", "monthly_network_usage_set", "nereus_id_set", "online_now_set", "online_today_set", CAST("updated_at_set" AS timestamp without time zone));
+                RETURN;
+              EXCEPTION WHEN unique_violation THEN
+                -- seamusabshere 9/20/12 only retry once
+                IF (first_try = 1) THEN
+                  first_try := 0;
+                ELSE
+                  RETURN;
+                END IF;
+                -- Do nothing, and loop to try the UPDATE again.
+              END;
+            END LOOP;
+          END;
+          $$;
+
+
+--
+-- Name: upsert_nereus_stats_items_sel_nereus_id_set_active_a_2526286508(integer, integer, character varying, integer, integer, integer, integer, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_2526286508(nereus_id_sel integer, active_set integer, created_at_set character varying, credit_set integer, mips_now_set integer, mips_today_set integer, nereus_id_set integer, online_now_set integer, online_today_set integer, updated_at_set character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+          DECLARE
+            first_try INTEGER := 1;
+          BEGIN
+            LOOP
+              -- first try to update the key
+              UPDATE "nereus_stats_items" SET "active" = "active_set", "credit" = "credit_set", "mips_now" = "mips_now_set", "mips_today" = "mips_today_set", "nereus_id" = "nereus_id_set", "online_now" = "online_now_set", "online_today" = "online_today_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+                WHERE "nereus_id" = "nereus_id_sel";
+              IF found THEN
+                RETURN;
+              END IF;
+              -- not there, so try to insert the key
+              -- if someone else inserts the same key concurrently,
+              -- we could get a unique-key failure
+              BEGIN
+                INSERT INTO "nereus_stats_items"("active", "created_at", "credit", "mips_now", "mips_today", "nereus_id", "online_now", "online_today", "updated_at") VALUES ("active_set", CAST("created_at_set" AS timestamp without time zone), "credit_set", "mips_now_set", "mips_today_set", "nereus_id_set", "online_now_set", "online_today_set", CAST("updated_at_set" AS timestamp without time zone));
+                RETURN;
+              EXCEPTION WHEN unique_violation THEN
+                -- seamusabshere 9/20/12 only retry once
+                IF (first_try = 1) THEN
+                  first_try := 0;
+                ELSE
+                  RETURN;
+                END IF;
+                -- Do nothing, and loop to try the UPDATE again.
+              END;
+            END LOOP;
+          END;
+          $$;
+
+
+--
+-- Name: upsert_nereus_stats_items_sel_nereus_id_set_active_a_488562202(integer, integer, character varying, integer, integer, integer, integer, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_active_a_488562202(nereus_id_sel integer, active_set integer, created_at_set character varying, mips_now_set integer, mips_today_set integer, nereus_id_set integer, online_now_set integer, online_today_set integer, updated_at_set character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+          DECLARE
+            first_try INTEGER := 1;
+          BEGIN
+            LOOP
+              -- first try to update the key
+              UPDATE "nereus_stats_items" SET "active" = "active_set", "mips_now" = "mips_now_set", "mips_today" = "mips_today_set", "nereus_id" = "nereus_id_set", "online_now" = "online_now_set", "online_today" = "online_today_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+                WHERE "nereus_id" = "nereus_id_sel";
+              IF found THEN
+                RETURN;
+              END IF;
+              -- not there, so try to insert the key
+              -- if someone else inserts the same key concurrently,
+              -- we could get a unique-key failure
+              BEGIN
+                INSERT INTO "nereus_stats_items"("active", "created_at", "mips_now", "mips_today", "nereus_id", "online_now", "online_today", "updated_at") VALUES ("active_set", CAST("created_at_set" AS timestamp without time zone), "mips_now_set", "mips_today_set", "nereus_id_set", "online_now_set", "online_today_set", CAST("updated_at_set" AS timestamp without time zone));
                 RETURN;
               EXCEPTION WHEN unique_violation THEN
                 -- seamusabshere 9/20/12 only retry once
@@ -556,7 +630,7 @@ CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_created_a4012556711(
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "nereus_stats_items" SET "created_at" = CAST("created_at_set" AS timestamp without time zone), "credit" = "credit_set", "nereus_id" = "nereus_id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "nereus_stats_items" SET "credit" = "credit_set", "nereus_id" = "nereus_id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "nereus_id" = "nereus_id_sel";
               IF found THEN
                 RETURN;
@@ -593,7 +667,7 @@ CREATE FUNCTION upsert_nereus_stats_items_sel_nereus_id_set_created_a4167488404(
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "nereus_stats_items" SET "created_at" = CAST("created_at_set" AS timestamp without time zone), "daily_credit" = "daily_credit_set", "nereus_id" = "nereus_id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "nereus_stats_items" SET "daily_credit" = "daily_credit_set", "nereus_id" = "nereus_id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "nereus_id" = "nereus_id_sel";
               IF found THEN
                 RETURN;
@@ -949,7 +1023,7 @@ CREATE TABLE nereus_stats_items (
     general_stats_item_id integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    network_limit integer DEFAULT 0,
+    network_limit bigint DEFAULT 0,
     monthly_network_usage bigint DEFAULT 0,
     paused integer DEFAULT 0,
     active integer,

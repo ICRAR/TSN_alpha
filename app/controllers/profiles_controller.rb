@@ -43,18 +43,18 @@ class ProfilesController < ApplicationController
         @profile.nickname = @profile.user.username
         respond_to do |format|
           format.html { render :new_profile_step_1}
-          format.json { render json: @profile }
+          format.json { render json: @profile.for_json_full }
         end
       else
         respond_to do |format|
           format.html { render :new_profile_step_2}
-          format.json { render json: @profile }
+          format.json { render json: @profile.for_json_full }
         end
       end
     else
       respond_to do |format|
         format.html { render :dashboard}
-        format.json { render json: @profile }
+        format.json { render json: @profile.for_json_full }
       end
     end
   end
@@ -199,6 +199,77 @@ class ProfilesController < ApplicationController
       end
     else
       redirect_to root_url, alert: 'You must be logged in to update your own profile.'
+      return
+    end
+  end
+  def update_nereus_settings
+    if user_signed_in?
+      @profile = current_user.profile
+      nereus = current_user.profile.general_stats_item.nereus_stats_item
+      if nereus != nil
+        in_mbytes = params['nereus_stats_item']['network_limit_mb'].to_i
+        nereus.network_limit = in_mbytes *1024*1024
+        nereus.save
+        redirect_to my_profile_path, notice: 'Updated.'
+      else
+        redirect_to my_profile_path, notice: 'Sorry we could not find your nereus account.'
+      end
+    else
+      redirect_to root_url, alert: 'You must be logged in to update your own profile.'
+      return
+    end
+  end
+  def pause_nereus
+    if user_signed_in?
+      @profile = current_user.profile
+      nereus = current_user.profile.general_stats_item.nereus_stats_item
+      if nereus != nil
+        nereus.pause
+        respond_to do |format|
+          format.html { redirect_to my_profile_path, notice: 'Updated.'}
+          format.json { render json: {notice: 'Updated.',profile: @profile.for_json_full} }
+        end
+
+      else
+        respond_to do |format|
+          format.html { redirect_to my_profile_path, notice: 'Sorry we could not find your nereus account.'}
+          format.json { render json: {notice: 'Sorry we could not find your nereus account.'} }
+        end
+
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to root_url, alert: 'You must be logged in to do that.'}
+        format.json { render json: {alert: 'You must be logged in to do that.'} }
+      end
+
+      return
+    end
+  end
+  def resume_nereus
+    if user_signed_in?
+      @profile = current_user.profile
+      nereus = current_user.profile.general_stats_item.nereus_stats_item
+      if nereus != nil
+        nereus.resume
+        respond_to do |format|
+          format.html { redirect_to my_profile_path, notice: 'Updated.'}
+          format.json { render json: {notice: 'Updated.',profile: @profile.for_json_full} }
+        end
+
+      else
+        respond_to do |format|
+          format.html { redirect_to my_profile_path, notice: 'Sorry we could not find your nereus account.'}
+          format.json { render json: {notice: 'Sorry we could not find your nereus account.'} }
+        end
+
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to root_url, alert: 'You must be logged in to do that.'}
+        format.json { render json: {alert: 'You must be logged in to do that.'} }
+      end
+
       return
     end
   end

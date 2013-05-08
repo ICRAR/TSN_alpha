@@ -1,6 +1,6 @@
 class AddExtraDataToNereusStatsItem < ActiveRecord::Migration
   def change
-    add_column :nereus_stats_items, :network_limit, :integer, :default => 0
+    add_column :nereus_stats_items, :network_limit, :integer, :default => 0, :limit => 8
     add_column :nereus_stats_items, :monthly_network_usage, :integer, :default => 0, :limit => 8 #creates a big int
     add_column :nereus_stats_items, :paused, :integer, :default => 0
     add_column :nereus_stats_items, :active, :integer

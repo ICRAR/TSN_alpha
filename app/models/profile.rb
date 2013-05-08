@@ -95,5 +95,20 @@ class Profile < ActiveRecord::Base
     result[:alliance_id] = alliance_id
     return  result
   end
+  def for_json_full
+    result = Hash.new
+    result[:id] = id
+    result[:name] = self.name
+    result[:credit] = general_stats_item.total_credit
+    result[:rank] = general_stats_item.rank
+    result[:alliance_id] = alliance_id
+    if general_stats_item.nereus_stats_item
+      result[:nereus_stats] = general_stats_item.nereus_stats_item.for_json
+    end
+    if general_stats_item.boinc_stats_item
+      result[:boinc_stats] = general_stats_item.boinc_stats_item.for_json
+    end
+    return  result
+  end
 
 end

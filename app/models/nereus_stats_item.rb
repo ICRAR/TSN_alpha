@@ -9,9 +9,25 @@ class NereusStatsItem < ActiveRecord::Base
     remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host'], :username => APP_CONFIG['nereus_username'], :database => APP_CONFIG['nereus_database'], :password => APP_CONFIG['nereus_password'])
   end
 
+  def for_json
+    result = Hash.new
+    result[:credit] = credit
+    result[:rank] = rank
+    result[:network_limit] = network_limit
+    result[:monthly_network_usage] = monthly_network_usage
+    result[:paused] = paused
+    result[:active] = active
+    result[:online_today] = online_today
+    result[:online_now] = online_now
+    result[:mips_now] = mips_now
+    result[:mips_today] = mips_today
+    result[:limited] = self.limited?
+    return  result
+  end
+
   #sets active status on remote server
   def set_status
-    self.active = (( network_limit == 0 || (monthly_network_usage < network_limit))  && paused == 0) ? 1 : 0
+    self.active = (!self.limited?  && paused == 0) ? 1 : 0
     self.save
     remote_client =  NereusStatsItem.connect_to_backend_db
     remote_client.query("UPDATE accountstatus
@@ -52,4 +68,15 @@ class NereusStatsItem < ActiveRecord::Base
     self.set_status
   end
 
+  def limited?
+    network_limit != 0 && (monthly_network_usage > network_limit)
+  end
+
+  def network_limit_mb
+    network_limit / 1024 / 1024
+  end
+
+  def monthly_network_usage_mb
+    monthly_network_usage / 1024 / 1024
+  end
 end
