@@ -1,11 +1,12 @@
 class User < ActiveRecord::Base
+
   # Include default devise modules. Others available are:
   # :token_authenticatable, ,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable,
          :authentication_keys => [:login]
-
+  alias_method :devise_valid_password?, :valid_password?
   # Setup accessible (or protected) attributes for your model
   attr_accessible :username, :email, :password, :password_confirmation, :remember_me, :as => [:default, :admin]
   attr_accessible :admin, :mod, as: :admin
@@ -46,5 +47,20 @@ class User < ActiveRecord::Base
 ### This is the correct method you override with the code above
 ### def self.find_for_database_authentication(warden_conditions)
 ### end
+
+
+  #allows password recovery with data from old site
+
+  def valid_password?(password)
+    begin
+      super(password)
+    rescue BCrypt::Errors::InvalidHash
+      return false unless
+          Digest::SHA256.hexdigest(self.old_site_password_salt+Digest::SHA256.hexdigest(password)) == self.encrypted_password
+      logger.info "User #{email} is using the old password hashing method, updating attribute."
+      self.password = password
+      true
+    end
+  end
 
 end

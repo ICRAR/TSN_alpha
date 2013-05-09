@@ -1,0 +1,20 @@
+<ul id="leaderboard-profile">
+
+    <% @top_profiles.each do |profile| %>
+        <li><%= "##{profile.rank.to_s}"%> <%= link_to(profile.name, profile)%>
+            <span class="ladder-data">
+                <%= number_with_delimiter(profile.general_stats_item.total_credit) + ' ' + "credit".pluralize(profile.general_stats_item.total_credit)%>
+            </span>
+        </li>
+    <% end %>
+</ul>
+<ul id="leaderboard-alliances">
+
+    <% @top_alliances.each do |alliance| %>
+        <li><%= "##{alliance.ranking.to_s}"%> <%= link_to(alliance.name.titleize, alliance)%>
+            <span class="ladder-data">
+                <%= number_with_delimiter(alliance.credit) + ' ' + "credit".pluralize(alliance.credit)%>
+            </span>
+        </li>
+    <% end %>
+</ul>

@@ -21,21 +21,21 @@
 # update crontab with whenever -w run from root_dir
 # whenever --set 'environment=production' -w
 
-
-set :environment, 'development'
+job_type :srake,    "cd :path && RAILS_ENV=:environment spring rake :task --silent :output"
+set :environment, 'production'
 
 every '10 * * * *' do
-  rake "boinc:update_boinc"
+  srake "boinc:update_boinc"
 end
 every '20 * * * *' do
-  rake "nereus:update_all"
+  srake "nereus:update_all"
 end
 every '30 * * * *' do
-  rake "stats:update_general"
+  srake "stats:update_general"
 end
 every '40 * * * *' do
-  rake "stats:update_alliances"
+  srake "stats:update_alliances"
 end
 every '50 * * * *' do
-  rake "stats:update_trophy"
+  srake "stats:update_trophy"
 end

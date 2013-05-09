@@ -214,7 +214,7 @@ namespace :nereus do
 
 
     end
-    statsd_batch.gauge("nereus.stats.update_time",bench_time[0].total+bench_time[1].total)
+    statsd_batch.gauge("nereus.stats.update_time",bench_time.inject(0){|sum,n| sum + n.total})
     statsd_batch.flush
   end
 

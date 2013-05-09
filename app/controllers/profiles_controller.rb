@@ -38,6 +38,9 @@ class ProfilesController < ApplicationController
       return
     end
 
+    @top_profiles = Profile.for_leader_boards.order("rank asc").limit(5)
+    @top_alliances = Alliance.for_leaderboard.order('ranking asc').limit(5)
+
     if @profile.new_profile_step < 2
       if @profile.new_profile_step < 1
         @profile.nickname = @profile.user.username
@@ -190,12 +193,17 @@ class ProfilesController < ApplicationController
       @profile = current_user.profile
       nereus = NereusStatsItem.where(:nereus_id => params['nereus_id']).try(:first)
       if nereus != nil
-        @profile.general_stats_item.nereus_stats_item = nereus
-        @profile.new_profile_step = [2,@profile.new_profile_step].max
-        @profile.save
-        redirect_to @profile, notice: 'Success accounts are now linked :).'
+        if nereus.general_stats_item != nil
+          redirect_to my_profile_path, notice: 'Sorry that account has all ready been linked, if you believe this is incorrect please contact us'
+        else
+          @profile.general_stats_item.nereus_stats_item = nereus
+          @profile.new_profile_step = [2,@profile.new_profile_step].max
+          @profile.save
+          redirect_to my_profile_path, notice: 'Success accounts are now linked :).'
+        end
+
       else
-        redirect_to @profile, notice: 'Sorry we could not find that ID.'
+        redirect_to my_profile_path, notice: 'Sorry we could not find that ID.'
       end
     else
       redirect_to root_url, alert: 'You must be logged in to update your own profile.'

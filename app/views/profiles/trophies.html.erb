@@ -15,21 +15,12 @@
             <div class="inner-boundary">
                 <div id="content-inner">
                     <p>
-                        <% i = 0 %>
                         <% @profile.trophies.each do |trophy| %>
-                            <% if i==0 %>
-                                <div class="trophy_self">
-                            <% end %>
                                 <div class="trophy">
                                     <%= link_to (image_tag trophy.image.url), trophy %>
-                                    <b><%= link_to trophy.title.titlecase,  trophy %></b>
+                                    <b><%= link_to "#{trophy.title.titlecase} (#{trophy.credits})" ,  trophy %></b>
+                                    <%= trophy.desc %>
                                 </div>
-                            <% if i == 2 %>
-                                </div>
-                                <% i=0 %>
-                            <% else %>
-                                <% i += 1%>
-                            <% end %>
                         <% end %>
                     </p>
                 </div>

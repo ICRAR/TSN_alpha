@@ -1,0 +1,11 @@
+<p>
+    <b>Alliance:</b>
+    <% if  @profile.alliance %>
+        <%= link_to(@profile.alliance.name.titleize,@profile.alliance) %>  <%= (current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@profile.alliance)) : link_to("Leave", leave_alliances_path) %>
+       <br/>
+       Total Credit: <%= @profile.alliance.credit %> <br/>
+       Rank:   <%= @profile.alliance.ranking %>
+    <% else %>
+        You are not part of an alliance yet click <%= link_to 'here', new_alliance_path %> to create one or <%= link_to 'here', alliances_path %> to find an existing alliance to join
+    <% end %>
+</p>

@@ -1,0 +1,20 @@
+<p>
+    <b>Credit:</b>
+    <%= number_with_delimiter(@profile.general_stats_item.total_credit) %>
+    <br/>
+    Rank: <%= @profile.general_stats_item.rank %>
+    <%=  link_to "Show my place in the leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank) %>    <br />
+    <br/>
+    Average Daily Credit:<%= @profile.general_stats_item.recent_avg_credit %>
+    <br/>
+    <b>Latest Achievement:</b><br/>
+    <% if @profile.trophies.empty? %>
+        You hasn't won any trophies yet
+    <% else %>
+        <%= link_to (image_tag @profile.trophies.last.image.url), @profile.trophies.last %>
+        <%= link_to @profile.trophies.last.title,  @profile.trophies.last %>
+    <% end %>
+    <br/>
+    <% credits_to_go  = @profile.general_stats_item.credits_to_next_trophy%>
+    Only <%=  number_with_delimiter(credits_to_go) %>  <%= "credit".pluralize(credits_to_go)%> to go until the your next trophy
+</p>

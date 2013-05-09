@@ -1300,7 +1300,9 @@ CREATE TABLE users (
     updated_at timestamp without time zone NOT NULL,
     admin boolean DEFAULT false NOT NULL,
     mod boolean DEFAULT false NOT NULL,
-    username character varying(255)
+    username character varying(255),
+    old_site_password_salt character varying(255) DEFAULT ''::character varying NOT NULL,
+    old_site_password_hash character varying(255) DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -1790,3 +1792,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130430021935');
 INSERT INTO schema_migrations (version) VALUES ('20130430021936');
 
 INSERT INTO schema_migrations (version) VALUES ('20130506053429');
+
+INSERT INTO schema_migrations (version) VALUES ('20130508030622');

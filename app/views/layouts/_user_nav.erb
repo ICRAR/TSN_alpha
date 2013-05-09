@@ -3,7 +3,7 @@
         <li <%=  'class=on' if (@user_page == 'dashboard') %>><%= link_to('Dashboard', my_profile_path)  %></li>
         <li <%=  'class=on' if (@user_page == 'my_trophies') %>><%= link_to('My Trophies', trophies_profile_path(current_user.profile))  %></li>
         <% if  current_user.profile.alliance %>
-            <li <%=  'class=on' if (@user_page == 'my_alliance') %>><%= link_to('My Alliances', current_user.profile.alliance)  %></li>
+            <li <%=  'class=on' if (@user_page == 'my_alliance') %>><%= link_to('My Alliance', current_user.profile.alliance)  %></li>
         <% end %>
     <% else %>
         <li><%=  link_to "Sign Up", new_user_registration_path%></li>

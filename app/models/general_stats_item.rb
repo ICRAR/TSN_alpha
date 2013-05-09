@@ -10,7 +10,7 @@ class GeneralStatsItem < ActiveRecord::Base
   belongs_to :profile
 
   def credits_to_next_trophy
-    total_credit = 0 if total_credit == nil
+    self.total_credit = 0 if total_credit == nil
     tr = Trophy.next_trophy(total_credit)
     return tr.credits - total_credit
   end
