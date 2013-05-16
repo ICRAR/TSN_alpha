@@ -4,7 +4,7 @@
   <!--<li><%=  link_to "Ladders (Users)", profiles_path%></li>-->
   <!--<li><%= link_to "Ladders (Alliances)", alliances_path %></li>-->
   <% if user_signed_in? %>
-    <li><%= link_to 'My Profile', my_profile_path %></li>
+    <li><%= link_to 'My Dashboard', my_profile_path %></li>
   <% else %>
     <li><%=  link_to "Leaderboards", profiles_path%></li>
   <% end %>

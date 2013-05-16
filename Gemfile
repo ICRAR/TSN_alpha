@@ -85,3 +85,4 @@ gem "statsd-ruby", :require => "statsd"
 
 #not loaded when running rails used to make generating cron jobs easy
 gem 'whenever', :require => false
+#gem 'spring', :git => 'git://github.com/jonleighton/spring.git', :require => false

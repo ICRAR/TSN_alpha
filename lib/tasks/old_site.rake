@@ -4,15 +4,19 @@ namespace :old_site do
   task :load => :environment do
     #requries the user to set run_check=true at runtime to stop accidental running
     return false unless ENV['run_check'] == 'true'
-
+    #********* update nereus objects first ***************
+    print "updating all nereus_stats_items \n"
+    Rake::Task["nereus:update_all"].execute
+    print "nereus items update complete \n"
 
     #connect to old front end db
     remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
 
     #*********add users************
     #load accounts
+    print "starting user migration \n"
     print "fetching accounts \n"
-    results = remote_client.query("SELECT * FROM `Account` WHERE   `userID` >= 100000 AND `userID` <= 900000 LIMIT 0 , 30",
+    results = remote_client.query("SELECT * FROM `Account` WHERE   `userID` >= 100000 AND `userID` <= 900000",
                                   :cache_rows => false)
     print "found #{results.count} accounts \n"
     #iterate across results and update local data
@@ -28,9 +32,75 @@ namespace :old_site do
       i += 1
     end
     print "finished user import, we imported #{users_imported} new users\n"
+
+    #************update users******************
+    print "updating credit for all users \n"
+    Rake::Task["stats:update_general"].execute
+    print "credit updated \n"
+
     #************import alliances *****************
+    print " starting alliance migration \n"
+    print "fetching alliances \n"
+    results = remote_client.query("SELECT * FROM `Team`", :cache_rows => false)
+    print "found #{results.count} alliances \n"
+    #iterate across results and update local data
+    print "starting alliance import \n"
+    i = 0
+    alliances_imported = 0
+    results.each do |row|
+      print "importing alliances #{i} to #{i+10} \n" if i%10 == 0
+      old_alliance = generate_old_alliance(row)
+      new_alliance = make_alliance(old_alliance)
+
+      #******************add all members******************
+      print "-- fetching members"
+      sub_results = remote_client.query( "SELECT T.*,
+                        (
+                          SELECT SUM(`credits`) as credit
+                          FROM  `dailyCredits` WHERE  `dailyCredits`.`userID` = T.`userID`
+                            AND  `dailyCredits`.`day` < (UNIX_TIMESTAMP(T.`joinTime`)/86400)
+                        ) as start_credit,
+                        (
+                          SELECT SUM(`credits`) as credit
+                          FROM  `dailyCredits` WHERE  `dailyCredits`.`userID` = T.`userID`
+                            AND  `dailyCredits`.`day` < (
+                              IFNULL(
+                                UNIX_TIMESTAMP(T.`leaveTime`),UNIX_TIMESTAMP()
+                              )/86400
+                            )
+                        ) as end_credit
+                        FROM `TeamList` T
+                        WHERE  `userID` >= 100000 AND `userID` <= 900000 AND T.`teamID` = #{old_alliance[:team_id]}",
+                        :cache_rows => false)
+      print "-- found #{sub_results.count} alliance members \n"
+      #iterate across results and update local data
+      print "-- starting alliance members import \n"
+      j = 0
+      alliance_members_imported = 0
+      sub_results.each do |sub_row|
+        print "-- importing alliances members #{j} to #{j+10} \n" if j%10 == 0
+        old_member = generate_old_alliance_member(sub_row)
+        new_member = add_member_to_alliance(new_alliance,old_member)
+        print "-- failed to import: #{old_member[:nereus_id]} **************************** #{new_member.errors.full_messages}\n" unless new_member.errors.empty?
+        alliance_members_imported += 1 if new_member.errors.empty?
+        j += 1
+      end
+      print "-- finished alliance member import, we imported #{alliance_members_imported} new alliances members\n"
+
+      print "failed to import: #{old_alliance[:team_id]} **************************** #{new_alliance.errors.full_messages}\n" unless new_alliance.errors.empty?
+      alliances_imported += 1 if new_alliance.errors.empty?
+      i += 1
+
+
+
+
+
+    end
+    print "finished alliance import, we imported #{alliances_imported} new alliances\n"
 
     #************update stats trophies ranks ect ***************
+    Rake::Task["stats:update_alliances"].execute
+    Rake::Task["stats:update_trophy"].execute
 
   end
 end
@@ -122,4 +192,113 @@ def generate_old_user(row)
       :network_limit=> row['networkLimit'].to_i*1024*1024,
       :paused       => row['paused'].to_i == 1 ? true: false
   }
+end
+=begin
+  All this data is loaded from the old database
+  leader_id: nereus_id  for leader
+  name:
+  desc: description
+  tags:
+  country:
+  team_id: id from old db
+  eg
+  old_user = {
+      :leader_id    =>      101032,
+      :name     =>     'Curtin University of Technology',
+      :country      =>'AU',
+      :desc=>  'Invite only alliance.',
+      :tags       =>  'curtin,university,bentley'
+      :team_id =>  9
+  }
+=end
+#make_alliance takes the old alliance data and creates all the required models in the new websites database
+#note that it wont overwrite existing alliances   it will create duplicates
+def make_alliance(old_alliance)
+  #create user object
+  new_alliance = Alliance.new(
+      :name       => old_alliance[:name],
+      :desc       => old_alliance[:desc],
+      :tags       => old_alliance[:tags],
+      :country    => old_alliance[:country],
+  )
+  if new_alliance.save
+    #****** add leader.id
+    new_alliance.leader = get_profile_by_nereus_id(old_alliance[:leader_id])
+    new_alliance.save
+    new_alliance.errors.add(:leader, "Problem with leader maybe they don't exist") if new_alliance.leader == nil
+    return new_alliance
+  else
+    return new_alliance
+  end
+
+end
+
+#takes the mysql row from old database Account table and populates a old_user item
+def generate_old_alliance(row)
+  old_user = {
+      :leader_id  => row['leaderID'].to_i,
+      :name       => row['name'].to_s,
+      :desc       => row['description'].to_s,
+      :tags       => row['tags'].to_s,
+      :country    => row['country'].to_s,
+      :team_id    => row['id'].to_i,
+  }
+end
+def get_profile_by_nereus_id(nereus_id)
+  n = NereusStatsItem.where(:nereus_id => nereus_id).first
+  if n != nil && n.general_stats_item != nil
+    n.general_stats_item.profile
+  else
+    nil
+  end
+end
+
+=begin
+  All this data is loaded from the old database
+  nereus_id:  for member
+  joinTime
+  leaveTime
+  start_credit
+  end_credit
+  eg
+  old_user = {
+      :nereus_id    =>      100005,
+      :joinTime     =>     '2011-09-01 00:00:00	',
+      :leaveTime      =>'NULL',
+      :start_credit=>  'NULL',
+      :end_credit       =>  '506364'
+  }
+=end
+def generate_old_alliance_member(row)
+  old_member = {
+      :nereus_id    => row['userID'].to_i,
+      :joinTime     => row['joinTime'] != nil ? row['joinTime'].to_s : nil,
+      :leaveTime    => row['leaveTime'] != nil ? row['leaveTime'].to_s : nil,
+      :start_credit => row['start_credit'] != nil ? row['start_credit'].to_i : 0,
+      :end_credit   => row['end_credit'] != nil ? row['end_credit'].to_i : 0,
+  }
+end
+def add_member_to_alliance(new_alliance,old_member)
+  profile = get_profile_by_nereus_id(old_member[:nereus_id])
+  if profile  != nil
+    profile.alliance = new_alliance
+    item = AllianceMembers.new
+    item.join_date = old_member[:joinTime]
+    item.start_credit = old_member[:start_credit]
+    item.leave_credit = old_member[:end_credit]
+    item.leave_date = old_member[:leaveTime]
+
+    profile.alliance_items << item
+    new_alliance.member_items << item
+
+    item.save
+    profile.save
+    profile
+  else
+    profile = Profile.new
+    profile.errors.add(:id,"profile could not be found")
+    profile
+  end
+
+
 end

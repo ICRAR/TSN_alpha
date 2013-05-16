@@ -1,7 +1,7 @@
 class AlliancesController < ApplicationController
   # GET /alliances
   # GET /alliances.json
-  load_and_authorize_resource
+  authorize_resource
   helper_method :sort_column, :sort_direction
 
   def index
@@ -17,7 +17,7 @@ class AlliancesController < ApplicationController
   # GET /alliances/1.json
   def show
     @alliance = Alliance.for_show(params[:id])
-    @members = Profile.for_alliance(params[:id])
+    @members = AllianceMembers.page(params[:page]).per(20).for_alliance_show(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -136,8 +136,7 @@ class AlliancesController < ApplicationController
       flash[:notice] = 'Sorry the current leader cannot leave an alliance'
     else
     #remove user from alliance
-    current_user.profile.alliance = nil
-    current_user.profile.save
+    current_user.profile.leave_alliance
     flash[:notice] = "You have left the #{@alliance.name} alliance"
     end
     redirect_to my_profile_path

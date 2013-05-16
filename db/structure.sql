@@ -75,7 +75,7 @@ CREATE FUNCTION upsert_alliances_sel_id_set_created_at_a_credit_a_id_1565721813(
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "alliances" SET "created_at" = CAST("created_at_set" AS timestamp without time zone), "credit" = "credit_set", "id" = "id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "alliances" SET "credit" = "credit_set", "id" = "id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "id" = "id_sel";
               IF found THEN
                 RETURN;
@@ -149,7 +149,7 @@ CREATE FUNCTION upsert_alliances_sel_id_set_created_at_a_id_a_ranking1386808332(
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "alliances" SET "created_at" = CAST("created_at_set" AS timestamp without time zone), "id" = "id_set", "ranking" = "ranking_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "alliances" SET "id" = "id_set", "ranking" = "ranking_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "id" = "id_sel";
               IF found THEN
                 RETURN;
@@ -186,7 +186,7 @@ CREATE FUNCTION upsert_alliances_sel_id_set_rac_a_created_at_a_credit1583318479(
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "alliances" SET "RAC" = "RAC_set", "created_at" = CAST("created_at_set" AS timestamp without time zone), "credit" = "credit_set", "id" = "id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "alliances" SET "RAC" = "RAC_set", "credit" = "credit_set", "id" = "id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "id" = "id_sel";
               IF found THEN
                 RETURN;
@@ -196,6 +196,43 @@ CREATE FUNCTION upsert_alliances_sel_id_set_rac_a_created_at_a_credit1583318479(
               -- we could get a unique-key failure
               BEGIN
                 INSERT INTO "alliances"("RAC", "created_at", "credit", "id", "updated_at") VALUES ("RAC_set", CAST("created_at_set" AS timestamp without time zone), "credit_set", "id_set", CAST("updated_at_set" AS timestamp without time zone));
+                RETURN;
+              EXCEPTION WHEN unique_violation THEN
+                -- seamusabshere 9/20/12 only retry once
+                IF (first_try = 1) THEN
+                  first_try := 0;
+                ELSE
+                  RETURN;
+                END IF;
+                -- Do nothing, and loop to try the UPDATE again.
+              END;
+            END LOOP;
+          END;
+          $$;
+
+
+--
+-- Name: upsert_alliances_sel_id_set_rac_a_created_at_a_id_a_updated_at(integer, integer, character varying, integer, character varying); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION upsert_alliances_sel_id_set_rac_a_created_at_a_id_a_updated_at(id_sel integer, "RAC_set" integer, created_at_set character varying, id_set integer, updated_at_set character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+          DECLARE
+            first_try INTEGER := 1;
+          BEGIN
+            LOOP
+              -- first try to update the key
+              UPDATE "alliances" SET "RAC" = "RAC_set", "id" = "id_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+                WHERE "id" = "id_sel";
+              IF found THEN
+                RETURN;
+              END IF;
+              -- not there, so try to insert the key
+              -- if someone else inserts the same key concurrently,
+              -- we could get a unique-key failure
+              BEGIN
+                INSERT INTO "alliances"("RAC", "created_at", "id", "updated_at") VALUES ("RAC_set", CAST("created_at_set" AS timestamp without time zone), "id_set", CAST("updated_at_set" AS timestamp without time zone));
                 RETURN;
               EXCEPTION WHEN unique_violation THEN
                 -- seamusabshere 9/20/12 only retry once
@@ -697,6 +734,42 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: alliance_members; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE alliance_members (
+    id integer NOT NULL,
+    join_date timestamp without time zone,
+    leave_date timestamp without time zone,
+    start_credit integer,
+    leave_credit integer,
+    alliance_id integer,
+    profile_id integer,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: alliance_members_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE alliance_members_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: alliance_members_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE alliance_members_id_seq OWNED BY alliance_members.id;
+
+
+--
 -- Name: alliances; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -707,7 +780,10 @@ CREATE TABLE alliances (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     credit integer,
-    "RAC" integer
+    "RAC" integer,
+    tags character varying(255),
+    "desc" text,
+    country character varying(255)
 );
 
 
@@ -1329,6 +1405,13 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY alliance_members ALTER COLUMN id SET DEFAULT nextval('alliance_members_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY alliances ALTER COLUMN id SET DEFAULT nextval('alliances_id_seq'::regclass);
 
 
@@ -1442,6 +1525,14 @@ ALTER TABLE ONLY trophies ALTER COLUMN id SET DEFAULT nextval('trophies_id_seq':
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Name: alliance_members_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY alliance_members
+    ADD CONSTRAINT alliance_members_pkey PRIMARY KEY (id);
 
 
 --
@@ -1794,3 +1885,7 @@ INSERT INTO schema_migrations (version) VALUES ('20130430021936');
 INSERT INTO schema_migrations (version) VALUES ('20130506053429');
 
 INSERT INTO schema_migrations (version) VALUES ('20130508030622');
+
+INSERT INTO schema_migrations (version) VALUES ('20130510024703');
+
+INSERT INTO schema_migrations (version) VALUES ('20130513015708');

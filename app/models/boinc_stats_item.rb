@@ -1,6 +1,6 @@
 class BoincStatsItem < ActiveRecord::Base
 
-  attr_accessible :boinc_id, :credit, :RAC, :rank
+  attr_accessible :boinc_id, :credit, :RAC, :rank, :as => :admin
   scope :connected, where('general_stats_item_id IS NOT NULL')
   belongs_to :general_stats_item
 

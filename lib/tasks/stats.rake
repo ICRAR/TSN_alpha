@@ -18,7 +18,8 @@ namespace :stats do
         #start upsert batch for all
         Upsert.batch(connection,table_name) do |upsert|
           combined_credits.each do |stat|
-            total_credits = stat.nereus_credit.to_i+stat.boinc_credit.to_i
+            #******* THIS LINE IS WHERE CREDITS ARE COMBINED VERY IMPORTANT********
+            total_credits = stat.nereus_credit.to_i*APP_CONFIG['nereus_to_credit_conversion']+stat.boinc_credit.to_i
             #todo add average credit to general update
             upsert.row({:id => stat.id}, :total_credit => total_credits, :updated_at => Time.now, :created_at => Time.now)
             statsd_batch.gauge("general.users.#{stat.profile_id}.#{stat.id}.credit",total_credits)
@@ -57,17 +58,29 @@ namespace :stats do
   task :update_alliances => :environment do
     statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|
+      bench.report('update credit alliance member items') {
+        connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
+        connection.query("UPDATE alliance_members SET leave_credit = general_stats_items.total_credit
+                          FROM general_stats_items WHERE general_stats_items.profile_id = alliance_members.profile_id
+                          AND alliance_members.leave_date IS NULL")
+      }
+
       bench.report('update credit alliance') {
         connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
         table_name = :alliances
 
-        alliances = Alliance.temp_credit
+        alliances_credit = Alliance.temp_credit
+        alliances_rac_total = Alliance.temp_rac
         Upsert.batch(connection,table_name) do |upsert|
-          alliances.each do |alliance|
-            upsert.row({:id => alliance.id}, :credit => alliance.temp_credit,:RAC => alliance.temp_rac, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("alliance.#{alliance.id}.credit",alliance.temp_credit)
+          alliances_rac_total.each do |alliance|
+            upsert.row({:id => alliance.id},:RAC => alliance.temp_rac, :updated_at => Time.now, :created_at => Time.now)
             statsd_batch.gauge("alliance.#{alliance.id}.rac",alliance.temp_rac)
             statsd_batch.gauge("alliance.#{alliance.id}.total_members",alliance.total_members)
+          end
+          alliances_credit.each do |alliance|
+            credit = alliance.temp_credit
+            upsert.row({:id => alliance.id}, :credit => credit, :updated_at => Time.now, :created_at => Time.now)
+            statsd_batch.gauge("alliance.#{alliance.id}.credit",credit)
           end
         end
       }
@@ -131,7 +144,7 @@ namespace :stats do
           sql = "INSERT INTO profiles_trophies (trophy_id , profile_id, created_at, updated_at) VALUES #{profiles_trophies_inserts.join(", ")}"
           db_conn = ActiveRecord::Base.connection
           db_conn.execute sql
-          print sql
+         #print sql
         end
 
       }

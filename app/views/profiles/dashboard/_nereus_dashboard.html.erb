@@ -1,5 +1,6 @@
 <div id=""nereus-dashboard>
     <p><b>Nereus</b> <br />
+
         <%
            nereus = @profile.general_stats_item.nereus_stats_item
            if nereus == nil
@@ -10,6 +11,7 @@
                 User not using nereus.
             <% end %>
         <% else %>
+            <%= link_to_function "Run Nereus client", "run(#{nereus.nereus_id})" %>
             <p>Credit:  <%= nereus.credit %> <br />
                 Conections last 10 Mins (<abbr title="Million instructions per second">MIPS</abbr>): <%= "#{nereus.online_now} (#{nereus.mips_now} MIPS)" %> <br />
                 Conections total today (<abbr title="Million instructions per second">MIPS</abbr>):  <%= "#{nereus.online_today} (#{nereus.mips_today} MIPS)" %> <br />

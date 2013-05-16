@@ -54,17 +54,14 @@ class NereusStatsItem < ActiveRecord::Base
   #forces pausing of all open clients
   def pause_resume
     self.paused = paused == 1 ? 0 : 1
-    self.save
     self.set_status
   end
   def pause
     self.paused = 1
-    self.save
     self.set_status
   end
   def resume
     self.paused = 0
-    self.save
     self.set_status
   end
 

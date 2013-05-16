@@ -6,10 +6,7 @@ class News < ActiveRecord::Base
       self.published_time = Time.now
       self.save
   end
-  def self.all_published
-    all :conditions => ['published = true AND published_time <= ?', Time.now]
-  end
-
+  scope :published, where('published = true AND published_time <= ?', Time.now)
   rails_admin do
 
     field :title

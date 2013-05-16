@@ -1,0 +1,8 @@
+<div class="news_item" id="<%= item.id %>">
+    <%=  link_to item do %>
+        <div class="title"><%= item.title %></div>
+    <% end %>
+    <div class="published_date">Published on <%= item.published_time %></div>
+    <div class="short"><%= item.short %></div>
+    <%=  link_to "View full article", item %>
+</div>

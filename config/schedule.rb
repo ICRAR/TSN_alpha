@@ -20,22 +20,23 @@
 # Learn more: http://github.com/javan/whenever
 # update crontab with whenever -w run from root_dir
 # whenever --set 'environment=production' -w
+# rvmsudo whenever --update-crontab tsn_alpha
 
 job_type :srake,    "cd :path && RAILS_ENV=:environment spring rake :task --silent :output"
 set :environment, 'production'
 
 every '10 * * * *' do
-  srake "boinc:update_boinc"
+  rake "boinc:update_boinc"
 end
 every '20 * * * *' do
-  srake "nereus:update_all"
+  rake "nereus:update_all"
 end
 every '30 * * * *' do
-  srake "stats:update_general"
+  rake "stats:update_general"
 end
 every '40 * * * *' do
-  srake "stats:update_alliances"
+  rake "stats:update_alliances"
 end
 every '50 * * * *' do
-  srake "stats:update_trophy"
+  rake "stats:update_trophy"
 end

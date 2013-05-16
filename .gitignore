@@ -26,8 +26,9 @@ public/system/*
 *.idea
 
 #vendor files
-vendor*
+/vendor*
 
 #ignore asset files but not the manifests files
 public/assets/*
 !public/assets/manifest.yml
+public/assets_dev/*

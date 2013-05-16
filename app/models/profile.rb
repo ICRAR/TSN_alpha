@@ -16,16 +16,18 @@ class Profile < ActiveRecord::Base
   end
   belongs_to :user
   belongs_to :alliance_leader, :class_name => 'Alliance', inverse_of: :leader
-  belongs_to :alliance
+  belongs_to :alliance, inverse_of: :members
+  has_many :alliance_items, :class_name => 'AllianceMembers', :dependent => :destroy
+
   has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
   has_many :trophies, :through => :profiles_trophies
   has_one :general_stats_item, :dependent => :destroy, :inverse_of => :profile
   attr_accessible :country, :use_full_name, :nickname, :first_name, :second_name, :as => [:default, :admin]
-  attr_accessible :user_id, :alliance_leader_id, :alliance_id, :alliance_join_date, :trophy_ids, :general_stats_item_id, :new_profile_step, as: :admin
+  attr_accessible :trophy_ids, :new_profile_step, as: :admin
 
   #validates :nickname, :uniqueness => true
 
-  scope :for_leader_boards, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").where('general_stats_items.rank IS NOT NULL').includes(:alliance)
+  scope :for_leader_boards, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").where('general_stats_items.rank IS NOT NULL').includes(:alliance, :user)
   scope :for_trophies, joins(:general_stats_item).select("profiles.*, general_stats_items.last_trophy_credit_value as last_trophy_credit_value, general_stats_items.total_credit as credits, general_stats_items.id as stats_id").where('general_stats_items.total_credit IS NOT NULL')
 
   def  self.for_show(id)
@@ -63,9 +65,34 @@ class Profile < ActiveRecord::Base
 
 
   def join_alliance(alliance)
-    alliance.members << self
-    self.alliance_join_date = Time.now
-    self.save
+    if self.alliance != nil
+      false
+    else
+      self.alliance = alliance
+      item = AllianceMembers.new
+      item.join_date = Time.now
+      item.start_credit = self.general_stats_item.total_credit
+      item.leave_credit = self.general_stats_item.total_credit
+      item.leave_date = nil
+
+      self.alliance_items << item
+      alliance.member_items << item
+
+      item.save
+      self.save
+    end
+  end
+  def leave_alliance
+    if self.alliance == nil
+      false
+    else
+      item = self.alliance_items.where(:leave_date => nil).first
+      item.leave_date = Time.now
+      item.leave_credit = self.general_stats_item.total_credit
+      item.save
+      self.alliance = nil
+      self.save
+    end
   end
 
 
@@ -111,4 +138,9 @@ class Profile < ActiveRecord::Base
     return  result
   end
 
+  def avatar_url(size=48)
+    default_url = "retro"
+    gravatar_id = Digest::MD5.hexdigest(self.user.email.downcase)
+    "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
+  end
 end

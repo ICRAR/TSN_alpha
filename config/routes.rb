@@ -27,8 +27,7 @@ TSNAlpha::Application.routes.draw do
   get "/profile/pause_nereus" => "profiles#pause_nereus", :as => 'pause_nereus'
   get "/profile/resume_nereus" => "profiles#resume_nereus", :as => 'resume_nereus'
 
-
-
+get "/nereus/:id/run" => "nereus#run", :as => 'run_nereus'
   resources :alliances do
     member do
        get 'join'
@@ -44,6 +43,9 @@ TSNAlpha::Application.routes.draw do
 
   get "/check_auth" => "application#check_auth"
   post "/check_auth" => "application#check_auth"
+
+  resources :news, :only => [:index, :show]
+
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

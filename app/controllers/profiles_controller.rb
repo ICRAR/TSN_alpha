@@ -1,10 +1,10 @@
 class ProfilesController < ApplicationController
   # GET /profiles
   # GET /profiles.json
-  load_and_authorize_resource
+  authorize_resource
   helper_method :sort_column, :sort_direction
   def index
-    page_per = 10
+    page_per = 30
     if (params[:rank] && !params[:page] )
       rank = [[params[:rank].to_i,page_per/2+1].max,Profile.for_leader_boards.count].min
       page_num = (rank-page_per/2) / page_per + 1
@@ -13,7 +13,7 @@ class ProfilesController < ApplicationController
       page_num = params[:page]
       page_padding = 0;
     end
-    @profiles = Profile.for_leader_boards.page(page_num).per(page_per).padding(page_padding).order(sort_column + " " + sort_direction)
+    @profiles = Profile.for_leader_boards.page(page_num).per(page_per).padding(page_padding).order(sort_column + " " + sort_direction + " NULLS LAST")
 
     respond_to do |format|
       format.html # index.html.erb
@@ -24,6 +24,7 @@ class ProfilesController < ApplicationController
   # GET /profiles/1
   # GET /profiles/1.json
   def show
+    @profile = Profile.for_show(params[:id])
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @profile }

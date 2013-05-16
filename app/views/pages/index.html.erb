@@ -39,12 +39,7 @@
 
     <div id="content-wrap-news" xmlns="http://www.w3.org/1999/html">
         <% @news.each do |item| %>
-        <div class="news_item" id="<%= item.id %>">
-            <div class="title"><%= item.title %></div>
-            <div class="published_date">Published on <%= item.published_time %></div>
-            <div class="short"><%= item.short %></div>
-            <div class="long"><%= item.long.html_safe %></div>
-        </div>
+            <%= render 'news/news_short', :item => item %>
         <% end %>
     </div>
 

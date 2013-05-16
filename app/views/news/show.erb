@@ -1,0 +1,23 @@
+<%content_for(:title_bar) do %>
+  <div id="intro-sml-wrap">
+      <h1 class="fontface"><%= @news_item.title %></h1>
+  </div>
+  <% @user_page =  'news' %>
+  <%=  render 'layouts/user_nav' %>
+<% end %>
+
+<%content_for(:content) do %>
+    <div id="content-wrap">
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <div class="news_item" id="<%= @news_item.id %>">
+                        <div class="published_date">Published on <%= @news_item.published_time %></div>
+                        <div class="long"><%= @news_item.long.html_safe %></div>
+                    </div>
+                    <%=  render :partial => "shared/disqus", :locals => { title: @news_item.id } %>
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>

@@ -2,7 +2,7 @@
     <div id="intro-sml-wrap">
         <h1 class="fontface"><%= @alliance.name.titleize %></h1>
     </div>
-    <% @user_page =  @alliance.members.include?(current_user.profile) ? 'my_alliance' : 'alliance_leaderboard' %>
+    <% @user_page =  (user_signed_in? and @alliance.members.include?(current_user.profile)) ? 'my_alliance' : 'alliance_leaderboard' %>
     <%=  render 'layouts/user_nav' %>
 <% end %>
 <%content_for(:content) do %>
@@ -18,7 +18,7 @@
                     </p>
                     <p>
                       <b>Leader:</b>
-                      <%= link_to @alliance.leader.name, @alliance.leader %>
+                      <%= link_to @alliance.leader.name, @alliance.leader if @alliance.leader != nil%>
                     </p>
 
                     <p>
@@ -27,11 +27,11 @@
                     </p>
                     <p>
                       <b>Total Members:</b>
-                      <%= @alliance.members.size %>
+                      <%= "#{@alliance.members.size} (#{@members.length})" %>
                     </p>
                     <p>
                       <b>Total Credit:</b>
-                      <%= @alliance.credit %>
+                      <%= number_with_delimiter(@alliance.credit) %>
                     </p>
 
                     <p>
@@ -40,7 +40,8 @@
                     <table>
                       <tr>
                         <th>Name</th>
-                        <th>Credit</th>
+                        <th>Total Credit</th>
+                        <th>Credit Contributed to <%=  @alliance.name.titleize %></th>
                         <th>Alliance Rank</th>
                         <th>Overall Rank</th>
 
@@ -48,14 +49,17 @@
                       <% rank = 1 %>
                       <% @members.each do |member| %>
                           <tr>
-                            <td><%= link_to member.name, member %></td>
-                            <td><%= member.credits %></td>
+                            <td><%= link_to member.profile.name, member.profile %></td>
+                            <td><%= number_with_delimiter(member.credits) %></td>
+                            <td><%= number_with_delimiter(member.credit_contributed) %></td>
                             <td><%= rank %></td>
                             <td><%= member.rank %></td>
                             <% rank +=1 %>
                           </tr>
                       <% end %>
                     </table>
+                    <%= paginate @members %>
+                    <%= page_entries_info @members %>
                     <div id="alliance_graph"></div>
                     <%= link_to('Manage my alliance', edit_alliance_path(@alliance)) if  (user_signed_in? && current_user.profile.alliance_leader == @alliance) %>
 

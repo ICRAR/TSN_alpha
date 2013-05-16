@@ -3,7 +3,7 @@
     <% @top_profiles.each do |profile| %>
         <li><%= "##{profile.rank.to_s}"%> <%= link_to(profile.name, profile)%>
             <span class="ladder-data">
-                <%= number_with_delimiter(profile.general_stats_item.total_credit) + ' ' + "credit".pluralize(profile.general_stats_item.total_credit)%>
+                <%= number_with_delimiter(profile.credits) + ' ' + "credit".pluralize(profile.credits)%>
             </span>
         </li>
     <% end %>

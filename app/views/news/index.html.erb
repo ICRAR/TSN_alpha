@@ -1,0 +1,21 @@
+<%content_for(:title_bar) do %>
+    <div id="intro-sml-wrap">
+        <h1 class="fontface">Latest news</h1>
+    </div>
+    <% @user_page =  'news' %>
+    <%=  render 'layouts/user_nav' %>
+<% end %>
+
+<%content_for(:content) do %>
+    <div id="content-wrap">
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <% @news.each do |item| %>
+                        <%= render 'news_short', :item => item %>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>
