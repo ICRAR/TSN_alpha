@@ -39,6 +39,8 @@ gem "possessive"
 gem 'kaminari'
 
 gem 'pg_search'
+gem 'mail_form'
+gem 'simple_form'
 
 group :development do
   gem 'rack-mini-profiler'

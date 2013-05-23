@@ -371,7 +371,7 @@ CREATE FUNCTION upsert_general_stats_items_sel_id_set_created_at_a_id1344156864(
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "general_stats_items" SET "created_at" = CAST("created_at_set" AS timestamp without time zone), "id" = "id_set", "rank" = "rank_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "general_stats_items" SET "id" = "id_set", "rank" = "rank_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "id" = "id_sel";
               IF found THEN
                 RETURN;
@@ -408,7 +408,7 @@ CREATE FUNCTION upsert_general_stats_items_sel_id_set_created_at_a_id1345086872(
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "general_stats_items" SET "created_at" = CAST("created_at_set" AS timestamp without time zone), "id" = "id_set", "last_trophy_credit_value" = "last_trophy_credit_value_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "general_stats_items" SET "id" = "id_set", "last_trophy_credit_value" = "last_trophy_credit_value_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "id" = "id_sel";
               IF found THEN
                 RETURN;
@@ -482,7 +482,7 @@ CREATE FUNCTION upsert_general_stats_items_sel_id_set_created_at_a_id4172225045(
           BEGIN
             LOOP
               -- first try to update the key
-              UPDATE "general_stats_items" SET "created_at" = CAST("created_at_set" AS timestamp without time zone), "id" = "id_set", "total_credit" = "total_credit_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
+              UPDATE "general_stats_items" SET "id" = "id_set", "total_credit" = "total_credit_set", "updated_at" = CAST("updated_at_set" AS timestamp without time zone)
                 WHERE "id" = "id_sel";
               IF found THEN
                 RETURN;
@@ -783,7 +783,8 @@ CREATE TABLE alliances (
     "RAC" integer,
     tags character varying(255),
     "desc" text,
-    country character varying(255)
+    country character varying(255),
+    old_id integer
 );
 
 
@@ -877,6 +878,41 @@ CREATE SEQUENCE ckeditor_assets_id_seq
 --
 
 ALTER SEQUENCE ckeditor_assets_id_seq OWNED BY ckeditor_assets.id;
+
+
+--
+-- Name: daily_alliance_credit; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE daily_alliance_credit (
+    id integer NOT NULL,
+    alliance_id integer,
+    old_alliance_id integer,
+    day integer,
+    current_members integer,
+    daily_credit integer,
+    total_credit integer,
+    rank integer
+);
+
+
+--
+-- Name: daily_alliance_credit_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE daily_alliance_credit_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: daily_alliance_credit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE daily_alliance_credit_id_seq OWNED BY daily_alliance_credit.id;
 
 
 --
@@ -1433,6 +1469,13 @@ ALTER TABLE ONLY ckeditor_assets ALTER COLUMN id SET DEFAULT nextval('ckeditor_a
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY daily_alliance_credit ALTER COLUMN id SET DEFAULT nextval('daily_alliance_credit_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY engage_comments ALTER COLUMN id SET DEFAULT nextval('engage_comments_id_seq'::regclass);
 
 
@@ -1557,6 +1600,14 @@ ALTER TABLE ONLY boinc_stats_items
 
 ALTER TABLE ONLY ckeditor_assets
     ADD CONSTRAINT ckeditor_assets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: daily_alliance_credit_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY daily_alliance_credit
+    ADD CONSTRAINT daily_alliance_credit_pkey PRIMARY KEY (id);
 
 
 --
@@ -1889,3 +1940,7 @@ INSERT INTO schema_migrations (version) VALUES ('20130508030622');
 INSERT INTO schema_migrations (version) VALUES ('20130510024703');
 
 INSERT INTO schema_migrations (version) VALUES ('20130513015708');
+
+INSERT INTO schema_migrations (version) VALUES ('20130522075935');
+
+INSERT INTO schema_migrations (version) VALUES ('20130522080102');

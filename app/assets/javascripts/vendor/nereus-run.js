@@ -8,7 +8,7 @@ function run(userID)
 		}
 	if (userID == undefined)
 		userID = -1;
-	children[children.length] =window.open('http://'+location.hostname+':'+location.port+'/nereus/'+userID+'/run/', '', 'resizable=no,scrollbars=no,menubar=no,toolbar=no,location=no,width=400,height=400');
+	children[children.length] =window.open('http://'+location.hostname+':'+location.port+'/nereus/run/', '', 'resizable=no,scrollbars=no,menubar=no,toolbar=no,location=no,width=400,height=400');
 	children[children.length-1].moveTo((screen.width/2) - 200, (screen.height/2)-200);
 	}
 

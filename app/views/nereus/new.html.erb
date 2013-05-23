@@ -1,0 +1,21 @@
+<%content_for(:title_bar) do %>
+    <div id="intro-sml-wrap">
+        <h1 class="fontface">Welcome to theSkyNet@NEREUS</h1>
+    </div>
+    <%=  render 'layouts/user_nav' %>
+<% end %>
+<%content_for(:content) do %>
+
+    <div id="content-wrap">
+
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <h2>Welcome to the nereus system for theSkyNet Project</h2>
+                    <p>You can start contributing right now by clicking this <%= link_to_function "link", "run()" %>.</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>

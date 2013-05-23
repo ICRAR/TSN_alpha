@@ -4,6 +4,11 @@ namespace :old_site do
   task :load => :environment do
     #requries the user to set run_check=true at runtime to stop accidental running
     return false unless ENV['run_check'] == 'true'
+
+    #connect to old front end db
+    remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
+
+=begin
     #********* update nereus objects first ***************
     print "updating all nereus_stats_items \n"
     Rake::Task["nereus:update_all"].execute
@@ -37,6 +42,7 @@ namespace :old_site do
     print "updating credit for all users \n"
     Rake::Task["stats:update_general"].execute
     print "credit updated \n"
+=end
 
     #************import alliances *****************
     print " starting alliance migration \n"
@@ -220,6 +226,7 @@ def make_alliance(old_alliance)
       :desc       => old_alliance[:desc],
       :tags       => old_alliance[:tags],
       :country    => old_alliance[:country],
+      :old_id     => old_alliance[:team_id]
   )
   if new_alliance.save
     #****** add leader.id
@@ -268,14 +275,15 @@ end
       :start_credit=>  'NULL',
       :end_credit       =>  '506364'
   }
+credits are adjusted for conversion to new system so allaince will have the corrected credit values
 =end
 def generate_old_alliance_member(row)
   old_member = {
       :nereus_id    => row['userID'].to_i,
       :joinTime     => row['joinTime'] != nil ? row['joinTime'].to_s : nil,
       :leaveTime    => row['leaveTime'] != nil ? row['leaveTime'].to_s : nil,
-      :start_credit => row['start_credit'] != nil ? row['start_credit'].to_i : 0,
-      :end_credit   => row['end_credit'] != nil ? row['end_credit'].to_i : 0,
+      :start_credit => row['start_credit'] != nil ? row['start_credit'].to_i * APP_CONFIG['nereus_to_credit_conversion'] : 0,
+      :end_credit   => row['end_credit'] != nil ? row['end_credit'].to_i * APP_CONFIG['nereus_to_credit_conversion']: 0,
   }
 end
 def add_member_to_alliance(new_alliance,old_member)

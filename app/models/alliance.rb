@@ -6,7 +6,7 @@ class Alliance < ActiveRecord::Base
                              :trigram => {}}
 
 
-  attr_accessible :name,:tags,:desc,:country, :as => [:default, :admin]
+  attr_accessible :name,:tags,:desc,:country, :old_id,  :as => [:default, :admin]
   attr_accessible :leader_id, :member_ids, as: :admin
 
   scope :temp_credit, joins(:member_items).select("alliances.*, sum(alliance_members.leave_credit-alliance_members.start_credit) as temp_credit").group('alliances.id')

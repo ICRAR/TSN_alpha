@@ -13,7 +13,7 @@ TSN.pages.index = () ->
     'scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)'
   ]
   names =  ['Boinc Total Credit','Boinc Active Users','Boinc Total Users','Boinc Current TFLOPS']
-  TSN.rickshaw_graph(metrics,names,$("#boinc_graphs"),'-7days')
+  #TSN.rickshaw_graph(metrics,names,$("#boinc_graphs"),'-12months')
 
   metrics = [
     'stats.gauges.TSN_dev.nereus.stats.total_credit'
@@ -22,4 +22,4 @@ TSN.pages.index = () ->
     'scale(stats.gauges.TSN_dev.nereus.stats.total_daily_credit%2C0.000125)'
   ]
   names =  ['Nereus Total Credit','Nereus Active Users','Nereus Total Users','Nereus Current TFLOPS (estimate)']
-  TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),'-4days')
+  TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),'-24months')

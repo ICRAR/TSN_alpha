@@ -26,8 +26,7 @@
 
         <%= render 'profiles/dashboard/ladder_dashboard' %>
 
-        <div id="chart_container" <%=  @profile.general_stats_item.boinc_stats_item ? "data-boinc_id=#{@profile.general_stats_item.boinc_stats_item.boinc_id}" : "" %> <%=   @profile.general_stats_item.nereus_stats_item ? "data-nereus_id=#{@profile.general_stats_item.nereus_stats_item.nereus_id}" : "" %> > </div>
+        <div id="chart_container" <%=  @profile.general_stats_item.boinc_stats_item ? "data-boinc_id=#{@profile.general_stats_item.boinc_stats_item.boinc_id}" : "" %> <%=   @profile.general_stats_item.nereus_stats_item ? "data-nereus_id=#{@profile.general_stats_item.nereus_stats_item.nereus_id}" : "" %> <%= "data-profile_id=#{@profile.id}" %>> </div>
 
-    </div>
     </div>
 <% end %>

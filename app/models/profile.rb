@@ -34,6 +34,15 @@ class Profile < ActiveRecord::Base
     includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).find(id)
   end
 
+  def self.by_nereus_id(nereus_id)
+    n = NereusStatsItem.where(:nereus_id => nereus_id).first
+    if n != nil && n.general_stats_item != nil
+      n.general_stats_item.profile
+    else
+      nil
+    end
+  end
+
   before_create :build_general_stats_item
 
   def name

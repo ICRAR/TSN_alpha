@@ -12,6 +12,8 @@ namespace :nereus do
     connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
     table_name = :nereus_stats_items
 
+    id_range =  "`skynetID` >= 20000 AND `skynetID` <= 900000"
+
     #reset counters
     #total credit and total RAC
     total_credit = 0
@@ -46,7 +48,7 @@ namespace :nereus do
                                           (`uploaded`+`downloaded`)/15728640 +
                                           (`millisecondsOnline`-`millisecondsDisabled`)/900000
                                         )) as credits
-                                      FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 900000 GROUP BY `skynetID` ",
+                                      FROM `dailyaccountusage` WHERE  #{id_range} GROUP BY `skynetID` ",
                                       :cache_rows => false)
 
         #iterate across results and update local data
@@ -55,7 +57,7 @@ namespace :nereus do
           id = row['skynetID'].to_i
           #credits = credits for network + credit for time
           credit = row['credits']
-          credit = credit.to_i
+          credit = credit.to_i * APP_CONFIG['nereus_to_credit_conversion']
           total_credit += credit
           #update DB object
           if credit > 0
@@ -79,7 +81,7 @@ namespace :nereus do
                                           (`uploaded`+`downloaded`)/15728640 +
                                           (`millisecondsOnline`-`millisecondsDisabled`)/900000
                                         )) as credits
-                                        FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 900000
+                                        FROM `dailyaccountusage` WHERE  #{id_range}
                                         AND (day = #{(Time.now.to_i+8*60*60)/86400} OR day = #{(Time.now.to_i+8*60*60)/86400 -1}) GROUP BY `skynetID`",
                                       :cache_rows => false)
 
@@ -89,7 +91,7 @@ namespace :nereus do
         #iterate across results and update local data
         results.each do |row|
           id = row['skynetID'].to_i
-          credit_to_now =  row['credits'].to_i
+          credit_to_now =  row['credits'].to_i * APP_CONFIG['nereus_to_credit_conversion']
           daily_credit =  (credit_to_now / per_day /2 ).to_i  #esitmate for 2 full days then divided by 2 to get daily average
           total_daily_credit += daily_credit
           #update DB object
@@ -111,7 +113,7 @@ namespace :nereus do
         #get usage data
         results = remote_client.query("SELECT `skynetID`,
                                         SUM(CEILING(`uploaded`+`downloaded`)) as monthly_download
-                                      FROM `dailyaccountusage` WHERE  `skynetID` >= 100000 AND `skynetID` <= 900000
+                                      FROM `dailyaccountusage` WHERE  #{id_range}
                                       AND YEAR(date) = #{Time.now.year} AND MONTH(date) = #{Time.now.month}
                                       GROUP BY `skynetID` ",
                                       :cache_rows => false)
@@ -136,7 +138,7 @@ namespace :nereus do
         #get account data
         results = remote_client.query("SELECT *
                                       FROM  `accountstatus`
-                                      WHERE  `skynetID` >= 100000 AND `skynetID` <= 900000",
+                                      WHERE  #{id_range}",
                                       :cache_rows => false)
 
         #iterate across results and update local data

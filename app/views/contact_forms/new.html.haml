@@ -1,0 +1,17 @@
+
+-content_for :title_bar do
+  #intro-sml-wrap
+    %h1.fontface Contact Us
+
+-content_for :content do
+  #content-wrap
+    #shadowed
+      #inner-boundary
+        #content-inner
+          = simple_form_for @contact_form do |f|
+            = f.input :name, :required => false
+            = f.input :email, :required => false
+            = f.input :message, :as => :text, :required => false
+            .hidden
+              = f.input :nickname, :hint => 'Leave this field blank!'
+            = f.button :submit, 'Send message'

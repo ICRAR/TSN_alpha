@@ -32,6 +32,7 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
   div.append('<div id="y_axis"></div>')
   div.append('<div id="legend"></div>')
   div.append('<div id="chart"></div>')
+  div.append('<div id="slider"></div>')
 
   rick_graph = new Rickshaw.Graph.JSONP.Static (
     element: div.find("#chart")[0]
@@ -80,6 +81,10 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
       order = new Rickshaw.Graph.Behavior.Series.Order(
         graph: graph,
         legend: legend
+      )
+      slider = new Rickshaw.Graph.RangeSlider(
+        graph: graph,
+        element: div.find('#slider')[0]
       )
       div.find("#legend span:first").click()
     min: 'auto'

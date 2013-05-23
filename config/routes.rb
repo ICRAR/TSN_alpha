@@ -1,4 +1,6 @@
 TSNAlpha::Application.routes.draw do
+  resources :contact_forms
+
   get "trophies/show"
 
   root :to => 'pages#index'
@@ -27,7 +29,8 @@ TSNAlpha::Application.routes.draw do
   get "/profile/pause_nereus" => "profiles#pause_nereus", :as => 'pause_nereus'
   get "/profile/resume_nereus" => "profiles#resume_nereus", :as => 'resume_nereus'
 
-get "/nereus/:id/run" => "nereus#run", :as => 'run_nereus'
+get "/nereus/run" => "nereus#run", :as => 'run_nereus'
+get "/nereus/new" => "nereus#new", :as => 'new_nereus'
   resources :alliances do
     member do
        get 'join'

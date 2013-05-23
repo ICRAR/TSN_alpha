@@ -18,8 +18,8 @@ namespace :stats do
         #start upsert batch for all
         Upsert.batch(connection,table_name) do |upsert|
           combined_credits.each do |stat|
-            #******* THIS LINE IS WHERE CREDITS ARE COMBINED VERY IMPORTANT********
-            total_credits = stat.nereus_credit.to_i*APP_CONFIG['nereus_to_credit_conversion']+stat.boinc_credit.to_i
+            #******* THIS LINE IS WHERE CREDITS********
+            total_credits = stat.nereus_credit.to_i+stat.boinc_credit.to_i
             #todo add average credit to general update
             upsert.row({:id => stat.id}, :total_credit => total_credits, :updated_at => Time.now, :created_at => Time.now)
             statsd_batch.gauge("general.users.#{stat.profile_id}.#{stat.id}.credit",total_credits)

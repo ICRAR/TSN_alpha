@@ -30,10 +30,10 @@ class NereusStatsItem < ActiveRecord::Base
     self.active = (!self.limited?  && paused == 0) ? 1 : 0
     self.save
     remote_client =  NereusStatsItem.connect_to_backend_db
-    remote_client.query("UPDATE accountstatus
+    query = "UPDATE accountstatus
                           SET time = #{(Time.now.to_f*1000).to_i}, active = #{active}
                           WHERE skynetID = #{nereus_id}"
-                       )
+    #remote_client.query(query)
   end
 
   #gets account status from remote server and updates model
@@ -43,12 +43,14 @@ class NereusStatsItem < ActiveRecord::Base
                           FROM accountstatus
                           WHERE skynetID = #{nereus_id}"
                         )
-    self.online_today = results.first['onlineToday']
-    self.online_now = results.first['onlineNow']
-    self.mips_now = results.first['mipsNow']
-    self.mips_today = results.first['mipsToday']
-    self.active = results.first['active']
-    self.save
+    if results.first != nil
+      self.online_today = results.first['onlineToday']
+      self.online_now = results.first['onlineNow']
+      self.mips_now = results.first['mipsNow']
+      self.mips_today = results.first['mipsToday']
+      self.active = results.first['active']
+      self.save
+    end
   end
 
   #forces pausing of all open clients
@@ -75,5 +77,28 @@ class NereusStatsItem < ActiveRecord::Base
 
   def monthly_network_usage_mb
     monthly_network_usage / 1024 / 1024
+  end
+
+  def self.next_nereus_id
+    n = NereusStatsItem.where("nereus_id BETWEEN 20000 AND 90000").order("nereus_id DESC").first
+    n == nil ? 20000 : n.nereus_id + 1
+  end
+  def self.new_account
+    new_item = NereusStatsItem.new(
+        :credit => 0,
+        :daily_credit => 0,
+        :nereus_id => NereusStatsItem.next_nereus_id,
+        :rank => 0,
+        :network_limit => 0,
+        :monthly_network_usage => 0,
+        :paused => 0,
+        :active => 1,
+        :online_today => 0,
+        :online_now => 0,
+        :mips_now => 0,
+        :mips_today => 0,
+    )
+    new_item.save
+    return new_item
   end
 end

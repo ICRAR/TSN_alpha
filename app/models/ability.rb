@@ -33,6 +33,7 @@ class Ability
    user ||= User.new # guest user
 
    #defult permissions for all users
+   can :run, NereusStatsItem
    can :read, :all
    can :search, :all
    can :trophies, Profile
@@ -40,6 +41,7 @@ class Ability
    cannot :leave, Alliance
 
   if user.id #user is not a quest user
+    can :new, NereusStatsItem
     can :create, Alliance
     can :manage, Alliance, :id => user.profile.alliance_leader_id
     can :manage, Profile, :user_id => user.id

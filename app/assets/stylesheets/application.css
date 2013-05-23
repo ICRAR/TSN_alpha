@@ -13,4 +13,5 @@
  *= require_tree ./vendor
  *= require general.css.scss
  *= require_tree ./general
+ *= require jquery.ui.all
  */
