@@ -13,7 +13,7 @@ class BoincStatsItem < ActiveRecord::Base
   end
   #using a users email and password (not hashed) looks up the account and if it exists
   # returns the corresponding boinc_stats_item or creates a new one
-  def find_by_boinc_auth(email, password)
+  def self.find_by_boinc_auth(email, password)
     item = self.new
 
     query = {email_addr: email, passwd_hash: Digest::MD5.hexdigest(password+email.downcase)}.to_query

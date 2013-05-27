@@ -58,6 +58,17 @@ class User < ActiveRecord::Base
       return false unless
           Digest::SHA256.hexdigest(self.old_site_password_salt+Digest::SHA256.hexdigest(password)) == self.encrypted_password
       logger.info "User #{email} is using the old password hashing method, updating attribute."
+      self.profile.new_profile_step= 2
+      self.profile.save
+      #look for a boinc account with the same email, pasword.
+      boinc = BoincStatsItem.find_by_boinc_auth(email,password)
+      if boinc.new_record?
+        #Could not find account so do nothing for this step
+      else
+        #found account so add it
+        self.profile.general_stats_item.boinc_stats_item = boinc
+        self.profile.save
+      end
       self.password = password
       true
     end

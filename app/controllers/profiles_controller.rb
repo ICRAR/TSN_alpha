@@ -15,20 +15,12 @@ class ProfilesController < ApplicationController
     end
     @profiles = Profile.for_leader_boards.page(page_num).per(page_per).padding(page_padding).order(sort_column + " " + sort_direction + " NULLS LAST")
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @profiles }
-    end
   end
 
   # GET /profiles/1
   # GET /profiles/1.json
   def show
     @profile = Profile.for_show(params[:id])
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @profile }
-    end
   end
 
   def dashboard
@@ -42,46 +34,38 @@ class ProfilesController < ApplicationController
     @top_profiles = Profile.for_leader_boards.order("rank asc").limit(5)
     @top_alliances = Alliance.for_leaderboard.order('ranking asc').limit(5)
 
-    if @profile.new_profile_step < 2
-      if @profile.new_profile_step < 1
+    case @profile.new_profile_step
+      when 0
         @profile.nickname = @profile.user.username
         respond_to do |format|
           format.html { render :new_profile_step_1}
-          format.json { render json: @profile.for_json_full }
+          format.json { render :dashboard }
         end
-      else
+      when 1
         respond_to do |format|
           format.html { render :new_profile_step_2}
-          format.json { render json: @profile.for_json_full }
+          format.json { render :dashboard }
         end
-      end
-    else
-      respond_to do |format|
-        format.html { render :dashboard}
-        format.json { render json: @profile.for_json_full }
-      end
+      when 2
+        @profile.new_profile_step = 3
+        @profile.save
+        respond_to do |format|
+          format.html { render :new_profile_step_3}
+          format.json { render :dashboard }
+        end
+      else
+        render :action => "dashboard"
     end
   end
 
   def trophies
     @profile = Profile.includes(:trophies).find(params[:id])
-    respond_to do |format|
-      format.html # trophies.html.erb
-      format.json { render json: @profile }
-    end
-
-
   end
 
   # GET /profiles/new
   # GET /profiles/new.json
   def new
     @profile = Profile.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @profile }
-    end
   end
 
   # GET /profiles/1/edit
@@ -100,14 +84,10 @@ class ProfilesController < ApplicationController
   def create
     @profile = Profile.new(params[:profile])
 
-    respond_to do |format|
-      if @profile.save
-        format.html { redirect_to @profile, notice: 'Profile was successfully created.' }
-        format.json { render json: @profile, status: :created, location: @profile }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @profile.errors, status: :unprocessable_entity }
-      end
+    if @profile.save
+      redirect_to @profile, notice: 'Profile was successfully created.'
+    else
+      render :new
     end
   end
 
@@ -120,30 +100,21 @@ class ProfilesController < ApplicationController
     if @profile.update_attributes(params[:profile])
       @profile.new_profile_step = [1,@profile.new_profile_step].max
       @profile.save
-      respond_to do |format|
-        format.html { redirect_to @profile, notice: 'Profile was successfully updated.' }
-        format.json { head :no_content }
-      end
+      redirect_to @profile, notice: 'Profile was successfully updated.'
     else
-      respond_to do |format|
-        format.html { render action: "edit" }
-        format.json { render json: @profile.errors, status: :unprocessable_entity }
-      end
+      render action: "edit"
     end
 
   end
 
   # DELETE /profiles/1
   # DELETE /profiles/1.json
-  def destroy
-    @profile = Profile.find(params[:id])
-    @profile.destroy
-
-    respond_to do |format|
-      format.html { redirect_to profiles_url }
-      format.json { head :no_content }
-    end
-  end
+ # def destroy
+ #   @profile = Profile.find(params[:id])
+ #   @profile.destroy
+ #
+ #   redirect_to profiles_url
+ # end
   def update_boinc_id
     if user_signed_in?
       @profile = current_user.profile
@@ -152,7 +123,7 @@ class ProfilesController < ApplicationController
         redirect_to @profile, alert: boinc.errors.full_messages.to_sentence
       else
         @profile.general_stats_item.boinc_stats_item = boinc
-        @profile.new_profile_step = [2,@profile.new_profile_step].max
+        @profile.new_profile_step = [3,@profile.new_profile_step].max
         @profile.save
         redirect_to @profile, notice: 'Success your account has been joined'
       end
@@ -172,13 +143,10 @@ class ProfilesController < ApplicationController
           redirect_to my_profile_path, alert: boinc.errors.full_messages.to_sentence
         else
           @profile.general_stats_item.boinc_stats_item = boinc
-          @profile.new_profile_step = [2,@profile.new_profile_step].max
+          @profile.new_profile_step = [3,@profile.new_profile_step].max
           @profile.save
           #todo create boinc welcome page
-          respond_to do |format|
-            format.html { render :boinc_welcome} # index.html.erb
-            format.json { render json: @profiles }
-          end
+          render :boinc_welcome
         end
       else
         redirect_to my_profile_path, alert: 'Incorrect password.'
@@ -198,7 +166,7 @@ class ProfilesController < ApplicationController
           redirect_to my_profile_path, notice: 'Sorry that account has all ready been linked, if you believe this is incorrect please contact us'
         else
           @profile.general_stats_item.nereus_stats_item = nereus
-          @profile.new_profile_step = [2,@profile.new_profile_step].max
+          @profile.new_profile_step = [3,@profile.new_profile_step].max
           @profile.save
           redirect_to my_profile_path, notice: 'Success accounts are now linked :).'
         end
@@ -234,23 +202,14 @@ class ProfilesController < ApplicationController
       nereus = current_user.profile.general_stats_item.nereus_stats_item
       if nereus != nil
         nereus.pause
-        respond_to do |format|
-          format.html { redirect_to my_profile_path, notice: 'Updated.'}
-          format.json { render json: {notice: 'Updated.',profile: @profile.for_json_full} }
-        end
+        redirect_to my_profile_path, notice: 'Updated.'
 
       else
-        respond_to do |format|
-          format.html { redirect_to my_profile_path, notice: 'Sorry we could not find your nereus account.'}
-          format.json { render json: {notice: 'Sorry we could not find your nereus account.'} }
-        end
+        redirect_to my_profile_path, notice: 'Sorry we could not find your nereus account.'
 
       end
     else
-      respond_to do |format|
-        format.html { redirect_to root_url, alert: 'You must be logged in to do that.'}
-        format.json { render json: {alert: 'You must be logged in to do that.'} }
-      end
+      redirect_to root_url, alert: 'You must be logged in to do that.'
 
       return
     end
@@ -261,23 +220,14 @@ class ProfilesController < ApplicationController
       nereus = current_user.profile.general_stats_item.nereus_stats_item
       if nereus != nil
         nereus.resume
-        respond_to do |format|
-          format.html { redirect_to my_profile_path, notice: 'Updated.'}
-          format.json { render json: {notice: 'Updated.',profile: @profile.for_json_full} }
-        end
+        redirect_to my_profile_path, notice: 'Updated.'
 
       else
-        respond_to do |format|
-          format.html { redirect_to my_profile_path, notice: 'Sorry we could not find your nereus account.'}
-          format.json { render json: {notice: 'Sorry we could not find your nereus account.'} }
-        end
+        redirect_to my_profile_path, notice: 'Sorry we could not find your nereus account.'
 
       end
     else
-      respond_to do |format|
-        format.html { redirect_to root_url, alert: 'You must be logged in to do that.'}
-        format.json { render json: {alert: 'You must be logged in to do that.'} }
-      end
+      redirect_to root_url, alert: 'You must be logged in to do that.'
 
       return
     end
@@ -285,10 +235,7 @@ class ProfilesController < ApplicationController
   def search
     @profiles = Kaminari.paginate_array(Profile.for_leader_boards.search(params['search'])).page(params[:page]).per(10)
 
-    respond_to do |format|
-      format.html { render :index} # index.html.erb
-      format.json { render json: @profiles }
-    end
+    render :index
   end
 
   private

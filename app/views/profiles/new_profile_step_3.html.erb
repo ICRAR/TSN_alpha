@@ -1,0 +1,36 @@
+<%content_for(:title_bar) do %>
+    <div id="intro-sml-wrap">
+        <h1 class="fontface">Welcome to NEW theSkyNet webpage!</h1>
+    </div>
+
+<% end %>
+
+<%content_for(:content) do %>
+
+    <div id="content-wrap">
+
+        <div class="shadowed">
+            <div class="inner-boundary">
+                <div id="content-inner">
+                    <h2>Welcome to NEW theSkyNet webpage!</h2>
+                    <p>You will find all the same features as the old website, plus some exciting new ones</p>
+                    <p>First up, we have integrated the POGS BOINC trail into theSkyNet.</p>
+                    <% if @profile.general_stats_item.boinc_stats_item == nil %>
+                        <%= render 'boinc_forms' %>
+                    <% else %>
+                        <p>We detected that you already had an account with POGS@BOINC and have connected this to you theSkyNet Account.</p>
+                    <% end %>
+                    <p>Some Key Points to note about the new site.
+                        <ul>
+                            <li>theSkyNet now consists of two subsystems. Nereus (the old system) and Boinc.</li>
+                            <li>Your old credits from Nereus are now worth 10 times as much :) congratulations!</li>
+                            <li>All statitics such as total credit and rank are updated every hour.</li>
+                        </ul>
+                    </p>
+                    <p><%= link_to "Click here to head to your new dashboard page.", my_profile_path %></p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>

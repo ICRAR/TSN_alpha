@@ -42,6 +42,11 @@ gem 'pg_search'
 gem 'mail_form'
 gem 'simple_form'
 
+#json builder
+gem 'rabl'
+# Also add either `oj` or `yajl-ruby` as the JSON parser
+gem 'oj'
+
 group :development do
   gem 'rack-mini-profiler'
   gem 'rails-footnotes', '>= 3.7.9'

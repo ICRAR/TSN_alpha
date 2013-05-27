@@ -82,10 +82,10 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
         graph: graph,
         legend: legend
       )
+      div.find("#legend span:first").click()
       slider = new Rickshaw.Graph.RangeSlider(
         graph: graph,
         element: div.find('#slider')[0]
       )
-      div.find("#legend span:first").click()
     min: 'auto'
     )

@@ -16,7 +16,7 @@
                     <p>
                         <%= image_tag @trophy.image.url %>
                     <p><%= @trophy.desc.html_safe %></p>
-                    <p>This trophy has been won be <%= @trophy.profiles.size %> <%= 'user'.pluralize(@trophy.profiles.size) %></p>
+                    <p>This trophy has been won be <%= @trophy.profiles_trophies.size %> <%= 'user'.pluralize(@trophy.profiles.size) %></p>
 
                     </p>
                 </div>

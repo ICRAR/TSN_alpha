@@ -1,8 +1,13 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery :except => :check_auth
+  helper :json_api
 
   if Rails.env.development?  && false
     Rack::MiniProfiler.authorize_request
+  end
+
+  def after_sign_in_path_for(resource)
+    my_profile_path
   end
 
   rescue_from CanCan::AccessDenied do |exception|

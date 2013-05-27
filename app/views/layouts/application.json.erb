@@ -1,0 +1,9 @@
+<%=
+ raw({
+    metadata: @metadata,
+    error: @error,
+    alert: alert,
+    notice: notice,
+    result: Oj.load(yield)
+  }.to_json)
+%>
