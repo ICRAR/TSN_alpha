@@ -30,7 +30,6 @@ public/system/*
 
 #ignore asset files but not the manifests files
 public/assets/*
-!public/assets/manifest.yml
 public/assets_dev/*
 
 
