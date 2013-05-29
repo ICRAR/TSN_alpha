@@ -16,24 +16,24 @@ module JsonApiHelper
   end
 
   def first_page
-    { :href => url_for(:page => 1,:format => :json,:only_path => false) }
+    { :href => url_for(params.merge({:page => 1,:only_path => false})) }
   end
 
   def previous_page(current_page_num)
     return nil if current_page_num <= 1
-    { :href => url_for(:page => current_page_num-1,:format => :json,:only_path => false) }
+    { :href => url_for(params.merge({:page => current_page_num-1,:only_path => false})) }
   end
 
   def current_page(current_page_num)
-    { :href => url_for(:page => current_page_num,:format => :json,:only_path => false) }
+    { :href => url_for(params.merge({:page => current_page_num,:only_path => false})) }
   end
 
   def next_page(current_page_num, last_page_num)
     return nil if current_page_num >= last_page_num
-    { :href => url_for(:page => current_page_num+1,:format => :json,:only_path => false) }
+    { :href => url_for(params.merge({:page => current_page_num+1,:only_path => false})) }
   end
 
   def last_page(last_page_num)
-    { :href => url_for(:page => last_page_num,:format => :json,:only_path => false) }
+    { :href => url_for(params.merge({:page => last_page_num,:only_path => false})) }
   end
 end

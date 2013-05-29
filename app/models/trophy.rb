@@ -10,4 +10,7 @@ class Trophy < ActiveRecord::Base
   def self.next_trophy(cr)
     tr = Trophy.where("credits >= ?",cr).order("credits ASC").first
   end
+  def self.last_trophy(cr)
+    tr =  Trophy.where("credits <= ?",cr).order("credits DESC").first
+  end
 end

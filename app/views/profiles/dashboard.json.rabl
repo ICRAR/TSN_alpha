@@ -12,8 +12,10 @@ glue :general_stats_item do |g|
 
     end
   end
-  glue :boinc_stats_item do
-    attributes :boinc_id
+  if g.boinc_stats_item != nil
+    child :boinc_stats_item do
+      attributes :boinc_id, :credit, :RAC
+    end
   end
   attributes :credits_to_next_trophy, :rank
   node(:postition_in_ladder_url) {profiles_url({:rank => @profile.general_stats_item.rank, :format => :json}) }

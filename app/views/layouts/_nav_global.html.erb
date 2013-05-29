@@ -1,4 +1,4 @@
-<ul id="globalnav">
+<ul id="globalnav" class="nav nav-pills">
   <li><%= link_to "Home", main_app.root_url %></li>
   <li><%= link_to "About", {:controller => "/pages", :action => "show", :slug => "about"} %></li>
   <% if user_signed_in? %>

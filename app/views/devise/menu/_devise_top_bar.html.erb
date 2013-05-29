@@ -1,30 +1,10 @@
-<div id="login-top">
-
     <% if user_signed_in? %>
-        <%= link_to(destroy_user_session_path, :class => "button small blue") do %>
-            <span>Logout</span>
-        <% end %>
-
-
-
-        <%= link_to(edit_user_registration_path, :class => "button small blue") do %>
-            <span>Edit registration</span>
-        <% end %>
-
-
-        <p>Welcome back, <%= current_user.profile.name %></p>
-
-
+        <span class="navbar-text">Welcome back, <%= current_user.profile.name %></span>
+        <%= link_to("Logout", destroy_user_session_path, :class => "btn btn-tsn")%>
+        <%= link_to("Edit registration", edit_user_registration_path, :class => "btn btn-tsn") %>
 
     <% else %>
-        <%= link_to(new_user_registration_path, :class => "button small blue") do %>
-            <span>Register</span>
-        <% end %>
-
-        <%= link_to(new_user_session_path, :class => "button small blue") do %>
-            <span>Login</span>
-        <% end %>
-        <p>You are not logged in</p>
+        <span class="navbar-text">You are not logged in</span>
+        <%= link_to('Register', new_user_registration_path, :class => "btn btn-tsn")%>
+        <%= link_to('Login',new_user_session_path, :class => "btn btn-tsn")%>
     <% end %>
-
-</div>

@@ -1,20 +1,47 @@
-<ul id="leaderboard-profile">
+<h2>Ladders</h2>
+<div class="tabbable">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab-individual" data-toggle="tab">Individual</a></li>
+        <li><a href="#tab-alliances" data-toggle="tab">Alliances</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active fade in" id="tab-individual">
+            <table class="table table-striped">
+                <thead><tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Credit</th>
+                </tr></thead>
 
-    <% @top_profiles.each do |profile| %>
-        <li><%= "##{profile.rank.to_s}"%> <%= link_to(profile.name, profile)%>
-            <span class="ladder-data">
-                <%= number_with_delimiter(profile.credits) + ' ' + "credit".pluralize(profile.credits)%>
-            </span>
-        </li>
-    <% end %>
-</ul>
-<ul id="leaderboard-alliances">
+                <tbody>
+                    <% @top_profiles.each do |profile| %>
+                        <tr>
+                            <td><%= link_to(profile.rank, profile)%></td>
+                            <td><%=link_to(profile.name, profile)%></td>
+                            <td><%= link_to(number_with_delimiter(profile.credits), profile)%></td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="tab-alliances">
+            <table class="table table-striped">
+            <thead><tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Credit</th>
+            </tr></thead>
 
-    <% @top_alliances.each do |alliance| %>
-        <li><%= "##{alliance.ranking.to_s}"%> <%= link_to(alliance.name.titleize, alliance)%>
-            <span class="ladder-data">
-                <%= number_with_delimiter(alliance.credit) + ' ' + "credit".pluralize(alliance.credit)%>
-            </span>
-        </li>
-    <% end %>
-</ul>
+            <tbody>
+            <% @top_alliances.each do |alliance| %>
+                <tr>
+                    <td><%= link_to(alliance.ranking, alliance)%></td>
+                    <td><%=link_to(alliance.name.titleize, alliance)%></td>
+                    <td><%= link_to(number_with_delimiter(alliance.credit), alliance)%></td>
+                </tr>
+            <% end %>
+            </tbody>
+            </table>
+        </div>
+    </div>
+</div>

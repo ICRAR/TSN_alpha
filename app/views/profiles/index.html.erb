@@ -11,36 +11,39 @@
         <div class="shadowed">
             <div class="inner-boundary">
                 <div id="content-inner">
-                    <table id="leaderboard">
-                      <tr>
-                        <th>Name</th>
-                        <th>Country</th>
-                        <th><%= sortable "rank", "Rank"%></th>
-                        <th><%= sortable "credits", "Total Credit" %></th>
-                        <th><%= sortable "rac", "Average Daily Credit" %></th>
-                        <th>Alliance</th>
-                      </tr>
-
-                    <% @profiles.each do |profile| %>
-                      <tr <%= 'class=selected' if profile.rank == params[:rank] %> >
-                        <td><%= image_tag profile.avatar_url(24) %> <%= link_to profile.name, profile %></td>
-                        <td><%= profile.country %></td>
-                        <td><%= profile.rank %></td>
-                        <td><%= number_with_delimiter(profile.credits) %></td>
-                        <td><%= profile.rac %></td>
-                        <td><%= profile.alliance ? link_to(profile.alliance.name,profile.alliance) : 'Flying Solo' %></td>
-                      </tr>
+                    <%= form_tag(search_profiles_path, :method => "get", :class => "pull-right") do %>
+                        <%= text_field_tag(:search,nil,:class => "search-query", :placeholder => "Search") %>
                     <% end %>
+                    <table id="leaderboard" class="table table-striped">
+                      <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Country</th>
+                            <th><%= sortable "rank", "Rank"%></th>
+                            <th><%= sortable "credits", "Total Credit" %></th>
+                            <th><%= sortable "rac", "Average Daily Credit" %></th>
+                            <th>Alliance</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <% @profiles.each do |profile| %>
+                          <tr <%= 'class=selected' if profile.rank == params[:rank] %> >
+                            <td><%= link_to profile do %>
+                                    <%= image_tag profile.avatar_url(24) %>
+                                    <%= profile.name %>
+                                <% end %>
+                            </td>
+                            <td><%= link_to profile.country, profile %></td>
+                            <td><%= link_to profile.rank, profile %></td>
+                            <td><%= link_to number_with_delimiter(profile.credits), profile %></td>
+                            <td><%= link_to (profile.rac.nil? ? '.':profile.rac), profile %></td>
+                            <td><%= profile.alliance ? link_to(profile.alliance.name,profile.alliance, :style => "text-decoration: underline;") : 'Flying Solo' %></td>
+                          </tr>
+                        <% end %>
+                      </tbody>
                     </table>
                     <%= paginate @profiles %>
                     <%= page_entries_info @profiles %>
-
-                    <br />
-                    <%= form_tag(search_profiles_path, :method => "get") do %>
-                        <%= label_tag(:search, "Search for:") %>
-                        <%= text_field_tag(:search) %>
-                        <%= submit_tag("Search") %>
-                    <% end %>
                 </div>
             </div>
         </div>

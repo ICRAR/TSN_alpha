@@ -3,7 +3,7 @@
     <head>
       <title>TSNAlpha</title>
         <%= favicon_link_tag('favicon.ico') %>
-        <%= stylesheet_link_tag    "application", :media => "all" %>
+        <%= stylesheet_link_tag    "application2", :media => "all" %>
 
 
 
@@ -13,20 +13,21 @@
       <%= csrf_meta_tags %>
     </head>
     <body data-controller="<%= controller_name %>" data-action="<%= action_name %>" <%=  params[:id] ? "data-id=#{params[:id]}" : "" %>>
-        <div id="login-top-wrap"><%= render 'devise/menu/devise_top_bar' %></div>
-        <div class="clearing"></div>
-        <% if notice || alert %>
-            <div id="notify-wrapper">
-                <div id="notice"><p><%= notice %></p></div>
-                <div id="alert"><p><%= alert %></p></div>
-            </div>
-            <div class="clearing"></div>
-        <% end %>
 
-        <div id="wrapper">
-            <div id="header">
+    <div id="top-nav" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <ul class="nav pull-right">
+                <%= render 'devise/menu/devise_top_bar' %>
+            </ul>
+        </div>
+    </div>
+    <div id="wrapper" class="container">
+        <%= bootstrap_flash %>
+
+
+            <h1 id="header">
                 <%= link_to "theSkyNet", main_app.root_url %>
-            </div>
+            </h1>
             <%= render 'layouts/nav_global' %>
             <div class="clearing"></div>
             <% if content_for?(:title_home) %>
@@ -61,7 +62,6 @@
                     <% end %>
                 </div>
             <% end %>
-
 
             <div id="footer">
                 <%=  render 'layouts/footer' %>

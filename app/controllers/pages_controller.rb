@@ -14,8 +14,6 @@ class PagesController < ApplicationController
     render :show
   end
   def index
-
-
     $statsd.increment 'index.view'
     @page =  Page.find_by_slug('index')
     @news = News.published.all

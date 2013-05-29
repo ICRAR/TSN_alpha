@@ -8,7 +8,7 @@ namespace :old_site do
     #connect to old front end db
     remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
 
-=begin
+
     #********* update nereus objects first ***************
     print "updating all nereus_stats_items \n"
     Rake::Task["nereus:update_all"].execute
@@ -21,7 +21,10 @@ namespace :old_site do
     #load accounts
     print "starting user migration \n"
     print "fetching accounts \n"
-    results = remote_client.query("SELECT * FROM `Account` WHERE   `userID` >= 100000 AND `userID` <= 900000",
+    results = remote_client.query("SELECT `Account`.*, t1.first_day FROM `Account`
+                                      LEFT JOIN (SELECT userID, MIN( `day`) as first_day FROM `dailyCredits` GROUP BY  userID) t1
+                                      ON   `Account`.`userID` = t1.`userID`
+                                      WHERE  `Account`.`userID` >= 100000 AND `Account`.`userID` <= 900000 ",
                                   :cache_rows => false)
     print "found #{results.count} accounts \n"
     #iterate across results and update local data
@@ -42,7 +45,7 @@ namespace :old_site do
     print "updating credit for all users \n"
     Rake::Task["stats:update_general"].execute
     print "credit updated \n"
-=end
+
 
     #************import alliances *****************
     print " starting alliance migration \n"
@@ -150,10 +153,12 @@ def make_user(old_user)
       :password => 'password',
       :password_confirmation => 'password',
   )
-  #new_user.confirmed_at = Time.now.utc,
+
   new_user.skip_confirmation!
+  new_user.confirmed_at = Time.now.utc
   if new_user.save
     #populate User field
+    new_user.confirmed_at = old_user[:first_day]
     new_user.encrypted_password = old_user[:password]
     new_user.old_site_password_salt = old_user[:salt]
     new_user.admin = true if old_user[:username] == 'eckley'  # hack to to auto generate myself as admin
@@ -196,7 +201,8 @@ def generate_old_user(row)
       :last_name    => row['lastName'],
       :country      => row['country'],
       :network_limit=> row['networkLimit'].to_i*1024*1024,
-      :paused       => row['paused'].to_i == 1 ? true: false
+      :paused       => row['paused'].to_i == 1 ? true: false,
+      :first_day    => row['first_day'] == nil ? Time.now.utc : Time.at(row['first_day']*86400).utc,
   }
 end
 =begin

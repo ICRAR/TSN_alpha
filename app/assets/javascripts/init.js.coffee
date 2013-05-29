@@ -17,4 +17,6 @@ init: ->
 }
 
 
-$(document).ready Util.init
+$(document).ready(->
+  Util.init()
+)

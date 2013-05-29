@@ -14,16 +14,19 @@
         <div class="shadowed">
             <div class="inner-boundary">
                 <div id="content-inner">
-                    <p>
-                        <% @profile.trophies.each do |trophy| %>
-                                <div class="trophy">
-                                    <%= link_to (image_tag trophy.image.url), trophy %>
-                                    <b><%= link_to "#{trophy.title.titlecase} (#{trophy.credits})" ,  trophy %></b>
-                                    <%= trophy.desc %>
-                                </div>
+                        <% @trophies.each do |trophy| %>
+                        <div class="media">
+                            <a class="pull-left" href="#">
+                                <%= image_tag trophy.image.url, :class=>"media-object" %>
+                            </a>
+                            <div class="media-body">
+                                <h4 class="media-heading"><%= link_to "#{trophy.title.titlecase} (#{trophy.credits})" ,  trophy %></h4>
+                                <%= trophy.desc %>
+                            </div>
+                        </div>
                         <% end %>
-                    </p>
                 </div>
+
             </div>
         </div>
 

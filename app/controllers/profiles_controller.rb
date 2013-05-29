@@ -59,7 +59,8 @@ class ProfilesController < ApplicationController
   end
 
   def trophies
-    @profile = Profile.includes(:trophies).find(params[:id])
+    @profile = Profile.find(params[:id])
+    @trophies = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC")
   end
 
   # GET /profiles/new

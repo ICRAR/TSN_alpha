@@ -1,16 +1,27 @@
-<ul id="nav">
-    <% if user_signed_in? %>
-        <li <%=  'class=on' if (@user_page == 'dashboard') %>><%= link_to('Dashboard', my_profile_path)  %></li>
-        <li <%=  'class=on' if (@user_page == 'my_trophies') %>><%= link_to('My Trophies', trophies_profile_path(current_user.profile))  %></li>
-        <% if  current_user.profile.alliance %>
-            <li <%=  'class=on' if (@user_page == 'my_alliance') %>><%= link_to('My Alliance', current_user.profile.alliance)  %></li>
-        <% end %>
-    <% else %>
-        <li><%=  link_to "Sign Up", new_user_registration_path%></li>
-    <% end %>
-    <li <%=  'class=on' if (@user_page == 'news') %>><%= link_to('News', news_index_path)  %></li>
-    <li <%=  'class=on' if (@user_page == 'leaderboard') %>><%= link_to('Leaderboards', profiles_path)  %></li>
-    <li <%=  'class=on' if (@user_page == 'alliance_leaderboard') %>><%= link_to('Alliances Leaderboards', alliances_path)  %></li>
-
-    <li><%= link_to('Forum', APP_CONFIG['forum_url'])  %></li>
-</ul>
+<div id="page-nav"  class="navbar navbar-inverse">
+    <div class="navbar-inner">
+        <ul class="nav">
+            <% if user_signed_in? %>
+                <li <%=  'class=active' if (@user_page == 'dashboard') %>><%= link_to('Dashboard', my_profile_path)  %></li>
+                <li <%=  'class=active' if (@user_page == 'my_trophies') %>><%= link_to('My Trophies', trophies_profile_path(current_user.profile))  %></li>
+                <% if  current_user.profile.alliance %>
+                    <li <%=  'class=active' if (@user_page == 'my_alliance') %>><%= link_to('My Alliance', current_user.profile.alliance)  %></li>
+                <% end %>
+            <% else %>
+                <li><%=  link_to "Sign Up", new_user_registration_path%></li>
+            <% end %>
+            <li <%=  'class=active' if (@user_page == 'news') %>><%= link_to('News', news_index_path)  %></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    Leaderboards
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li <%=  'class=active' if (@user_page == 'leaderboard') %>><%= link_to('Individual', profiles_path)  %></li>
+                    <li <%=  'class=active' if (@user_page == 'alliance_leaderboard') %>><%= link_to('Alliances', alliances_path)  %></li>
+                </ul>
+            </li>
+            <li><%= link_to('Forum', APP_CONFIG['forum_url'])  %></li>
+        </ul>
+    </div>
+</div>

@@ -14,4 +14,9 @@ class GeneralStatsItem < ActiveRecord::Base
     tr = Trophy.next_trophy(total_credit)
     return tr.credits - total_credit
   end
+  def credits_from_last_trophy
+    self.total_credit = 0 if total_credit == nil
+    tr = Trophy.last_trophy(total_credit)
+    return total_credit-tr.credits
+  end
 end

@@ -13,6 +13,7 @@
 
 //= require jquery
 //= require jquery_ujs
+//= require twitter/bootstrap
 //= require jquery.ui.all
 //= require init.js.coffee
 //= require_tree ./vendor

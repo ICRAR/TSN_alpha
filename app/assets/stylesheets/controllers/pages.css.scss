@@ -3,8 +3,8 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 #home-news-ladders {width:100%; margin-top:30px;}
-#home-news {width:390px; padding:20px; float:left; border-right:1px solid #BBBBBB; background:#000 url('/assets/images/newsbg.jpg') top left no-repeat;}
-#home-ladders {width:390px; padding:20px; float:left; background:url('/assets/images/home-box-bg.jpg') top left no-repeat;}
+#home-news {width:390px; padding:20px; float:left; border-right:1px solid #BBBBBB; background:#000 url('../newsbg.jpg') top left no-repeat;}
+#home-ladders {width:390px; padding:20px; float:left; background:url('../home-box-bg.jpg') top left no-repeat;}
 
 #home-news .article {margin-top:20px; margin-bottom:20px;}
 #home-news .article h3 {font-size:0.877em;}
@@ -14,7 +14,7 @@
 .ribbon {
   position:relative;
   color:#fff;
-  background:#263d68 url('/assets/images/ribbon.gif') repeat-x;
+  background:#263d68 url('../ribbon.gif') repeat-x;
   font-size:1.5em;
   float:left;
   clear:both;
@@ -28,7 +28,7 @@
 }
 .ribbon:before, .ribbon:after {
   content:" ";
-  background:url('/assets/images//ribbon2.png');
+  background:url('../ribbon2.png');
   display:block;
   width:10px;
   height:10px;
@@ -40,7 +40,7 @@
 }
 
 .ribbon:after {
-  background: url("/assets/images/ribbon3.png") repeat scroll 0 0 transparent;
+  background: url("../ribbon3.png") repeat scroll 0 0 transparent;
   left: auto;
   right: 0;
 }
@@ -52,7 +52,7 @@
 #ribbon-content p a:visited {color:#d9d9d9;}
 
 .signupbutton {
-  background: url("/assets/images/signup_button.png") no-repeat scroll center top transparent;
+  background: url("../signup_button.png") no-repeat scroll center top transparent;
   border-radius: 0 0 0 0;
   cursor: pointer;
   display: block;
@@ -72,35 +72,35 @@
 #account a:link , #account a:visited {color:#8cafc5; text-decoration:none;font-family: Arial,Helvetica,sans-serif; font-weight:bold;}
 #account a:hover {color:#c7e1f1;}*/
 
-#intro {width:910px; height:311px; background:url('/assets/images/mainbg.jpg') no-repeat; padding: 5px 25px 0 25px; text-align:center; position:relative;}
-#intro-home {width:960px; height:296px; background:url('/assets/images/introbg.jpg') no-repeat; padding:0; position:relative;}
+#intro {width:910px; height:311px; background:url('../mainbg.jpg') no-repeat; padding: 5px 25px 0 25px; text-align:center; position:relative;}
+#intro-home {width:960px; height:296px; background:url('../introbg.jpg') no-repeat; padding:0; position:relative;}
 #intro-home h1 {font: 42px/50px 'LatoLight', Arial, sans-serif;letter-spacing:-1.5px; color:#ffffff; text-shadow: 1px 1px 1px #191919; font-weight:bold;}
 h1#hsoon { font: 46px/40px 'YanoneKaffeesatzRegular',Arial,sans-serif!important;}
 #intro-home p {color:#d0bbc9; font-size:1em; line-height: 1.7143em; margin-top:20px; position: relative; font-family: Arial,Helvetica,sans-serif;}
-#intro h1 {background:url('/assets/images/soon.png') 0 0 no-repeat; display:block; width:442px; height:36px; margin:35px auto; text-indent:-9999px; margin-bottom:0;}
+#intro h1 {background:url('../soon.png') 0 0 no-repeat; display:block; width:442px; height:36px; margin:35px auto; text-indent:-9999px; margin-bottom:0;}
 #intro-home h1 {margin:0;}
 #intro p {color:#ffffff; font-size:1em; line-height: 1.7143em; margin-top:15px; position: relative; font-family: Arial,Helvetica,sans-serif;}
 #jsCount {position:absolute; top:179px; left: 276px;}
-#signup {width: 960px; height:100px; background:#ffffff url('/assets/images/signupbg.jpg') top center no-repeat;}
+#signup {width: 960px; height:100px; background:#ffffff url('../signupbg.jpg') top center no-repeat;}
 #emailRegister input {color: #b1b1b1; font-size: 110%; padding: 5px; width: 240px; margin-top:12px; margin-left:10px; float:left;}
 #signup p {float:left;}
 #signup_form {width:560px; margin:0 auto; padding-top:20px;}
 
-h2.question {background:url('/assets/images/icon_question.png') 0 0 no-repeat; height:32px; padding-left:42px; padding-top:2px;}
-h2.faqs {background:url('/assets/images/icon_question.png') 0 0 no-repeat; height:32px; padding-left:42px; padding-top:2px;}
+h2.question {background:url('../icon_question.png') 0 0 no-repeat; height:32px; padding-left:42px; padding-top:2px;}
+h2.faqs {background:url('../icon_question.png') 0 0 no-repeat; height:32px; padding-left:42px; padding-top:2px;}
 
 #intro-home-wrap ul {margin:0; padding:0;}
 #intro-home-wrap a span {margin:0; padding:0; display:none;}
 #intro-home-wrap li {display:inline; list-style-type:none; margin-left:0;}
-#intro-home-wrap a.introlearn {background:url('/assets/images/intro_learn.png') 0 0 no-repeat; display:inline-block; height:70px; width:154px;margin:0; padding:0; top:151px; left:30px; position:absolute;}
-#intro-home-wrap a.introstart {background:url('/assets/images/intro-start.png') 0 0 no-repeat; display:inline-block; height:70px; width:206px;margin:0; padding:0; top:151px; left:184px; position:absolute;}
-#intro-home-wrap a.introlearn2 {background:url('/assets/images/intro_learn2.png') 0 0 no-repeat; display:inline-block; height:70px; width:154px;margin:0; padding:0; top:151px; left:30px; position:absolute;}
+#intro-home-wrap a.introlearn {background:url('../intro_learn.png') 0 0 no-repeat; display:inline-block; height:70px; width:154px;margin:0; padding:0; top:151px; left:30px; position:absolute;}
+#intro-home-wrap a.introstart {background:url('../intro-start.png') 0 0 no-repeat; display:inline-block; height:70px; width:206px;margin:0; padding:0; top:151px; left:184px; position:absolute;}
+#intro-home-wrap a.introlearn2 {background:url('../intro_learn2.png') 0 0 no-repeat; display:inline-block; height:70px; width:154px;margin:0; padding:0; top:151px; left:30px; position:absolute;}
 
-#intro-img {width:109px; height:26px; background:url('/assets/images/telescope.png') 0 0 no-repeat; display:block; position:absolute; top:-26px; right:160px;}
+#intro-img {width:109px; height:26px; background:url('../telescope.png') 0 0 no-repeat; display:block; position:absolute; top:-26px; right:160px;}
 #intro-home-wrap {width:500px; padding:50px 0 0 45px; position:relative;}
 
 #intro-sml-wrap {padding:5px 0 0 45px; position:relative;}
-#intro-sml {width:960px; height:149px; background:url('/assets/images/introbg_sml.jpg') no-repeat; padding:0; position:relative;}
+#intro-sml {width:960px; height:149px; background:url('../introbg_sml.jpg') no-repeat; padding:0; position:relative;}
 #intro-sml h1.fontface {font: 35px/40px 'LatoLight', Arial, sans-serif;letter-spacing:0; color:#ffffff; text-shadow: 1px 1px 1px #191919; margin-bottom:0;}
 #intro-sml p {color:#d0bbc9; font-size:0.87em; line-height: 1.7143em; margin-top:10px; position: relative; font-family: Arial,Helvetica,sans-serif;}
 
