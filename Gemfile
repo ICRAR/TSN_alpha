@@ -41,6 +41,8 @@ gem 'linguistics'
 gem "possessive"
 #gem 'will_paginate', '~> 3.0.0'
 gem 'kaminari'
+gem 'turbolinks'
+gem 'jquery-turbolinks'
 
 gem 'pg_search'
 gem 'mail_form'

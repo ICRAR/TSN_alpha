@@ -12,6 +12,7 @@
 //
 
 //= require jquery
+//= require jquery.turbolinks
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require jquery.ui.all
@@ -19,3 +20,4 @@
 //= require_tree ./vendor
 //= require_tree ./general
 //= require_tree ./controllers
+//= require turbolinks
