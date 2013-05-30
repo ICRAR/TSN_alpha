@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
 
   end
 
-  if Rails.env.development? or true
+  if Rails.env.development? || false
     Rack::MiniProfiler.authorize_request
   end
 

@@ -5,33 +5,19 @@ class AlliancesController < ApplicationController
   helper_method :sort_column, :sort_direction
 
   def index
-    @alliances = Alliance.for_leaderboard.page(params[:page]).per(10).order("\"" + sort_column + "\"" " " + sort_direction)
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @alliances }
-    end
+    per_page = params[:per_page]
+    per_page ||= 20
+    @alliances = Alliance.for_leaderboard.page(params[:page]).per(per_page).order("\"" + sort_column + "\"" " " + sort_direction)
   end
 
   # GET /alliances/1
   # GET /alliances/1.json
   def show
+    per_page = params[:per_page]
+    per_page ||= 20
     @alliance = Alliance.for_show(params[:id])
-    @members = AllianceMembers.page(params[:page]).per(20).for_alliance_show(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json {
-        result = @alliance.for_json
-        result[:num_members] = @members.count
-        result[:members] = Array.new
-        @members.each do |member|
-          result[:members] << member.for_json_basic
-        end
-
-        render json: result
-        }
-    end
+    @members = AllianceMembers.page(params[:page]).per(per_page).for_alliance_show(params[:id])
+    @total_members  = AllianceMembers.where(:alliance_id =>params[:id]).count
   end
 
   # GET /alliances/new
@@ -42,11 +28,6 @@ class AlliancesController < ApplicationController
       return
     end
     @alliance = Alliance.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @alliance }
-    end
   end
 
   # GET /alliances/1/edit
@@ -64,19 +45,16 @@ class AlliancesController < ApplicationController
 
     @alliance = Alliance.new(params[:alliance])
     @alliance.ranking = Alliance.calculate(:maximum,'ranking') + 1
-    respond_to do |format|
-      if @alliance.save
-        @alliance.members << current_user.profile
+    if @alliance.save
+      @alliance.members << current_user.profile
 
-        @alliance.leader = current_user.profile
+      @alliance.leader = current_user.profile
 
-        format.html { redirect_to @alliance, notice: 'Alliance was successfully created.' }
-        format.json { render json: @alliance, status: :created, location: @alliance }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @alliance.errors, status: :unprocessable_entity }
-      end
+      redirect_to @alliance, notice: 'Alliance was successfully created.'
+    else
+      render :new
     end
+
   end
 
   # PUT /alliances/1
@@ -88,14 +66,10 @@ class AlliancesController < ApplicationController
       flash[:alert] = @alliance.leader = Profile.find(params[:alliance][:leader])
     end
 
-    respond_to do |format|
-      if @alliance.update_attributes(params[:alliance].except('leader'))
-        format.html { redirect_to @alliance, notice: 'Alliance was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @alliance.errors, status: :unprocessable_entity }
-      end
+    if @alliance.update_attributes(params[:alliance].except('leader'))
+      redirect_to @alliance, notice: 'Alliance was successfully updated.'
+    else
+      render :edit
     end
   end
 
@@ -104,11 +78,6 @@ class AlliancesController < ApplicationController
   def destroy
     @alliance = Alliance.find(params[:id])
     @alliance.destroy
-
-    respond_to do |format|
-      format.html { redirect_to alliances_url }
-      format.json { head :no_content }
-    end
   end
 
   def join
@@ -144,10 +113,7 @@ class AlliancesController < ApplicationController
   def search
     @alliances = Alliance.search_by_name(params[:search]).includes(:leader).page(params[:page]).per(10)
 
-    respond_to do |format|
-      format.html { render :index }
-      format.js { @alliances }
-    end
+    render :index
   end
 
   private

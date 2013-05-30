@@ -4,16 +4,17 @@ class ProfilesController < ApplicationController
   authorize_resource
   helper_method :sort_column, :sort_direction
   def index
-    page_per = 30
+    per_page = params[:per_page]
+    per_page ||= 30
     if (params[:rank] && !params[:page] )
-      rank = [[params[:rank].to_i,page_per/2+1].max,Profile.for_leader_boards.count].min
-      page_num = (rank-page_per/2) / page_per + 1
-      page_padding = (rank-page_per/2) % page_per-1
+      rank = [[params[:rank].to_i,per_page/2+1].max,Profile.for_leader_boards.count].min
+      page_num = (rank-page_per/2) / per_page + 1
+      page_padding = (rank-page_per/2) % per_page-1
     else
       page_num = params[:page]
       page_padding = 0;
     end
-    @profiles = Profile.for_leader_boards.page(page_num).per(page_per).padding(page_padding).order(sort_column + " " + sort_direction + " NULLS LAST")
+    @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).order(sort_column + " " + sort_direction + " NULLS LAST")
 
   end
 

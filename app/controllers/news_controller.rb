@@ -5,7 +5,7 @@ class NewsController < ApplicationController
     render :show
   end
   def index
-    @news_items = News.published.all
+    @news = News.published.all
     render :index
   end
   def dismiss
