@@ -1,0 +1,8 @@
+-id = "announcement-#{announcement.title.gsub(/\s+/, "-")}"
+.alert.alert-block.alert-info.fade.in.announcement{:id => id, :data => {:id => announcement.id} }
+  %h4.alert-heading= announcement.title
+  .short= announcement.short
+  .btn-group
+    = link_to "View", announcement, :class => "btn btn-success announcement-view", id=> "#{id}-view"
+    %button.btn.btn-info.announcement-hide{:id => "#{id}-hide"} Hide
+    %button.btn.btn-warning.announcement-dismiss{:id => "#{id}-warning"} Dismiss

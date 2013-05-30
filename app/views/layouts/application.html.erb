@@ -16,13 +16,14 @@
 
     <div id="top-nav" class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
-            <ul class="nav pull-right">
+            <div class="pull-right">
                 <%= render 'devise/menu/devise_top_bar' %>
-            </ul>
+            </div>
         </div>
     </div>
     <div id="wrapper" class="container">
         <%= bootstrap_flash %>
+            <%= render 'shared/announcement', :announcement => @announcement if @announcement != nil%>
 
 
             <h1 id="header">

@@ -34,22 +34,33 @@ a:link {
   text-decoration: none;
 }
 
-  .containor {
-    width:900px;
-  }
+.containor {
+  width:900px;
+}
 body {
   background:#000000 url('bodybg.jpg') top center no-repeat;
   margin:0;
   padding:0;
-  padding-top: 40px;
+  padding-top: 55px;
   font-family: Arial,Helvetica,sans-serif;
 }
 #top-nav.navbar-inverse .navbar-inner {
   background-color: rgba(0,0,0,0.4);
   background-image: none;
-}
-.navbar .navbar-text {
-  color: white;
+  .pull-right {
+    background-color: black;
+    padding: 5px;
+    .navbar-text {
+      color: white;
+    }
+    .btn-toolbar {
+      margin-top: 10px;
+      .btn-group {
+        margin-top: 5px;
+        vertical-align: top;
+      }
+    }
+  }
 }
 #page-nav {
   margin: 40px 44.5px;

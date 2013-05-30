@@ -13,6 +13,7 @@ class Alliance < ActiveRecord::Base
   scope :temp_rac, joins(:members => [:general_stats_item]).select("alliances.*, sum(general_stats_items.recent_avg_credit) as temp_rac, count(general_stats_items.id) as total_members").group('alliances.id')
   scope :ranked, where("credit IS NOT NULL").order("credit DESC")
   scope :for_leaderboard, where("credit IS NOT NULL").includes(:leader)
+  scope :for_leaderboard_small, where("credit IS NOT NULL")
 
   has_one :leader, :foreign_key => "alliance_leader_id", :class_name => 'Profile', :inverse_of => :alliance_leader
   has_many :member_items, :class_name => 'AllianceMembers', :dependent => :destroy

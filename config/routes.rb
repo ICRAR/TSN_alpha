@@ -46,8 +46,13 @@ get "/nereus/new" => "nereus#new", :as => 'new_nereus'
 
   get "/check_auth" => "application#check_auth"
   post "/check_auth" => "application#check_auth"
+  get "/ping" => "application#ping"
 
-  resources :news, :only => [:index, :show]
+  resources :news, :only => [:index, :show] do
+    member do
+      get 'dismiss'
+    end
+  end
 
 
   # The priority is based upon order of creation:

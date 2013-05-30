@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
- load_and_authorize_resource
+ authorize_resource
   def show
     @page = Page.find_by_slug(params[:slug])
     if (@page.parent)

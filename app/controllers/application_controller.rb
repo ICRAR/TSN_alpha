@@ -2,7 +2,16 @@ class ApplicationController < ActionController::Base
   protect_from_forgery :except => :check_auth
   helper :json_api
 
-  if Rails.env.development?  && false
+  before_filter :check_announcement
+
+  def check_announcement
+    if user_signed_in?
+      @announcement = News.announcement(current_user.profile.announcement_time)
+    end
+
+  end
+
+  if Rails.env.development? or true
     Rack::MiniProfiler.authorize_request
   end
 
@@ -27,9 +36,13 @@ class ApplicationController < ActionController::Base
     else
       return_data = {:authenticated => false}
     end
-    logger.debug return_data
+    #logger.debug return_data
 
     render json: return_data
     return
+  end
+
+  def ping
+    render json:{:status => 'ok'}
   end
 end

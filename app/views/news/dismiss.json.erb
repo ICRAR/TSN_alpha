@@ -1,0 +1,9 @@
+<% self.formats = ["html"] %>
+<%=
+ raw({
+    success: true,
+    new: ( @announcement != nil ? true : false),
+    html: ( @announcement != nil ? render('shared/announcement',:announcement => @announcement) : false),
+  }.to_json)
+%>
+

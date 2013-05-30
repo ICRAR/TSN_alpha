@@ -1251,7 +1251,8 @@ CREATE TABLE profiles (
     alliance_join_date timestamp without time zone,
     new_profile_step integer DEFAULT 0 NOT NULL,
     nickname character varying(255),
-    use_full_name boolean DEFAULT true
+    use_full_name boolean DEFAULT true,
+    announcement_time timestamp without time zone
 );
 
 
@@ -1944,3 +1945,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130513015708');
 INSERT INTO schema_migrations (version) VALUES ('20130522075935');
 
 INSERT INTO schema_migrations (version) VALUES ('20130522080102');
+
+INSERT INTO schema_migrations (version) VALUES ('20130530035510');

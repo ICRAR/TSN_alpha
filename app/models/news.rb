@@ -17,4 +17,9 @@ class News < ActiveRecord::Base
       ckeditor true
     end
   end
+
+  def self.announcement(time)
+      time ||= Time.at(0)
+      where('published = true AND published_time > ?', time).order('published_time ASC').first
+  end
 end

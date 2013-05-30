@@ -31,8 +31,8 @@ class ProfilesController < ApplicationController
       return
     end
 
-    @top_profiles = Profile.for_leader_boards.order("rank asc").limit(5)
-    @top_alliances = Alliance.for_leaderboard.order('ranking asc').limit(5)
+    @top_profiles = Profile.for_leader_boards_small.order("rank asc").limit(5)
+    @top_alliances = Alliance.for_leaderboard_small.order('ranking asc').limit(5)
 
     case @profile.new_profile_step
       when 0
