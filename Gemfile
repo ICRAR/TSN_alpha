@@ -43,6 +43,8 @@ gem "possessive"
 gem 'kaminari'
 gem 'turbolinks'
 gem 'jquery-turbolinks'
+gem 'fancybox2-rails', '~> 0.2.4'
+gem 'paper_trail'
 
 gem 'pg_search'
 gem 'mail_form'
@@ -98,4 +100,3 @@ gem "statsd-ruby", :require => "statsd"
 
 #not loaded when running rails used to make generating cron jobs easy
 gem 'whenever', :require => false
-#gem 'spring', :git => 'git://github.com/jonleighton/spring.git', :require => false

@@ -40,7 +40,7 @@
 }
 
 .ribbon:after {
-  background: url("../ribbon3.png") repeat scroll 0 0 transparent;
+  background: url(image_path('ribbon3.png')) repeat scroll 0 0 transparent;
   left: auto;
   right: 0;
 }
@@ -52,7 +52,7 @@
 #ribbon-content p a:visited {color:#d9d9d9;}
 
 .signupbutton {
-  background: url("../signup_button.png") no-repeat scroll center top transparent;
+  background: url(image_path("signup_button.png")) no-repeat scroll center top transparent;
   border-radius: 0 0 0 0;
   cursor: pointer;
   display: block;

@@ -11,6 +11,6 @@ child @members => :members do
   node(:url) {|m| profile_url(m.profile,:format => :json)}
   node(:is_current_member) {|m| m.leave_date == nil ? true : false}
 end
-node(:paginate) do
+node(:paginate_members) do
   paginate_json @members
 end

@@ -1,5 +1,5 @@
 object @profile
-attributes :id, :name
+attributes :id
 child :trophies do
   extends "profiles/trophies_list"
 end
