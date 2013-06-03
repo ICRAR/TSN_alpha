@@ -16,5 +16,6 @@
  *= require_tree ./general
  *= require bootstrap_and_overrides
  *= require jquery.ui.all
+ *= require fancybox
  */
 

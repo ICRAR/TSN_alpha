@@ -1,0 +1,53 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @alliance.name.titleize
+  -@user_page =  (user_signed_in? and @alliance.members.include?(current_user.profile)) ? 'my_alliance' : 'alliance_leaderboard'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .shadowed
+      .inner-boundary
+        #content-inner
+          %p
+            %b Name:
+            =@alliance.name.titleize
+          %p
+            %b Leader:
+            =link_to @alliance.leader.name, @alliance.leader if @alliance.leader != nil
+          %p
+            %b Ranking:
+            =@alliance.ranking
+          %p
+            %b Total Members:
+            ="#{@alliance.members.size} (#{@total_members})"
+          %p
+            %b Total Credit:
+            =number_with_delimiter(@alliance.credit)
+          %p
+            %b Members:
+            %table.table.table-striped
+              %thead
+                %tr
+                  %th Name
+                  %th Total Credit
+                  %th= "Credit Contributed to#{@alliance.name.titleize}"
+                  %th Alliance Rank
+                  %th Overall Rank
+              - rank =1
+              %tbody
+                -@members.each do |member|
+                  %tr
+                    %td
+                      =link_to member.profile do
+                        =image_tag member.profile.avatar_url(24)
+                        =member.profile.name
+                    %td= link_to number_with_delimiter(member.credits), member.profile
+                    %td= link_to number_with_delimiter(member.credit_contributed), member.profile
+                    %td= link_to rank, member.profile
+                    %td=link_to  member.rank, member.profile
+                    -rank +=1
+            =paginate @members
+            =page_entries_info @members
+          #alliance_graph
+          -link_to('Manage my alliance', edit_alliance_path(@alliance)) if  (user_signed_in? && current_user.profile.alliance_leader == @alliance)

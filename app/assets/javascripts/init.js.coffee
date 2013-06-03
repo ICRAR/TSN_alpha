@@ -19,4 +19,5 @@ init: ->
 
 $(document).ready(->
   Util.init()
+  $('a.fancybox').fancybox()
 )

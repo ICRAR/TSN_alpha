@@ -1,0 +1,14 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @title
+  %ul#nav
+    -@links.each do |link|
+      %li{:class => (link == @page? 'on' : '')}= link_to(link.title, link)
+
+-content_for(:content) do
+  #content-wrap
+    .shadowed
+      .inner-boundary
+        #content-inner.page
+          %h2= @page.title
+          %div= @content

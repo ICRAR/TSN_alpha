@@ -176,6 +176,7 @@ namespace :nereus do
       }
       #update active status + check network usage
       #also updates active status in remote db as well
+=begin
       bench.report('update active status') {
         Upsert.batch(remote_client,'accountstatus') do |upsert|
           nereus_update_hash.each do |item|
@@ -201,6 +202,7 @@ namespace :nereus do
         #send totals to stats
         statsd_batch.gauge("nereus.stats.total_active",total_active)
       }
+=end
       bench.report('save all') {
 
         #start upsert batch for this slice

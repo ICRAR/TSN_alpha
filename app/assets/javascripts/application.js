@@ -21,3 +21,4 @@
 //= require_tree ./general
 //= require_tree ./controllers
 //= require turbolinks
+//= require fancybox
