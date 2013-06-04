@@ -6,6 +6,7 @@ namespace :historical_graphite do
     remote_client_front_end = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
     main_db = ActiveRecord::Base.connection
 
+    @today = Time.now.to_i/86400
 
     print "Starting histroical graphite run ********* \n"
     bench_time = Benchmark.bm do |bench|
@@ -87,7 +88,7 @@ def load_nereus_user(user_id,db_con)
       day += 1
 
     end
-    today = 15831
+    today = @today
     while  current_day < today
       query_total << " #{day_to_timestamp(current_day)}:#{last_credit}"
       query_daily << " #{day_to_timestamp(current_day)}:#{0}"
@@ -186,7 +187,7 @@ end
 
 def ranks(db_con)
   start_date = 15226
-  end_date = 15831
+  end_date = @today
   #end_date = 15228
   users = Hash.new
 
@@ -317,7 +318,7 @@ end
 def load_all_alliance_days(main_db,remote_client_front_end)
   allaince_hash = Hash.new
   start_date = 15226
-  end_date = 15831
+  end_date = @today
   for day in start_date..end_date do
     print "day: #{day} \n"
     get_alliance_daily_credit(main_db,remote_client_front_end,day,allaince_hash)
@@ -326,7 +327,7 @@ def load_all_alliance_days(main_db,remote_client_front_end)
 end
 def create_graphite_alliance_ranks(main_db)
   start_date = 15226
-  end_date = 15831
+  end_date = @today
   #end_date = 15228
   alliances = Hash.new
 

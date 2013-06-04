@@ -1,0 +1,43 @@
+!!!
+%html
+  %head
+    %title TSNAlpha
+    =favicon_link_tag('favicon.ico')
+    =stylesheet_link_tag    "application", :media => "all"
+    =javascript_include_tag "application"
+    =csrf_meta_tags
+
+  %body{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : '')}
+    #top-nav.navbar.navbar-inverse.navbar-fixed-top
+      .navbar-inner
+        .pull-right
+          =render 'devise/menu/devise_top_bar'
+
+    #wrapper.container
+      =bootstrap_flash
+      =render 'shared/announcement', :announcement => @announcement if @announcement != nil
+      %h1#header= link_to "theSkyNet", main_app.root_url
+      =render 'layouts/nav_global'
+      .clearing
+      #main
+        -if content_for?(:title_home)
+          = yield(:title_home)
+          #content{:style=>"background:#ffffff;"}= content_for?(:content) ? yield(:content) : yield
+        -else
+          -if content_for?(:title_bar)
+            #intro-sml=  yield(:title_bar)
+          -else
+            #intro-sml
+              #intro-sml-wrap
+                %p= ' '
+          #content
+            -if content_for?(:content)
+              =yield(:content)
+            -else
+              #content-wrap
+                .shadowed
+                  .inner-boundary
+                    #content-inner
+                      =yield
+
+        #footer= render 'layouts/footer'

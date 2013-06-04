@@ -21,3 +21,9 @@ $(document).ready(->
   Util.init()
   $('a.fancybox').fancybox()
 )
+
+$(document).on 'page:fetch', ->
+  $('#main').fadeOut 'slow'
+
+$(document).on 'page:restore', ->
+  $('#main').fadeIn 'slow'

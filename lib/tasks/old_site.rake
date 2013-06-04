@@ -9,13 +9,11 @@ namespace :old_site do
     remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
 
 
+=begin
     #********* update nereus objects first ***************
     print "updating all nereus_stats_items \n"
     Rake::Task["nereus:update_all"].execute
     print "nereus items update complete \n"
-
-    #connect to old front end db
-    remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
 
     #*********add users************
     #load accounts
@@ -45,9 +43,12 @@ namespace :old_site do
     print "updating credit for all users \n"
     Rake::Task["stats:update_general"].execute
     print "credit updated \n"
+=end
 
 
     #************import alliances *****************
+    Alliance.delete_all
+    AllianceMembers.delete_all
     print " starting alliance migration \n"
     print "fetching alliances \n"
     results = remote_client.query("SELECT * FROM `Team`", :cache_rows => false)

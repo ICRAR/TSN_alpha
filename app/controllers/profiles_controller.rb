@@ -8,8 +8,8 @@ class ProfilesController < ApplicationController
     per_page ||= 30
     if (params[:rank] && !params[:page] )
       rank = [[params[:rank].to_i,per_page/2+1].max,Profile.for_leader_boards.count].min
-      page_num = (rank-page_per/2) / per_page + 1
-      page_padding = (rank-page_per/2) % per_page-1
+      page_num = (rank-per_page/2) / per_page + 1
+      page_padding = (rank-per_page/2) % per_page-1
     else
       page_num = params[:page]
       page_padding = 0;
