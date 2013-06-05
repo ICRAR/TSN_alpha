@@ -74,13 +74,13 @@ namespace :stats do
         Upsert.batch(connection,table_name) do |upsert|
           alliances_rac_total.each do |alliance|
             upsert.row({:id => alliance.id},:RAC => alliance.temp_rac, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("alliance.#{alliance.id}.rac",alliance.temp_rac)
-            statsd_batch.gauge("alliance.#{alliance.id}.total_members",alliance.total_members)
+            statsd_batch.gauge("general.alliance.#{alliance.id}.daily_credit",alliance.temp_rac)
+            statsd_batch.gauge("general.alliance.#{alliance.id}.current_members",alliance.total_members)
           end
           alliances_credit.each do |alliance|
             credit = alliance.temp_credit
             upsert.row({:id => alliance.id}, :credit => credit, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("alliance.#{alliance.id}.credit",credit)
+            statsd_batch.gauge("general.alliance.#{alliance.id}.total_credit",credit)
           end
         end
       }
@@ -93,7 +93,7 @@ namespace :stats do
         Upsert.batch(connection,table_name) do |upsert|
           alliances.each do |alliance|
             upsert.row({:id => alliance.id}, :ranking => rank, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("alliance.#{alliance.id}.rank", rank)
+            statsd_batch.gauge("general.alliance.#{alliance.id}.rank", rank)
             rank += 1
           end
         end

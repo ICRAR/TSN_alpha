@@ -8,7 +8,7 @@ TSN.alliances = new Object;
 TSN.alliances.show = () ->
   id = $(document.body).data("id")
 
-  metrics = ["stats.gauges.TSN_dev.alliance.#{id}.rank","stats.gauges.TSN_dev.alliance.#{id}.credit"]
+  metrics = ["stats.gauges.TSN_dev.general.alliance.#{id}.rank","stats.gauges.TSN_dev.alliance.#{id}.total_credit"]
   names = ['Rank','Total Credit']
 
-  TSN.rickshaw_graph(metrics,names,$("#alliance_graph"),'-3days')
+  TSN.rickshaw_graph(metrics,names,$("#alliance_graph"),'-24months')
