@@ -169,16 +169,15 @@ namespace :nereus do
           total_mips_today += mips_today
         end
         #send totals to stats
-        statsd_batch.gauge("nereus.stats.total_active",total_online_now)
-        statsd_batch.gauge("nereus.stats.total_active",total_online_today)
-        statsd_batch.gauge("nereus.stats.total_active",total_mips_now)
-        statsd_batch.gauge("nereus.stats.total_active",total_mips_today)
+        statsd_batch.gauge("nereus.stats.total_online_now",total_online_now)
+        statsd_batch.gauge("nereus.stats.total_online_today",total_online_today)
+        statsd_batch.gauge("nereus.stats.total_mips_now",total_mips_now)
+        statsd_batch.gauge("nereus.stats.total_mips_today",total_mips_today)
       }
       #update active status + check network usage
       #also updates active status in remote db as well
-=begin
       bench.report('update active status') {
-        Upsert.batch(remote_client,'accountstatus') do |upsert|
+        #Upsert.batch(remote_client,'accountstatus') do |upsert|
           nereus_update_hash.each do |item|
             id = item[0].to_i
             update_row = item[1] #fix for using hashes as array
@@ -191,18 +190,17 @@ namespace :nereus do
             total_active += active
             #only update old db if active status has changed
             if active != update_row[:active]
-              upsert.row({:skynetID => item[0]}, :active => active)
+              #upsert.row({:skynetID => item[0]}, :active => active)
             end
             nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
             nereus_update_hash[id][:active] = active
             statsd_batch.gauge("nereus.users.#{id}.active",active)
 
           end
-        end
+        #end
         #send totals to stats
         statsd_batch.gauge("nereus.stats.total_active",total_active)
       }
-=end
       bench.report('save all') {
 
         #start upsert batch for this slice
