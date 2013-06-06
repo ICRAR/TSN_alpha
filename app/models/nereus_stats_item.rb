@@ -60,7 +60,6 @@ class NereusStatsItem < ActiveRecord::Base
       end
       EM.stop
     end
-    sleep(5)
   end
 
   #forces pausing of all open clients
