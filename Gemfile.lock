@@ -72,6 +72,7 @@ GEM
       warden (~> 1.2.1)
     diff-lcs (1.2.4)
     erubis (2.7.0)
+    eventmachine (1.0.3)
     excon (0.22.1)
     execjs (1.4.0)
       multi_json (~> 1.0)
@@ -281,6 +282,7 @@ DEPENDENCIES
   ckeditor
   coffee-rails (~> 3.2.1)
   devise
+  eventmachine
   factory_girl_rails
   faker
   fancybox2-rails (~> 0.2.4)

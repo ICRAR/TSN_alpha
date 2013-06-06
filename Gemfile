@@ -45,6 +45,7 @@ gem 'turbolinks'
 gem 'jquery-turbolinks'
 gem 'fancybox2-rails', '~> 0.2.4'
 gem 'paper_trail'
+gem "eventmachine"
 
 gem 'pg_search'
 gem 'mail_form'

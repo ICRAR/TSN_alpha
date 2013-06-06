@@ -8,6 +8,9 @@ class NereusStatsItem < ActiveRecord::Base
   def self.connect_to_backend_db
     remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host'], :username => APP_CONFIG['nereus_username'], :database => APP_CONFIG['nereus_database'], :password => APP_CONFIG['nereus_password'])
   end
+  def self.connect_to_backend_db_EM
+    remote_client = Mysql2::EM::Client.new(:host => APP_CONFIG['nereus_host'], :username => APP_CONFIG['nereus_username'], :database => APP_CONFIG['nereus_database'], :password => APP_CONFIG['nereus_password'])
+  end
 
   def for_json
     result = Hash.new
@@ -38,21 +41,26 @@ class NereusStatsItem < ActiveRecord::Base
 
   #gets account status from remote server and updates model
   def update_status
-    remote_client =  NereusStatsItem.connect_to_backend_db
-    results = remote_client.query("SELECT skynetID, onlineNow, onlineToday, mipsNow, mipsToday, active
-                          FROM accountstatus
-                          WHERE skynetID = #{nereus_id}"
-                        )
-    results.callback do |result|
-      if result.first != nil
-        self.online_today = result.first['onlineToday']
-        self.online_now = result.first['onlineNow']
-        self.mips_now = result.first['mipsNow']
-        self.mips_today = result.first['mipsToday']
-        self.active = result.first['active']
-        self.save
+    require 'mysql2/em'
+    EM.run do
+      remote_client =  NereusStatsItem.connect_to_backend_db_EM
+      results = remote_client.query("SELECT skynetID, onlineNow, onlineToday, mipsNow, mipsToday, active
+                            FROM accountstatus
+                            WHERE skynetID = #{nereus_id}"
+                          )
+      results.callback do |result|
+        if result.first != nil
+          self.online_today = result.first['onlineToday']
+          self.online_now = result.first['onlineNow']
+          self.mips_now = result.first['mipsNow']
+          self.mips_today = result.first['mipsToday']
+          self.active = result.first['active']
+          self.save
+        end
       end
+      EM.stop
     end
+    sleep(5)
   end
 
   #forces pausing of all open clients
