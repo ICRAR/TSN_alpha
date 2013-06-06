@@ -5,27 +5,12 @@ class NereusStatsItem < ActiveRecord::Base
   scope :connected, where('general_stats_item_id IS NOT NULL')
   belongs_to :general_stats_item
 
-  def self.connect_to_backend_db
-    remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host'], :username => APP_CONFIG['nereus_username'], :database => APP_CONFIG['nereus_database'], :password => APP_CONFIG['nereus_password'])
-  end
-  def self.connect_to_backend_db_EM
-    remote_client = Mysql2::EM::Client.new(:host => APP_CONFIG['nereus_host'], :username => APP_CONFIG['nereus_username'], :database => APP_CONFIG['nereus_database'], :password => APP_CONFIG['nereus_password'])
-  end
-
-  def for_json
-    result = Hash.new
-    result[:credit] = credit
-    result[:rank] = rank
-    result[:network_limit] = network_limit
-    result[:monthly_network_usage] = monthly_network_usage
-    result[:paused] = paused
-    result[:active] = active
-    result[:online_today] = online_today
-    result[:online_now] = online_now
-    result[:mips_now] = mips_now
-    result[:mips_today] = mips_today
-    result[:limited] = self.limited?
-    return  result
+  def self.connect_to_backend_db(connect_timeout = 10)
+    begin
+      remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host'], :username => APP_CONFIG['nereus_username'], :database => APP_CONFIG['nereus_database'], :password => APP_CONFIG['nereus_password'], :connect_timeout => connect_timeout)
+    rescue
+      remote_client=false
+    end
   end
 
   #sets active status on remote server
@@ -41,24 +26,29 @@ class NereusStatsItem < ActiveRecord::Base
 
   #gets account status from remote server and updates model
   def update_status
-    require 'mysql2/em'
-    EM.run do
-      remote_client =  NereusStatsItem.connect_to_backend_db_EM
-      results = remote_client.query("SELECT skynetID, onlineNow, onlineToday, mipsNow, mipsToday, active
-                            FROM accountstatus
-                            WHERE skynetID = #{nereus_id}"
-                          )
-      results.callback do |result|
-        if result.first != nil
-          self.online_today = result.first['onlineToday']
-          self.online_now = result.first['onlineNow']
-          self.mips_now = result.first['mipsNow']
-          self.mips_today = result.first['mipsToday']
-          self.active = result.first['active']
+    if !last_checked_time or (last_checked_time < 1.minutes.ago)
+      remote_client =  NereusStatsItem.connect_to_backend_db(1)
+      if remote_client
+        results = remote_client.query("SELECT skynetID, onlineNow, onlineToday, mipsNow, mipsToday, active
+                              FROM accountstatus
+                              WHERE skynetID = #{nereus_id}"
+                            )
+        if results.first != nil
+          self.online_today = results.first['onlineToday']
+          self.online_now = results.first['onlineNow']
+          self.mips_now = results.first['mipsNow']
+          self.mips_today = results.first['mipsToday']
+          self.active = results.first['active']
+          self.last_checked_time = Time.now
           self.save
+        else
+          false
         end
+      else
+        false
       end
-      EM.stop
+    else
+      false
     end
   end
 
@@ -106,6 +96,7 @@ class NereusStatsItem < ActiveRecord::Base
         :online_now => 0,
         :mips_now => 0,
         :mips_today => 0,
+        :last_checked_time => Time.now
     )
     new_item.save
     return new_item

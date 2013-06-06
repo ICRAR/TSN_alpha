@@ -72,7 +72,6 @@ GEM
       warden (~> 1.2.1)
     diff-lcs (1.2.4)
     erubis (2.7.0)
-    eventmachine (1.0.3)
     excon (0.22.1)
     execjs (1.4.0)
       multi_json (~> 1.0)
@@ -140,7 +139,7 @@ GEM
     mime-types (1.23)
     multi_json (1.7.4)
     multi_xml (0.5.3)
-    mysql2 (0.3.11)
+    mysql2 (0.3.12b6)
     nested_form (0.3.2)
     net-scp (1.1.1)
       net-ssh (>= 2.6.5)
@@ -282,7 +281,6 @@ DEPENDENCIES
   ckeditor
   coffee-rails (~> 3.2.1)
   devise
-  eventmachine
   factory_girl_rails
   faker
   fancybox2-rails (~> 0.2.4)
@@ -294,7 +292,7 @@ DEPENDENCIES
   less-rails
   linguistics
   mail_form
-  mysql2
+  mysql2 (~> 0.3.12b6)
   newrelic_rpm
   nokogiri
   oj

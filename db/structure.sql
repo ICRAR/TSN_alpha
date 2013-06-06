@@ -1142,7 +1142,8 @@ CREATE TABLE nereus_stats_items (
     online_today integer,
     online_now integer,
     mips_now integer,
-    mips_today integer
+    mips_today integer,
+    last_checked_time timestamp without time zone
 );
 
 
@@ -2005,3 +2006,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130522080102');
 INSERT INTO schema_migrations (version) VALUES ('20130530035510');
 
 INSERT INTO schema_migrations (version) VALUES ('20130531015357');
+
+INSERT INTO schema_migrations (version) VALUES ('20130606092230');

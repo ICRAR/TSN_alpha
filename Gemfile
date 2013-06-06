@@ -6,7 +6,7 @@ gem 'rails', '3.2.11'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pg'     #main db driver
-gem 'mysql2' #for connecting with nereus db
+gem 'mysql2', '~>0.3.12b6' #for connecting with nereus db
 
 #gems for user auth
 gem 'devise'
@@ -45,7 +45,7 @@ gem 'turbolinks'
 gem 'jquery-turbolinks'
 gem 'fancybox2-rails', '~> 0.2.4'
 gem 'paper_trail'
-gem "eventmachine"
+
 
 gem 'pg_search'
 gem 'mail_form'
