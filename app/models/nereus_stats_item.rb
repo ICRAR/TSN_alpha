@@ -43,13 +43,15 @@ class NereusStatsItem < ActiveRecord::Base
                           FROM accountstatus
                           WHERE skynetID = #{nereus_id}"
                         )
-    if results.first != nil
-      self.online_today = results.first['onlineToday']
-      self.online_now = results.first['onlineNow']
-      self.mips_now = results.first['mipsNow']
-      self.mips_today = results.first['mipsToday']
-      self.active = results.first['active']
-      self.save
+    results.callback do |result|
+      if result.first != nil
+        self.online_today = result.first['onlineToday']
+        self.online_now = result.first['onlineNow']
+        self.mips_now = result.first['mipsNow']
+        self.mips_today = result.first['mipsToday']
+        self.active = result.first['active']
+        self.save
+      end
     end
   end
 

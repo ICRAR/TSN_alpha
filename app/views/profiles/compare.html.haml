@@ -1,0 +1,21 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Compare
+  -@user_page =  'dashboard'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .row-fluid
+      .span6.well
+        = @profile1.name
+      .span6.well
+        = @profile2.name
+    .row-fluid
+      .span12.well
+        -boinc_id1= @profile1.general_stats_item.boinc_stats_item.boinc_id if @profile1.general_stats_item.boinc_stats_item != nil
+        -boinc_id2= @profile2.general_stats_item.boinc_stats_item.boinc_id if @profile2.general_stats_item.boinc_stats_item != nil
+        -nereus_id1= @profile1.general_stats_item.nereus_stats_item.nereus_id if @profile1.general_stats_item.nereus_stats_item != nil
+        -nereus_id2= @profile2.general_stats_item.nereus_stats_item.nereus_id if @profile2.general_stats_item.nereus_stats_item != nil
+        #chart_container{:data => {:name1 => @profile1.name, :boinc_id1=>boinc_id1, :nereus_id1=> nereus_id1, :profile_id1 => @profile1.id,
+                                   :name2 => @profile2.name, :boinc_id2=>boinc_id2, :nereus_id2=> nereus_id2, :profile_id2 => @profile2.id}}

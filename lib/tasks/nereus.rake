@@ -12,7 +12,7 @@ namespace :nereus do
     connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
     table_name = :nereus_stats_items
 
-    id_range =  "`skynetID` >= 20000 AND `skynetID` <= 900000"
+    id_range =  "`skynetID` >= 10000 AND `skynetID` <= 900000"
 
     #reset counters
     #total credit and total RAC

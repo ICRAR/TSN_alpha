@@ -20,7 +20,7 @@ Rickshaw.Graph.JSONP.Static = Rickshaw.Class.create(
         error: this.error.bind(this),
         dataType: 'jsonp',
         cache: true,
-        jsonpCallback: 'rickshaw_callback'
+        jsonpCallback: this.callback
       )
   )
 
@@ -35,6 +35,7 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
   div.append('<div id="slider"></div>')
 
   rick_graph = new Rickshaw.Graph.JSONP.Static (
+    callback: "rickshaw_callback_#{div.attr('id')}"
     element: div.find("#chart")[0]
     renderer: 'line'
     width: 600,

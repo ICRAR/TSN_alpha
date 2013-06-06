@@ -1,0 +1,28 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Account Dashboard
+  -@user_page =  'dashboard'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .row-fluid
+      .span8.well
+        = render 'profiles/dashboard/general_dashboard'
+      .span4.well
+        =render 'profiles/dashboard/alliances_dashboard'
+    .row-fluid
+      .span5
+        .row-fluid
+          .span12.well
+            =render 'profiles/dashboard/boinc_dashboard'
+        .row-fluid
+          .span12.well
+            = render 'profiles/dashboard/nereus_dashboard'
+      .span7.well
+        = render 'profiles/dashboard/ladder_dashboard'
+    .row-fluid
+      .span12.well
+        -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil
+        -nereus_id= @profile.general_stats_item.nereus_stats_item.nereus_id if @profile.general_stats_item.nereus_stats_item != nil
+        #chart_container{:data => {:boinc_id=>boinc_id, :nereus_id=> nereus_id, :profile_id => @profile.id}}

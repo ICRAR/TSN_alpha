@@ -10,14 +10,17 @@ namespace :historical_graphite do
 
     print "Starting histroical graphite run ********* \n"
     bench_time = Benchmark.bm do |bench|
+
       bench.report('create ranks graphs') {
         ranks(remote_client)
       }
 
       bench.report('create user graphs') {
         users = NereusStatsItem.all
+        i = 0;
+        size = users.length
         users.each do |user|
-          print "update user id:#{user.nereus_id} \n"
+          print "update user id:#{user.nereus_id}  #{i}/#{size} \n"
           load_nereus_user(user.nereus_id,remote_client)
         end
       }
@@ -25,7 +28,7 @@ namespace :historical_graphite do
       bench.report('create total graphs') {
         load_nereus_totals(remote_client)
       }
-
+=begin
       bench.report('load Alliance data') {
         #reset daily alliance table
         main_db.execute("DELETE FROM daily_alliance_credit WHERE 1=1")
@@ -39,8 +42,9 @@ namespace :historical_graphite do
       bench.report('update allaince graphs') {
         create_graphite_alliance_graphs(main_db)
       }
-
+=end
     end
+
   end
 end
 
@@ -112,7 +116,7 @@ def load_nereus_totals(db_con)
                                             (`uploaded`+`downloaded`)/15728640 +
                                             (`millisecondsOnline`-`millisecondsDisabled`)/900000
                                           )) as credit
-                                  FROM dailyaccountusage WHERE `skynetID` >= 20000 AND `skynetID` <= 900000 GROUP BY day
+                                  FROM dailyaccountusage WHERE `skynetID` >= 10000 AND `skynetID` <= 900000 GROUP BY day
                                 ) as t1
                             inner join (SELECT skynetID,
                                          day ,
@@ -120,7 +124,7 @@ def load_nereus_totals(db_con)
                                             (`uploaded`+`downloaded`)/15728640 +
                                             (`millisecondsOnline`-`millisecondsDisabled`)/900000
                                           )) as credit
-                                  FROM dailyaccountusage WHERE `skynetID` >= 20000 AND `skynetID` <= 900000 GROUP BY day
+                                  FROM dailyaccountusage WHERE `skynetID` >= 10000 AND `skynetID` <= 900000 GROUP BY day
                             ) as t2 on t1.day >= t2.day
                             GROUP BY t1.day
                             order by t1.day asc",
@@ -198,7 +202,7 @@ def ranks(db_con)
                                       (`uploaded`+`downloaded`)/15728640 +
                                       (`millisecondsOnline`-`millisecondsDisabled`)/900000
                                     )) as total_credit
-                                  FROM dailyaccountusage WHERE `skynetID` >= 20000 AND `skynetID` <= 900000 AND day <= #{day} GROUP BY skynetID
+                                  FROM dailyaccountusage WHERE `skynetID` >= 10000 AND `skynetID` <= 900000 AND day <= #{day} GROUP BY skynetID
                             ORDER BY total_credit DESC",
                            :cache_rows => false)
     rank = 1
@@ -246,7 +250,7 @@ def call_whisper(path, query)
   store_scheme = "1h:7d 1d:10y"
   FileUtils.mkdir_p(File.dirname(path)) unless File.directory?(File.dirname(path))
   unless File.file?(path)
-    system_query = "#{path_to_whisper_create} #{path} #{store_scheme}"
+    system_query = "#{path_to_whisper_create} #{path} #{store_scheme} --aggregationMethod=sum --xFilesFactor=0.1"
     print "-- creating file #{path} \n"
     system system_query + " > /dev/null"
   end
@@ -281,7 +285,7 @@ def get_alliance_daily_credit(main_db,db_con,day,alliance_hash)
             ) as daily_credit
 
             FROM `TeamList` T
-            WHERE  `userID` >= 100000 AND `userID` <= 900000
+            WHERE  `userID` >= 10000 AND `userID` <= 900000
               AND T.`joinTime` < '#{Time.at(day*86400)}'
               AND (T.`leaveTime`> '#{Time.at(day*86400)}' OR T.`leaveTime` is NULL)
         ) T2

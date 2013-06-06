@@ -24,6 +24,11 @@ class ProfilesController < ApplicationController
     @profile = Profile.for_show(params[:id])
   end
 
+  def compare
+    @profile1 = Profile.for_show(params[:id1])
+    @profile2 = Profile.for_show(params[:id2])
+  end
+
   def dashboard
     if user_signed_in?
       @profile = current_user.profile

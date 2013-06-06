@@ -1,0 +1,6 @@
+.news_item.well{:id=>item.id}
+  =link_to item do
+    .title= item.title
+  .published_date= "Published on " + item.published_time.to_s
+  .short= item.short
+  =  link_to "View full article", item

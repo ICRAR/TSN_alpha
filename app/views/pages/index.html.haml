@@ -1,0 +1,46 @@
+-content_for(:title_home) do
+  #intro-home{:style => "cursor:pointer;", :onclick=>"run(getQueryVariable('userID'))"}
+    #intro-home-wrap{:style=>"cursor:pointer;", :onClick=> "run(getQueryVariable('userID'))"}
+      %h1.fontface Play your part and help discover our Universe!
+      %p Have a computer? Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!
+    %span#intro-img{:onclick=>"run(getQueryVariable('userID'))"}= ' '
+  %span.ribbon
+    #ribbon-content
+      = link_to('Sign up now', new_user_session_path, :class => "signupbutton")
+      %p
+        %a{:href=>"#", :onClick=>"run()"} or click here run theSkyNet without having to register
+      #ribbonsocial
+        %a{:href=>"http://www.facebook.com/pages/TheSkyNet/214061585306810"}= image_tag('social_fb.png',:width =>32, :height => 32, :alt => "Become a Facebook Fan", :style=> 'margin-right:10px;')
+        %a{:href=>"http://www.twitter.com/#!/_theSkyNet"}= image_tag('social_tw.png',:width =>32, :height => 32, :alt => "Follow us on Twitter", :style=> 'margin-right:10px;')
+
+-content_for(:content) do
+  #content-wrap-home.row-fluid
+    = @page.content.html_safe
+
+  .row-fluid
+    .span6.well
+      -@news.each do |item|
+        = render 'news/news_short', :item => item
+    .span6.well
+      = render 'profiles/dashboard/ladder_dashboard'
+
+  .row-fluid.tabbable.well
+    %ul.nav.nav-tabs
+      %li.active
+        %a{:href=>"#tab-global", :data => {:toggle=>"tab"}} Global Stats
+      %li
+        %a{:href=>"#tab-boinc", :data => {:toggle=>"tab"}} BOINC Stats
+      %li
+        %a{:href=>"#tab-nereus", :data => {:toggle=>"tab"}} Nereus Stats
+    .tab-content
+      .tab-pane.active.fade.in.span11#tab-global
+        %h2 Current Global Stats
+        #global_graphs
+      .tab-pane.fade.in.span11#tab-boinc
+        %h2 Current Global Boinc Stats
+        #boinc_graphs
+      .tab-pane.fade.in.span11#tab-nereus
+        %h2 Current Global Nereus Stats
+        #nereus_graphs
+
+
