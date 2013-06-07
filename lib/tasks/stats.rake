@@ -22,7 +22,8 @@ namespace :stats do
             total_credits = stat.nereus_credit.to_i+stat.boinc_credit.to_i
             #todo add average credit to general update
             avg_daily_credit = stat.nereus_daily.to_i+stat.boinc_daily.to_i
-            upsert.row({:id => stat.id}, :total_credit => total_credits, :recent_avg_credit=>avg_daily_credit, :updated_at => Time.now, :created_at => Time.now)
+            upsert.row({:id => stat.id}, :total_credit => total_credits :updated_at => Time.now, :created_at => Time.now)
+            upsert.row({:id => stat.id}, :recent_avg_credit=>avg_daily_credit, :updated_at => Time.now, :created_at => Time.now)
             statsd_batch.gauge("general.users.#{stat.profile_id}.#{stat.id}.credit",total_credits)
             statsd_batch.gauge("general.users.#{stat.profile_id}.#{stat.id}.avg_daily_credit",avg_daily_credit)
           end

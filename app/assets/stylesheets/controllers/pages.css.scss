@@ -104,3 +104,9 @@ h2.faqs {background:url(image_path('icon_question.png')) 0 0 no-repeat; height:3
 #intro-sml h1.fontface {font: 35px/40px 'LatoLight', Arial, sans-serif;letter-spacing:0; color:#ffffff; text-shadow: 1px 1px 1px #191919; margin-bottom:0;}
 #intro-sml p {color:#d0bbc9; font-size:0.87em; line-height: 1.7143em; margin-top:10px; position: relative; font-family: Arial,Helvetica,sans-serif;}
 
+ul#reasons {font-size:0.813em;line-height: 1.7143em; font-family: Arial,Helvetica,sans-serif; color:#333333; padding:0; margin-top:25px; margin-bottom:30px; margin-left:0;}
+ul#reasons li {list-style:none; padding-left:35px; margin-bottom:15px;}
+ul#reasons li.track {background:url(image_path('icon-graph.jpg')) 0 0 no-repeat;}
+ul#reasons li.earn {background:url(image_path('icon-thumb.jpg')) 0 0 no-repeat;}
+ul#reasons li.share {background:url(image_path('icon-fb.jpg')) 0 0 no-repeat;}
+
