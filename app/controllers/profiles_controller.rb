@@ -25,8 +25,7 @@ class ProfilesController < ApplicationController
   end
 
   def compare
-    @profile1 = Profile.for_show(params[:id1])
-    @profile2 = Profile.for_show(params[:id2])
+    @profiles = Profile.for_compare(params[:id1],params[:id2])
   end
 
   def dashboard

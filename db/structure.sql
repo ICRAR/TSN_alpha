@@ -1178,7 +1178,11 @@ CREATE TABLE news (
     published boolean,
     published_time timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    image_file_name character varying(255),
+    image_content_type character varying(255),
+    image_file_size integer,
+    image_updated_at timestamp without time zone
 );
 
 
@@ -2008,3 +2012,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130530035510');
 INSERT INTO schema_migrations (version) VALUES ('20130531015357');
 
 INSERT INTO schema_migrations (version) VALUES ('20130606092230');
+
+INSERT INTO schema_migrations (version) VALUES ('20130607025255');

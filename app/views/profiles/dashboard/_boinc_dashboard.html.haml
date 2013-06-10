@@ -1,0 +1,11 @@
+=image_tag('boinc_bar.gif')
+-boinc = @profile.general_stats_item.boinc_stats_item
+-if boinc == nil
+  = render 'boinc_forms'
+-else
+  %p
+    = "Credit = #{boinc.credit}"
+    %br
+    = "Recent Average Credit = #{boinc.RAC}"
+    %br
+    = link_to "See your galaxies", "http://ec2-23-23-126-96.compute-1.amazonaws.com/pogssite/pogs/#{boinc.boinc_id}", :data => {'no-turbolink' => true}

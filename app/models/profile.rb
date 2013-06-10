@@ -34,6 +34,9 @@ class Profile < ActiveRecord::Base
   def  self.for_show(id)
     includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).find(id)
   end
+  def  self.for_compare(id1,id2)
+    includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).where(:id => [id1,id2])
+  end
 
   def self.by_nereus_id(nereus_id)
     n = NereusStatsItem.where(:nereus_id => nereus_id).first

@@ -11,9 +11,11 @@
         <div class="shadowed">
             <div class="inner-boundary">
                 <div id="content-inner">
-                    <% @news.each do |item| %>
-                        <%= render 'news_short', :item => item %>
-                    <% end %>
+                    <div id="news">
+                        <% @news.each do |item| %>
+                            <%= render 'news_short', :item => item %>
+                        <% end %>
+                    </div>
                 </div>
             </div>
         </div>

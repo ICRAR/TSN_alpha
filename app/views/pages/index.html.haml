@@ -26,10 +26,11 @@
           %li.share Share your progress on all your favourite social networks.
 
   .row-fluid
-    .span6.well
+    #news.span6.well
+      %h2 Latest News
       -@news.each do |item|
         = render 'news/news_short', :item => item
-    .span6.well
+    #leaderboards.span6.well
       = render 'profiles/dashboard/ladder_dashboard'
 
   .row-fluid.tabbable.well

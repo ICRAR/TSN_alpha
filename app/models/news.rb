@@ -1,6 +1,7 @@
 class News < ActiveRecord::Base
-  attr_accessible :long, :short, :title, :published, :published_time, as: :admin
 
+  attr_accessible :long, :short, :title, :published, :published_time, :image, as: :admin
+  has_attached_file :image, :styles => { :medium => "300x300>", :thumb => "75x75>"}
   def publish
       self.published = true
       self.published_time = Time.now
@@ -13,6 +14,7 @@ class News < ActiveRecord::Base
     field :short
     field :published
     field :published_time
+    field :image
     field :long, :text do
       ckeditor true
     end

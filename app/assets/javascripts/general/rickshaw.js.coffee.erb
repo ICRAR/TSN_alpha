@@ -24,15 +24,19 @@ Rickshaw.Graph.JSONP.Static = Rickshaw.Class.create(
       )
   )
 
+
 TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
-  url = "<%= APP_CONFIG['graphite_url']%>render?from=#{time}&until=now&target=group("
+  url = "<%= APP_CONFIG['graphite_url']%>render?from=#{time}&until=-6days&target=group("
   url += metrics.join(',')
   url +=")&format=json&jsonp=?"
+  div.addClass('rickshaw')
   div.css('position', 'relative')
   div.append('<div id="y_axis"></div>')
   div.append('<div id="legend"></div>')
   div.append('<div id="chart"></div>')
   div.append('<div id="slider"></div>')
+  remote_data = []
+
 
   rick_graph = new Rickshaw.Graph.JSONP.Static (
     callback: "rickshaw_callback_#{div.attr('id')}"
@@ -42,7 +46,7 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
     height: 200
     dataURL: url
     onData: (metrics) ->
-      remote_data = []
+
       i = 0
       colors = new Rickshaw.Color.Palette( { scheme: 'colorwheel' } ).scheme if !colors
 
@@ -64,6 +68,7 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
         orientation: 'left',
         tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
         element: div.find('#y_axis')[0]
+
                                          )
       y_axis.graph.update()
       legend = new Rickshaw.Graph.Legend(
@@ -88,5 +93,48 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
         graph: graph,
         element: div.find('#slider')[0]
       )
+
+      #adds more detail for the last 7 days to the graph
+      url = "<%= APP_CONFIG['graphite_url']%>render?from=-6days&until=now&target=group("
+      url += metrics.join(',')
+      url +=")&format=json&jsonp=?"
+      $.ajax
+        url: url,
+        dataType: 'jsonp',
+        cache: true,
+        jsonpCallback: "rickshaw_callback_#{div.attr('id')}_7",
+        success: (metrics) ->
+          i = 0
+          for meteric in metrics
+            #remote_data.push []
+            #remote_data[i].data = []
+            graph.series[i].data.push {x: d[1], y: d[0]} for d in meteric['datapoints']
+            #remote_data[i].data.push {x: d[1], y: d[0]} for d in meteric['datapoints']
+            i++
+          graph.update()
+      #adds custom zoom controls to graph
+      controls = div.append($('<div>',{class:'controls'}))
+      move_slider(1,'Last 24 hours',graph,div,controls)
+      move_slider(7,'Last 7 days',graph,div,controls)
+      move_slider(30,'Last Month',graph,div,controls)
+      move_slider(365,'Last Year',graph,div,controls)
+
     min: 'auto'
     )
+move_slider = (days,tag,graph,div,controls) ->
+  div.children('.controls').append($('<a>',{
+  text: tag,
+  href:'#',
+  click: (event) ->
+    event.preventDefault()
+    graph.window.xMin = $.now()/1000 - days*24*60*60
+    graph.window.xMax = $.now()/1000
+    if (graph.dataDomain()[0] == graph.window.xMin)
+      graph.window.xMin = undefined;
+    if (graph.dataDomain()[1] == graph.window.xMax)
+      graph.window.xMax = undefined;
+    graph.update()
+    values = [graph.window.xMin,graph.window.xMax]
+    div.children('#slider:first').slider('option', 'values',values)
+    false
+  }))

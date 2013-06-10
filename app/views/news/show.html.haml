@@ -1,0 +1,17 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @news_item.title
+  -@user_page =  'news'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .shadowed
+      .inner-boundary
+        #content-inner
+          .news_item.media{:id=>@news_item.id}
+            %a.pull-right=image_tag  @news_item.image.url(:medium), :class=>"media-object"
+            #news.media-body
+              .long= @news_item.long.html_safe
+              .published_date= "Published on " + @news_item.published_time.to_s
+          =  render :partial => "shared/disqus", :locals => { title: @news_item.id }

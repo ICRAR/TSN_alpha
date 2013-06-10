@@ -1,0 +1,33 @@
+%h2= "Welcome Back, #{@profile.name}"
+.processed-data
+  %h3 TOTAL CREDIT EARNED:
+  #totalCredits.processed-data-number= number_with_delimiter(@profile.general_stats_item.total_credit)
+  %h3 AVERAGE DAILY CREDIT:
+  #totalCredits.processed-data-number= number_with_delimiter(@profile.general_stats_item.recent_avg_credit)
+  %h3 YOUR RANK:
+  #totalCredits.processed-data-number= number_with_delimiter(@profile.general_stats_item.rank)
+  %p= link_to "Show my place in the leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank)
+#trophy.row-fluid
+  .span12
+    %h3 Latest Achievement:
+    - trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
+    - if trophy == nil
+      You hasn't won any trophies yet
+    - else
+      .media
+      = link_to (image_tag trophy.image.url), trophy, :class => "pull-left"
+      .media-body
+        %h4.media-heading= link_to trophy.title.titleize,  trophy
+        %p= trophy.desc
+        %p= link_to "See all your trophies", trophies_profile_path(@profile)
+- credits_to_go  = @profile.general_stats_item.credits_to_next_trophy
+- credits_from_last = @profile.general_stats_item.credits_from_last_trophy
+- trophy_per =  credits_from_last*100.0/(credits_to_go+credits_from_last)
+#trophy-progress-bar.row-fluid
+  .span12
+    .pull-left= number_with_delimiter(@profile.general_stats_item.total_credit-credits_from_last)
+    .pull-right= number_with_delimiter(@profile.general_stats_item.total_credit+credits_to_go)
+    .progress.progress-striped.active.progress-danger
+      .bar{:style=>"width: #{trophy_per}%;"}
+    = "You only have " + number_with_delimiter(credits_to_go) + " credit".pluralize(credits_to_go) + " to go until the your next trophy"
+

@@ -20,7 +20,7 @@ namespace :old_site do
     print "starting user migration \n"
     print "fetching accounts \n"
     results = remote_client.query("SELECT `Account`.*, t1.first_day FROM `Account`
-                                      LEFT JOIN (SELECT userID, MIN( `day`) as first_day FROM `dailyCredits` GROUP BY  userID) t1
+                                      LEFT JOIN (SELECT userID, MIN(`day`) as first_day FROM `dailyCredits` GROUP BY  userID) t1
                                       ON   `Account`.`userID` = t1.`userID`
                                       WHERE  `Account`.`userID` >= 100000 AND `Account`.`userID` <= 900000 ",
                                   :cache_rows => false)

@@ -10,16 +10,19 @@
     <br>
     <a class="icon facebook" href="http://www.facebook.com/pages/TheSkyNet/214061585306810">Become a Facebook fan</a>
     <br>
-    <a class="icon rss" href="blog/?feed=rss2">Join RSS Feed</a>
 
 
 </div>
 
 <div id="footer-map">
 
-    <a href="index">Home</a><br>
-    <a href="sitemap">Sitemap</a><br>
-    <a href="contact/index">Contact Us</a><br>
-    <a href="about/privacy">Privacy Statement</a>
+    <%= link_to 'Home', root_path %>
+    <br />
+    <%= link_to 'Sitemap', {:controller => "/pages", :action => "show", :slug => "sitemap"} %>
+    <br />
+    <%= link_to 'Privacy Statement', {:controller => "/pages", :action => "show", :slug => "privacy"} %>
+    <br />
+    <%= link_to 'Contact Us', new_contact_form_path %>
+
 
 </div>

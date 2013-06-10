@@ -58,8 +58,8 @@ TSN.profiles.compare = () ->
 
   metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id1}.rank")
   metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id2}.rank")
-  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id1}.credit")
-  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id2}.credit")
+#  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id1}.credit")
+#  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id2}.credit")
 
   TSN.rickshaw_graph(metrics,name,$("#chart_container"),'-24months')  if name.length != 0
 
