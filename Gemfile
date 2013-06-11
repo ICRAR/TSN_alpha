@@ -59,7 +59,8 @@ gem 'oj'
 group :development do
   gem 'rack-mini-profiler'
   gem 'rails-footnotes', '>= 3.7.9'
-
+  gem 'better_errors'
+  gem 'binding_of_caller'
 end
 
 #Gems required for testing
