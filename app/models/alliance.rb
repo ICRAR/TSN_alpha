@@ -43,4 +43,25 @@ class Alliance < ActiveRecord::Base
     result[:leader] = leader.try :for_json_basic
     return  result
   end
+
+
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+
+  mapping do
+    indexes :name, analyzer: 'snowball', tokenizer: 'nGram'
+  end
+
+  def self.search(query,page,per_page)
+    tire.search(:page => (page || 1), :per_page => per_page, :load => {:include => 'leader'}) do
+      query do
+        boolean(:minimum_number_should_match => 1) do
+          should {fuzzy :name, query}
+          should {match :name, query}
+          should {prefix :name, query}
+        end
+      end
+    end
+  end
+
 end
