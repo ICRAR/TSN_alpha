@@ -1,0 +1,22 @@
+input, textarea, select {
+    font-family: Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    padding: 6px;
+	margin-top:-5px;
+}
+
+.inner-boundary-soon2 h3 {margin-bottom:0;}
+
+.loginpage form label {float:left; line-height:27px; margin-right:10px; text-align:right; width:80px; font-weight:bold; padding-top:0px; font-size:14px;}
+.registerpage form label {float:left; line-height:27px; margin-right:10px; text-align:right; width:175px; font-weight:bold; padding-top:0px; font-size:14px;}
+.iefield {margin-top:20px;margin-bottom:20px;}
+
+#login-top-wrap {background: url("../images/topnavie.png") repeat scroll 0 0 transparent;}
+
+.laddersearch {margin-top:0!important;}
+
+#announce-index article {padding: 0 0 15px 0;  margin-bottom:20px; }
+#post {margin-bottom:1px solid #cccccc;}
+
+.iebuttonfix {margin-bottom:30px;}
+

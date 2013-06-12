@@ -43,8 +43,8 @@
                             <% end %>
                         </tbody>
                     </table>
-                    <%= paginate @alliances %>
-                    <%= page_entries_info @alliances %>
+                    <%=  paginate @alliances %>
+                    <%=  page_entries_info @alliances, :entry_name => 'Alliance' %>
                 </div>
             </div>
         </div>

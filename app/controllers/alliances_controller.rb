@@ -111,7 +111,8 @@ class AlliancesController < ApplicationController
     redirect_to my_profile_path
   end
   def search
-    @alliances = Alliance.search_by_name(params[:search]).includes(:leader).page(params[:page]).per(10)
+    #@alliances = Alliance.search_by_name(params[:search]).includes(:leader).page(params[:page]).per(10)
+    @alliances = Alliance.search params[:search], params[:page], 10
 
     render :index
   end
