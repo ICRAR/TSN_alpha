@@ -1,11 +1,4 @@
 class Alliance < ActiveRecord::Base
-  include PgSearch
-  pg_search_scope :search_by_name, :against => :name,
-                  :using => {:tsearch  => {:prefix => true,:dictionary => "english"},
-                             :dmetaphone => {},
-                             :trigram => {}}
-
-
   attr_accessible :name,:tags,:desc,:country, :old_id,  :as => [:default, :admin]
   attr_accessible :leader_id, :member_ids, as: :admin
 

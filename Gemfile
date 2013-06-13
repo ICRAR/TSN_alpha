@@ -48,7 +48,6 @@ gem 'paper_trail'
 gem 'tire'
 
 
-gem 'pg_search'
 gem 'mail_form'
 gem 'simple_form'
 

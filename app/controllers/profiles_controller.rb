@@ -240,15 +240,19 @@ class ProfilesController < ApplicationController
     end
   end
   def search
-    @profiles = Kaminari.paginate_array(Profile.for_leader_boards.search(params['search'])).page(params[:page]).per(10)
-
-    render :index
+    if params[:search]
+      @profiles = Profile.search params[:search], params[:page], 10
+      params[:sort] = "search"
+      render :index
+    else
+      redirect_to( profiles_path, :alert => "You did not enter a valid search query")
+    end
   end
 
   private
 
   def sort_column
-    %w[rank rac credits].include?(params[:sort]) ? params[:sort] : "rank"
+    %w[rank rac credits search].include?(params[:sort]) ? params[:sort] : "rank"
   end
 
   def sort_direction

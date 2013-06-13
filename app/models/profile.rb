@@ -1,19 +1,5 @@
 class Profile < ActiveRecord::Base
-  include PgSearch
-  pg_search_scope :search_by_full_name, :against => [:first_name, :second_name, :nickname],
-                  :using => {:tsearch  => {:prefix => true,:dictionary => "english"},
-                             :dmetaphone => {},
-                             :trigram => {}}
-  pg_search_scope :search_by_nickname_only, :against => [:nickname],
-                  :using => {:tsearch  => {:prefix => true,:dictionary => "english"},
-                             :dmetaphone => {},
-                             :trigram => {}}
-  scope :allows_full_name, where('use_full_name = true')
-  scope :allows_full_name!, where('use_full_name != true')
 
-  def self.search(str)
-    Profile.allows_full_name.search_by_full_name(str) + Profile.allows_full_name!.search_by_nickname_only(str)
-  end
   belongs_to :user
   belongs_to :alliance_leader, :class_name => 'Alliance', inverse_of: :leader
   belongs_to :alliance, inverse_of: :members
@@ -130,5 +116,36 @@ class Profile < ActiveRecord::Base
     default_url = "retro"
     gravatar_id = Digest::MD5.hexdigest(self.user.email.downcase)
     "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
+  end
+
+  #search methods
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+
+
+
+  mapping do
+    indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
+  end
+
+
+  def self.search(query,page = 1,per_page = 10)
+    tire.search(
+        :page => (page || 1),
+        :per_page => per_page,
+        :load => {
+            :joins => :general_stats_item,
+            :select => "profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac",
+            :include => [:alliance, :user]
+        }
+    ) do
+      query do
+        boolean(:minimum_number_should_match => 1) do
+          should {fuzzy :name, query}
+          should {match :name, query}
+          should {prefix :name, query}
+        end
+      end
+    end
   end
 end

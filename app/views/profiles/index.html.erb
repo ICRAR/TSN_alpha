@@ -27,23 +27,23 @@
                       </thead>
                       <tbody>
                         <% @profiles.each do |profile| %>
-                          <tr <%= 'class=selected' if profile.rank == params[:rank] %> >
+                          <tr <%= 'class=selected' if (params[:rank] and profile.rank == params[:rank]) %> >
                             <td><%= link_to profile do %>
                                     <%= image_tag profile.avatar_url(24) %>
                                     <%= profile.name %>
                                 <% end %>
                             </td>
                             <td><%= link_to profile.country, profile %></td>
-                            <td><%= link_to profile.rank, profile %></td>
+                            <td><%= link_to (profile.rank.nil? ? '-':profile.rank), profile %></td>
                             <td><%= link_to number_with_delimiter(profile.credits), profile %></td>
-                            <td><%= link_to (profile.rac.nil? ? '.':profile.rac), profile %></td>
+                            <td><%= link_to (profile.rac.nil? ? '-':profile.rac), profile %></td>
                             <td><%= profile.alliance ? link_to(profile.alliance.name,profile.alliance, :style => "text-decoration: underline;") : 'Flying Solo' %></td>
                           </tr>
                         <% end %>
                       </tbody>
                     </table>
                     <%= paginate @profiles %>
-                    <%= page_entries_info @profiles %>
+                    <%= page_entries_info @profiles, :entry_name => 'Profile'  %>
                 </div>
             </div>
         </div>
