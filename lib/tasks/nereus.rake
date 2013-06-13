@@ -9,7 +9,7 @@ namespace :nereus do
     remote_client =  NereusStatsItem.connect_to_backend_db
 
     #start direct connection to local DB for upsert
-    connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
+    connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)
     table_name = :nereus_stats_items
 
     id_range =  "`skynetID` >= 10000 AND `skynetID` <= 900000"
@@ -234,7 +234,7 @@ namespace :nereus do
 
       bench.report('custom') {
         #start direct connection to local DB for upsert
-        connection = PG.connect(:host => Rails.configuration.database_configuration[Rails.env]["host"],:port => Rails.configuration.database_configuration[Rails.env]["port"],:dbname => Rails.configuration.database_configuration[Rails.env]["database"],:user => Rails.configuration.database_configuration[Rails.env]["username"],:password => Rails.configuration.database_configuration[Rails.env]["password"])
+        connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)
         b = connection.query("SELECT nereus_stats_items.* FROM nereus_stats_items")
         c = Hash[*b.map{|it| [it["nereus_id"], it]}.flatten]
         all.each do |i|

@@ -14,7 +14,7 @@ class ProfilesController < ApplicationController
       page_num = params[:page]
       page_padding = 0;
     end
-    @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).order(sort_column + " " + sort_direction + " NULLS LAST")
+    @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).order("-"+sort_column + " " + sort_direction)
 
   end
 
@@ -256,6 +256,6 @@ class ProfilesController < ApplicationController
   end
 
   def sort_direction
-    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
   end
 end

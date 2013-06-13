@@ -7,7 +7,7 @@ class AlliancesController < ApplicationController
   def index
     per_page = params[:per_page]
     per_page ||= 20
-    @alliances = Alliance.for_leaderboard.page(params[:page]).per(per_page).order("\"" + sort_column + "\"" " " + sort_direction)
+    @alliances = Alliance.for_leaderboard.page(params[:page]).per(per_page).order("`" + sort_column + "`" " " + sort_direction)
   end
 
   # GET /alliances/1

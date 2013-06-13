@@ -5,7 +5,7 @@ gem 'rails', '3.2.11'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'pg'     #main db driver
+#gem 'pg'     #main db driver
 gem 'mysql2', '~>0.3.12b6' #for connecting with nereus db
 
 #gems for user auth

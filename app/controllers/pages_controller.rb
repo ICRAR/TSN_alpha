@@ -1,7 +1,7 @@
 class PagesController < ApplicationController
  authorize_resource
   def show
-    @page = Page.find_by_slug(params[:slug])
+    @page = Page.find_by_slug(params[:slug]) || not_found
     if (@page.parent)
       @title = @page.parent.title
       @links = @page.parent.sub_pages.all

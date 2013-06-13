@@ -8,7 +8,7 @@ namespace :old_site do
     #connect to old front end db
     remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
 
-
+=begin
 
     #********* update nereus objects first ***************
     print "updating all nereus_stats_items \n"
@@ -110,6 +110,9 @@ namespace :old_site do
 
     #************update stats trophies ranks ect ***************
     Rake::Task["stats:update_alliances"].execute
+=end
+    print "inserting trophies"
+    create_trophies(remote_client)
     Rake::Task["stats:update_trophy"].execute
 
   end
@@ -162,7 +165,7 @@ def make_user(old_user)
     new_user.confirmed_at = old_user[:first_day]
     new_user.encrypted_password = old_user[:password]
     new_user.old_site_password_salt = old_user[:salt]
-    new_user.admin = true if old_user[:username] == 'eckley'  # hack to to auto generate myself as admin
+    new_user.admin = true if old_user[:username] == 'Eckley'  # hack to to auto generate myself as admin
     new_user.save
     #populate Profile Fields
     profile = new_user.profile
@@ -178,11 +181,30 @@ def make_user(old_user)
     if nereus != nil
       profile.general_stats_item.nereus_stats_item = nereus
       profile.save
-
-    #update nereus object
-      nereus.network_limit = old_user[:network_limit]
-      nereus.paused = old_user[:paused]
+    else
+      nereus = NereusStatsItem.new(
+          :credit => 0,
+          :daily_credit => 0,
+          :nereus_id => old_user[:nereus_id],
+          :rank => 0,
+          :network_limit => 0,
+          :monthly_network_usage => 0,
+          :paused => 0,
+          :active => 1,
+          :online_today => 0,
+          :online_now => 0,
+          :mips_now => 0,
+          :mips_today => 0,
+          :last_checked_time => Time.now
+      )
+      nereus.save
+      profile.general_stats_item.nereus_stats_item = nereus
+      profile.save
     end
+    #update nereus object
+    nereus.network_limit = old_user[:network_limit]
+    nereus.paused = old_user[:paused]
+
     return new_user
   else
     return new_user
@@ -316,4 +338,25 @@ def add_member_to_alliance(new_alliance,old_member)
   end
 
 
+end
+
+def create_trophy(title,desc,credits,image_url)
+  trophy = Trophy.new
+  trophy.title= title
+  trophy.desc= desc
+  trophy.credits = credits
+  trophy.image = URI.parse(image_url)
+  trophy.save
+end
+def create_trophies(front_end_db)
+  results = front_end_db.query("SELECT * FROM  `Trophy` ",
+                              :cache_rows => false)
+  results.each do |row|
+    t = Trophy.find_by_title(row['name'])
+    if t.nil?
+      credits = row['credits'].to_i* APP_CONFIG['nereus_to_credit_conversion']
+      url = "http://www.theskynet.org/images/trophies/%03d.png" % row['id']
+      create_trophy(row['name'],row['description'],credits,url)
+    end
+  end
 end

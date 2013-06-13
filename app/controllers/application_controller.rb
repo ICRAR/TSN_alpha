@@ -45,4 +45,8 @@ class ApplicationController < ActionController::Base
   def ping
     render json:{:status => 'ok'}
   end
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
 end
