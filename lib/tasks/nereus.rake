@@ -82,7 +82,7 @@ namespace :nereus do
                                           (`millisecondsOnline`-`millisecondsDisabled`)/900000
                                         )) as credits
                                         FROM `dailyaccountusage` WHERE  #{id_range}
-                                        AND (day = #{(Time.now.to_i+8*60*60)/86400} OR day = #{(Time.now.to_i+8*60*60)/86400 -1}) GROUP BY `skynetID`",
+                                        AND (day = #{(Time.now.to_i)/86400} OR day = #{(Time.now.to_i)/86400 -1}) GROUP BY `skynetID`",
                                       :cache_rows => false)
 
         #get percentage of today and yesterday
