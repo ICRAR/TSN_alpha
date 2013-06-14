@@ -9,7 +9,7 @@ namespace :nereus do
     remote_client =  NereusStatsItem.connect_to_backend_db
 
     #start direct connection to local DB for upsert
-    connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)
+    connection = nereusActiveRecord::Base.connection.instance_variable_get(:@connection)
     table_name = :nereus_stats_items
 
     id_range =  "`skynetID` >= 10000 AND `skynetID` <= 900000"
@@ -36,7 +36,7 @@ namespace :nereus do
 
       #loads local database into memory
       bench.report('load_local') {
-        nereus_all = connection.query("SELECT nereus_stats_items.* FROM nereus_stats_items")
+        nereus_all = connection.query("SELECT nereus_stats_items.* FROM nereus_stats_items", :as => :hash)
         nereus_all_hash = Hash[*nereus_all.map{|it| [it["nereus_id"], it]}.flatten]
       }
 
