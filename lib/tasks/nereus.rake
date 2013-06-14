@@ -9,7 +9,7 @@ namespace :nereus do
     remote_client =  NereusStatsItem.connect_to_backend_db
 
     #start direct connection to local DB for upsert
-    connection = nereusActiveRecord::Base.connection.instance_variable_get(:@connection)
+    connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)
     table_name = :nereus_stats_items
 
     id_range =  "`skynetID` >= 10000 AND `skynetID` <= 900000"
