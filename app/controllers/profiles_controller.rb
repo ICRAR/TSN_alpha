@@ -31,7 +31,7 @@ class ProfilesController < ApplicationController
   def dashboard
     if user_signed_in?
       @profile = current_user.profile
-      @profile.general_stats_item.nereus_stats_item.update_status
+      @profile.general_stats_item.nereus_stats_item.update_status  if @profile.general_stats_item.nereus_stats_item != nil
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'
       return
