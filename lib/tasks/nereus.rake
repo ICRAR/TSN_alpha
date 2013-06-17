@@ -181,7 +181,7 @@ namespace :nereus do
           nereus_update_hash.each do |item|
             id = item[0].to_i
             update_row = item[1] #fix for using hashes as array
-            old_row = nereus_all_hash[item[0].to_s] #from local db
+            old_row = nereus_all_hash[item[0].to_i] #from local db
             if old_row == nil
               active = 0
             else

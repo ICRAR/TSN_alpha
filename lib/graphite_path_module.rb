@@ -6,14 +6,6 @@ module GraphitePathModule
     GraphitePathModule::path(id,'/')
   end
   def self.path(id,join)
-    output = ''
-    while id/1000 != 0
-      output = (id%1000).to_s + output
-      output = '0' + output if id%1000/10 == 0
-      output = '0' + output if id%1000/100 == 0
-      output = join + output
-      id = id/1000
-    end
-    output = (id%1000).to_s + output
+    ("%09d" % id).scan(/\d{3}/).join(join)
   end
 end

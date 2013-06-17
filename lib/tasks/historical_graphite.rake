@@ -1,7 +1,8 @@
 namespace :historical_graphite do
   desc "loads data from external site"
-  task :test => :environment do
+  task :run => :environment do
     #connect to remote db
+=begin
     remote_client =  NereusStatsItem.connect_to_backend_db
     remote_client_front_end = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
     main_db = ActiveRecord::Base.connection
@@ -28,7 +29,7 @@ namespace :historical_graphite do
       bench.report('create total graphs') {
         load_nereus_totals(remote_client)
       }
-=begin
+
       bench.report('load Alliance data') {
         #reset daily alliance table
         main_db.execute("DELETE FROM daily_alliance_credit WHERE 1=1")
@@ -42,14 +43,134 @@ namespace :historical_graphite do
       bench.report('update allaince graphs') {
         create_graphite_alliance_graphs(main_db)
       }
-=end
     end
+=end
+
+    file_path = '/home/abeckley/POGS/stats_archive/'
+    load_boinc(file_path)
 
   end
 end
 
+#takes a file path creates all the boinc graphs
+def load_boinc(file_path)
 
-#Takes a user ID and DB connection
+  total_rac = Array.new
+  total_credit= Array.new
+  total_users = Array.new
+  total_daily_users = Array.new
+  start_day = Date.new(2012,8,10)
+  end_day = Date.today
+
+
+  users = Hash.new
+
+  (start_day .. end_day).each do |day|
+    file_search = "#{file_path}stats_#{day.year}_#{day.month}_#{day.day}_**/user.gz"
+    file_name = Dir.glob(file_search).first.to_s
+    if File.exists?(file_name)
+      print "loading data for day #{day.to_s}\n"
+      #load each day
+      total_rac_day = 0
+      total_credit_day= 0
+      total_users_day = 0
+      total_daily_users_day = 0
+      xml = Nokogiri::XML(Zlib::GzipReader.open(file_name).read)
+      xml.xpath('//user').each do |user|
+        #grab user data from xml file
+        boincID, credit, rac = user.xpath('./id','./total_credit','./expavg_credit').map{|x| x.text.strip.to_i}
+        #load each user
+        if users[boincID] == nil
+          users[boincID] = Hash.new
+          users[boincID]['start_day'] = (day- Date.new(1970,1,1)).to_i
+          users[boincID]['credit'] = Array.new
+          users[boincID]['rac'] = Array.new
+        end
+        users[boincID]['credit'] << credit
+        users[boincID]['rac'] << rac
+
+        total_rac_day += rac
+        total_credit_day += credit
+        total_users_day += 1
+        total_daily_users_day += 1 if (rac > 10)
+      end
+      total_rac <<  total_rac_day
+      total_credit << total_credit_day
+      total_users << total_users_day
+      total_daily_users << total_daily_users_day
+    else
+      #if the file doesn't exist repeat last day
+      users.each do |key,value|
+        value['credit'] << value['credit'].last
+        value['rac'] << value['rac'].last
+      end
+      total_rac <<  total_rac.last
+      total_credit << total_credit.last
+      total_users << total_users.last
+      total_daily_users << total_daily_users.last
+    end
+  end
+
+
+
+  #create files for each user
+  users.each do |key , user|
+    query_total = ""
+    query_rac = ""
+    day = user['start_day']
+    user['credit'].each do |credit|
+      query_total << " #{day_to_timestamp(day)}:#{credit}"
+      day += 1
+    end
+    day = user['start_day']
+    user['rac'].each do |rac|
+      query_rac << " #{day_to_timestamp(day)}:#{rac}"
+      day += 1
+    end
+
+    path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/boinc/users/#{GraphitePathModule.path_for_file(key)}/"
+    call_whisper(path_to_storage+'credit.wsp',query_total)
+    call_whisper(path_to_storage+'rac.wsp',query_rac)
+  end
+  #create global files
+  query_total_rac = ""
+  query_total_credit = ""
+  query_total_users = ""
+  query_total_daily_users = ""
+  first_day = (start_day- Date.new(1970,1,1)).to_i
+  day = first_day
+  total_rac.each do |rac|
+    query_total_rac << " #{day_to_timestamp(day)}:#{rac}"
+    day += 1
+  end
+  day = first_day
+  total_credit.each do |credit|
+    query_total_credit << " #{day_to_timestamp(day)}:#{credit}"
+    day += 1
+  end
+  day = first_day
+  total_users.each do |users_count|
+    query_total_users << " #{day_to_timestamp(day)}:#{users_count}"
+    day += 1
+  end
+  day = first_day
+  total_daily_users.each do |daily_users_count|
+    query_total_daily_users << " #{day_to_timestamp(day)}:#{daily_users_count}"
+    day += 1
+  end
+
+
+  path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/boinc/stat/"
+  call_whisper(path_to_storage+'total_rac.wsp',query_total_rac)
+  call_whisper(path_to_storage+'total_credit.wsp',query_total_credit)
+  call_whisper(path_to_storage+'total_users.wsp',query_total_users)
+  call_whisper(path_to_storage+'active_users.wsp',query_total_daily_users)
+
+end
+
+
+
+#Takes a skynet ID and DB connection
 #and forms a whisper query for historical credit
 def load_nereus_user(user_id,db_con)
   results = db_con.query("select t1.skynetID,  t1.day, SUM(t2.credit) as sum_credit, t1.credit
@@ -250,7 +371,7 @@ def call_whisper(path, query)
   store_scheme = "1h:7d 1d:10y"
   FileUtils.mkdir_p(File.dirname(path)) unless File.directory?(File.dirname(path))
   unless File.file?(path)
-    system_query = "#{path_to_whisper_create} #{path} #{store_scheme} --aggregationMethod=sum --xFilesFactor=0.1"
+    system_query = "#{path_to_whisper_create} #{path} #{store_scheme} --aggregationMethod=average --xFilesFactor=0.1"
     print "-- creating file #{path} \n"
     system system_query + " > /dev/null"
   end

@@ -28,5 +28,6 @@
       .row-fluid
         .span12.well.graphs
           -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil
+          -boinc_id = GraphitePathModule.path_for_stats(boinc_id)
           -nereus_id= @profile.general_stats_item.nereus_stats_item.nereus_id if @profile.general_stats_item.nereus_stats_item != nil
           #chart_container{:data => {:boinc_id=>boinc_id, :nereus_id=> nereus_id, :profile_id => @profile.id}}

@@ -33,7 +33,7 @@
     #leaderboards.span6.well
       = render 'profiles/dashboard/ladder_dashboard'
 
-  .row-fluid.tabbable.well
+  #main-graphs.row-fluid.tabbable.well
     %ul.nav.nav-tabs
       %li.active
         %a{:href=>"#tab-global", :data => {:toggle=>"tab"}} Global Stats
@@ -41,15 +41,16 @@
         %a{:href=>"#tab-boinc", :data => {:toggle=>"tab"}} BOINC Stats
       %li
         %a{:href=>"#tab-nereus", :data => {:toggle=>"tab"}} Nereus Stats
-    .tab-content
-      .tab-pane.active.fade.in.span11#tab-global
-        %h2 Current Global Stats
-        #global_graphs
-      .tab-pane.fade.in.span11#tab-boinc
-        %h2 Current Global Boinc Stats
-        #boinc_graphs
-      .tab-pane.fade.in.span11#tab-nereus
-        %h2 Current Global Nereus Stats
-        #nereus_graphs
+    .span12
+      .tab-content
+        .tab-pane.fade.in.active#tab-global
+          %h2 Current Global Stats
+          #global_graphs
+        .tab-pane.fade.in#tab-boinc
+          %h2 Current Global Boinc Stats
+          #boinc_graphs
+        .tab-pane.fade.in#tab-nereus
+          %h2 Current Global Nereus Stats
+          #nereus_graphs
 
 
