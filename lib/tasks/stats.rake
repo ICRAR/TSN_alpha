@@ -8,6 +8,7 @@ namespace :stats do
   task :update_general => :environment do
     #start statsd batch
     statsd_batch = Statsd::Batch.new($statsd)
+    total_daily_credits = 0
     bench_time = Benchmark.bm do |bench|
       bench.report('copy credit user') {
         #start direct connection to DB for upsert
@@ -26,7 +27,9 @@ namespace :stats do
             upsert.row({:id => stat.id}, :recent_avg_credit=>avg_daily_credit, :updated_at => Time.now, :created_at => Time.now)
             statsd_batch.gauge("general.users.#{stat.profile_id}.credit",total_credits)
             statsd_batch.gauge("general.users.#{stat.profile_id}.avg_daily_credit",avg_daily_credit)
+            total_daily_credits += avg_daily_credit
           end
+          SiteStat.set("global_TFLOPS",(total_daily_credits*0.000005).round(2))
         end
       }
 

@@ -9,6 +9,12 @@
       = link_to('Sign up now', new_user_session_path, :class => "signupbutton")
       %p
         %a{:href=>"#", :onClick=>"run()"} or click here run theSkyNet without having to register
+      -if @TFLOPSStat
+        #TFLOPS-count.pull-right
+          %a{:href=>'#', :title => "Please note this is only an estimate", :data => {:toggle => "tooltip"}}
+            =@TFLOPSStat.value.to_s
+            %i{:class=>"icon-#{@TFLOPSStat.dir == "asc" ? "arrow-up" : "arrow-down"}"}
+            %abbr{:title => "Terra Floating Point Operations per Second"} TFLOPS
       #ribbonsocial
         %a{:href=>"http://www.facebook.com/pages/TheSkyNet/214061585306810"}= image_tag('social_fb.png',:width =>32, :height => 32, :alt => "Become a Facebook Fan", :style=> 'margin-right:10px;')
         %a{:href=>"http://www.twitter.com/#!/_theSkyNet"}= image_tag('social_tw.png',:width =>32, :height => 32, :alt => "Follow us on Twitter", :style=> 'margin-right:10px;')
