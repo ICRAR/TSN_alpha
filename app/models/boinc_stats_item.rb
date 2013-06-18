@@ -4,6 +4,7 @@ class BoincStatsItem < ActiveRecord::Base
   scope :connected, where('general_stats_item_id IS NOT NULL')
   belongs_to :general_stats_item
 
+
   def for_json
     result = Hash.new
     result[:credit] = credit

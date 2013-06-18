@@ -21,6 +21,7 @@ TSNAlpha::Application.routes.draw do
     end
 
   end
+
   get "/profiles/compare/:id1/:id2" => 'profiles#compare', :as => 'profiles_compare'
   get "/profile" => "profiles#dashboard",  :as => 'my_profile'
   get "/profile/edit" => "profiles#edit", :as => 'edit_profile'
@@ -56,6 +57,10 @@ get "/nereus/new" => "nereus#new", :as => 'new_nereus'
     end
   end
 
+  resources :galaxies, :only => [:index, :show]
+  resources :boinc, :only => [], :controller => "boinc_stats_item" do
+  resources :galaxies, :only => [:index, :show]
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

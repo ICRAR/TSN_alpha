@@ -1,0 +1,15 @@
+services: mongodb
+
+script: "bundle exec rake spec"
+
+rvm:
+  - 1.9.3
+  - 2.0.0
+  - rbx-19mode
+
+gemfile:
+  - gemfiles/active_record_32.gemfile
+  - gemfiles/data_mapper_12.gemfile
+  - gemfiles/mongo_mapper.gemfile
+  - gemfiles/mongoid_30.gemfile
+  - gemfiles/sinatra.gemfile

@@ -1,0 +1,74 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @boinc_id == nil ? "All Galaxies" : "Your Galaxies"
+  -@user_page =  'dashboard'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .shadowed
+      .inner-boundary
+        #content-inner
+          .accordion#search-accordion
+            .accordion-group
+              .accordion-heading
+                %a.accordion-toggle{:data => {:toggle=> "collapse", :parent => "#accordion2"},:href=>"#collapseSearch"} Search
+              #collapseSearch.accordion-body.collapse
+                .accordion-inner
+                  = form_tag('', :method => "get", :class => ".form-horizontal") do
+                    .control-group
+                      = label_tag :name, "Name"
+                      = text_field_tag :name, params[:name]
+                      = label_tag :galaxy_type, "Type"
+                      = select_tag(:galaxy_type, galaxy_types(params[:galaxy_type]))
+
+                    .control-group
+                      = label_tag :ra_from do
+                        Right Ascension from
+                        = text_field_tag :ra_from, params[:ra_from]
+                        to
+                        = text_field_tag :ra_to, params[:ra_to]
+
+                    .control-group
+                      -# label_tag :dec_from do
+                      Declination from
+                      = text_field_tag :dec_from, params[:dec_from]
+                      to
+                      = text_field_tag :dec_to, params[:dec_to]
+
+                    .control-group
+                      = submit_tag "Apply Filter"
+
+          %table#galaxies.table.table-striped
+            %thead
+              %tr
+                %th=sortable 'name', 'Name'
+                %th=sortable 'galaxy_type', 'Type'
+                %th=sortable 'redshift', 'Redshift'
+                %th
+                  %abbr{:title => "Dimensions"}=sortable '(dimension_x*dimension_y)', 'Dim'
+                %th
+                  %abbr{:title => "Right Ascension"}=sortable 'ra_cent', 'RA'
+                %th
+                  %abbr{:title => "Declination"}=sortable 'dec_cent', 'Dec'
+                %th
+                  %abbr{:title => "Percentage Complete"}=sortable '(pixels_processed/pixel_count)', '%'
+                %th More
+            %tbody
+              -@galaxies.each do |galaxy|
+                %tr
+                  %td
+                    - link = @boinc_id == nil ? galaxy : boinc_galaxy_path(@boinc_id,galaxy.id)
+                    = link_to link do
+                      =galaxy.name
+                      = image_tag galaxy.thumbnail_url
+                  %td= link_to galaxy.galaxy_type, link
+                  %td= link_to galaxy.redshift.to_i, link
+                  %td= link_to "#{galaxy.dimension_x} x #{galaxy.dimension_y}", link
+                  %td= link_to galaxy.ra_cent, link
+                  %td= link_to galaxy.dec_cent, link
+                  %td= link_to ((galaxy.pixel_count == 0 || galaxy.pixels_processed == 0) ? '0.00%' : (galaxy.pixels_processed*100.0/galaxy.pixel_count).to_s + '%'), link
+                  %td= link_to "More Galaxy details", galaxy.more_info_url
+          - @galaxies.total_count(:galaxy_id,:distinct => true)
+          = paginate @galaxies
+          = page_entries_info @galaxies, :entry_name => 'Galaxy'

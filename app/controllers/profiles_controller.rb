@@ -39,6 +39,9 @@ class ProfilesController < ApplicationController
 
     @top_profiles = Profile.for_leader_boards_small.order("rank asc").limit(5)
     @top_alliances = Alliance.for_leaderboard_small.order('ranking asc').limit(5)
+    if @profile.general_stats_item.boinc_stats_item != nil
+      @boinc_galaxy = Galaxy.find_by_user_id(@profile.general_stats_item.boinc_stats_item.boinc_id).order("galaxy.galaxy_id DESC").limit(1).first
+    end
 
     case @profile.new_profile_step
       when 0
@@ -241,7 +244,7 @@ class ProfilesController < ApplicationController
   end
   def search
     if params[:search]
-      @profiles = Profile.search params[:search], params[:page], 10
+      @profiles = Profile.search(params[:search], params[:page], 10)
       params[:sort] = "search"
       render :index
     else

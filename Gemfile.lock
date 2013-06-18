@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/amatsuda/kaminari.git
+  revision: 2ac0c19a64b10db8489ea77426eb1ef9ba1e57cd
+  specs:
+    kaminari (0.14.1)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -125,9 +133,6 @@ GEM
       jquery-rails
       railties (>= 3.1.0)
     json (1.8.0)
-    kaminari (0.14.1)
-      actionpack (>= 3.0.0)
-      activesupport (>= 3.0.0)
     launchy (2.3.0)
       addressable (~> 2.3)
     less (2.3.2)
@@ -303,7 +308,7 @@ DEPENDENCIES
   jquery-rails
   jquery-turbolinks
   jquery-ui-rails
-  kaminari
+  kaminari!
   launchy
   less-rails
   linguistics

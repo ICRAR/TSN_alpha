@@ -18,8 +18,11 @@ init: ->
 
 
 $(document).ready(->
-  Util.init()
   $('a.fancybox').fancybox()
+  $('a.fancybox_image').fancybox(
+    'type' : 'image'
+  )
+  Util.init()
 )
 
 $(document).on 'page:fetch', ->

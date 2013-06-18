@@ -1,0 +1,50 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @galaxy.name
+  -@user_page =  'dashboard'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .shadowed
+      .inner-boundary
+        #content-inner
+          #galaxy-info.well
+            %h2= "Galaxy Info: #{@galaxy.name}"
+            %dl.dl-horizontal
+              %dt
+                %abbr{:title => "Right Ascension"} RA
+              %dd= @galaxy.ra_cent
+              %dt
+                %abbr{:title => "Declination"} Dec
+              %dd= @galaxy.dec_cent
+              %dt Redshift
+              %dd= @galaxy.redshift
+              %dt Type
+              %dd= @galaxy.galaxy_type
+              %dt
+                %abbr{:title => "Dimensions"} Dim
+              %dd= "#{@galaxy.dimension_x} x #{@galaxy.dimension_y}"
+              %dt
+                %abbr{:title => "Percentage Complete"} %
+              %dd= (@galaxy.pixel_count == 0 || @galaxy.pixels_processed == 0) ? '0.00%' : (@galaxy.pixel_count*100.0/@galaxy.pixels_processed).to_s + '%'
+              %dt
+              %dd= link_to "More Galaxy details", @galaxy.more_info_url
+            %p
+              - if @boinc_id == nil
+                The following are images of the galaxy using four combinations of filters.
+              -else
+                The following are images of the galaxy using four combinations of filters where the bright square or rectangular areas are those where you have been credited with the processing.
+            %ul.thumbnails
+              =render "galaxies/image", {:link => @galaxy.image_url(1,@boinc_id), :title => "i,r,g"}
+              =render "galaxies/image", {:link => @galaxy.image_url(2,@boinc_id), :title => "r,6, NUV"}
+              =render "galaxies/image", {:link => @galaxy.image_url(3,@boinc_id), :title => "3.4&micro;m, g, NUV".html_safe}
+              =render "galaxies/image", {:link => @galaxy.image_url(4,@boinc_id), :title => "22&micro;m, r, NUV".html_safe}
+
+            %p
+              The following images show the results of the calculations performed against this galaxy to date.
+            %ul.thumbnails
+              =render "galaxies/image", {:link => @galaxy.parameter_image_url('mu'), :title => "mu"}
+              =render "galaxies/image", {:link => @galaxy.parameter_image_url('m'), :title => "mg"}
+              =render "galaxies/image", {:link => @galaxy.parameter_image_url('ldust'), :title => "ldust"}
+              =render "galaxies/image", {:link => @galaxy.parameter_image_url('sfr'), :title => "sfr"}

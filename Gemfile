@@ -40,7 +40,7 @@ gem 'aws-sdk', '~> 1.5.7'
 gem 'linguistics'
 gem "possessive"
 #gem 'will_paginate', '~> 3.0.0'
-gem 'kaminari'
+gem 'kaminari', git: "git://github.com/amatsuda/kaminari.git"
 gem 'turbolinks'
 gem 'jquery-turbolinks'
 gem 'fancybox2-rails', '~> 0.2.4'
@@ -50,6 +50,7 @@ gem 'tire'
 
 gem 'mail_form'
 gem 'simple_form'
+gem 'country_select'
 
 #json builder
 gem 'rabl'
