@@ -29,7 +29,8 @@ namespace :stats do
             statsd_batch.gauge("general.users.#{stat.profile_id}.avg_daily_credit",avg_daily_credit)
             total_daily_credits += avg_daily_credit
           end
-          SiteStat.set("global_TFLOPS",(total_daily_credits*0.000005).round(2))
+          total_tflops = SiteStat.get("nereus_TFLOPS").value.to_i + SiteStat.get("boinc_TFLOPS").value.to_i
+          SiteStat.set("global_TFLOPS",(total_tflops).round(2))
         end
       }
 

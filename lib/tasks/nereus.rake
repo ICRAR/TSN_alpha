@@ -105,6 +105,7 @@ namespace :nereus do
         end
 
         statsd_batch.gauge("nereus.stats.total_daily_credit",total_daily_credit)
+        SiteStat.set("nereus_TFLOPS",(total_daily_credit*0.000005).round(2))
         statsd_batch.gauge("nereus.stats.users_with_daily_credit",users_with_daily_credit)
       }
 

@@ -54,6 +54,7 @@ namespace :boinc do
         end
         statsd_batch.gauge("boinc.stat.total_credit",total_credit)
         statsd_batch.gauge("boinc.stat.total_rac",total_RAC)
+        SiteStat.set("boinc_TFLOPS",(total_RAC*0.000005).round(2))
         statsd_batch.gauge("boinc.stat.total_users",xml.xpath('//user').size)
         statsd_batch.gauge("boinc.stat.active_users",users_with_RAC)
         statsd_batch.flush
