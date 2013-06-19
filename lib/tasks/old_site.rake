@@ -38,7 +38,10 @@ namespace :old_site do
       i += 1
     end
     print "finished user import, we imported #{users_imported} new users\n"
-
+    #************ add bonus credit to all users ****************
+=end
+    update_bonus_credit(remote_client)
+=begin
     #************update users******************
     print "updating credit for all users \n"
     Rake::Task["stats:update_general"].execute
@@ -110,10 +113,11 @@ namespace :old_site do
 
     #************update stats trophies ranks ect ***************
     Rake::Task["stats:update_alliances"].execute
-=end
+
     print "inserting trophies"
     create_trophies(remote_client)
     Rake::Task["stats:update_trophy"].execute
+=end
 
   end
 end
@@ -358,5 +362,24 @@ def create_trophies(front_end_db)
       url = "http://www.theskynet.org/images/trophies/%03d.png" % row['id']
       create_trophy(row['name'],row['description'],credits,url)
     end
+  end
+end
+def update_bonus_credit(front_end_db)
+  print "-- Starting Bonus Credit import \n"
+
+  results = front_end_db.query("SELECT * FROM  `bonusCredits` ",
+                               :cache_rows => false)
+  num_results = results.size
+  print "-- found #{num_results} bonus credit entries \n"
+  j= 0
+  results.each do |row|
+    print "-- importing bonus credit items #{j} to #{j+100} \n" if j%100 == 0
+    bonus = BonusCredit.new(:amount => row['credits']* APP_CONFIG['nereus_to_credit_conversion'], :reason => "imported from old site")
+    bonus.created_at = Time.at(row['day'].to_i*86400)
+    profile = get_profile_by_nereus_id(row['userID'])
+    if profile
+      profile.general_stats_item.bonus_credits << bonus
+    end
+    p += 1
   end
 end

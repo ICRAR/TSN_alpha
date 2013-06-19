@@ -38,6 +38,16 @@ CREATE TABLE `boinc_stats_items` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1858 DEFAULT CHARSET=latin1;
 
+CREATE TABLE `bonus_credits` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `amount` int(11) DEFAULT NULL,
+  `reason` text,
+  `general_stats_item_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `ckeditor_assets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `data_file_name` varchar(255) NOT NULL,
@@ -184,7 +194,7 @@ CREATE TABLE `site_stats` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -304,3 +314,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130606092230');
 INSERT INTO schema_migrations (version) VALUES ('20130607025255');
 
 INSERT INTO schema_migrations (version) VALUES ('20130618085314');
+
+INSERT INTO schema_migrations (version) VALUES ('20130619043213');
