@@ -45,8 +45,9 @@ class AlliancesController < ApplicationController
 
     @alliance = Alliance.new(params[:alliance])
     @alliance.ranking = Alliance.calculate(:maximum,'ranking') + 1
+    @alliance.credit = 0
     if @alliance.save
-      @alliance.members << current_user.profile
+      current_user.profile.join_alliance @alliance
 
       @alliance.leader = current_user.profile
 
@@ -82,7 +83,7 @@ class AlliancesController < ApplicationController
 
   def join
       @alliance = Alliance.find(params[:id])
-      #check that the current user isn't already part of an alliance
+      #check that the current user irofile.sn't already part of an alliance
       if current_user.profile.alliance
         flash[:notice] = 'Sorry you can only be part of a single alliance'
 

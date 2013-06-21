@@ -1,0 +1,73 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Your alliance history
+  -@user_page =  'dashboard'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    #alliance-show
+      .row-fluid
+        .span7.well.well-white
+          %h2 Since you joined theSkyNet you have:
+          %dl.dl-horizontal
+            %dt been a member of
+            %dd= pluralize(@memberships.size, "Alliance")
+            %dt contributed
+            %dd= pluralize(@memberships.map(&:total_credits).inject(0, :+), "credits")
+            %dt spent
+            - total_days_in_alliance  = @memberships.map(&:days_in_alliance).inject(0, :+)
+            %dd= pluralize(total_days_in_alliance, "day") + " in an alliance"
+            %dt and
+            - total_days = ((Time.now - @profile.user.confirmed_at)/86400).round
+            %dd= pluralize(total_days-total_days_in_alliance, "day") + " solo"
+
+        -if @alliance
+          .span5.well.well-white
+            %h2 Your current Alliance
+            %dl.dl-horizontal
+              %dt Name
+              %dd= @alliance.name.titleize
+              %dt Total Credit
+              %dd= number_with_delimiter(@alliance.credit)
+              %dt Rank
+              %dd= @alliance.ranking
+              %dt Leader
+              %dd=link_to @alliance.leader.name, @alliance.leader if @alliance.leader != nil
+              %dt Total Members
+              %dd
+                =@alliance.members.count
+                %abbr{:title=>"including old members"}="(#{@total_members})"
+              %dt Founded on
+              -date_founded = Time.at(@alliance.created_at)
+              %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
+            -if user_signed_in? && current_user.profile.alliance == nil
+              ="#{@alliance.name.titleize} is currently accepting members, would you like to join?"
+              %br
+              =link_to "Join #{@alliance.name.titleize}", join_alliance_path, :class => "btn btn-success"
+
+      .row-fluid
+        .span12.well.well-white
+          %h2 All Your Memberships:
+          %table.table.table-striped
+            %thead
+              %tr
+                %th Name
+                %th Join date
+                %th Leave date
+                %th credits contributed
+                %th Alliance Rank
+            - rank =1
+            %tbody
+              -@memberships.each do |member|
+                %tr
+                  %td= link_to member.alliance.name, member.alliance
+                  -date_joined = Time.at(member.join_date)
+                  %td= link_to date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y"), member.alliance
+                  -if member.leave_date
+                    -date_left = Time.at(member.leave_date)
+                    %td= link_to date_joined.strftime("#{date_left.day.ordinalize} of %B, %Y"), member.alliance
+                  -else
+                    %td Still a member
+                  %td= link_to  member.total_credits, member.alliance
+                  %td= link_to member.alliance.ranking, member.alliance

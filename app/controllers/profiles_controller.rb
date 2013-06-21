@@ -72,6 +72,12 @@ class ProfilesController < ApplicationController
   end
 
   def trophies
+    if user_signed_in?
+      @profile = current_user.profile
+    else
+      redirect_to root_url, notice: 'You must be logged in to view your own profile.'
+      return
+    end
     @profile = Profile.find(params[:id])
     @trophies = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC")
   end
@@ -253,6 +259,18 @@ class ProfilesController < ApplicationController
       render :index
     else
       redirect_to( profiles_path, :alert => "You did not enter a valid search query")
+    end
+  end
+
+  def alliance_history
+    if user_signed_in?
+      @profile = Profile.where(:user_id => current_user.id).first
+      @memberships = @profile.alliance_items.order(:id).includes(:alliance)
+      @alliance = @profile.alliance
+      @total_members  = AllianceMembers.where(:alliance_id =>params[:id]).count
+    else
+      redirect_to root_url, notice: 'You must be logged in to view your own profile.'
+      return
     end
   end
 
