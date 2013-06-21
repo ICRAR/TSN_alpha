@@ -131,7 +131,7 @@ body {
 #content-wrap {
   background-image: none;
 
-  .well {
+  .well-white {
     background-color: white;
   }
 }
@@ -215,6 +215,9 @@ body {
       background: image-url('icon-teams.jpg') 0 0 no-repeat;
       height: 31px;
     }
+    dl {
+      margin-top: 0px;
+    }
   }
   .processed-data {
     background-color:#f9defc; border-top: 1px solid #bbbbbb; border-bottom: 1px solid #bbbbbb; margin-top:0px; text-align:center; padding-top:10px; padding-bottom:10px;
@@ -281,4 +284,16 @@ body {
   .tab-pane {
     width: 900px;
   }
+}
+.dl-long{
+  dt {
+    width: 240px;
+  }
+  dd {
+    margin-left: 260px;
+  }
+}
+
+.progress .bar {
+  .transition(width 2s ease-in-out);
 }

@@ -31,7 +31,7 @@
               %dt
               %dd= link_to "More Galaxy details", @galaxy.more_info_url
             %p
-              - if @boinc_id == nil
+              - if @boinc_id
                 The following are images of the galaxy using four combinations of filters.
               -else
                 The following are images of the galaxy using four combinations of filters where the bright square or rectangular areas are those where you have been credited with the processing.
@@ -48,3 +48,5 @@
               =render "galaxies/image", {:link => @galaxy.parameter_image_url('m'), :title => "m"}
               =render "galaxies/image", {:link => @galaxy.parameter_image_url('ldust'), :title => "ldust"}
               =render "galaxies/image", {:link => @galaxy.parameter_image_url('sfr'), :title => "sfr"}
+            - if @boinc_id
+              =link_to "Send Report", send_report_boinc_galaxy_path(@boinc_id,@galaxy.id), :class => "btn btn-tsn", :remote => true, :id => "send_galaxy_report"

@@ -13,6 +13,76 @@ class NereusStatsItem < ActiveRecord::Base
     end
   end
 
+  #returns current state out of
+  #  pausing: acitve and paused
+  #  paused: not active and paused
+  #  running: active and online_now > 0
+  #  ready:   active and not paused and not online_now
+  #  network_limited: not active and network_limited
+  #  resuming not active and not paused
+  #  unknown:
+  def current_state
+    if active == 1
+      if paused == 1
+        :pausing
+      elsif online_now > 0
+        :running
+      else
+        :ready
+      end
+    else
+      if paused == 1
+        :paused
+      elsif limited?
+        :network_limited
+      elsif paused  == 0
+        :resuming
+      else
+        :unknown
+      end
+    end
+  end
+  def nereus_control_details
+    all = {
+      :pausing =>{
+        :heading => "Your contribution is currently paused.",
+        :desc =>  '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.resume();">Click here</a> to resume your contribution.<br />Your client(s) will continue to process for a few minutes before ceasing activity.',
+        :image => 'button_disable.png',
+        :image_alt => 'theSkyNet is paused',
+      },
+      :running =>{:heading => "You are now contributing to theSkyNet.",
+                  :desc =>   '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.pause();">Click here</a> to pause your contribution.<br />Why not tell your friends on facebook and build an alliance?',
+                  :image => 'startedbutton.png',
+                  :image_alt => 'theSkyNet is now active',
+      },
+      :ready =>{:heading => "Start theSkyNet.",
+                :desc =>  'Start contributing your computer power now!',
+                :image => 'startbutton.png',
+                :image_alt => 'Start theSkyNet',
+      },
+      :paused =>{:heading => "Your account is currently inactive.",
+                 :desc =>  'You have paused your account, so you wont be processing any more data for now.<br /><a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.resume();">Click here</a> to unpause your account.',
+                 :image => 'button_disable.png',
+                 :image_alt => "theSkyNet is paused",
+      },
+      :network_limited =>{:heading => "Your account is currently inactive.",
+                          :desc =>  'You have reached your <a href="/account/manage">network limit</a>, so you wont process any more data until next month.<br />If you wish to resume contributing, either increase or disable your network limit.',
+                          :image => 'button_disable.png',
+                          :image_alt => "theSkyNet is paused",
+      },
+      :resuming =>{:heading => "You are now contributing to theSkyNet.",
+                   :desc =>  '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.pause();">Click here</a> to pause your contribution.<br />Your client(s) may take a few minutes before beginning activity.<br />Why not tell your friends on facebook and build an alliance?',
+                   :image => 'startedbutton.png',
+                   :image_alt => 'theSkyNet is now active',
+      },
+      :unknown =>{:heading => "Your account is currently inactive.",
+                  :desc =>  '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.resume();">Click here</a> to unpause your account.',
+                  :image => 'button_disable.png',
+                  :image_alt => "theSkyNet is paused",
+      },
+    }
+    all[current_state]
+  end
   #sets active status on remote server
   def set_status
     self.active = (!self.limited?  && paused == 0) ? 1 : 0

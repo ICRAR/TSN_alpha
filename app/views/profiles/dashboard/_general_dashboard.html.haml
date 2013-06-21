@@ -28,6 +28,6 @@
     .pull-left= number_with_delimiter(@profile.general_stats_item.total_credit-credits_from_last)
     .pull-right= number_with_delimiter(@profile.general_stats_item.total_credit+credits_to_go)
     .progress.progress-striped.active.progress-danger
-      .bar{:style=>"width: #{trophy_per}%;"}
+      .bar{:data => {:percentage => trophy_per.round(2) }}
     = "You only have " + number_with_delimiter(credits_to_go) + " credit".pluralize(credits_to_go) + " to go until the your next trophy"
 

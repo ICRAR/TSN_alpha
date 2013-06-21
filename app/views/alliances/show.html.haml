@@ -6,48 +6,70 @@
 
 -content_for(:content) do
   #content-wrap
-    .shadowed
-      .inner-boundary
-        #content-inner
-          %p
-            %b Name:
-            =@alliance.name.titleize
-          %p
-            %b Leader:
-            =link_to @alliance.leader.name, @alliance.leader if @alliance.leader != nil
-          %p
-            %b Ranking:
-            =@alliance.ranking
-          %p
-            %b Total Members:
-            ="#{@alliance.members.size} (#{@total_members})"
-          %p
-            %b Total Credit:
-            =number_with_delimiter(@alliance.credit)
-          %p
-            %b Members:
-            %table.table.table-striped
-              %thead
+    #alliance-show
+      .row-fluid
+        .span5.well.well-white
+          %h2= @alliance.name.titleize
+          %dl.dl-horizontal
+            %dt Total Credit
+            %dd= number_with_delimiter(@alliance.credit)
+            %dt Rank
+            %dd= @alliance.ranking
+            %dt Leader
+            %dd=link_to @alliance.leader.name, @alliance.leader if @alliance.leader != nil
+            %dt Total Members
+            %dd
+              =@alliance.members.size
+              %abbr{:title=>"including old members"}="(#{@total_members})"
+            %dt Founded on
+            -date_founded = Time.at(@alliance.created_at)
+            %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
+          -if user_signed_in? && current_user.profile.alliance == nil
+            ="#{@alliance.name.titleize} is currently accepting members, would you like to join?"
+            %br
+            =link_to "Join #{@alliance.name.titleize}", join_alliance_path, :class => "btn btn-success"
+        -if user_signed_in? && current_user.profile.alliance.try(:id) == @alliance.id
+          .span7.well.well-white
+            %h2 Manage Alliance
+            -membership = current_user.profile.alliance_items.where(:leave_date => nil).first
+            %dl.dl-horizontal.dl-long
+              %dt You've been a member since
+              -date_joined = Time.at(membership.join_date)
+              %dd= date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y")
+              %dt Credits you've contributed
+              %dd= number_with_delimiter(membership.leave_credit-membership.start_credit)
+            .pull-right
+              =(current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@profile.alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
+
+
+      .row-fluid
+        .span12.well.well-white
+          %h2 All Members:
+          %table.table.table-striped
+            %thead
+              %tr
+                %th Name
+                %th Total Credit
+                %th= "Credit Contributed to#{@alliance.name.titleize}"
+                %th Alliance Rank
+                %th Overall Rank
+            - rank =1
+            %tbody
+              -@members.each do |member|
                 %tr
-                  %th Name
-                  %th Total Credit
-                  %th= "Credit Contributed to#{@alliance.name.titleize}"
-                  %th Alliance Rank
-                  %th Overall Rank
-              - rank =1
-              %tbody
-                -@members.each do |member|
-                  %tr
-                    %td
-                      =link_to member.profile do
-                        =image_tag member.profile.avatar_url(24)
-                        =member.profile.name
-                    %td= link_to number_with_delimiter(member.credits), member.profile
-                    %td= link_to number_with_delimiter(member.credit_contributed), member.profile
-                    %td= link_to rank, member.profile
-                    %td=link_to  member.rank, member.profile
-                    -rank +=1
-            =paginate @members
-            =page_entries_info @members
+                  %td
+                    =link_to member.profile do
+                      =image_tag member.profile.avatar_url(24)
+                      =member.profile.name
+                  %td= link_to number_with_delimiter(member.credits), member.profile
+                  %td= link_to number_with_delimiter(member.credit_contributed), member.profile
+                  %td= link_to rank, member.profile
+                  %td=link_to  member.rank, member.profile
+                  -rank +=1
+          =paginate @members
+          =page_entries_info @members
+      .row-fluid
+        .span12.well.well-white
           #alliance_graph
-          -link_to('Manage my alliance', edit_alliance_path(@alliance)) if  (user_signed_in? && current_user.profile.alliance_leader == @alliance)
+          =link_to('Manage my alliance', edit_alliance_path(@alliance)) if  (user_signed_in? && current_user.profile.alliance_leader == @alliance)
+

@@ -30,6 +30,18 @@ class GalaxiesController < ApplicationController
     @galaxy = Galaxy.where(:galaxy_id => params[:id]).first
   end
 
+  def send_report
+    @boinc_id = params['boinc_id']
+    @galaxy = Galaxy.where(:galaxy_id => params[:id]).first
+    if @galaxy.send_report(@boinc_id)
+    #if false
+      return_data = {:success => true}
+    else
+      return_data = {:success => false, :message => 'Too recent attempt'}
+    end
+    render json: return_data
+  end
+
   private
 
   def sort_column

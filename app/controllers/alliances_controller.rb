@@ -77,7 +77,7 @@ class AlliancesController < ApplicationController
   # DELETE /alliances/1.json
   def destroy
     @alliance = Alliance.find(params[:id])
-    @alliance.destroy
+    #@alliance.destroy
   end
 
   def join

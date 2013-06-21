@@ -8,25 +8,25 @@
   #content-wrap
     #dashboard
       .row-fluid
-        .span7.well#general
+        .span7.well.well-white#general
           = render 'profiles/dashboard/general_dashboard'
         .span5
           .row-fluid
-            .span12.well#leaderboards
+            .span12.well.well-white#leaderboards
               = render 'profiles/dashboard/ladder_dashboard'
           .row-fluid
-            .span12.well#alliance
+            .span12.well.well-white#alliance
               =render 'profiles/dashboard/alliances_dashboard'
       .row-fluid
-        .span6.well
+        .span6.well.well-white
           =render 'profiles/dashboard/boinc_dashboard'
-        .span6.well.nereus
+        .span6.well.well-white.nereus
           =render 'profiles/dashboard/nereus_dashboard'
 
 
 
       .row-fluid
-        .span12.well.graphs
+        .span12.well.well-white.graphs
           -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil
           -boinc_id = GraphitePathModule.path_for_stats(boinc_id)
           -nereus_id= @profile.general_stats_item.nereus_stats_item.nereus_id if @profile.general_stats_item.nereus_stats_item != nil

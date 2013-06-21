@@ -1,21 +1,26 @@
-=image_tag('boinc_bar.gif')
+.pagination-centered=image_tag('boinc_bar.gif')
 -boinc = @profile.general_stats_item.boinc_stats_item
 -if boinc == nil
   = render 'boinc_forms'
 -else
-  %p
-    = "Credit = #{boinc.credit}"
-    %br
-    = "Recent Average Credit = #{boinc.RAC}"
-    %br
+  .row-fluid
+    .span8.offset1
+      %dl.dl-horizontal
+        %dt Total Credit
+        %dd= number_with_delimiter(boinc.credit)
+        %dt
+          %abbr{:title => "Recent Average Credit"} RAC
+        %dd= boinc.RAC
+        %dt Your Boinc ID
+        %dd= boinc.boinc_id
+  .well.well-small
     -if @boinc_galaxy != nil
       -link = boinc_galaxy_path(boinc.boinc_id,@boinc_galaxy.id)
       .media
         %a.pull-left{:href=>link}= image_tag @boinc_galaxy.thumbnail_url, :class=>"media-object"
         .media-body
           %h4.media-heading= link_to @boinc_galaxy.name, link
-          %p
-            This is one of the galaxy's your computer has been procession. Click on it for more details.
-
-    %p= link_to "See all your galaxies here", boinc_galaxies_path(boinc.boinc_id)
-    %p= link_to "And see all of the POGS galaxies here", galaxies_path
+          %p This is one of the galaxy's your computer has been procession. Click on it for more details.
+          %ul.unstyled
+            %li= link_to "See all your galaxies here", boinc_galaxies_path(boinc.boinc_id)
+            %li= link_to "And see all of the POGS galaxies here", galaxies_path

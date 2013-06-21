@@ -27,4 +27,33 @@ class Galaxy < PogsModel
     "http://ned.ipac.caltech.edu/cgi-bin/objsearch?objname=#{name}&extend=no&hconst=73&omegam=0.27&omegav=0.73&corr_z=1&out_csys=Equatorial&out_equinox=J2000.0&obj_sort=RA+or+Longitude&of=pre_text&zv_breaker=30000.0&list_limit=5&img_stamp=YES"
   end
 
+  def send_report(boinc_id)
+
+    #check if user has already requested a report
+    #a user can only request report a minutes
+    db_connection = connection.instance_variable_get(:@connection)
+    query = "SELECT * FROM `magphys`.`docmosis_task` WHERE `userid` = #{boinc_id};"
+    user_check_result = db_connection.query(query,:as => :hash)
+    if user_check_result.any? {|u| u["create_time"] > 60.seconds.ago}
+      return false
+
+    else
+      #otherwise send report
+      #add user to task list and record task_id
+      query = "INSERT INTO `docmosis_task` (userid) VALUES (#{boinc_id})"
+      result = db_connection.query(query,:as => :hash)
+      last_id = db_connection.last_id
+      #add galaxy tasklist with task_id
+      query = "INSERT INTO `docmosis_task_galaxy` (task_id,galaxy_id) VALUES (#{last_id},#{id})"
+      result = db_connection.query(query,:as => :hash)
+
+      #set user's task to status 1
+      query = "UPDATE `docmosis_task` SET status=1 WHERE task_id=#{last_id}"
+      result = db_connection.query(query,:as => :hash)
+
+      return true
+    end
+
+  end
+
 end

@@ -23,6 +23,31 @@ $(document).ready(->
     'type' : 'image'
   )
   Util.init()
+
+
+  #******* custom alert box using bootbox
+  $.rails.allowAction = (link) ->
+    return true unless link.attr('data-confirm')
+    $.rails.showConfirmDialog(link) # look bellow for implementations
+    false # always stops the action since code runs asynchronously
+
+  $.rails.handleLink = (link) ->
+    if link.data("remote") isnt `undefined`
+      $.rails.handleRemote link
+    else $.rails.handleMethod link  if link.data("method")
+    true
+
+  $.rails.showConfirmDialog = (link) ->
+    message = link.data("confirm")
+    bootbox.confirm message, "Cancel", "Yes", (confirmed) ->
+      if confirmed
+        link.removeAttr('data-confirm')
+        $.rails.handleLink(link);
+  #**************************************
+  #using bootstrap-progressbar
+  $('.progress .bar').progressbar(
+    display_text: 1
+  )
 )
 
 $(document).on 'page:fetch', ->

@@ -8,7 +8,7 @@ namespace :old_site do
     #connect to old front end db
     remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
 
-=begin
+
 
     #********* update nereus objects first ***************
     print "updating all nereus_stats_items \n"
@@ -39,9 +39,9 @@ namespace :old_site do
     end
     print "finished user import, we imported #{users_imported} new users\n"
     #************ add bonus credit to all users ****************
-=end
+
     update_bonus_credit(remote_client)
-=begin
+
     #************update users******************
     print "updating credit for all users \n"
     Rake::Task["stats:update_general"].execute
@@ -117,7 +117,7 @@ namespace :old_site do
     print "inserting trophies"
     create_trophies(remote_client)
     Rake::Task["stats:update_trophy"].execute
-=end
+
 
   end
 end
@@ -322,7 +322,7 @@ end
 def add_member_to_alliance(new_alliance,old_member)
   profile = get_profile_by_nereus_id(old_member[:nereus_id])
   if profile  != nil
-    profile.alliance = new_alliance
+    profile.alliance = new_alliance if old_member[:leaveTime] == nil
     item = AllianceMembers.new
     item.join_date = old_member[:joinTime]
     item.start_credit = old_member[:start_credit]

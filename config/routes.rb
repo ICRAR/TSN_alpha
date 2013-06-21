@@ -59,7 +59,11 @@ get "/nereus/new" => "nereus#new", :as => 'new_nereus'
 
   resources :galaxies, :only => [:index, :show]
   resources :boinc, :only => [], :controller => "boinc_stats_item" do
-  resources :galaxies, :only => [:index, :show]
+    resources :galaxies, :only => [:index, :show]  do
+      member do
+        get 'send_report'
+      end
+    end
   end
 
   # The priority is based upon order of creation:
