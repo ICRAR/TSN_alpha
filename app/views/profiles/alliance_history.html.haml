@@ -27,7 +27,7 @@
             %h2 Your current Alliance
             %dl.dl-horizontal
               %dt Name
-              %dd= @alliance.name.titleize
+              %dd= link_to @alliance.name.titleize, @alliance
               %dt Total Credit
               %dd= number_with_delimiter(@alliance.credit)
               %dt Rank

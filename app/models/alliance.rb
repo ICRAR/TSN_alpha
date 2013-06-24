@@ -11,6 +11,7 @@ class Alliance < ActiveRecord::Base
   has_one :leader, :foreign_key => "alliance_leader_id", :class_name => 'Profile', :inverse_of => :alliance_leader
   has_many :member_items, :class_name => 'AllianceMembers', :dependent => :destroy
   has_many :members, :class_name => 'Profile', :inverse_of => :alliance
+  has_many :invites, :class_name => "AllianceInvite", :inverse_of => :alliance, :dependent => :destroy
 
   def self.for_show(id)
     where(:id => id).includes(:leader).first

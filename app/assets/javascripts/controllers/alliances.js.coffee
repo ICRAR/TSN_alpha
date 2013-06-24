@@ -17,3 +17,14 @@ TSN.alliances.show = () ->
   names = ['Current Members','Rank','Total Credit','Daily Credit']
 
   TSN.rickshaw_graph(metrics,names,$("#alliance_graph"),'-24months')
+
+  $("#invite_form").bind("ajax:success", (evt, data, status, xhr) ->
+    if data.success
+      #replace button with success msg
+      new_content = "<p class=\"text-success\">#{data.message}</p>"
+    else
+      #replace button with error msg
+      new_content = "<p class=\"text-error\">#{data.message}</p>"
+    $("#inviteBox").append(new_content)
+
+  )

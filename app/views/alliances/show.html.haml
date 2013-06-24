@@ -40,6 +40,10 @@
               %dd= number_with_delimiter(membership.leave_credit-membership.start_credit)
             .pull-right
               =(current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
+            .pull-left#inviteBox
+              =form_tag(invite_alliance_path, :method => "post", :remote => true, :id => 'invite_form') do
+                =text_field_tag(:email,nil,:class => "search-query", :placeholder => "email")
+                =submit_tag('Invite', :class => "btn btn-success")
 
 
       .row-fluid
@@ -57,18 +61,28 @@
             - rank =1
             %tbody
               -@members.each do |member|
-                %tr
-                  %td
-                    =link_to member.profile do
-                      =image_tag member.profile.avatar_url(24)
-                      =member.profile.name
-                  %td= link_to number_with_delimiter(member.credits), member.profile
-                  %td= link_to number_with_delimiter(member.credit_contributed), member.profile
-                  -date_joined = Time.at(member.join_date)
-                  %td= link_to date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y"), member.profile
-                  %td= link_to rank, member.profile
-                  %td=link_to  member.rank, member.profile
-                  -rank +=1
+                -if member.profile
+                  %tr
+                    %td
+                      =link_to member.profile do
+                        =image_tag member.profile.avatar_url(24)
+                        =member.profile.name
+                    %td= link_to number_with_delimiter(member.credits), member.profile
+                    %td= link_to number_with_delimiter(member.credit_contributed), member.profile
+                    -date_joined = Time.at(member.join_date)
+                    %td= link_to date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y"), member.profile
+                    %td= link_to rank, member.profile
+                    %td=link_to  member.rank, member.profile
+                -else
+                  %tr
+                    %td Unknown
+                    %td= number_with_delimiter(member.credits)
+                    %td= number_with_delimiter(member.credit_contributed)
+                    -date_joined = Time.at(member.join_date)
+                    %td= date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y")
+                    %td= rank
+                    %td -
+                -rank +=1
           =paginate @members
           =page_entries_info @members
       .row-fluid

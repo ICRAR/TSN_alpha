@@ -38,6 +38,8 @@ get "/nereus/new" => "nereus#new", :as => 'new_nereus'
   resources :alliances do
     member do
        get 'join'
+       get 'redeem_invite'
+       post 'invite'
     end
     collection do
       get 'leave'

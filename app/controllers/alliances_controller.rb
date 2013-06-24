@@ -118,6 +118,89 @@ class AlliancesController < ApplicationController
     render :index
   end
 
+  def invite
+    email = params[:email]
+    alliance = Alliance.find(params[:id])
+    success = false
+    msg = ''
+    #check if current user is a member of the alliance
+    if email != ""
+      if user_signed_in? && current_user.profile.alliance == alliance && current_user.email != email
+        #check if the invited email is a current member
+        user = User.find_by_email(email)
+        profile = user.profile if user
+        if profile
+          #check that the invited member is not a leader of another alliance
+          if profile.alliance_leader == nil
+            #create invite
+            invite = AllianceInvite.new(:email => email)
+            invite.alliance_id = alliance.id
+            invite.invited_by_id =  current_user.profile.id
+            invite.save
+
+            #send email
+            UserMailer.alliance_invite(invite).deliver
+            #return success
+            success = true
+            msg = "Invite for #{Alliance.name} sent to #{email}"
+          else
+            #error
+            success = false
+            msg = "User #{email} is a currently a leader of another Alliance and can not be invited"
+          end
+        else
+          #toDo invites for non-current members
+          #create invite
+
+          #create devise invite
+
+          #send email
+
+          #error
+          success = false
+          msg = "User #{email} is not currently a member this feature is a work in progress"
+        end
+      else
+        #return error
+        success = false
+        msg = "You must be a signed in member of this alliance to invite someone"
+      end
+    else
+      #return error
+      success = false
+      msg = "You must supply an email address"
+    end
+    return_data = {:success => success, :message => msg}
+    render json: return_data
+  end
+
+  def redeem_invite
+    email = params[:email]
+    alliance = Alliance.find(params[:id])
+    token = params[:token]
+
+    if !user_signed_in?
+      redirect_to root_url, :alert => "You must be signed in to do that"
+    elsif current_user.email != email
+      redirect_to root_url, :alert => "That email doesn't belong to you"
+    else
+      invite = AllianceInvite.valid_token?(email, token)
+      if invite == nil
+        redirect_to root_url, :alert => "Sorry that token was invalid"
+      elsif params[:confirm] == 'true'
+        #add the user the alliance
+        invite.redeem
+        redirect_to my_profile_path, :notice => "Success you've joined the #{alliance.name}."
+      elsif params[:confirm] == 'false'
+        invite.reject
+        redirect_to my_profile_path, :notice => "Success you turned down the invitation to join  #{alliance.name}.
+                                                 If you would like another one you will need to contact #{invite.invited_by.name}."
+      else
+        @invite = invite
+      end
+    end
+  end
+
   private
 
   def sort_column

@@ -1,3 +1,18 @@
+CREATE TABLE `alliance_invites` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `invited_by_id` int(11) DEFAULT NULL,
+  `redeemed_by_id` int(11) DEFAULT NULL,
+  `alliance_id` int(11) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `used` tinyint(1) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `invited_on` datetime DEFAULT NULL,
+  `redeemed_on` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `alliance_members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `join_date` datetime DEFAULT NULL,
@@ -9,7 +24,7 @@ CREATE TABLE `alliance_members` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2417 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2420 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -24,7 +39,7 @@ CREATE TABLE `alliances` (
   `country` varchar(255) DEFAULT NULL,
   `old_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=522 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=523 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `boinc_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -46,7 +61,7 @@ CREATE TABLE `bonus_credits` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2970 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `ckeditor_assets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -194,7 +209,7 @@ CREATE TABLE `site_stats` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -316,3 +331,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130607025255');
 INSERT INTO schema_migrations (version) VALUES ('20130618085314');
 
 INSERT INTO schema_migrations (version) VALUES ('20130619043213');
+
+INSERT INTO schema_migrations (version) VALUES ('20130624020607');

@@ -120,7 +120,7 @@ class ProfilesController < ApplicationController
     if @profile.update_attributes(params[:profile])
       @profile.new_profile_step = [1,@profile.new_profile_step].max
       @profile.save
-      redirect_to @profile, notice: 'Profile was successfully updated.'
+      redirect_to my_profile_path, notice: 'Profile was successfully updated.'
     else
       render action: "edit"
     end
@@ -140,12 +140,12 @@ class ProfilesController < ApplicationController
       @profile = current_user.profile
       boinc = BoincStatsItem.find_by_boinc_auth(params['boinc_user'],params['boinc_password'])
       if boinc.new_record?
-        redirect_to @profile, alert: boinc.errors.full_messages.to_sentence
+        redirect_to my_profile_path, alert: boinc.errors.full_messages.to_sentence
       else
         @profile.general_stats_item.boinc_stats_item = boinc
         @profile.new_profile_step = [3,@profile.new_profile_step].max
         @profile.save
-        redirect_to @profile, notice: 'Success your account has been joined'
+        redirect_to my_profile_path, notice: 'Success your account has been joined'
       end
 
     else

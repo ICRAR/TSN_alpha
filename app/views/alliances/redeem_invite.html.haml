@@ -1,0 +1,24 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Redeem Alliance Invite
+  -@user_page =  'dashboard'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    #alliance-show
+      .well.well-white
+        %p
+          You have been invited to join the
+          =link_to @invite.alliance.name.titleize, @invite.alliance
+        -if current_user && current_user.profile.alliance
+          %p.text-warning.well
+            But! You are currently a member of
+            =link_to current_user.profile.alliance.name.titleize, current_user.profile.alliance
+            if you click accept you will leave
+            =link_to current_user.profile.alliance.name.titleize, current_user.profile.alliance
+            and join
+            =link_to @invite.alliance.name.titleize, @invite.alliance
+
+        = link_to "Accept", redeem_invite_alliance_url(@invite.alliance.id,{:email => @invite.email, :token=> @invite.token, :confirm => true}), :class => "btn btn-success"
+        = link_to "Reject", redeem_invite_alliance_url(@invite.alliance.id,{:email => @invite.email, :token=> @invite.token, :confirm => false}), :class => "btn btn-danger"
