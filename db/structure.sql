@@ -11,7 +11,7 @@ CREATE TABLE `alliance_invites` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliance_members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -24,7 +24,7 @@ CREATE TABLE `alliance_members` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2420 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2422 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -51,7 +51,7 @@ CREATE TABLE `boinc_stats_items` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1858 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1859 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `bonus_credits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -228,7 +228,7 @@ CREATE TABLE `trophies` (
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL DEFAULT '',
-  `encrypted_password` varchar(255) NOT NULL DEFAULT '',
+  `encrypted_password` varchar(255) DEFAULT '',
   `reset_password_token` varchar(255) DEFAULT NULL,
   `reset_password_sent_at` datetime DEFAULT NULL,
   `remember_created_at` datetime DEFAULT NULL,
@@ -247,11 +247,19 @@ CREATE TABLE `users` (
   `mod` tinyint(1) NOT NULL DEFAULT '0',
   `username` varchar(255) DEFAULT NULL,
   `old_site_password_salt` varchar(255) NOT NULL DEFAULT '',
+  `invitation_token` varchar(60) DEFAULT NULL,
+  `invitation_sent_at` datetime DEFAULT NULL,
+  `invitation_accepted_at` datetime DEFAULT NULL,
+  `invitation_limit` int(11) DEFAULT NULL,
+  `invited_by_id` int(11) DEFAULT NULL,
+  `invited_by_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_users_on_email` (`email`),
   UNIQUE KEY `index_users_on_reset_password_token` (`reset_password_token`),
   UNIQUE KEY `index_users_on_confirmation_token` (`confirmation_token`),
-  UNIQUE KEY `index_users_on_username` (`username`)
+  UNIQUE KEY `index_users_on_username` (`username`),
+  UNIQUE KEY `index_users_on_invitation_token` (`invitation_token`),
+  KEY `index_users_on_invited_by_id` (`invited_by_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9007 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `versions` (
@@ -333,3 +341,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130618085314');
 INSERT INTO schema_migrations (version) VALUES ('20130619043213');
 
 INSERT INTO schema_migrations (version) VALUES ('20130624020607');
+
+INSERT INTO schema_migrations (version) VALUES ('20130624071824');

@@ -28,6 +28,8 @@ class NereusController < ApplicationController
 
     #create account
     @profile.general_stats_item.nereus_stats_item = NereusStatsItem.new_account
+    @profile.new_profile_step = [3,@profile.new_profile_step].max
+    @profile.save
     @profile.general_stats_item.save
 
     #render :new page

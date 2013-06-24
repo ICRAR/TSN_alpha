@@ -1,7 +1,7 @@
 class NereusStatsItem < ActiveRecord::Base
   attr_accessible :credit, :daily_credit, :nereus_id, :rank, :network_limit,
                   :monthly_network_usage, :paused, :active, :online_today, :online_now,
-                  :mips_now, :mips_today
+                  :mips_now, :mips_today, :last_checked_time
   scope :connected, where('general_stats_item_id IS NOT NULL')
   belongs_to :general_stats_item
 

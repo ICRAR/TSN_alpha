@@ -10,6 +10,7 @@ gem 'mysql2', '~>0.3.12b6' #for connecting with nereus db
 
 #gems for user auth
 gem 'devise'
+gem 'devise_invitable', '~> 1.1.0'
 gem 'cancan'
 
 gem 'rails_admin'

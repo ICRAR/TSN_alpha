@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, ,
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :confirmable,
+  devise :invitable, :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable,
          :authentication_keys => [:login]
   alias_method :devise_valid_password?, :valid_password?
@@ -16,12 +16,19 @@ class User < ActiveRecord::Base
   attr_accessor :login
   attr_accessible :login
 
-  validates :username, :uniqueness => true
+  validates_uniqueness_of :username
   validates :username, :presence => true
   validates :email, :uniqueness => true
 
   has_one :profile, :dependent => :destroy, :inverse_of => :user
   before_create :build_profile
+
+  before_invitation_accepted :check_alliance_invite
+
+  def check_alliance_invite
+    invite = AllianceInvite.valid_token?(self.email, self.invitation_token)
+    invite.redeem if invite != nil
+  end
 
   def is_admin?
     return self.admin

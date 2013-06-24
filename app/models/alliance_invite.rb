@@ -7,7 +7,7 @@ class AllianceInvite < ActiveRecord::Base
 
   validates_presence_of :email
 
-  before_save :setup
+  before_create :setup
 
   def setup
     self.invited_on = Time.now
@@ -40,6 +40,7 @@ class AllianceInvite < ActiveRecord::Base
         self.redeemed_on = Time.now
         profile.invited_by = self
         profile.join_alliance self.alliance
+        self.save
       end
     else
       return false

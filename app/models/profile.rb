@@ -3,7 +3,7 @@ class Profile < ActiveRecord::Base
   belongs_to :user
   belongs_to :alliance_leader, :class_name => 'Alliance', inverse_of: :leader
   belongs_to :alliance, inverse_of: :members
-  has_many :alliance_items, :class_name => 'AllianceMembers', :dependent => :destroy
+  has_many :alliance_items, :class_name => 'AllianceMembers'
 
   has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
   has_many :trophies, :through => :profiles_trophies
@@ -36,6 +36,7 @@ class Profile < ActiveRecord::Base
   end
 
   before_create :build_general_stats_item
+  before_destroy :leave_alliance
 
   def name
     temp_name = ''
@@ -73,7 +74,9 @@ class Profile < ActiveRecord::Base
       item = AllianceMembers.new
       item.join_date = Time.now
       item.start_credit = self.general_stats_item.total_credit
+      item.start_credit ||= 0
       item.leave_credit = self.general_stats_item.total_credit
+      item.start_credit ||= 0
       item.leave_date = nil
 
       self.alliance_items << item

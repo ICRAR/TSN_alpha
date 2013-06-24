@@ -128,7 +128,7 @@ class AlliancesController < ApplicationController
       if user_signed_in? && current_user.profile.alliance == alliance && current_user.email != email
         #check if the invited email is a current member
         user = User.find_by_email(email)
-        profile = user.profile if user
+        profile = user.profile if user && (user.invitation_accepted_at != nil || user.invitation_token == nil)
         if profile
           #check that the invited member is not a leader of another alliance
           if profile.alliance_leader == nil
@@ -149,16 +149,19 @@ class AlliancesController < ApplicationController
             msg = "User #{email} is a currently a leader of another Alliance and can not be invited"
           end
         else
-          #toDo invites for non-current members
-          #create invite
-
           #create devise invite
-
-          #send email
+          user = User.invite!({:email => email}, current_user)
+          #create alliance invite with the same token
+          invite = AllianceInvite.new(:email => email)
+          invite.alliance_id = alliance.id
+          invite.invited_by_id =  current_user.profile.id
+          invite.save
+          invite.token = user.invitation_token
+          invite.save
 
           #error
           success = false
-          msg = "User #{email} is not currently a member this feature is a work in progress"
+          msg = "Invite for #{Alliance.name} sent to #{email}"
         end
       else
         #return error
