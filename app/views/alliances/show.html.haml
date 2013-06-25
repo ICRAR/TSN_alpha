@@ -24,6 +24,13 @@
             %dt Founded on
             -date_founded = Time.at(@alliance.created_at)
             %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
+            %dt Tags
+            %dd= @alliance.tags.gsub(/,/,', ') if @alliance.tags
+          %p
+            %strong Who are we:
+            %blockquote.pull-right
+              %p= @alliance.desc
+              %small= @alliance.leader.name if @alliance.leader != nil
           -if user_signed_in? && current_user.profile.alliance == nil
             ="#{@alliance.name.titleize} is currently accepting members, would you like to join?"
             %br
@@ -58,7 +65,7 @@
                 %th Member Since
                 %th Alliance Rank
                 %th Overall Rank
-            - rank =1
+            - rank = (@page-1)*@per_page+1
             %tbody
               -@members.each do |member|
                 -if member.profile
@@ -67,6 +74,7 @@
                       =link_to member.profile do
                         =image_tag member.profile.avatar_url(24)
                         =member.profile.name
+                        = "*" if member.leave_date != nil
                     %td= link_to number_with_delimiter(member.credits), member.profile
                     %td= link_to number_with_delimiter(member.credit_contributed), member.profile
                     -date_joined = Time.at(member.join_date)
@@ -85,6 +93,7 @@
                 -rank +=1
           =paginate @members
           =page_entries_info @members
+          %p (*) Members that have left the alliance.
       .row-fluid
         .span12.well.well-white
           #alliance_graph

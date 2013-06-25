@@ -13,10 +13,12 @@ class AlliancesController < ApplicationController
   # GET /alliances/1
   # GET /alliances/1.json
   def show
-    per_page = params[:per_page]
-    per_page ||= 20
+    @per_page = params[:per_page].to_i
+    @per_page = 20 if @per_page == 0
+    @page =  params[:page].to_i
+    @page = 1 if @page == 0
     @alliance = Alliance.for_show(params[:id])
-    @members = AllianceMembers.page(params[:page]).per(per_page).for_alliance_show(params[:id])
+    @members = AllianceMembers.page(@page).per(@per_page).for_alliance_show(params[:id])
     @total_members  = AllianceMembers.where(:alliance_id =>params[:id]).count
   end
 
@@ -64,7 +66,7 @@ class AlliancesController < ApplicationController
     @alliance = Alliance.find(params[:id])
     if params[:alliance][:leader] != @alliance.leader.id
       #change leader
-      flash[:alert] = @alliance.leader = Profile.find(params[:alliance][:leader])
+      @alliance.leader = Profile.find(params[:alliance][:leader])
     end
 
     if @alliance.update_attributes(params[:alliance].except('leader'))
