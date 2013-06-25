@@ -73,13 +73,15 @@ class ProfilesController < ApplicationController
 
   def trophies
     if user_signed_in?
-      @profile = current_user.profile
+      @trophy_ids = current_user.profile.trophy_ids
     else
-      redirect_to root_url, notice: 'You must be logged in to view your own profile.'
+      @trophy_ids = nil
       return
     end
     @profile = Profile.find(params[:id])
+    @trophy
     @trophies = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC")
+
   end
 
   # GET /profiles/new

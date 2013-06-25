@@ -1,5 +1,7 @@
 class Alliance < ActiveRecord::Base
-  attr_accessible :name,:tags,:desc,:country, :old_id,  :as => [:default, :admin]
+  acts_as_taggable
+
+  attr_accessible :name,:tags,:desc,:country, :old_id, :tag_list,  :as => [:default, :admin]
   attr_accessible :leader_id, :member_ids, as: :admin
 
   scope :temp_credit, joins(:member_items).select("alliances.*, sum(alliance_members.leave_credit-alliance_members.start_credit) as temp_credit").group('alliances.id')
@@ -44,6 +46,7 @@ class Alliance < ActiveRecord::Base
 
   mapping do
     indexes :name, analyzer: 'snowball', tokenizer: 'nGram'
+    indexes :tags, :as => 'tag_list.to_s', analyzer: 'snowball', tokenizer: 'nGram'
   end
 
   def self.search(query,page,per_page)
@@ -53,6 +56,9 @@ class Alliance < ActiveRecord::Base
           should {fuzzy :name, query}
           should {match :name, query}
           should {prefix :name, query}
+          should {fuzzy :tags, query}
+          should {match :tags, query}
+          should {prefix :tags, query}
         end
       end
     end

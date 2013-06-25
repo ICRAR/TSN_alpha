@@ -47,6 +47,7 @@ gem 'jquery-turbolinks'
 gem 'fancybox2-rails', '~> 0.2.4'
 gem 'paper_trail'
 gem 'tire'
+gem 'acts-as-taggable-on'
 
 
 gem 'mail_form'

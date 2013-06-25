@@ -28,3 +28,13 @@ TSN.alliances.show = () ->
     $("#inviteBox").append(new_content)
 
   )
+
+TSN.alliances.edit = () ->
+  $("#alliance_tags").tokenInput "/alliances/tags.json",
+    prePopulate: $("#alliance_tags").data("pre"),
+    preventDuplicates: true,
+    noResultsText:     "No results, needs to be created.",
+    animateDropdown:   false,
+    tokenValue:        'name',
+    theme:             'facebook'
+

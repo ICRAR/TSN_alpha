@@ -45,6 +45,12 @@
                     </table>
                     <%=  paginate @alliances %>
                     <%=  page_entries_info @alliances, :entry_name => 'Alliance' %>
+                    <div id="tag_cloud">
+                        <h2>Tags:</h2>
+                        <% tag_cloud @tags, %w[cloud1 cloud2 cloud3 cloud4 cloud5 cloud5 cloud6] do |tag, css_class| %>
+                          <%= link_to tag.name, search_alliances_path(:search => tag.name), class: css_class %>
+                        <% end %>
+                    </div>
                 </div>
             </div>
         </div>

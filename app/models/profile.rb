@@ -37,7 +37,9 @@ class Profile < ActiveRecord::Base
 
   before_create :build_general_stats_item
   before_destroy :leave_alliance
-
+  def trophy_ids
+    self.trophies.select("trophies.id").map(&:id)
+  end
   def name
     temp_name = ''
     if use_full_name

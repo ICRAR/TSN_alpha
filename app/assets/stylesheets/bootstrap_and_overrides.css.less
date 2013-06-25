@@ -8,16 +8,16 @@
 // Set the Font Awesome (Font Awesome is default. You can disable by commenting below lines)
 // Note: If you use asset_path() here, your compiled bootstrap_and_overrides.css will not
 //       have the proper paths. So for now we use the absolute path.
-@fontAwesomeEotPath: asset-path("fontawesome-webfont.eot?v=3.0.2");
-@fontAwesomeEotPath_iefix: asset-path("fontawesome-webfont.eot?#iefix&v=3.0.2");
-@fontAwesomeWoffPath: asset-path("fontawesome-webfont.woff?v=3.0.2");
-@fontAwesomeTtfPath: asset-path("fontawesome-webfont.ttf?v=3.0.2");
+@fontAwesomeEotPath: font-url("fontawesome-webfont.eot?v=3.0.2");
+@fontAwesomeEotPath_iefix: font-url("fontawesome-webfont.eot?#iefix&v=3.0.2");
+@fontAwesomeWoffPath: font-url("fontawesome-webfont.woff?v=3.0.2");
+@fontAwesomeTtfPath: font-url("fontawesome-webfont.ttf?v=3.0.2");
 
 // Font Awesome
 @import "fontawesome";
 
 // Glyphicons
-//@import "twitter/bootstrap/sprites.less";
+@import "twitter/bootstrap/sprites.less";
 
 // Your custom LESS stylesheets goes here
 //
@@ -32,6 +32,7 @@
 
 a:link {
   text-decoration: none;
+  color: #0088cc;
 }
 
 .containor {
@@ -296,4 +297,14 @@ body {
 
 .progress .bar {
   .transition(width 2s ease-in-out);
+}
+
+#tag_cloud {
+  line-height: 1.6em;
+  .cloud1 { font-size: 0.6em; }
+  .cloud2 { font-size: 0.6em; }
+  .cloud3 { font-size: 0.7em; }
+  .cloud4 { font-size: 1.0em; }
+  .cloud5 { font-size: 1.3em; }
+  .cloud6 { font-size: 1.6em; }
 }

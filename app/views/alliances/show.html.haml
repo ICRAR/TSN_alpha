@@ -16,7 +16,7 @@
             %dt Rank
             %dd= @alliance.ranking
             %dt Leader
-            %dd=link_to @alliance.leader.name, @alliance.leader if @alliance.leader != nil
+            %dd= @alliance.leader != nil ? link_to(@alliance.leader.name, @alliance.leader) : "-"
             %dt Total Members
             %dd
               =@alliance.members.size
@@ -25,7 +25,10 @@
             -date_founded = Time.at(@alliance.created_at)
             %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
             %dt Tags
-            %dd= @alliance.tags.gsub(/,/,', ') if @alliance.tags
+            %dd
+              %ul.inline
+                -@alliance.tags.each do |tag|
+                  %li= link_to tag.name, search_alliances_path(:search => tag.name)
           %p
             %strong Who are we:
             %blockquote.pull-right

@@ -13,5 +13,5 @@
             .media
               %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
               .media-body
-                %h4.media-heading= link_to "#{trophy.title.titlecase} (#{trophy.credits})" ,  trophy
-                %p=trophy.desc
+                %h4.media-heading= link_to "#{trophy.title.titlecase} (#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)" ,  trophy
+                %p=trophy.desc(@trophy_ids)

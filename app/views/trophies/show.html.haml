@@ -1,0 +1,22 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @trophy.title.titlecase
+  =  render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .shadowed
+      .inner-boundary
+        #content-inner
+          - if @trophy.hidden?(@trophy_ids)
+            .well
+              %h3.text-error WARNING!
+              %p.text-error
+                %strong Access denied:
+                You have not earnt enough credits to view the full details of this trophy
+          %p= image_tag @trophy.image.url
+          %p= "#{@trophy.desc(@trophy_ids).html_safe}  (#{@trophy.show_credits(@trophy_ids)})"
+          %p
+            This trophy has been won be
+            = @trophy.profiles_trophies.size
+            = 'user'.pluralize(@trophy.profiles.size)

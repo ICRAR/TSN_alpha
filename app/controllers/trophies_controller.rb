@@ -2,9 +2,11 @@ class TrophiesController < ApplicationController
   load_and_authorize_resource
   def show
     if user_signed_in?
-      @trophy = current_user.profile.trophies.where(:id => params[:id]).first || not_found
+      @trophy_ids = current_user.profile.trophy_ids
     else
-      redirect_to root_url, :alert => "Sorry you must be logged into do that"
+      @trophy_ids = nil
+      return
     end
+    @trophy = Trophy.find(params[:id])
   end
 end

@@ -8,6 +8,7 @@ class AlliancesController < ApplicationController
     per_page = params[:per_page]
     per_page ||= 20
     @alliances = Alliance.for_leaderboard.page(params[:page]).per(per_page).order("`" + sort_column + "`" " " + sort_direction)
+    @tags = Alliance.tag_counts.where("taggings.tags_count > 2")
   end
 
   # GET /alliances/1
@@ -116,6 +117,9 @@ class AlliancesController < ApplicationController
   def search
     #@alliances = Alliance.search_by_name(params[:search]).includes(:leader).page(params[:page]).per(10)
     @alliances = Alliance.search params[:search], params[:page], 10
+    #@tags = Alliance.tag_counts.where("tags.name LIKE ?", "%#{params[:search]}%")
+    @tags = Alliance.where("id IN(#{@alliances.map {|a| a.id}.join(', ')})").select(:id).tag_counts
+
 
     render :index
   end
@@ -203,6 +207,15 @@ class AlliancesController < ApplicationController
       else
         @invite = invite
       end
+    end
+  end
+
+  def tags
+    tags = Alliance.tags_on(:tags).where("tags.name LIKE ?", "%#{params[:q]}%")
+    tags_json = tags.map{|t| {:id => t.id, :name => t.name }}
+    tags_json.unshift({:id => -1, :name => params[:q]})
+    respond_to do |format|
+      format.json { render :json => tags_json}
     end
   end
 

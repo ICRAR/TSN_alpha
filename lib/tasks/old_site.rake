@@ -257,7 +257,7 @@ def make_alliance(old_alliance)
   new_alliance = Alliance.new(
       :name       => old_alliance[:name],
       :desc       => old_alliance[:desc],
-      :tags       => old_alliance[:tags],
+      :tag_list       => old_alliance[:tags],
       :country    => old_alliance[:country],
       :old_id     => old_alliance[:team_id]
   )

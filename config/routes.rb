@@ -44,6 +44,7 @@ get "/nereus/new" => "nereus#new", :as => 'new_nereus'
     collection do
       get 'leave'
       get 'search'
+      get "tags"
     end
   end
   get "/alliance" => "alliances#show", :as => 'my_alliance'
