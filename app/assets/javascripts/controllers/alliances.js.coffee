@@ -7,7 +7,7 @@ TSN.alliances = new Object;
 
 TSN.alliances.show = () ->
   id = $(document.body).data("id")
-
+  id = GRAPHITE.stats_path(id)
   metrics = [
     "stats.gauges.TSN_dev.general.alliance.#{id}.current_members",
     "stats.gauges.TSN_dev.general.alliance.#{id}.rank",
@@ -29,7 +29,11 @@ TSN.alliances.show = () ->
 
   )
 
-TSN.alliances.edit = () ->
+
+
+TSN.alliances.edit = () -> alliance_tags()
+TSN.alliances.new = () -> alliance_tags()
+alliance_tags = () ->
   $("#alliance_tags").tokenInput "/alliances/tags.json",
     prePopulate: $("#alliance_tags").data("pre"),
     preventDuplicates: true,

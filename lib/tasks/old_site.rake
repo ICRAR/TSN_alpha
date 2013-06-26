@@ -8,6 +8,7 @@ namespace :old_site do
     #connect to old front end db
     remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
 
+    @power_users = [105208, 105211, 105212, 105213, 105580, 105579]
 
 
     #********* update nereus objects first ***************
@@ -41,6 +42,7 @@ namespace :old_site do
     #************ add bonus credit to all users ****************
 
     update_bonus_credit(remote_client)
+    fix_credit_with_bonus(remote_client)
 
     #************update users******************
     print "updating credit for all users \n"
@@ -203,6 +205,8 @@ def make_user(old_user)
       )
       nereus.save
       profile.general_stats_item.nereus_stats_item = nereus
+      profile.general_stats_item.power_user = true if @power_users.include?(old_user[:nereus_id])
+      profile.general_stats_item.save
       profile.save
     end
     #update nereus object
@@ -373,13 +377,43 @@ def update_bonus_credit(front_end_db)
   print "-- found #{num_results} bonus credit entries \n"
   j= 0
   results.each do |row|
-    print "-- importing bonus credit items #{j} to #{j+100} \n" if j%100 == 0
-    bonus = BonusCredit.new(:amount => row['credits']* APP_CONFIG['nereus_to_credit_conversion'], :reason => "imported from old site")
-    bonus.created_at = Time.at(row['day'].to_i*86400)
+    print "-- importing bonus credit items #{j} to #{j+10} \n" if j%10 == 0
     profile = get_profile_by_nereus_id(row['userID'])
     if profile
+      bonus = BonusCredit.new(:amount => row['credits']* APP_CONFIG['nereus_to_credit_conversion'], :reason => "imported from old site")
+      bonus.created_at = Time.at(row['day'].to_i*86400)
       profile.general_stats_item.bonus_credits << bonus
     end
-    p += 1
+    j += 1
   end
+end
+
+def fix_credit_with_bonus(front_end_db)
+  print "-- fixing user credits  \n"
+  print "-- -- loading old totals"
+  results = front_end_db.query("SELECT * FROM  `totalCredits` ",
+                               :cache_rows => false)
+  num_results = results.size
+  print "-- found #{num_results} credit entries \n"
+  j= 0
+  results.each do |row|
+    print "-- importing bonus credit items #{j} to #{j+10} \n" if j%10 == 0
+
+    nereus_item = NereusStatsItem.find_by_nereus_id(row['userID'].to_i)
+    if nereus_item
+      diff = row['credits'].to_i* APP_CONFIG['nereus_to_credit_conversion'] - nereus_item.credit
+      #only add bonus credits if old credits were higher
+      if diff > 0
+        profile = nereus_item.general_stats_item.profile if nereus_item.general_stats_item
+        if profile
+          bonus = BonusCredit.new(:amount => diff, :reason => "Fix for old site conversion")
+          print "-- -- Adding #{diff} cr to old_id: #{row['userID']} \n"
+          bonus.created_at = Time.at(row['day'].to_i*86400)
+          profile.general_stats_item.bonus_credits << bonus
+        end
+      end
+    end
+    j += 1
+  end
+  print "-- finished fixing credits"
 end

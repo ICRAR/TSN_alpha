@@ -45,8 +45,8 @@ namespace :boinc do
               #update DB object
               upsert.row({:boinc_id => id}, :credit => credit, :RAC => RAC, :updated_at => Time.now, :created_at => Time.now)
               #send to statsd
-              statsd_batch.gauge("boinc.users.#{id}.credit",credit)
-              statsd_batch.gauge("boinc.users.#{id}.rac",RAC)
+              statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.credit",credit)
+              statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.rac",RAC)
             end
           end
 

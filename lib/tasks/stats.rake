@@ -25,8 +25,8 @@ namespace :stats do
             avg_daily_credit = stat.nereus_daily.to_i+stat.boinc_daily.to_i
             upsert.row({:id => stat.id}, :total_credit => total_credits, :updated_at => Time.now, :created_at => Time.now)
             upsert.row({:id => stat.id}, :recent_avg_credit=>avg_daily_credit, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.users.#{stat.profile_id}.credit",total_credits)
-            statsd_batch.gauge("general.users.#{stat.profile_id}.avg_daily_credit",avg_daily_credit)
+            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.credit",total_credits)
+            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.avg_daily_credit",avg_daily_credit)
             total_daily_credits += avg_daily_credit
           end
 
@@ -46,7 +46,7 @@ namespace :stats do
           rank = 1
           stats.each do |stat|
             upsert.row({:id => stat.id}, :rank => rank, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.users.#{stat.profile_id}.rank",rank)
+            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.rank",rank)
             rank += 1
           end
         end
@@ -56,7 +56,7 @@ namespace :stats do
         Upsert.batch(connection,table_name) do |upsert|
           stats.each do |stat|
             upsert.row({:id => stat.id}, :rank => nil, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.users.#{stat.profile_id}.rank",0)
+            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.rank",0)
           end
         end
       }
@@ -84,13 +84,13 @@ namespace :stats do
         Upsert.batch(connection,table_name) do |upsert|
           alliances_rac_total.each do |alliance|
             upsert.row({:id => alliance.id},:RAC => alliance.temp_rac, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.alliance.#{alliance.id}.daily_credit",alliance.temp_rac)
-            statsd_batch.gauge("general.alliance.#{alliance.id}.current_members",alliance.total_members)
+            statsd_batch.gauge("general.alliance.#{GraphitePathModule.path_for_stats(alliance.id)}.daily_credit",alliance.temp_rac)
+            statsd_batch.gauge("general.alliance.#{GraphitePathModule.path_for_stats(alliance.id)}.current_members",alliance.total_members)
           end
           alliances_credit.each do |alliance|
             credit = alliance.temp_credit
             upsert.row({:id => alliance.id}, :credit => credit, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.alliance.#{alliance.id}.total_credit",credit)
+            statsd_batch.gauge("general.alliance.#{GraphitePathModule.path_for_stats(alliance.id)}.total_credit",credit)
           end
         end
       }
@@ -103,7 +103,7 @@ namespace :stats do
         Upsert.batch(connection,table_name) do |upsert|
           alliances.each do |alliance|
             upsert.row({:id => alliance.id}, :ranking => rank, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.alliance.#{alliance.id}.rank", rank)
+            statsd_batch.gauge("general.alliance.#{GraphitePathModule.path_for_stats(alliance.id)}.rank", rank)
             rank += 1
           end
         end

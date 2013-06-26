@@ -1,7 +1,7 @@
 class GeneralStatsItem < ActiveRecord::Base
-  attr_accessible :rank, :recent_avg_credit, :total_credit, :last_trophy_credit_value, :bonus_credit_ids,  as: :admin
+  attr_accessible :rank, :recent_avg_credit, :total_credit, :last_trophy_credit_value, :bonus_credit_ids, :power_user,  as: :admin
 
-  scope :has_credit, where("total_credit IS NOT NULL AND total_credit != 0").order("total_credit DESC")
+  scope :has_credit, where("total_credit IS NOT NULL AND total_credit != 0 AND power_user = false").order("total_credit DESC")
   scope :no_credit,  where("total_credit IS NULL OR total_credit = 0")
   scope :for_update_credits, joins('LEFT JOIN boinc_stats_items ON boinc_stats_items.general_stats_item_id = general_stats_items.id
                                     LEFT JOIN nereus_stats_items ON nereus_stats_items.general_stats_item_id = general_stats_items.id').

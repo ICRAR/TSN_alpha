@@ -29,31 +29,37 @@
               %ul.inline
                 -@alliance.tags.each do |tag|
                   %li= link_to tag.name, search_alliances_path(:search => tag.name)
-          %p
-            %strong Who are we:
-            %blockquote.pull-right
-              %p= @alliance.desc
-              %small= @alliance.leader.name if @alliance.leader != nil
-          -if user_signed_in? && current_user.profile.alliance == nil
-            ="#{@alliance.name.titleize} is currently accepting members, would you like to join?"
-            %br
-            =link_to "Join #{@alliance.name.titleize}", join_alliance_path, :class => "btn btn-success"
-        -if user_signed_in? && current_user.profile.alliance.try(:id) == @alliance.id
-          .span7.well.well-white
-            %h2 Manage Alliance
-            -membership = current_user.profile.alliance_items.where(:leave_date => nil).first
-            %dl.dl-horizontal.dl-long
-              %dt You've been a member since
-              -date_joined = Time.at(membership.join_date)
-              %dd= date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y")
-              %dt Credits you've contributed
-              %dd= number_with_delimiter(membership.leave_credit-membership.start_credit)
-            .pull-right
-              =(current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
-            .pull-left#inviteBox
-              =form_tag(invite_alliance_path, :method => "post", :remote => true, :id => 'invite_form') do
-                =text_field_tag(:email,nil,:class => "search-query", :placeholder => "email")
-                =submit_tag('Invite', :class => "btn btn-success")
+        .span7
+          -if user_signed_in? && current_user.profile.alliance.try(:id) == @alliance.id
+            .row-fluid
+              .span12.well.well-white
+                %h2 Manage Alliance
+                -membership = current_user.profile.alliance_items.where(:leave_date => nil).first
+                %dl.dl-horizontal.dl-long
+                  %dt You've been a member since
+                  -date_joined = Time.at(membership.join_date)
+                  %dd= date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y")
+                  %dt Credits you've contributed
+                  %dd= number_with_delimiter(membership.leave_credit-membership.start_credit)
+                .pull-right
+                  =(current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
+                .pull-left#inviteBox
+                  =form_tag(invite_alliance_path, :method => "post", :remote => true, :id => 'invite_form') do
+                    =text_field_tag(:email,nil,:class => "search-query", :placeholder => "email")
+                    =submit_tag('Invite', :class => "btn btn-success")
+          .row-fluid
+            .span12.well.well-white
+              %h2 Who are we:
+              %blockquote.pull-right
+                %p= @alliance.desc
+                %small= @alliance.leader.name if @alliance.leader != nil
+              .clearfix
+              -if user_signed_in? && current_user.profile.alliance == nil
+
+                ="#{@alliance.name.titleize} is currently accepting members, would you like to join?"
+                %br
+                =link_to "Join #{@alliance.name.titleize}", join_alliance_path, :class => "btn btn-success"
+
 
 
       .row-fluid

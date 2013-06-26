@@ -18,14 +18,14 @@ profile_show_graphs = () ->
   name.push("Boinc Credit") if boinc_id
   name.push("Nereus Credit") if nereus_id
 
-  metrics.push("stats.gauges.TSN_dev.boinc.users.#{boinc_id}.credit") if boinc_id
-  metrics.push("stats.gauges.TSN_dev.nereus.users.#{nereus_id}.credit") if nereus_id
+  metrics.push("stats.gauges.TSN_dev.boinc.users.#{GRAPHITE.stats_path(boinc_id)}.credit") if boinc_id
+  metrics.push("stats.gauges.TSN_dev.nereus.users.#{GRAPHITE.stats_path(nereus_id)}.credit") if nereus_id
 
   name.push("Rank")
   name.push("Total Credit")
 
-  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id}.rank")
-  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id}.credit")
+  metrics.push("stats.gauges.TSN_dev.general.users.#{GRAPHITE.stats_path(profile_id)}.rank")
+  metrics.push("stats.gauges.TSN_dev.general.users.#{GRAPHITE.stats_path(profile_id)}.credit")
 
   TSN.rickshaw_graph(metrics,name,$("#chart_container"),'-24months')  if name.length != 0
 
@@ -46,18 +46,18 @@ TSN.profiles.compare = () ->
   name.push("#{name1} Nereus Credit") if nereus_id1
   name.push("#{name2} Nereus Credit") if nereus_id2
 
-  metrics.push("stats.gauges.TSN_dev.boinc.users.#{boinc_id1}.credit") if boinc_id1
-  metrics.push("stats.gauges.TSN_dev.boinc.users.#{boinc_id2}.credit") if boinc_id2
-  metrics.push("stats.gauges.TSN_dev.nereus.users.#{nereus_id1}.credit") if nereus_id1
-  metrics.push("stats.gauges.TSN_dev.nereus.users.#{nereus_id2}.credit") if nereus_id2
+  metrics.push("stats.gauges.TSN_dev.boinc.users.#{GRAPHITE.stats_path(boinc_id1)}.credit") if boinc_id1
+  metrics.push("stats.gauges.TSN_dev.boinc.users.#{GRAPHITE.stats_path(boinc_id2)}.credit") if boinc_id2
+  metrics.push("stats.gauges.TSN_dev.nereus.users.#{GRAPHITE.stats_path(nereus_id1)}.credit") if nereus_id1
+  metrics.push("stats.gauges.TSN_dev.nereus.users.#{GRAPHITE.stats_path(nereus_id2)}.credit") if nereus_id2
 
   name.push("#{name1} Rank")
   name.push("#{name2} Rank")
-  name.push("#{name1} Total Credit")
-  name.push("#{name2} Total Credit")
+ # name.push("#{name1} Total Credit")
+ # name.push("#{name2} Total Credit")
 
-  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id1}.rank")
-  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id2}.rank")
+  metrics.push("stats.gauges.TSN_dev.general.users.#{GRAPHITE.stats_path(profile_id1)}.rank")
+  metrics.push("stats.gauges.TSN_dev.general.users.#{GRAPHITE.stats_path(profile_id2)}.rank")
 #  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id1}.credit")
 #  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id2}.credit")
 

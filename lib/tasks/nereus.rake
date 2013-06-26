@@ -66,7 +66,7 @@ namespace :nereus do
             total_user += 1
           end
           #send to statsd
-          statsd_batch.gauge("nereus.users.#{id}.credit",credit)
+          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.credit",credit)
         end
         statsd_batch.gauge("nereus.stats.total_credit",total_credit)
         statsd_batch.gauge("nereus.stats.total_user",total_user)
@@ -101,7 +101,7 @@ namespace :nereus do
             users_with_daily_credit += 1
           end
           #send to statsd
-          statsd_batch.gauge("nereus.users.#{id}.daily_credit",daily_credit)
+          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.daily_credit",daily_credit)
         end
 
         statsd_batch.gauge("nereus.stats.total_daily_credit",total_daily_credit)
@@ -129,7 +129,7 @@ namespace :nereus do
           nereus_update_hash[id][:monthly_network_usage] = monthly_download
 
           #send to statsd
-          statsd_batch.gauge("nereus.users.#{id}.monthly_download",monthly_download)
+          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.monthly_download",monthly_download)
         end
         #send global to statsd
         statsd_batch.gauge("nereus.stats.total_monthly_download",total_monthly_download)
@@ -158,10 +158,10 @@ namespace :nereus do
           nereus_update_hash[id][:mips_today] = mips_today
           nereus_update_hash[id][:active] = active
           #send to statsd
-          statsd_batch.gauge("nereus.users.#{id}.online_now",online_now)
-          statsd_batch.gauge("nereus.users.#{id}.online_today",online_today)
-          statsd_batch.gauge("nereus.users.#{id}.mips_now",mips_now)
-          statsd_batch.gauge("nereus.users.#{id}.mips_today",mips_today)
+          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.online_now",online_now)
+          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.online_today",online_today)
+          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.mips_now",mips_now)
+          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.mips_today",mips_today)
 
           #update totals
           total_online_now +=  online_now
@@ -195,7 +195,7 @@ namespace :nereus do
             end
             nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
             nereus_update_hash[id][:active] = active
-            statsd_batch.gauge("nereus.users.#{id}.active",active)
+            statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.active",active)
 
           end
         #end

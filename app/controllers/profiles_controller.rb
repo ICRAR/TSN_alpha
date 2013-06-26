@@ -269,7 +269,8 @@ class ProfilesController < ApplicationController
       @profile = Profile.where(:user_id => current_user.id).first
       @memberships = @profile.alliance_items.order(:id).includes(:alliance)
       @alliance = @profile.alliance
-      @total_members  = AllianceMembers.where(:alliance_id =>@alliance.id).count
+
+      @total_members  = @alliance ? AllianceMembers.where(:alliance_id =>@alliance.id).count : nil
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'
       return

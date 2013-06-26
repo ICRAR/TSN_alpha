@@ -55,3 +55,11 @@ $(document).on 'page:fetch', ->
 
 $(document).on 'page:restore', ->
   $('#main').fadeIn 'slow'
+
+
+@GRAPHITE =  {
+ stats_path: (id) ->
+  pad = new Array(1+9).join('0')
+  padded = (pad+id).slice(-9)
+  padded.match(/.{3}/g).join('.')
+}

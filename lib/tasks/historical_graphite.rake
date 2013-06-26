@@ -2,16 +2,15 @@ namespace :historical_graphite do
   desc "loads data from external site"
   task :run => :environment do
     #connect to remote db
-=begin
     remote_client =  NereusStatsItem.connect_to_backend_db
     remote_client_front_end = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
-    main_db = ActiveRecord::Base.connection
-
+    main_db = ActiveRecord::Base.connection.instance_variable_get(:@connection)
+    @power_users = [105208, 105211, 105212, 105213, 105580, 105579]
     @today = Time.now.to_i/86400
 
     print "Starting histroical graphite run ********* \n"
     bench_time = Benchmark.bm do |bench|
-
+=begin
       bench.report('create ranks graphs') {
         ranks(remote_client)
       }
@@ -23,6 +22,7 @@ namespace :historical_graphite do
         users.each do |user|
           print "update user id:#{user.nereus_id}  #{i}/#{size} \n"
           load_nereus_user(user.nereus_id,remote_client)
+          i += 1
         end
       }
 
@@ -32,10 +32,10 @@ namespace :historical_graphite do
 
       bench.report('load Alliance data') {
         #reset daily alliance table
-        main_db.execute("DELETE FROM daily_alliance_credit WHERE 1=1")
+        main_db.query("DELETE FROM daily_alliance_credit WHERE 1=1")
         load_all_alliance_days(main_db,remote_client_front_end)
       }
-
+=end
       bench.report('update alliance ranks') {
         create_graphite_alliance_ranks(main_db)
       }
@@ -44,8 +44,6 @@ namespace :historical_graphite do
         create_graphite_alliance_graphs(main_db)
       }
     end
-=end
-
     file_path = '/home/abeckley/POGS/stats_archive/'
     load_boinc(file_path)
 
@@ -220,11 +218,11 @@ def load_nereus_user(user_id,db_con)
       current_day += 1
     end
 
-    path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/nereus/users/#{user_id}/"
+    path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/nereus/users/#{GraphitePathModule.path_for_file(user_id)}/"
     call_whisper(path_to_storage+'credit.wsp',query_total)
     call_whisper(path_to_storage+'daily_credit.wsp',query_daily)
   else
-    print "-- skipping user: #{user_id}, we could not find them in the database"
+    print "-- skipping user: #{user_id}, we could not find them in the database\n"
 
   end
 end
@@ -323,7 +321,10 @@ def ranks(db_con)
                                       (`uploaded`+`downloaded`)/15728640 +
                                       (`millisecondsOnline`-`millisecondsDisabled`)/900000
                                     )) as total_credit
-                                  FROM dailyaccountusage WHERE `skynetID` >= 10000 AND `skynetID` <= 900000 AND day <= #{day} GROUP BY skynetID
+                                  FROM dailyaccountusage
+                                  WHERE `skynetID` >= 10000 AND `skynetID` <= 900000 AND day <= #{day}
+                                    AND `skynetID` NOT IN (#{@power_users.join(',')})
+                             GROUP BY skynetID
                             ORDER BY total_credit DESC",
                            :cache_rows => false)
     rank = 1
@@ -356,7 +357,7 @@ def update_user_rank(user_id,start_day,rank_array)
      print "***************** profile not found for nereus id #{user_id} ************** \n"
   else
     id = profile.id
-    path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/general/users/#{id}/"
+    path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/general/users/#{GraphitePathModule.path_for_file(id)}/"
     call_whisper(path_to_storage+'rank.wsp',query_rank)
   end
 end
@@ -435,7 +436,7 @@ def get_alliance_daily_credit(main_db,db_con,day,alliance_hash)
 
   if daily_alliance_inserts != []
     sql = "INSERT INTO daily_alliance_credit (alliance_id, old_alliance_id, day, current_members, daily_credit, total_credit) VALUES #{daily_alliance_inserts.join(", ")}"
-    main_db.execute sql
+    main_db.query sql
     #print sql
   end
 
@@ -458,7 +459,7 @@ def create_graphite_alliance_ranks(main_db)
 
   for day in start_date..end_date do
     print "getting day: #{day} \n"
-    results = main_db.execute("SELECT * FROM daily_alliance_credit WHERE day = ' #{day}' ORDER BY total_credit DESC")
+    results = main_db.query("SELECT * FROM daily_alliance_credit WHERE day = '#{day}' ORDER BY total_credit DESC", :as => :hash)
     rank = 1
     results.each do |row|
       id = row['alliance_id'].to_i
@@ -483,11 +484,11 @@ def update_alliances_rank(alliance_id,start_day,rank_array)
     query_rank << " #{day_to_timestamp(day)}:#{rank}"
     day += 1
   end
-  path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/general/alliance/#{alliance_id}/"
+  path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/general/alliance/#{GraphitePathModule.path_for_file(alliance_id)}/"
   call_whisper(path_to_storage+'rank.wsp',query_rank)
 end
 def   create_graphite_alliance_graphs(main_db)
-  list = main_db.execute("SELECT DISTINCT alliance_id FROM daily_alliance_credit")
+  list = main_db.query("SELECT DISTINCT alliance_id FROM daily_alliance_credit", :as => :hash)
   size = list.count
   i = 0
   list.each do |item|
@@ -498,7 +499,7 @@ def   create_graphite_alliance_graphs(main_db)
 
 end
 def create_graphite_alliance_graphs_each(main_db,alliance_id)
-  result = main_db.execute("SELECT * FROM daily_alliance_credit WHERE alliance_id = ' #{alliance_id}' ORDER BY day ASC")
+  result = main_db.query("SELECT * FROM daily_alliance_credit WHERE alliance_id = ' #{alliance_id}' ORDER BY day ASC", :as => :hash)
 
   query_members = ""
   query_daily_credit = ""
@@ -515,7 +516,7 @@ def create_graphite_alliance_graphs_each(main_db,alliance_id)
     query_total_credit << " #{day_to_timestamp(day)}:#{row['total_credit'].to_i}"
   end
   print "creating files \n"
-  path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/general/alliance/#{alliance_id}/"
+  path_to_storage = "/opt/graphite/storage/whisper/stats/gauges/TSN_dev/general/alliance/#{GraphitePathModule.path_for_file(alliance_id)}/"
   call_whisper(path_to_storage+'current_members.wsp',query_members)
   call_whisper(path_to_storage+'daily_credit.wsp',query_daily_credit)
   call_whisper(path_to_storage+'total_credit.wsp',query_total_credit)

@@ -15,4 +15,11 @@ class AllianceMembers < ActiveRecord::Base
     leave_day = leave_date ? leave_date : Time.now
      ((leave_day - join_date)/86400).round
   end
+
+  def start_credit
+    self[:start_credit].to_i
+  end
+  def leave_credit
+    self[:leave_credit].to_i
+  end
 end

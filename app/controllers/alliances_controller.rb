@@ -36,6 +36,7 @@ class AlliancesController < ApplicationController
   # GET /alliances/1/edit
   def edit
     @alliance = Alliance.find(params[:id], :include => 'members')
+    authorize! :edit, @alliance
   end
 
   # POST /alliances

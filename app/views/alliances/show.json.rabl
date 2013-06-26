@@ -1,5 +1,5 @@
 object @alliance
-attributes :id, :ranking, :credit
+attributes :id, :ranking, :credit, :desc, :tag_list
 node(:name) { |a| a.name.titleize}
 node(:current_size) {@alliance.members.size}
 node(:total_size) {@total_members}
