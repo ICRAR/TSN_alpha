@@ -53,7 +53,14 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
       for meteric in metrics
         remote_data.push []
         remote_data[i].data = []
-        remote_data[i].data.push {x: d[1], y: d[0]} for d in meteric['datapoints']
+        for d in meteric['datapoints']
+          if d[0] > 0
+            remote_data[i].data.push {x: d[1], y: d[0]}
+          else
+            last_y = 0
+            if remote_data[i].data.length > 0
+              last_y = remote_data[i].data[remote_data[i].data.length - 1].y
+            remote_data[i].data.push {x: d[1], y: last_y}
         remote_data[i].name = names[i]
         remote_data[i].color = colors[i % colors.length]
         i++
@@ -108,7 +115,15 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
           for meteric in metrics
             #remote_data.push []
             #remote_data[i].data = []
-            graph.series[i].data.push {x: d[1], y: d[0]} for d in meteric['datapoints']
+            #graph.series[i].data.push {x: d[1], y: d[0]} for d in meteric['datapoints']
+            for d in meteric['datapoints']
+              if d[0] > 0
+                graph.series[i].data.push {x: d[1], y: d[0]}
+              else
+                last_y = 0
+                if graph.series[i].data.length > 0
+                  last_y = graph.series[i].data[graph.series[i].data.length - 1].y
+                graph.series[i].data.push {x: d[1], y: last_y}
             #remote_data[i].data.push {x: d[1], y: d[0]} for d in meteric['datapoints']
             i++
           graph.update()

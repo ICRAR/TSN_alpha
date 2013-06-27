@@ -64,6 +64,7 @@ group :development do
   gem 'rails-footnotes', '>= 3.7.9'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'railroady'
 end
 
 #Gems required for testing

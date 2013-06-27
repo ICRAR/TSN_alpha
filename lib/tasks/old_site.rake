@@ -268,6 +268,7 @@ def make_alliance(old_alliance)
   if new_alliance.save
     #****** add leader.id
     new_alliance.leader = get_profile_by_nereus_id(old_alliance[:leader_id])
+    new_alliance.created_at = old_alliance[:created_on]
     new_alliance.save
     new_alliance.errors.add(:leader, "Problem with leader maybe they don't exist") if new_alliance.leader == nil
     return new_alliance
@@ -286,6 +287,7 @@ def generate_old_alliance(row)
       :tags       => row['tags'].to_s,
       :country    => row['country'].to_s,
       :team_id    => row['id'].to_i,
+      :created_on => row['creationDate']
   }
 end
 def get_profile_by_nereus_id(nereus_id)
@@ -353,6 +355,7 @@ def create_trophy(title,desc,credits,image_url)
   trophy.title= title
   trophy.desc= desc
   trophy.credits = credits
+  trophy.hidden = true
   trophy.image = URI.parse(image_url)
   trophy.save
 end
@@ -401,9 +404,9 @@ def fix_credit_with_bonus(front_end_db)
 
     nereus_item = NereusStatsItem.find_by_nereus_id(row['userID'].to_i)
     if nereus_item
-      diff = row['credits'].to_i* APP_CONFIG['nereus_to_credit_conversion'] - nereus_item.credit
+      diff = row['credits'].to_i* APP_CONFIG['nereus_to_credit_conversion'] - nereus_item.credit.to_i
       #only add bonus credits if old credits were higher
-      if diff > 0
+      if diff.to_i > 0
         profile = nereus_item.general_stats_item.profile if nereus_item.general_stats_item
         if profile
           bonus = BonusCredit.new(:amount => diff, :reason => "Fix for old site conversion")
