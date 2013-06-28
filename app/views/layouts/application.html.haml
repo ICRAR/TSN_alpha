@@ -6,7 +6,7 @@
     =stylesheet_link_tag    "application", :media => "all"
     =javascript_include_tag "application"
     =csrf_meta_tags
-    -my_font_awesome_name = "fontawesome-webfont"
+    -my_font_awesome_name = "http:#{TSNAlpha::Application.config.action_controller.asset_host}#{TSNAlpha::Application.config.assets.prefix}/fontawesome-webfont"
     -my_font_append = request.url.gsub('/','_')
     :less
       @font-face {
