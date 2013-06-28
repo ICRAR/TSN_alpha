@@ -58,7 +58,10 @@ $(document).ready( ->
   $('a.fancybox_image').fancybox(
     'type' : 'image'
   )
-
+  $('#js-news').ticker(
+    titleText: 'Latest Stats',
+    controls: false
+  )
 )
 
 

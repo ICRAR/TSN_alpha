@@ -236,8 +236,12 @@ CREATE TABLE `site_stats` (
   `change_time` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+  `description` varchar(255) DEFAULT NULL,
+  `show_in_list` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `show_index` (`show_in_list`),
+  KEY `name_index` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `taggings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -402,3 +406,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130625051419');
 INSERT INTO schema_migrations (version) VALUES ('20130626014923');
 
 INSERT INTO schema_migrations (version) VALUES ('20130627024343');
+
+INSERT INTO schema_migrations (version) VALUES ('20130628054051');

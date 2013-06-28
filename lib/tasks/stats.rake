@@ -34,7 +34,36 @@ namespace :stats do
           SiteStat.set("global_TFLOPS",(total_tflops).round(2))
         end
       }
+      bench.report('site stats') {
+        #recorded total tflops reading
+        total_tflops = SiteStat.get("nereus_TFLOPS").value.to_f + SiteStat.get("boinc_TFLOPS").value.to_f
+        SiteStat.set("global_TFLOPS",(total_tflops).round(2))
 
+        #Total Credit since beginning
+        total_credit = GeneralStatsItem.sum(:total_credit)
+        SiteStat.set("total_credit",total_credit)
+
+        # total new members in the last month
+        new_users_month = User.where{confirmed_at > 1.month.ago}.count
+        SiteStat.set("new_users_month",new_users_month)
+
+        #number of new trophies in the last month
+        new_trophies_month = ProfilesTrophy.where{created_at > 1.month.ago}.count
+        SiteStat.set("new_trophies_month",new_trophies_month)
+
+        #number of new alliance members in the last month
+        new_alliance_members_month = AllianceMembers.where{join_date > 1.month.ago}.count
+        SiteStat.set("new_alliance_members_month",new_alliance_members_month)
+
+        #time since first launch
+        days_since_start = ((Time.now - Time.parse('13/09/2011'))/1.day).round
+        SiteStat.set("days_since_start",days_since_start)
+
+        #time since first launch
+        days_to_launch = ((Time.parse('13/09/2013')-Time.now)/1.day).round
+        SiteStat.set("days_to_launch",days_to_launch)
+
+      }
       bench.report('update ranks user') {
         connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)
         table_name = :general_stats_items

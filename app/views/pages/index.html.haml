@@ -18,18 +18,21 @@
       #ribbonsocial
         %a{:href=>"http://www.facebook.com/pages/TheSkyNet/214061585306810"}= image_tag('social_fb.png',:width =>32, :height => 32, :alt => "Become a Facebook Fan", :style=> 'margin-right:10px;')
         %a{:href=>"http://www.twitter.com/#!/_theSkyNet"}= image_tag('social_tw.png',:width =>32, :height => 32, :alt => "Follow us on Twitter", :style=> 'margin-right:10px;')
-
 -content_for(:content) do
-  #content-wrap-home.row-fluid
-    .span6.page_content
-      = @page.content.html_safe if @page
-    .span6
-      #info-skynet.info-about.last
-        %h2 Why should I join?
-        %ul#reasons
-          %li.track Contribute to real scientific research and help scientists unlock the mysteries of our Universe!
-          %li.earn Track your contribution and see how you compare against your friends, colleagues and the world!.
-          %li.share Share your progress on all your favourite social networks.
+  #content-wrap-home
+    .row-fluid
+      .span12
+        =render 'layouts/feed'
+    .row-fluid
+      .span6.page_content
+        = @page.content.html_safe if @page
+      .span6
+        #info-skynet.info-about.last
+          %h2 Why should I join?
+          %ul#reasons
+            %li.track Contribute to real scientific research and help scientists unlock the mysteries of our Universe!
+            %li.earn Track your contribution and see how you compare against your friends, colleagues and the world!.
+            %li.share Share your progress on all your favourite social networks.
 
   .row-fluid
     #news.span6.well

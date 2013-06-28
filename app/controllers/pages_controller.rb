@@ -18,6 +18,7 @@ class PagesController < ApplicationController
     @page =  Page.find_by_slug('index')
     @news = News.published.all
     @TFLOPSStat = SiteStat.get('global_TFLOPS')
+    @feed = SiteStat.for_feed
     @top_profiles = Profile.for_leader_boards_small.order("rank asc").limit(5)
     @top_alliances = Alliance.for_leaderboard_small.order('ranking asc').limit(5)
     render :index
