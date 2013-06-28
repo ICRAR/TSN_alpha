@@ -7,7 +7,7 @@ TSN.alliances = new Object;
 
 TSN.alliances.show = () ->
   id = $(document.body).data("id")
-  id = GRAPHITE.stats_path(id)
+  id = TSN.GRAPHITE.stats_path(id)
   metrics = [
     "stats.gauges.TSN_dev.general.alliance.#{id}.current_members",
     "stats.gauges.TSN_dev.general.alliance.#{id}.rank",

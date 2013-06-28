@@ -6,6 +6,16 @@
     =stylesheet_link_tag    "application", :media => "all"
     =javascript_include_tag "application"
     =csrf_meta_tags
+    -my_font_awesome_name = "fontawesome-webfont"
+    -my_font_append = request.url.gsub('/','_')
+    :less
+      @font-face {
+        font-family: "FontAwesome";
+        src: asset-url("#{my_font_awesome_name}.eot?v=3.0.2&#{my_font_append}");
+        src: asset-url("#{my_font_awesome_name}.eot?#iefix&v=3.0.2&#{my_font_append}") format("embedded-opentype"), asset-url("#{my_font_awesome_name}.woff?v=3.0.2&#{my_font_append}") format("woff"), asset-url("#{my_font_awesome_name}.ttf?v=3.0.2&#{my_font_append}") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
 
   %body{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : '')}
     #top-nav.navbar.navbar-inverse.navbar-fixed-top
