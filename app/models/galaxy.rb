@@ -11,12 +11,8 @@ class Galaxy < PogsModel
   def thumbnail_url(color = 1 )
     APP_CONFIG['pogs_graphs_url'] + "GalaxyThumbnailImage/#{id}/#{color}"
   end
-  def image_url(color = 1, user_id)
-    if user_id == nil
-      APP_CONFIG['pogs_graphs_url'] + "GalaxyImage/#{id}/#{color}"
-    else
-      APP_CONFIG['pogs_graphs_url'] + "UserGalaxyImage/#{user_id}/#{id}/#{color}"
-    end
+  def image_url(color)
+    APP_CONFIG['pogs_graphs_url'] + "GalaxyImage/#{id}/#{color}"
   end
   def parameter_image_url(parameter )
     APP_CONFIG['pogs_graphs_url'] + "GalaxyParameterImage/#{id}/#{parameter}"
@@ -60,7 +56,7 @@ class Galaxy < PogsModel
   def color_image_user(user_id, colour)
     require 'RMagick'
     #get original image
-    image_url = self.image_url(colour,nil)
+    image_url = self.image_url(colour)
     urlimage = open(image_url)
     image = Magick::ImageList.new.from_blob(urlimage.read)
 

@@ -263,7 +263,8 @@ def make_alliance(old_alliance)
       :desc       => old_alliance[:desc],
       :tag_list       => old_alliance[:tags],
       :country    => old_alliance[:country],
-      :old_id     => old_alliance[:team_id]
+      :old_id     => old_alliance[:team_id],
+      :invite_only     => old_alliance[:invite_only]
   )
   if new_alliance.save
     #****** add leader.id
@@ -280,14 +281,15 @@ end
 
 #takes the mysql row from old database Account table and populates a old_user item
 def generate_old_alliance(row)
-  old_user = {
+  old_alliance = {
       :leader_id  => row['leaderID'].to_i,
       :name       => row['name'].to_s,
       :desc       => row['description'].to_s,
       :tags       => row['tags'].to_s,
       :country    => row['country'].to_s,
       :team_id    => row['id'].to_i,
-      :created_on => row['creationDate']
+      :created_on => row['creationDate'],
+      :invite_only => row['type'].to_i.zero?
   }
 end
 def get_profile_by_nereus_id(nereus_id)

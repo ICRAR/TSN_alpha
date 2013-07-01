@@ -91,6 +91,8 @@ class AlliancesController < ApplicationController
       if current_user.profile.alliance
         flash[:notice] = 'Sorry you can only be part of a single alliance'
 
+      elsif @alliance.invite_only?
+        flash[:alert] = "Sorry the #{@alliance.name} alliance is an invite only alliance. To join you must be invited by an existing member."
       else
         current_user.profile.join_alliance @alliance
         flash[:notice] = "Welcome to the #{@alliance.name} Alliance"

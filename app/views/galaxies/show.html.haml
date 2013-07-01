@@ -42,10 +42,10 @@
                 =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>3), :title => "3.4&micro;m, g, NUV".html_safe}
                 =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>4), :title => "22&micro;m, r, NUV".html_safe}
               -else
-                =render "galaxies/image", {:link => @galaxy.image_url(1,@boinc_id), :title => "i,r,g"}
-                =render "galaxies/image", {:link => @galaxy.image_url(2,@boinc_id), :title => "r,6, NUV"}
-                =render "galaxies/image", {:link => @galaxy.image_url(3,@boinc_id), :title => "3.4&micro;m, g, NUV".html_safe}
-                =render "galaxies/image", {:link => @galaxy.image_url(4,@boinc_id), :title => "22&micro;m, r, NUV".html_safe}
+                =render "galaxies/image", {:link => @galaxy.image_url(1), :title => "i,r,g"}
+                =render "galaxies/image", {:link => @galaxy.image_url(2), :title => "r,6, NUV"}
+                =render "galaxies/image", {:link => @galaxy.image_url(3), :title => "3.4&micro;m, g, NUV".html_safe}
+                =render "galaxies/image", {:link => @galaxy.image_url(4), :title => "22&micro;m, r, NUV".html_safe}
 
             %p
               The following images show the results of the calculations performed against this galaxy to date.

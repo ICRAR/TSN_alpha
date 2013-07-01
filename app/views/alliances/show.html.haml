@@ -55,10 +55,13 @@
                 %small= @alliance.leader.name if @alliance.leader != nil
               .clearfix
               -if user_signed_in? && current_user.profile.alliance == nil
+                -if @alliance.invite_only?
+                  ="#{@alliance.name.titleize} is an invite only alliance. To join you must be invited by an existing member."
 
-                ="#{@alliance.name.titleize} is currently accepting members, would you like to join?"
-                %br
-                =link_to "Join #{@alliance.name.titleize}", join_alliance_path, :class => "btn btn-success"
+                -else
+                  ="#{@alliance.name.titleize} is currently accepting members, would you like to join?"
+                  %br
+                  =link_to "Join #{@alliance.name.titleize}", join_alliance_path, :class => "btn btn-success"
 
 
 

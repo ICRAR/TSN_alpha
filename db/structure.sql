@@ -43,6 +43,7 @@ CREATE TABLE `alliances` (
   `desc` text,
   `country` varchar(255) DEFAULT NULL,
   `old_id` int(11) DEFAULT NULL,
+  `invite_only` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `credit_desc` (`credit`),
   KEY `ranking_asc` (`ranking`),
@@ -241,7 +242,7 @@ CREATE TABLE `site_stats` (
   PRIMARY KEY (`id`),
   KEY `show_index` (`show_in_list`),
   KEY `name_index` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `taggings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -408,3 +409,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130626014923');
 INSERT INTO schema_migrations (version) VALUES ('20130627024343');
 
 INSERT INTO schema_migrations (version) VALUES ('20130628054051');
+
+INSERT INTO schema_migrations (version) VALUES ('20130701081452');

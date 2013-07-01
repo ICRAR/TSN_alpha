@@ -22,6 +22,10 @@
         <%= f.text_area(:desc,:rows => 5) %>
     </div>
   <div class="field">
+      <%= f.label :invite_only %><br />
+      <%= f.check_box(:invite_only) %>
+  </div>
+  <div class="field">
       <%= f.label :tag_list %><br />
       <%= f.text_field(:tag_list,:id => "alliance_tags",:data => {:pre => @alliance.tags.map{|t| {:id => t.id, :name => t.name }}.to_json}) %>
   </div>
