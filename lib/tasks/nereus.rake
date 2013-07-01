@@ -62,6 +62,10 @@ namespace :nereus do
           #update DB object
           if credit > 0
             nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
+            #for unknowen reasons the data sometimes reports lower than expected credit values
+            #if this is the case ignore this update
+            old_credit = nereus_all_hash[id]["credit"]
+            credit = [credit,old_credit].max
             nereus_update_hash[id][:credit] = credit
             total_user += 1
           end
