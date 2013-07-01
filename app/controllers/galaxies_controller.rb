@@ -42,6 +42,18 @@ class GalaxiesController < ApplicationController
     render json: return_data
   end
 
+
+  def image
+    require 'RMagick'
+    boinc_id = params['boinc_id']
+    galaxy = Galaxy.where(:galaxy_id => params[:id]).first
+    image = galaxy.color_image_user(boinc_id,params[:colour])
+
+    file_name = "#{galaxy.name}_#{boinc_id}_#{params[:colour]}.png"
+    expires_in 3.minutes, :public => true
+    send_data image, :type => "image/png", :disposition => 'inline', :filename => file_name
+  end
+
   private
 
   def sort_column
@@ -52,5 +64,6 @@ class GalaxiesController < ApplicationController
   def sort_direction
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
   end
+
 
 end

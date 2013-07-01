@@ -56,4 +56,32 @@ class Galaxy < PogsModel
 
   end
 
+  #returns a image blob with the users area's added
+  def color_image_user(user_id, colour)
+    require 'RMagick'
+    #get original image
+    image_url = self.image_url(colour,nil)
+    urlimage = open(image_url)
+    image = Magick::ImageList.new.from_blob(urlimage.read)
+
+    #load areas
+    areas = GalaxyArea.areas(self.id, user_id)
+
+    #apply areas
+    drawing = Magick::Draw.new
+    areas.each do |area|
+      drawing.fill('white')
+      drawing.fill_opacity(0.5)
+      drawing.stroke_opacity(0)
+      drawing.stroke_width(0)
+      drawing.rectangle(area.top_x,area.top_y,area.bottom_x,area.bottom_y)
+    end
+    drawing.draw(image)
+
+    #return blob
+    image.to_blob
+
+
+  end
+
 end

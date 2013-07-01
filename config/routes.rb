@@ -66,6 +66,7 @@ get "/nereus/new" => "nereus#new", :as => 'new_nereus'
     resources :galaxies, :only => [:index, :show]  do
       member do
         get 'send_report'
+        get '/image/:colour' => "galaxies#image", :as => "image"
       end
     end
   end
