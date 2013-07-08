@@ -15,7 +15,7 @@ child :alliance do
   attributes :id, :name
   node(:url) {|a| alliance_url(a,:format => :json)}
 end
-child :trophies do
+child :trophies, :object_root => false do
   attributes :id, :title, :credits
   node(:desc) {|t| t.desc(@trophy_ids)}
   node(:credits) {|t| t.show_credits(@trophy_ids)}
