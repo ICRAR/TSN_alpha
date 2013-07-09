@@ -76,10 +76,8 @@ class ProfilesController < ApplicationController
       @trophy_ids = current_user.profile.trophy_ids
     else
       @trophy_ids = nil
-      return
     end
     @profile = Profile.find(params[:id])
-    @trophy
     @trophies = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC")
 
   end
