@@ -21,7 +21,7 @@ class Trophy < ActiveRecord::Base
     end
   end
   def hidden?(trophy_ids)
-    (self.hidden == true && !trophy_ids.include?(self.id))
+    (self.hidden == true && (trophy_ids.nil? || !trophy_ids.include?(self.id)))
   end
 
 

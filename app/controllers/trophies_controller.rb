@@ -5,7 +5,6 @@ class TrophiesController < ApplicationController
       @trophy_ids = current_user.profile.trophy_ids
     else
       @trophy_ids = nil
-      return
     end
     @trophy = Trophy.find(params[:id])
   end
