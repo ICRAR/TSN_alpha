@@ -42,7 +42,7 @@ class ProfilesController < ApplicationController
     if @profile.general_stats_item.boinc_stats_item != nil
       begin
         @boinc_galaxy = Galaxy.find_by_user_id(@profile.general_stats_item.boinc_stats_item.boinc_id).order("galaxy.galaxy_id DESC").limit(1).first
-      rescue Mysql2::Error => e
+      rescue
         @boinc_galaxy = nil
       end
     end
