@@ -49,7 +49,9 @@ namespace :old_site do
     Rake::Task["stats:update_general"].execute
     print "credit updated \n"
 
-
+    #***********Connect boinc users*******************
+    Rake::Task["boinc:update_boinc"].execute
+    connect_boinc_users
 
     #************import alliances *****************
     Alliance.delete_all
@@ -421,4 +423,21 @@ def fix_credit_with_bonus(front_end_db)
     j += 1
   end
   print "-- finished fixing credits"
+end
+
+def connect_boinc_users
+  boinc_users = BoincStatsItem.where{(credit > 0) & (general_stats_item_id == nil)}
+  boinc_users.each do |boinc_user|
+    #get their email from the boinc server
+    remote_email = boinc_user.get_name_and_email[:email]
+
+    #see if they have a skynet account
+    user = User.find_by_email(remote_email)
+    #if so connec them
+    if !user.nil?
+      user.profile.general_stats_item.boinc_stats_item = boinc_user
+
+    end
+
+  end
 end
