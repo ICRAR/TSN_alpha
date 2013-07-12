@@ -50,6 +50,10 @@ gem 'paper_trail'
 gem 'tire'
 gem 'acts-as-taggable-on'
 gem 'rmagick'
+gem 'voruby'
+
+gem 'delayed_job_active_record'
+gem 'daemons'
 
 
 gem 'mail_form'

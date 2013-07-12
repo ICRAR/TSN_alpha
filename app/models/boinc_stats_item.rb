@@ -1,17 +1,9 @@
 class BoincStatsItem < ActiveRecord::Base
 
-  attr_accessible :boinc_id, :credit, :RAC, :rank, :as => :admin
+  attr_accessible :boinc_id, :credit, :RAC, :rank, :report_count, :as => :admin
   scope :connected, where('general_stats_item_id IS NOT NULL')
   belongs_to :general_stats_item
 
-
-  def for_json
-    result = Hash.new
-    result[:credit] = credit
-    result[:RAC] = self.RAC
-    result[:rank] = rank
-    return  result
-  end
   #using a users email and password (not hashed) looks up the account and if it exists
   # returns the corresponding boinc_stats_item or creates a new one
   def self.find_by_boinc_auth(email, password)
@@ -103,10 +95,40 @@ class BoincStatsItem < ActiveRecord::Base
         return item
       end
     else
-      #ToDo   Add error to boinc user auth
+      #ToDo add error to boinc user auth
       item.errors.add :base, 'invalid account details'
       return item
     end
 
+  end
+
+  def get_report_count
+    self.report_count ||= 0
+    self.report_count
+  end
+  def inc_report_count
+    self.report_count ||= 0
+    self.report_count += 1
+    self.save
+  end
+
+  def dec_report_count
+    self.report_count ||= 0
+    self.report_count -= 1
+    self.report_count = 0 if report_count < 0
+    self.save
+  end
+
+  def get_name_and_email
+    return_hash = {}
+    if general_stats_item_id.nil?
+      #ToDo connect to boinc DB
+      #we need to get the stats from the boinc DB
+    else
+      profile = general_stats_item.profile
+      return_hash[:name] = profile.name
+      return_hash[:email] = profile.user.email
+    end
+    return_hash
   end
 end

@@ -94,31 +94,33 @@ class NereusStatsItem < ActiveRecord::Base
     #remote_client.query(query)
   end
 
-  #gets account status from remote server and updates model
+  #queues status update
   def update_status
-    if !last_checked_time or (last_checked_time < 1.minutes.ago)
+    if !last_checked_time || (last_checked_time < 1.minutes.ago)
+      NereusStatsItem.delay.update_status(id)
+    end
+  end
+
+  #gets account status from remote server and updates model
+  def self.update_status(id)
+    nereus = NereusStatsItem.find(id)
+    if !nereus.nil?
       remote_client =  NereusStatsItem.connect_to_backend_db(1)
       if remote_client
         results = remote_client.query("SELECT skynetID, onlineNow, onlineToday, mipsNow, mipsToday, active
                               FROM accountstatus
-                              WHERE skynetID = #{nereus_id}"
+                              WHERE skynetID = #{nereus.nereus_id}"
                             )
         if results.first != nil
-          self.online_today = results.first['onlineToday']
-          self.online_now = results.first['onlineNow']
-          self.mips_now = results.first['mipsNow']
-          self.mips_today = results.first['mipsToday']
-          self.active = results.first['active']
-          self.last_checked_time = Time.now
-          self.save
-        else
-          false
+          nereus.online_today = results.first['onlineToday']
+          nereus.online_now = results.first['onlineNow']
+          nereus.mips_now = results.first['mipsNow']
+          nereus.mips_today = results.first['mipsToday']
+          nereus.active = results.first['active']
+          nereus.last_checked_time = Time.now
+          nereus.save
         end
-      else
-        false
       end
-    else
-      false
     end
   end
 
@@ -141,11 +143,11 @@ class NereusStatsItem < ActiveRecord::Base
   end
 
   def network_limit_mb
-    network_limit / 1024 / 1024
+    (network_limit / 1024 / 1024).to_i
   end
 
   def monthly_network_usage_mb
-    monthly_network_usage / 1024 / 1024
+    (monthly_network_usage / 1024 / 1024).to_i
   end
 
   def self.next_nereus_id

@@ -29,7 +29,7 @@ CREATE TABLE `alliance_members` (
   KEY `profile_id_index` (`profile_id`),
   KEY `alliance_id_index` (`alliance_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2701 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2702 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -59,6 +59,7 @@ CREATE TABLE `boinc_stats_items` (
   `general_stats_item_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `report_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
@@ -104,6 +105,23 @@ CREATE TABLE `daily_alliance_credit` (
   `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `delayed_jobs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `priority` int(11) DEFAULT '0',
+  `attempts` int(11) DEFAULT '0',
+  `handler` text,
+  `last_error` text,
+  `run_at` datetime DEFAULT NULL,
+  `locked_at` datetime DEFAULT NULL,
+  `failed_at` datetime DEFAULT NULL,
+  `locked_by` varchar(255) DEFAULT NULL,
+  `queue` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `delayed_jobs_priority` (`priority`,`run_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -411,3 +429,7 @@ INSERT INTO schema_migrations (version) VALUES ('20130627024343');
 INSERT INTO schema_migrations (version) VALUES ('20130628054051');
 
 INSERT INTO schema_migrations (version) VALUES ('20130701081452');
+
+INSERT INTO schema_migrations (version) VALUES ('20130711033610');
+
+INSERT INTO schema_migrations (version) VALUES ('20130711041041');

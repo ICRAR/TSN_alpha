@@ -1,5 +1,8 @@
+require 'voruby/votable/votable'
+require 'voruby/votable/1.1/votable'
+include VORuby
+
 class Galaxy < PogsModel
-  # attr_accessible :title, :body
   self.table_name = 'galaxy'
 
   def self.find_by_user_id(user_id)
@@ -18,6 +21,9 @@ class Galaxy < PogsModel
     APP_CONFIG['pogs_graphs_url'] + "GalaxyParameterImage/#{id}/#{parameter}"
   end
 
+  def label(color)
+    GalaxyImageFilter.label(id,color)
+  end
 
   def more_info_url
     "http://ned.ipac.caltech.edu/cgi-bin/objsearch?objname=#{name}&extend=no&hconst=73&omegam=0.27&omegav=0.73&corr_z=1&out_csys=Equatorial&out_equinox=J2000.0&obj_sort=RA+or+Longitude&of=pre_text&zv_breaker=30000.0&list_limit=5&img_stamp=YES"
@@ -26,32 +32,103 @@ class Galaxy < PogsModel
   def send_report(boinc_id)
 
     #check if user has already requested a report
-    #a user can only request report a minutes
-    db_connection = connection.instance_variable_get(:@connection)
-    query = "SELECT * FROM `magphys`.`docmosis_task` WHERE `userid` = #{boinc_id};"
-    user_check_result = db_connection.query(query,:as => :hash)
-    if user_check_result.any? {|u| u["create_time"] > 60.seconds.ago}
+    #a user can only request 5 reports at time
+    boinc_item = BoincStatsItem.find_by_boinc_id(boinc_id)
+    if boinc_item.nil? || boinc_item.get_report_count > 4
       return false
 
     else
       #otherwise send report
-      #add user to task list and record task_id
-      query = "INSERT INTO `docmosis_task` (userid) VALUES (#{boinc_id})"
-      result = db_connection.query(query,:as => :hash)
-      last_id = db_connection.last_id
-      #add galaxy tasklist with task_id
-      query = "INSERT INTO `docmosis_task_galaxy` (task_id,galaxy_id) VALUES (#{last_id},#{id})"
-      result = db_connection.query(query,:as => :hash)
-
-      #set user's task to status 1
-      query = "UPDATE `docmosis_task` SET status=1 WHERE task_id=#{last_id}"
-      result = db_connection.query(query,:as => :hash)
-
+      boinc_item.inc_report_count
+      Galaxy.delay.send_report(id,boinc_id)
       return true
     end
 
   end
 
+  #connects to docmosis to generate a report then emails the report users email
+  def self.send_report(galaxy_id, boinc_id)
+    boinc_item = BoincStatsItem.find_by_boinc_id(boinc_id)
+    galaxy_item = Galaxy.find(galaxy_id)
+    if boinc_item.nil? || galaxy_item.nil?
+      return false
+    else
+
+      #gets a hash of user details contain
+      user_info = boinc_item.get_name_and_email
+      galaxy_info = galaxy_item.get_galaxy_info
+
+      template = 'Report.doc'
+      output_name = 'DetailedUserReport.pdf'
+      galaxy_data = {
+          'galid' => "#{galaxy_item.name} (version #{galaxy_item.version_number})",
+          #user images
+          'pic1' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,1))}",
+          'pic2' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,2))}",
+          'pic3' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,3))}",
+          'pic4' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,4))}",
+          'pic1_label' => galaxy_item.label(1),
+          'pic2_label' => galaxy_item.label(2),
+          'pic3_label' => galaxy_item.label(3),
+          'pic4_label' => galaxy_item.label(4),
+
+          #galaxy info
+          'gatype'           => galaxy_item.galaxy_type,
+          'gars'             => galaxy_item.redshift.to_s,
+          'gades'            => galaxy_info[:design],
+          'gara_eqj2000'     => galaxy_info[:ra_eqj2000],
+          'gadec_eqj2000'    => galaxy_info[:dec_eqj2000],
+          'gara_eqb1950'     => galaxy_info[:ra_eqb1950],
+          'gadec_eqb1950'    => galaxy_info[:dec_eqb1950]
+      }
+      #if they exist add the parameter image
+      image_mu = galaxy_item.para_image_blob('mu')
+      galaxy_data['pic5'] = "image:base64:#{Base64.encode64(image_mu)}" unless image_mu.nil?
+      image_m = galaxy_item.para_image_blob('m')
+      galaxy_data['pic6'] = "image:base64:#{Base64.encode64(image_m)}" unless image_m.nil?
+      image_ldust = galaxy_item.para_image_blob('ldust')
+      galaxy_data['pic7'] = "image:base64:#{Base64.encode64(image_ldust)}" unless image_ldust.nil?
+      image_sfr = galaxy_item.para_image_blob('sfr')
+      galaxy_data['pic8'] = "image:base64:#{Base64.encode64(image_sfr)}" unless image_sfr.nil?
+      #set galaxy_data add to true if at least one of the images is not nil
+      galaxy_data['add'] = true if (!image_mu.nil? ||  !image_m.nil? || !image_ldust.nil? || !image_sfr.nil?)
+
+
+      data = {
+          'user' => user_info[:name],
+          'date' => Time.now,
+          'galaxy' => galaxy_data
+      }
+
+      doc = Docmosis.new(
+          :template => template,
+          :output_name => output_name,
+          :data => data,
+          :email => user_info[:email]
+      )
+      if doc.email_pdf
+        boinc_item.dec_report_count
+        true
+      else
+        false
+      end
+    end
+  end
+  #returns a iamge blob for the parameter image or false otherwise
+  def para_image_blob(par)
+    url = self.parameter_image_url(par)
+    begin
+      response = RestClient.get(url)
+      if response.code == 200
+        return response.to_s
+      else
+        return nil
+      end
+    rescue Exception => e
+      Rails.logger.error e.message
+      return nil
+    end
+  end
   #returns a image blob with the users area's added
   def color_image_user(user_id, colour)
     require 'RMagick'
@@ -80,4 +157,88 @@ class Galaxy < PogsModel
 
   end
 
+  #searchs the NED and HyperLeda databases for the galaxy data using VOTable.
+  def get_galaxy_info
+    return_hash = {}
+
+    #ned
+    begin
+      votable = get_vo_table('http://ned.ipac.caltech.edu/cgi-bin/objsearch',
+                                {
+                                  :expand => 'no',
+                                  :objname => name,
+                                  :of => 'xml_main'
+                                }
+      )
+      return_hash[:design] = votable_find_value(votable,'Object Name')
+      raise "Object not found in remote VOtable database" if return_hash[:design].nil?
+      votable = get_vo_table('http://ned.ipac.caltech.edu/cgi-bin/objsearch',
+                                {
+                                    :expand => 'no',
+                                    :objname => name,
+                                    :of => 'xml_posn'
+                                }
+      )
+      return_hash[:ra_eqj2000] = votable_find_value(votable,'pos_ra_equ_J2000_d')
+      return_hash[:dec_eqj2000] = votable_find_value(votable,'pos_dec_equ_J2000_d')
+      return_hash[:ra_eqb1950] = votable_find_value(votable,'pos_ra_equ_B1950_d')
+      return_hash[:dec_eqb1950] = votable_find_value(votable,'pos_dec_equ_B1950_d')
+      return return_hash
+    rescue Exception => e
+      Rails.logger.error e.message
+    end
+
+    #if NED failed try HyperLeda
+    begin
+      votable = get_vo_table('http://leda.univ-lyon1.fr/G.cgi',
+                                {
+                                    :n => 101,
+                                    :c => 'o',
+                                    :o => name,
+                                    :a => 'x',
+                                    :z => 'd'
+                                }
+      )
+      return_hash[:design] = votable_find_value(votable,'design')
+      raise "Object not found in remote VOtable database" if return_hash[:design].nil?
+      votable = get_vo_table('http://leda.univ-lyon1.fr/G.cgi',
+                               {
+                                    :n => 113,
+                                    :c => 'o',
+                                    :o => name,
+                                    :a => 'x',
+                                    :z => 'd'
+                                }
+      )
+      return_hash[:ra_eqj2000] = votable_find_value(votable,'alpha')
+      return_hash[:dec_eqj2000] = votable_find_value(votable,'delta')
+      return_hash[:ra_eqb1950] = 0
+      return_hash[:dec_eqb1950] = 0
+      return return_hash
+    rescue Exception => e
+      Rails.logger.error e.message
+      return nil
+    end
+  end
+end
+
+def get_vo_table(url, params)
+  response = RestClient.get(url, :params => params,:content_type => :xml, :timeout => 10)
+  if response.code == 200
+    return votable = VOTable.from_xml(response)
+  else
+    raise "Problem contacting VOTable Provider, #{url}"
+  end
+end
+#hack to find values in a VOTable
+def votable_find_value(votable,field_name)
+  table = votable.resources.first.tables.first
+  index = nil
+  i = 0
+  table.fields.each do |f|
+    index = i if f.name == field_name
+    i += 1
+  end
+  return table.data.format.trs.first.tds.to_a[index].value unless index.nil?
+  return nil
 end

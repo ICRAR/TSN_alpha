@@ -137,6 +137,13 @@ namespace :nereus do
         end
         #send global to statsd
         statsd_batch.gauge("nereus.stats.total_monthly_download",total_monthly_download)
+
+        #we need to check for users who need to have the account network usage set to 0
+        #as the will not show up in the above list
+
+        nereus_update_hash.each do |key,value|
+          value[:monthly_network_usage] ||= 0
+        end
       }
       #updates account status for each account
       bench.report('get acount_status') {
