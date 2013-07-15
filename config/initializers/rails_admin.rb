@@ -193,5 +193,12 @@ RailsAdmin.config do |config|
       end
     end
   end
+
+  config.included_models = RailsAdmin::Config.models_pool << 'Delayed::Job'
+
+  config.model Delayed::Job do
+    label 'Task'
+    navigation_label 'Background Processing'
+  end
 end
 
