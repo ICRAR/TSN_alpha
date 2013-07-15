@@ -11,14 +11,18 @@ class Galaxy < PogsModel
     .where("area_user.userid = #{user_id}")
   end
 
-  def thumbnail_url(color = 1 )
-    APP_CONFIG['pogs_graphs_url'] + "GalaxyThumbnailImage/#{id}/#{color}"
+  def thumbnail_url
+    APP_CONFIG['pogs_graphs_url'] + s3_name + "tn_colour_1.png"
   end
   def image_url(color)
-    APP_CONFIG['pogs_graphs_url'] + "GalaxyImage/#{id}/#{color}"
+    APP_CONFIG['pogs_graphs_url'] + s3_name + "colour_#{color}.png"
   end
   def parameter_image_url(parameter )
-    APP_CONFIG['pogs_graphs_url'] + "GalaxyParameterImage/#{id}/#{parameter}"
+    APP_CONFIG['pogs_graphs_url'] + s3_name + "#{parameter}.png"
+  end
+
+  def s3_name
+    "#{name}__#{run_id}__#{galaxy_id}/"
   end
 
   def label(color)
