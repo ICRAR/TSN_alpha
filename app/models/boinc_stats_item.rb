@@ -82,10 +82,6 @@ class BoincStatsItem < ActiveRecord::Base
         item.RAC = 0
         item.rank = 0
         item.save
-        statsd_batch = Statsd::Batch.new($statsd)
-        statsd_batch.gauge("boinc.users.#{id}.credit",0)
-        statsd_batch.gauge("boinc.users.#{id}.rac",0)
-        statsd_batch.flush
       end
 
       if item.general_stats_item_id != nil

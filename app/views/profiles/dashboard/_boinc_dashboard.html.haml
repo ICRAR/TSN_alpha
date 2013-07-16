@@ -1,7 +1,7 @@
 .pagination-centered=image_tag('boinc_bar.gif')
 -boinc = @profile.general_stats_item.boinc_stats_item
 -if boinc == nil
-  = render 'boinc_forms'
+  = render 'profiles/boinc_forms'
 -else
   .row-fluid
     .span8.offset1
