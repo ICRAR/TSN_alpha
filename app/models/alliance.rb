@@ -42,7 +42,13 @@ class Alliance < ActiveRecord::Base
 
 
   include Tire::Model::Search
-  include Tire::Model::Callbacks
+  #include Tire::Model::Callbacks
+  after_save do
+    begin
+      update_index
+    rescue Errno::ECONNREFUSED
+    end
+  end
 
   mapping do
     indexes :name, analyzer: 'snowball', tokenizer: 'nGram'
