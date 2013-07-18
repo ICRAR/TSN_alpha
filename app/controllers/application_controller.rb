@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery :except => :check_auth
   helper :json_api
+  require 'act_as_taggable_on'
 
   before_filter :check_announcement
 
