@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   require 'act_as_taggable_on'
 
   before_filter :check_announcement
+  newrelic_ignore :only => [:check_auth,:ping]
 
   def check_announcement
     if user_signed_in?
