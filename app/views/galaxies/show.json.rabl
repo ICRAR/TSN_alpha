@@ -4,10 +4,10 @@ node (:percentage_complete) {|g| (g.pixel_count == 0 || g.pixels_processed == 0)
 node (:more_info_url) {|g| g.more_info_url}
 if @boinc_id
   child @galaxy => :filter_images do
-    node('1') { image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>1)}
-    node('2') { image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>2)}
-    node('3') { image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>3)}
-    node('4') { image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>4)}
+    node(@galaxy.label(1).html_safe) { image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>1)}
+    node(@galaxy.label(2).html_safe) { image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>2)}
+    node(@galaxy.label(3).html_safe) { image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>3)}
+    node(@galaxy.label(4).html_safe) { image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>4)}
     end
 else
   child @galaxy => :filter_images do

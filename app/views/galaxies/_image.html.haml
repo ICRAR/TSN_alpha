@@ -2,4 +2,9 @@
   .thumbnail
     =link_to(link, {:class => "fancybox_image", :rel => "galaxies", :title => title}) do
       =image_tag(link, :class => "")
-    %h3= title
+    %h3
+      - hover_text ||= ''
+      -if hover_text == ''
+        = title
+      -else
+        %abbr{:title=>hover_text}= title
