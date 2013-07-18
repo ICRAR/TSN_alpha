@@ -63,3 +63,30 @@ TSN.pages.index = () ->
     news_timer.play()
   )
 
+  #activity feed
+  activity_items = []
+  for item in $('.activity_item')
+    activity_items.push item
+    $(item).remove()
+
+  activity_add_item = () ->
+    if $('.activity_item').length > 2
+      item = $('.activity_item').get(-1)
+      activity_items.push item
+      old_item = $(item)
+      old_item.slideUp(600,'easeOutQuad', () ->
+        old_item.remove()
+      )
+    if activity_items.length > 0
+      $('#activity_list').prepend(activity_items.shift())
+      new_item = $($('.activity_item').get(0))
+      new_item.hide()
+      new_item.slideDown(600,'easeOutQuad')
+  activity_timer = $.timer(activity_add_item,4000, true)
+
+  $('#activity_feed').mouseover(() ->
+    activity_timer.pause()
+  ).mouseout(() ->
+    activity_timer.play()
+  )
+

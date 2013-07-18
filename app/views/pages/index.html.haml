@@ -35,6 +35,19 @@
             %li.share Share your progress on all your favourite social networks.
 
   .row-fluid
+    #activity_feed.span12.well
+      %h2 Latest Activity
+      #activity_list
+        - (0..10).each do |i|
+          .activity_item.media{:id=>"activity_item_#{i}"}
+            .pull-left=image_tag  'http://gravatar.com/avatar/5e0622e0f4427b84daad69df213401d0.png?s=18&d=retro', :class=>"media-object"
+            .media-body
+              = link_to "John #{i}", '#'
+              has won a new
+              = link_to "trophy." ,'#'
+      %a.pull-right More
+
+  .row-fluid
     #news.span6.well
       %h2 Latest News
       #news_list
