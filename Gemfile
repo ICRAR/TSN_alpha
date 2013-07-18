@@ -110,6 +110,7 @@ gem "statsd-ruby", :require => "statsd"
 # gem 'debugger'
 
 gem 'newrelic_rpm'
+gem 'google-analytics-rails'
 
 
 #not loaded when running rails used to make generating cron jobs easy
