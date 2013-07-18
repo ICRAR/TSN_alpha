@@ -1,7 +1,7 @@
 .news_item.media.well{:id=>item.id}
   %a.pull-left=image_tag  item.image.url(:thumb), :class=>"media-object"
   .media-body
-    %h4.media-heading=link_to item.title, item
+    .media-heading=link_to item.title, item
     .published_date= "Published on " + item.published_time.to_s
     .short= item.short
     =  link_to "View full article", item

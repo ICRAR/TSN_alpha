@@ -23,7 +23,7 @@ namespace :old_site do
     results = remote_client.query("SELECT `Account`.*, t1.first_day FROM `Account`
                                       LEFT JOIN (SELECT userID, MIN(`day`) as first_day FROM `dailyCredits` GROUP BY  userID) t1
                                       ON   `Account`.`userID` = t1.`userID`
-                                      WHERE  `Account`.`userID` >= 100000 AND `Account`.`userID` <= 900000 ",
+                                      WHERE  `Account`.`userID` >= 10000 AND `Account`.`userID` <= 99999 ",
                                   :cache_rows => false)
     print "found #{results.count} accounts \n"
     #iterate across results and update local data

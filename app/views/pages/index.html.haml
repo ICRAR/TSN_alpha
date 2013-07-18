@@ -37,8 +37,10 @@
   .row-fluid
     #news.span6.well
       %h2 Latest News
-      -@news.each do |item|
-        = render 'news/news_short', :item => item
+      #news_list
+        -@news.each do |item|
+          = render 'news/news_short', :item => item
+
     #leaderboards.span6.well
       = render 'profiles/dashboard/ladder_dashboard'
 

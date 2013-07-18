@@ -7,7 +7,9 @@ class News < ActiveRecord::Base
       self.published_time = Time.now
       self.save
   end
-  scope :published, where('published = true AND published_time <= ?', Time.now)
+  def self.published
+    where{(published == true) & (published_time <= Time.now)}
+  end
   rails_admin do
 
     field :title
