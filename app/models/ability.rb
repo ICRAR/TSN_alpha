@@ -39,6 +39,8 @@ class Ability
    can :trophies, Profile
    cannot :join, Alliance
    cannot :leave, Alliance
+   can :image, Galaxy
+   can :send_report, Galaxy
 
   if user.id #user is not a quest user
     can :new, NereusStatsItem

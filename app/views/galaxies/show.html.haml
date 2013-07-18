@@ -37,10 +37,10 @@
                 The following are images of the galaxy using four combinations of filters.
             %ul.thumbnails
               - if @boinc_id
-                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>1), :title => "i,r,g"}
-                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>2), :title => "r,6, NUV"}
-                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>3), :title => "3.4&micro;m, g, NUV".html_safe}
-                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>4), :title => "22&micro;m, r, NUV".html_safe}
+                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>1), :title => @galaxy.label(1).html_safe}
+                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>2), :title => @galaxy.label(2).html_safe}
+                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>3), :title => @galaxy.label(3).html_safe}
+                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>4), :title => @galaxy.label(4).html_safe}
               -else
                 =render "galaxies/image", {:link => @galaxy.image_url(1), :title => "i,r,g"}
                 =render "galaxies/image", {:link => @galaxy.image_url(2), :title => "r,6, NUV"}
@@ -50,9 +50,9 @@
             %p
               The following images show the results of the calculations performed against this galaxy to date.
             %ul.thumbnails
-              =render "galaxies/image", {:link => @galaxy.parameter_image_url('mu'), :title => "mu"}
-              =render "galaxies/image", {:link => @galaxy.parameter_image_url('m'), :title => "m"}
-              =render "galaxies/image", {:link => @galaxy.parameter_image_url('ldust'), :title => "ldust"}
-              =render "galaxies/image", {:link => @galaxy.parameter_image_url('sfr'), :title => "sfr"}
+              =render "galaxies/image", {:link => @galaxy.parameter_image_url('mu'), :title => "mu", :hover_text => "Fraction of the total V-band optical depth of the dust seen by young stars contributed by dust in the ambient interstellar medium"}
+              =render "galaxies/image", {:link => @galaxy.parameter_image_url('m'), :title => "m", :hover_text => "Effective Stellar Mass"}
+              =render "galaxies/image", {:link => @galaxy.parameter_image_url('ldust'), :title => "ldust", :hover_text => "Luminosity absorbed and reradiated by dust"}
+              =render "galaxies/image", {:link => @galaxy.parameter_image_url('sfr'), :title => "sfr", :hover_text => "Star Formation Rate"}
             - if @boinc_id
               =link_to "Send Report", send_report_boinc_galaxy_path(@boinc_id,@galaxy.id), :class => "btn btn-tsn", :remote => true, :id => "send_galaxy_report"
