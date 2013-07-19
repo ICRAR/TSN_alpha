@@ -34,12 +34,21 @@ class ProfilesController < ApplicationController
 
   def dashboard
     if user_signed_in?
-      @profile = current_user.profile
+      if current_user.admin? && !params[:profile_id].nil?
+        @profile = Profile.find(params[:profile_id])
+      else
+        @profile = current_user.profile
+      end
+      if @profile.nil?
+        redirect_to profiles_url, notice: 'Sorry could not find your profile'
+        return
+      end
       @profile.general_stats_item.nereus_stats_item.update_status  if @profile.general_stats_item.nereus_stats_item != nil
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'
       return
     end
+
 
     @top_profiles = Profile.for_leader_boards_small.order("rank asc").limit(5)
     @top_alliances = Alliance.for_leaderboard_small.order('ranking asc').limit(5)
@@ -51,7 +60,10 @@ class ProfilesController < ApplicationController
       end
     end
 
-    case @profile.new_profile_step
+    profile_step = @profile.new_profile_step
+    profile_step = params[:step] if current_user.admin? && !params[:step].nil?
+
+    case profile_step
       when 0
         @profile.nickname = @profile.user.username
         respond_to do |format|
