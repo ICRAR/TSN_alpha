@@ -45,6 +45,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ping
+    raise 'database error' unless ActiveRecord::Base.connected?
     render json:{:status => 'ok'}
   end
 
