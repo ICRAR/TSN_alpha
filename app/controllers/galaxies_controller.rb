@@ -51,7 +51,7 @@ class GalaxiesController < ApplicationController
   def image
     require 'RMagick'
     galaxy = Galaxy.where(:galaxy_id => params[:id]).first
-    image = galaxy.color_image_user(boinc_id,params[:colour])
+    image = galaxy.color_image_user(@boinc_id,params[:colour])
 
     file_name = "#{galaxy.name}_#{@boinc_id}_#{params[:colour]}.png"
     expires_in 3.minutes, :public => true
