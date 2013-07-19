@@ -2,9 +2,16 @@ class GalaxiesController < ApplicationController
   authorize_resource :class => Galaxy
   helper :galaxies
   helper_method :sort_column, :sort_direction
+  before_filter :check_boinc_id
+
+  def check_boinc_id
+    @boinc_id = params['boinc_id']
+    unless @boinc_id.nil? || @boinc_id.to_i > 0
+      redirect_to root_url, notice: 'Invalid boinc id'
+    end
+  end
 
   def index
-    @boinc_id = params['boinc_id']
     per_page = params[:per_page]
     per_page ||= 10
     page_num = params[:page]
@@ -26,12 +33,10 @@ class GalaxiesController < ApplicationController
 
   end
   def show
-    @boinc_id = params['boinc_id']
     @galaxy = Galaxy.where(:galaxy_id => params[:id]).first
   end
 
   def send_report
-    @boinc_id = params['boinc_id']
     @galaxy = Galaxy.where(:galaxy_id => params[:id]).first
     if @galaxy.send_report(@boinc_id)
     #if false
@@ -45,7 +50,6 @@ class GalaxiesController < ApplicationController
 
   def image
     require 'RMagick'
-    boinc_id = params['boinc_id']
     galaxy = Galaxy.where(:galaxy_id => params[:id]).first
     image = galaxy.color_image_user(boinc_id,params[:colour])
 
@@ -64,6 +68,7 @@ class GalaxiesController < ApplicationController
   def sort_direction
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
   end
+
 
 
 end
