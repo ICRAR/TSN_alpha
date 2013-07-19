@@ -18,7 +18,7 @@
             = @profile.country
           %p
             %b Total Credit:
-            = number_with_delimiter(@profile.general_stats_item.total_credit).to_s + "cr"
+            = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"
             =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank)
           -if @profile.alliance
             %p

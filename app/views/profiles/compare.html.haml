@@ -7,7 +7,7 @@
 -content_for(:content) do
   #compare
     #content-wrap
-      - top_credit = @profiles.max_by {|p| p.general_stats_item.total_credit}
+      - top_credit = @profiles.max_by {|p| p.general_stats_item.total_credit.to_i}
       - first_member = @profiles.min_by {|p| p.user.confirmed_at}
       .row-fluid
         -@profiles.each do |profile|
@@ -21,7 +21,7 @@
               = profile.country
             %p{:class => ('top' if profile.id == top_credit.id)}
               %b Total Credit:
-              = number_with_delimiter(profile.general_stats_item.total_credit) + "cr"
+              = number_with_delimiter(profile.general_stats_item.total_credit.to_i) + "cr"
               =  link_to "Show in leaderboard" , profiles_path(:rank => profile.general_stats_item.rank)
             -if profile.alliance
               %p

@@ -26,6 +26,10 @@ class ProfilesController < ApplicationController
 
   def compare
     @profiles = Profile.for_compare(params[:id1],params[:id2])
+    if @profiles.length != 2
+      redirect_to profiles_url, notice: 'Sorry we could not find both of those users'
+      return
+    end
   end
 
   def dashboard
