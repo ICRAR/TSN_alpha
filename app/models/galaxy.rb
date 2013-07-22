@@ -33,6 +33,10 @@ class Galaxy < PogsModel
     "http://ned.ipac.caltech.edu/cgi-bin/objsearch?objname=#{name}&extend=no&hconst=73&omegam=0.27&omegav=0.73&corr_z=1&out_csys=Equatorial&out_equinox=J2000.0&obj_sort=RA+or+Longitude&of=pre_text&zv_breaker=30000.0&list_limit=5&img_stamp=YES"
   end
 
+  def per_complete
+    ((self.pixel_count == 0 || self.pixels_processed == 0) ? '0.00' : (self.pixels_processed*100.0/self.pixel_count).round(2).to_s)
+  end
+
   def send_report(boinc_id)
 
     #check if user has already requested a report

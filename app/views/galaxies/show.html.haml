@@ -27,7 +27,7 @@
               %dd= "#{@galaxy.dimension_x} x #{@galaxy.dimension_y}"
               %dt
                 %abbr{:title => "Percentage Complete"} %
-              %dd= (@galaxy.pixel_count == 0 || @galaxy.pixels_processed == 0) ? '0.00%' : (@galaxy.pixel_count*100.0/@galaxy.pixels_processed).to_s + '%'
+              %dd= "#{@galaxy.per_complete}%"
               %dt
               %dd= link_to "More Galaxy details", @galaxy.more_info_url
             %p
