@@ -80,7 +80,7 @@ TSNAlpha::Application.configure do
   $statsd.namespace = 'TSN_dev'
 
 
-  config.assets.manifest = Rails.public_path+"/"+Rails.env
+  config.assets.manifest = Rails.public_path+"/"+APP_CONFIG['manifest']
   config.action_controller.asset_host = "//#{APP_CONFIG['AWS_CDN_domain']}"
   #config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
   config.assets.prefix = "/assets"
