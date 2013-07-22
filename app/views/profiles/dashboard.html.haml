@@ -27,8 +27,8 @@
 
       .row-fluid
         .span12.well.well-white.graphs
-          -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil
-          -nereus_id= @profile.general_stats_item.nereus_stats_item.nereus_id if @profile.general_stats_item.nereus_stats_item != nil
+          -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil && @profile.general_stats_item.boinc_stats_item.credit > 0
+          -nereus_id= @profile.general_stats_item.nereus_stats_item.nereus_id if @profile.general_stats_item.nereus_stats_item != nil && @profile.general_stats_item.nereus_stats_item.credit > 0
           -data = {}
           -data[:nereus_id] = nereus_id if nereus_id
           -data[:boinc_id] = boinc_id if boinc_id
