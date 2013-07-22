@@ -12,13 +12,13 @@ module BoincAuth
          #lookup user in boincDB
          boinc_user = BoincRemoteUser.auth(params[:user][:login] ,params[:user][:password])
           # check if their vaild
-          if boinc_user.nil?
+          if boinc_user == false
             #failed to authenticate against the boincdb
             fail!('No user was found with that username and password')
           else
             #They have a vaild boinc account but no skynet account, we need to create a skynet account for them
             #first create new account
-            puts boinc_user.to_json
+            #puts boinc_user.to_json
             new_user = User.new(
                 :email => boinc_user.email_addr,
                 :username => boinc_user.name,
@@ -36,7 +36,7 @@ module BoincAuth
               profile.new_profile_step= 2
               profile.save
             end
-            puts new_user.to_json
+           #puts new_user.to_json
             #look for boinc_stats_item
             boinc_item = BoincStatsItem.where(:boinc_id => boinc_user.id).first
             if boinc_item.nil?
