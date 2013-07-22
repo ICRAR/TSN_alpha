@@ -57,6 +57,7 @@ class Profile < ActiveRecord::Base
       unless (first_name || second_name || nickname)
         temp_name = user.username if user.username
       end
+      temp_name = temp_name.titleize
     else
       if (nickname)
         temp_name = nickname
@@ -64,7 +65,7 @@ class Profile < ActiveRecord::Base
         temp_name = user.username if user.username
       end
     end
-    return temp_name.titleize
+    return temp_name
   end
 
 
