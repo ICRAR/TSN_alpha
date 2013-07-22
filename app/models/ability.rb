@@ -49,6 +49,7 @@ class Ability
     can :manage, Profile, :user_id => user.id
     can :join, Alliance
     can :leave, Alliance
+    can :dismiss, News
   end
 
    #admin users can do everything :)
