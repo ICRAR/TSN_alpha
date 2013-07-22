@@ -167,6 +167,8 @@ class Galaxy < PogsModel
 
     #ned
     begin
+      #removes the last charcture of the name if its lower case, see Kevin for reason
+      name = self.name[0..-2] unless self.name[-1].match(/\p{Lower}/).nil?
       votable = get_vo_table('http://ned.ipac.caltech.edu/cgi-bin/objsearch',
                                 {
                                   :expand => 'no',
