@@ -34,7 +34,10 @@ TSN.pages.index = () ->
   names =  ['Nereus Total Credit','Nereus Active Users','Nereus Total Users','Nereus Current TFLOPS (estimate)']
   TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),'-24months')
 
-
+  $('#js-news').ticker(
+    titleText: 'Latest Stats',
+    controls: false
+  )
 
   #news slider
   news_items = []
