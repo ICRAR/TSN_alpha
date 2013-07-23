@@ -50,7 +50,12 @@ setup_announcement = ->
 placeholder_check = () ->
   if jQuery.support.placeholder == false
     $('[placeholder]').each (index, element) =>
-      $('<label for="' + $(element).attr('id') + '">' + $(element).attr('placeholder') + '</label >').insertBefore($(element))
+      label = $(element).wrap(
+        '<label for="' + $(element).attr('id') + '" />'
+      ).parent()
+      label.html(
+        $(element).attr('placeholder') + ': ' + label.html()
+      )
 
 $(document).ready( ->
   setup_announcement()
