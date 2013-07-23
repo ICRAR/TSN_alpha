@@ -63,6 +63,11 @@ namespace :stats do
         days_to_launch = ((Time.parse('13/09/2013')-Time.now)/1.day).round
         SiteStat.set("days_to_launch",days_to_launch)
 
+        #number of galaxies currently being processed
+        galaxies_running = Galaxy.num_current
+        SiteStat.set("galaxies_running",galaxies_running)
+
+
       }
       bench.report('update ranks user') {
         connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)

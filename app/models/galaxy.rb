@@ -5,6 +5,11 @@ include VORuby
 class Galaxy < PogsModel
   self.table_name = 'galaxy'
 
+  def self.num_current
+    where{((pixels_processed/pixel_count) > 0) & ((pixels_processed/pixel_count) < 1)}
+    .count
+  end
+
   def self.find_by_user_id(user_id)
     uniq.joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
             INNER JOIN area_user ON area.area_id = area_user.area_id")
