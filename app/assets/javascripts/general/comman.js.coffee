@@ -47,9 +47,15 @@ setup_announcement = ->
     )
   )
 
+placeholder_check = () ->
+  if jQuery.support.placeholder == false
+    $('[placeholder]').each (index, element) =>
+      $('<label for="' + $(element).attr('id') + '">' + $(element).attr('placeholder') + '</label >').insertBefore($(element))
+
 $(document).ready( ->
   setup_announcement()
   custom_alert_box()
+  placeholder_check()
   #using bootstrap-progressbar
   $('.progress .bar').progressbar(
     display_text: 1

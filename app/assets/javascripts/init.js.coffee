@@ -17,7 +17,13 @@ init: ->
 }
 
 
-$(document).ready( Util.init)
+$(document).ready(
+  Util.init
+  jQuery ->
+    jQuery.support.placeholder = false
+    test = document.createElement("input")
+    jQuery.support.placeholder = true  if "placeholder" of test
+)
 
 $(document).on 'page:fetch', ->
   $('#main').fadeOut 'slow'
