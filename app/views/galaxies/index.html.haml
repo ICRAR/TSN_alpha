@@ -63,7 +63,7 @@
                       =galaxy.name
                       = image_tag galaxy.thumbnail_url
                   %td= link_to galaxy.galaxy_type, link
-                  %td= link_to galaxy.redshift.to_i, link
+                  %td= link_to galaxy.redshift.to_s, link
                   %td= link_to "#{galaxy.dimension_x} x #{galaxy.dimension_y}", link
                   %td= link_to galaxy.ra_cent, link
                   %td= link_to galaxy.dec_cent, link
