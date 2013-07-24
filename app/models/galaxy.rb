@@ -173,11 +173,12 @@ class Galaxy < PogsModel
   #searchs the NED and HyperLeda databases for the galaxy data using VOTable.
   def get_galaxy_info
     return_hash = {}
+    #removes the last charcture of the name if its lower case, see Kevin for reason
+    name = self.name[-1].match(/\p{Lower}/).nil? ? self.name : self.name[0..-2]
 
     #ned
     begin
-      #removes the last charcture of the name if its lower case, see Kevin for reason
-      name = self.name[0..-2] unless self.name[-1].match(/\p{Lower}/).nil?
+
       votable = get_vo_table('http://ned.ipac.caltech.edu/cgi-bin/objsearch',
                                 {
                                   :expand => 'no',
@@ -232,7 +233,7 @@ class Galaxy < PogsModel
       return return_hash
     rescue Exception => e
       Rails.logger.error e.message
-      return nil
+      return {}
     end
   end
 end
