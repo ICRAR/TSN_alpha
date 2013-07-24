@@ -27,7 +27,7 @@
                       </thead>
                       <tbody>
                         <% @profiles.each do |profile| %>
-                          <tr <%= 'class=selected' if (params[:rank] and profile.rank == params[:rank]) %> >
+                          <tr <%= 'class=selected' if (params[:rank] and profile.rank == params[:rank].to_i) %> >
                             <td><%= link_to profile do %>
                                     <%= image_tag profile.avatar_url(24) %>
                                     <%= profile.name %>

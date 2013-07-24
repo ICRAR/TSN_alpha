@@ -13,7 +13,7 @@
     %h3 Latest Achievement:
     - trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
     - if trophy == nil
-      You hasn't won any trophies yet
+      You haven't won any trophies yet
     - else
       .media
       = link_to (image_tag trophy.image.url), trophy, :class => "pull-left"
