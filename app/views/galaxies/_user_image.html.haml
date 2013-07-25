@@ -1,0 +1,7 @@
+-url = image_boinc_galaxy_url({:id => @galaxy.id, :boinc_id => @boinc_id, :colour => colour, :scale => scale})
+-url_large = image_boinc_galaxy_url({:id => @galaxy.id, :boinc_id => @boinc_id, :colour => colour, :scale => false})
+-link_large = ''
+-link_large = link_to("(Click here for the full image. It's a big one)", url_large) if scale
+-title = @galaxy.label(colour).html_safe
+-caption = link_large
+=render "galaxies/image", {:link => url, :title => title, :caption => caption}

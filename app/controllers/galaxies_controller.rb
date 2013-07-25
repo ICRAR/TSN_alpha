@@ -56,7 +56,7 @@ class GalaxiesController < ApplicationController
     image = galaxy.color_image_user(@boinc_id,params[:colour],scale)
 
     file_name = "#{galaxy.name}_#{@boinc_id}_#{params[:colour]}.png"
-    expires_in 3.minutes, :public => true
+    expires_in 10.minutes, :public => true
     send_data image, :type => "image/png", :disposition => 'inline', :filename => file_name
   end
 
