@@ -76,10 +76,10 @@ class Galaxy < PogsModel
       galaxy_data = {
           'galid' => "#{galaxy_item.name} (version #{galaxy_item.version_number})",
           #user images
-          'pic1' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,1))}",
-          'pic2' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,2))}",
-          'pic3' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,3))}",
-          'pic4' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,4))}",
+          'pic1' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,1,true,500))}",
+          'pic2' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,2,true,500))}",
+          'pic3' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,3,true,500))}",
+          'pic4' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,4,true,500))}",
           'pic1_label' => galaxy_item.label(1),
           'pic2_label' => galaxy_item.label(2),
           'pic3_label' => galaxy_item.label(3),
@@ -143,7 +143,7 @@ class Galaxy < PogsModel
     end
   end
   #returns a image blob with the users area's added
-  def color_image_user(user_id, colour)
+  def color_image_user(user_id, colour, scale = false, size=500)
     require 'RMagick'
     #get original image
     image_url = self.image_url(colour)
@@ -165,6 +165,11 @@ class Galaxy < PogsModel
     drawing.draw(image)
 
     #return blob
+    if scale == true
+      max_size = [image.rows,image.columns].max
+      scale_factor = size.to_f/max_size.to_f
+      image = image.scale(scale_factor) unless scale_factor >= 1
+    end
     image.to_blob
 
 
