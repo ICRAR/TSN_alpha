@@ -44,7 +44,7 @@
       .row-fluid
         .span12.well
           -boinc_id1= @profiles[0].general_stats_item.boinc_stats_item.boinc_id if @profiles[0].general_stats_item.boinc_stats_item != nil && @profiles[0].general_stats_item.boinc_stats_item.credit > 0
-          -boinc_id2= @profiles[1].general_stats_item.boinc_stats_item.boinc_id if @profiles[1].general_stats_item.nereus_stats_item != nil && @profiles[1].general_stats_item.boinc_stats_item.credit > 0
+          -boinc_id2= @profiles[1].general_stats_item.boinc_stats_item.boinc_id if @profiles[1].general_stats_item.boinc_stats_item != nil && @profiles[1].general_stats_item.boinc_stats_item.credit > 0
           -nereus_id1= @profiles[0].general_stats_item.nereus_stats_item.nereus_id if @profiles[0].general_stats_item.nereus_stats_item != nil && @profiles[0].general_stats_item.nereus_stats_item.credit > 0
           -nereus_id2= @profiles[1].general_stats_item.nereus_stats_item.nereus_id if @profiles[1].general_stats_item.nereus_stats_item != nil && @profiles[1].general_stats_item.nereus_stats_item.credit > 0
           #chart_container{:data => {:name1 => @profiles[0].name, :boinc_id1=>boinc_id1, :nereus_id1=> nereus_id1, :profile_id1 => @profiles[0].id,
