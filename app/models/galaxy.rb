@@ -152,7 +152,7 @@ class Galaxy < PogsModel
 
     #load areas
     areas = GalaxyArea.areas(self.id, user_id)
-    return image.to_blob if areas.nil?
+    return image.to_blob if areas.size == 0
     #apply areas
     drawing = Magick::Draw.new
     areas.each do |area|
