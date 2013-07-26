@@ -1,13 +1,20 @@
 object @profile
 attributes :id, :name, :country
-glue :general_stats_item do
-  glue :nereus_stats_item do
-    attribute :nereus_id
+glue :general_stats_item do |g|
+  if g.nereus_stats_item != nil
+    child :nereus_stats_item => :nereus do |n|
+      attributes :nereus_id, :online_now, :mips_now,
+                 :online_today, :mips_today
+    end
   end
-  glue :boinc_stats_item do
-    attribute :boinc_id
+  if g.boinc_stats_item != nil
+    child :boinc_stats_item do
+      attributes :boinc_id, :credit, :RAC
+    end
   end
-  attributes :rank
+  attributes :credits_to_next_trophy, :rank
+  node(:postition_in_ladder_url) {profiles_url({:rank => @profile.general_stats_item.rank, :format => :json}) }
+
 end
 node(:total_credit) {|p| p.general_stats_item.total_credit }
 node(:gravtar_url) { |p| p.avatar_url(128) }
