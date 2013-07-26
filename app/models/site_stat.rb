@@ -43,6 +43,7 @@ class SiteStat < ActiveRecord::Base
   end
   def set(value)
     value = value.to_s
+    $statsd.gauge("site_stats.#{name}",value)
     if self.value ==  value
       self.touch
     else

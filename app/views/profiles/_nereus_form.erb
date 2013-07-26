@@ -1,5 +1,13 @@
 <p>Your not currently a member of nereus. Nereus is one of the two methods of data processing the we are using, it allows processing through Java.
 
 <%= link_to "Join theSkyNet on Nereus.", new_nereus_path %>
+</p>
+<p>Or if you have an existing nereus id enter it here.
+    <%= form_tag(new_nereus_path, :method => 'post') do %>
+
+      <%= label_tag(:nereus_id, "Existing nereus id") %>
+      <%= text_field_tag(:nereus_id) %> <br/>
+      <%= submit_tag("Link Nereus Account") %>
+    <% end %>
 
 </p>

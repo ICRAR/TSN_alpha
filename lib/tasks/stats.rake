@@ -39,6 +39,7 @@ namespace :stats do
         total_tflops = SiteStat.get("nereus_TFLOPS").value.to_f + SiteStat.get("boinc_TFLOPS").value.to_f
         SiteStat.set("global_TFLOPS",(total_tflops).round(2))
 
+
         #Total Credit since beginning
         total_credit = GeneralStatsItem.sum(:total_credit)
         SiteStat.set("total_credit",total_credit)

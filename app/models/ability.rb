@@ -50,6 +50,7 @@ class Ability
     can :join, Alliance
     can :leave, Alliance
     can :dismiss, News
+    can :send_cert, NereusStatsItem
   end
 
    #admin users can do everything :)

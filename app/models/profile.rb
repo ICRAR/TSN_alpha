@@ -40,24 +40,28 @@ class Profile < ActiveRecord::Base
   def trophy_ids
     self.trophies.select("trophies.id").map(&:id)
   end
+  def full_name
+    temp_name = ''
+    if (first_name)
+      temp_name = first_name + temp_name
+    end
+    if ((first_name || second_name) && nickname)
+      temp_name = temp_name + " '#{nickname}' "
+    elsif (nickname)
+      temp_name = nickname
+    end
+    if (second_name)
+      temp_name = temp_name + second_name
+    end
+    unless (first_name || second_name || nickname)
+      temp_name = user.username if user.username
+    end
+    temp_name.titleize
+  end
   def name
     temp_name = ''
     if use_full_name
-      if (first_name)
-        temp_name = first_name + temp_name
-      end
-      if ((first_name || second_name) && nickname)
-        temp_name = temp_name + " '#{nickname}' "
-      elsif (nickname)
-        temp_name = nickname
-      end
-      if (second_name)
-        temp_name = temp_name + second_name
-      end
-      unless (first_name || second_name || nickname)
-        temp_name = user.username if user.username
-      end
-      temp_name = temp_name.titleize
+      temp_name = full_name
     else
       if (nickname)
         temp_name = nickname

@@ -15,3 +15,9 @@
               .media-body
                 %h4.media-heading= link_to "#{trophy.title.titlecase} (#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)" ,  trophy
                 %p=trophy.desc(@trophy_ids)
+          - if !@profile.general_stats_item.nereus_stats_item.nil? && @profile.general_stats_item.nereus_stats_item.founding?
+            .well
+              %p Congratulations on being a Founding Member!
+              #founding_cert_box
+                =form_tag(send_cert_nereus_path, :method => "post", :remote => true, :id => 'founding_cert_form') do
+                  =submit_tag('Click here to generate your Founding member Certificate.', :class => "btn btn-tsn")

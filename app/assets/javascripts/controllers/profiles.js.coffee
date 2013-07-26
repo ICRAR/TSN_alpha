@@ -63,6 +63,23 @@ TSN.profiles.compare = () ->
 
   TSN.rickshaw_graph(metrics,name,$("#chart_container"),'-24months')  if name.length != 0
 
+TSN.profiles.trophies = () ->
+  $("#founding_cert_form").bind("ajax:success", (evt, data, status, xhr) ->
+    if data.success
+      #replace button with success msg
+      new_content = "<p class=\"text-success\">#{data.message}</p>"
+      $('#founding_cert_form input[type="submit"]').attr('disabled','disabled');
+    else
+      #replace button with error msg
+      new_content = "<p class=\"text-error\">#{data.message}</p>"
+    $("#founding_cert_box").append(new_content)
+
+  )
+
+
+
+
+
 
 
 

@@ -1,7 +1,7 @@
 class NereusStatsItem < ActiveRecord::Base
   attr_accessible :credit, :daily_credit, :nereus_id, :rank, :network_limit,
                   :monthly_network_usage, :paused, :active, :online_today, :online_now,
-                  :mips_now, :mips_today, :last_checked_time
+                  :mips_now, :mips_today, :last_checked_time, :report_time_sent
   scope :connected, where('general_stats_item_id IS NOT NULL')
   belongs_to :general_stats_item
 
@@ -172,5 +172,96 @@ class NereusStatsItem < ActiveRecord::Base
     )
     new_item.save
     return new_item
+  end
+
+  #***********************************
+  #***********************************
+  #founding Member
+  #list of extra founding members
+  def self.founding_ids
+    [10001,10003,10006,10017,10018,10019,10020,10021,10023,10024,104351]
+  end
+  #first founding member
+  def self.founding_first
+    100010
+  end
+  #last founding member
+  def self.founding_last
+    102939
+  end
+  # checks if user is a founding member
+  def founding?
+    extra = NereusStatsItem.founding_ids
+    first = NereusStatsItem.founding_first
+    last = NereusStatsItem.founding_last
+    ((nereus_id >= first) && (nereus_id <= last)) || (extra.include?(nereus_id))
+  end
+  #returns the users founding member poistion of number
+  def founding_num
+    extra = NereusStatsItem.founding_ids
+    first = NereusStatsItem.founding_first
+    last = NereusStatsItem.founding_last
+    my_id = nereus_id
+    NereusStatsItem.where{(((nereus_stats_items.nereus_id >= first) &
+        (nereus_stats_items.nereus_id <= last)) |
+        (nereus_stats_items.nereus_id.in extra)) &
+        (nereus_stats_items.nereus_id <= my_id) &
+        (general_stats_item_id != nil)
+        }.count
+  end
+  #the total number of founding members according to the database
+  def self.total_founding
+    extra = NereusStatsItem.founding_ids
+    first = NereusStatsItem.founding_first
+    last = NereusStatsItem.founding_last
+    my_id = [last].concat(extra).max
+    NereusStatsItem.where{(((nereus_stats_items.nereus_id >= first) &
+        (nereus_stats_items.nereus_id <= last)) |
+        (nereus_stats_items.nereus_id.in extra)) &
+        (nereus_stats_items.nereus_id <= my_id) &
+        (general_stats_item_id != nil)
+    }.count
+  end
+
+  def send_cert
+    #check if user is really a founding member Todo
+    #check if user has already requested a report
+    #within the last 5 minuets
+    if general_stats_item.nil? || (!report_time_sent.nil? && report_time_sent > 5.minutes.ago)
+      return false
+
+    else
+      self.report_time_sent = Time.now
+      self.save
+      NereusStatsItem.delay.send_cert(id)
+      return true
+    end
+
+  end
+  #connects to docmosis to generate a cert then emails the cert users email
+  def self.send_cert(id)
+    nereus_item = NereusStatsItem.find(id)
+
+    if nereus_item.nil? || nereus_item.general_stats_item.nil?
+      return false
+    else
+      profile = nereus_item.general_stats_item.profile
+      return false if profile.nil?
+
+      data = {
+          'Name' => profile.full_name,
+          'number' => nereus_item.founding_num,
+          'total' => NereusStatsItem.total_founding
+      }
+      template = 'Founding_Members_Certificate_Template.odt'
+      output_name = 'Founding Members Certificate.pdf'
+      doc = Docmosis.new(
+          :template => template,
+          :output_name => output_name,
+          :data => data,
+          :email => profile.user.email
+      )
+      doc.email_pdf
+    end
   end
 end

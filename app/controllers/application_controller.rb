@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   helper :json_api
   require 'act_as_taggable_on'
 
-  before_filter :check_announcement
+  before_filter :check_announcement, :except => [:check_auth,:ping,:send_report,:send_cert]
   newrelic_ignore :only => [:check_auth,:ping]
 
   def check_announcement

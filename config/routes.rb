@@ -33,8 +33,12 @@ TSNAlpha::Application.routes.draw do
   get "/profile/pause_nereus" => "profiles#pause_nereus", :as => 'pause_nereus'
   get "/profile/resume_nereus" => "profiles#resume_nereus", :as => 'resume_nereus'
 
-get "/nereus/run" => "nereus#run", :as => 'run_nereus'
-get "/nereus/new" => "nereus#new", :as => 'new_nereus'
+  get "/nereus/run" => "nereus#run", :as => 'run_nereus'
+  get "/nereus/new" => "nereus#new", :as => 'new_nereus'
+  post "/nereus/new" => "nereus#new", :as => 'new_nereus'
+  post "/nereus/send_cert" => "nereus#send_cert", :as => 'send_cert_nereus'
+  get "/nereus/send_cert" => "nereus#send_cert", :as => 'send_cert_nereus'
+
   resources :alliances do
     member do
        get 'join'
