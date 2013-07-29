@@ -224,7 +224,6 @@ class NereusStatsItem < ActiveRecord::Base
   end
 
   def send_cert
-    #check if user is really a founding member Todo
     #check if user has already requested a report
     #within the last 5 minuets
     if general_stats_item.nil? || (!report_time_sent.nil? && report_time_sent > 5.minutes.ago)

@@ -20,7 +20,7 @@
         %a.pull-left{:href=>link}= image_tag @boinc_galaxy.thumbnail_url, :class=>"media-object"
         .media-body
           %h4.media-heading= link_to @boinc_galaxy.name, link
-          %p This is one of the galaxy's your computer has been procession. Click on it for more details.
+          %p This is one of the galaxies your computer has been processing. Click on it for more details
           %ul.unstyled
             %li= link_to "See all your galaxies here", boinc_galaxies_path(boinc.boinc_id)
             %li= link_to "And see all of the POGS galaxies here", galaxies_path
