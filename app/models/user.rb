@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   # :token_authenticatable, ,
   # :lockable, :timeoutable and :omniauthable
   devise :invitable, :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :trackable, :validatable,
+         :recoverable, :rememberable, :trackable, :validatable, :async,
          :authentication_keys => [:login]
   alias_method :devise_valid_password?, :valid_password?
   # Setup accessible (or protected) attributes for your model

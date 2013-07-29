@@ -12,6 +12,7 @@ gem "squeel"
 #gems for user auth
 gem 'devise'
 gem 'devise_invitable', '~> 1.1.0'
+gem 'devise-async'
 gem 'cancan'
 
 gem 'rails_admin'
