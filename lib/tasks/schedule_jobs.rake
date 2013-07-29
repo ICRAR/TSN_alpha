@@ -4,7 +4,7 @@ namespace :schedule_jobs do
   task :start => :environment do
     #TestJob.schedule
     puts 'starting Boinc Update'
-    BoincJob.schedule
+    BoincJob.schedule Time.now
     end
   desc "stops up all scheduled jobs"
   task :stop => :environment do
