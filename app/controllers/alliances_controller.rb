@@ -152,7 +152,7 @@ class AlliancesController < ApplicationController
             invite.save
 
             #send email
-            UserMailer.alliance_invite(invite).deliver
+            UserMailer.delay.alliance_invite(invite)
             #return success
             success = true
             msg = "Invite for #{Alliance.name} sent to #{email}"
