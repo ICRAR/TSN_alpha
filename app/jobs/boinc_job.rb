@@ -39,12 +39,12 @@ class BoincJob
           Upsert.batch(connection,table_name) do |upsert|
             group.each do |user|
               #grab user data from xml file
-              name, id, credit, RAC = user.xpath('./name','./id','./total_credit','./expavg_credit').map{|x| x.text.strip.to_i}
+              name, id, credit, rac = user.xpath('./name','./id','./total_credit','./expavg_credit').map{|x| x.text.strip.to_i}
               total_credit += credit
-              total_RAC += RAC
-              users_with_RAC += (RAC > 10) ? 1 : 0
+              total_RAC += rac
+              users_with_RAC += (rac > 10) ? 1 : 0
               #update DB object
-              upsert.row({:boinc_id => id}, :credit => credit, :RAC => RAC, :updated_at => Time.now, :created_at => Time.now)
+              upsert.row({:boinc_id => id}, :credit => credit, :RAC => rac, :updated_at => Time.now, :created_at => Time.now)
               #send to statsd
               statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.credit",credit)
               statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.rac",RAC)
