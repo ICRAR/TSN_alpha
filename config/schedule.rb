@@ -25,9 +25,9 @@
 job_type :srake,    "cd :path && RAILS_ENV=:environment spring rake :task --silent :output"
 set :environment, 'production'
 
-every '10 * * * *' do
-  rake "boinc:update_boinc"
-end
+#every '10 * * * *' do
+#  rake "boinc:update_boinc"
+#end
 every '20 * * * *' do
   rake "nereus:update_all"
 end
