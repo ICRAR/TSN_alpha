@@ -133,7 +133,7 @@ class Profile < ActiveRecord::Base
 
 
   def trophies_by_set
-    sets = trophy_sets.uniq
+    sets = trophy_sets.order("trophy_sets.main DESC").uniq
     all_trophies = trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").group_by{|t| t.trophy_set_id}
     sets.each do |set|
       set.profile_trophies = all_trophies[set.id]
