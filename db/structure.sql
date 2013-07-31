@@ -13,7 +13,7 @@ CREATE TABLE `alliance_invites` (
   PRIMARY KEY (`id`),
   KEY `profile_id_index` (`invited_by_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliance_members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -29,7 +29,7 @@ CREATE TABLE `alliance_members` (
   KEY `profile_id_index` (`profile_id`),
   KEY `alliance_id_index` (`alliance_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2702 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2703 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -63,7 +63,7 @@ CREATE TABLE `boinc_stats_items` (
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1899 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2283 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `bonus_credits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -121,7 +121,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -162,7 +162,7 @@ CREATE TABLE `nereus_stats_items` (
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9236 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9238 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `news` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -295,9 +295,20 @@ CREATE TABLE `trophies` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `hidden` tinyint(1) DEFAULT NULL,
+  `trophy_set_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `trophy_sets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `set_type` varchar(255) DEFAULT NULL,
+  `main` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -436,3 +447,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130711033610');
 INSERT INTO schema_migrations (version) VALUES ('20130711041041');
 
 INSERT INTO schema_migrations (version) VALUES ('20130725081919');
+
+INSERT INTO schema_migrations (version) VALUES ('20130730062642');

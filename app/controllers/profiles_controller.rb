@@ -94,7 +94,8 @@ class ProfilesController < ApplicationController
       @trophy_ids = nil
     end
     @profile = Profile.find(params[:id])
-    @trophies = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC")
+    @trophies = @profile.trophies_by_set
+    render 'profiles/trophies_grid' if params[:style] == 'grid'
 
   end
 

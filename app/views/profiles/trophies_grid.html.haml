@@ -18,10 +18,16 @@
           -@trophies.each do |set|
             .well
               %h3=  set.name
-              -set.profile_trophies.each do |trophy|
-                .media
-                  %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
-                  .media-body
-                    %h4.media-heading= link_to "#{trophy.title.titlecase} (#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)" ,  trophy
-                    %p=trophy.desc(@trophy_ids)
+              -set.profile_trophies.each_slice(4) do |trophy_row|
+                .row_fluid
+                  %ul.thumbnails
+                    -trophy_row.each do |trophy|
+                      %li.span3
+                        .thumbnail
+                          %a.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
+                          .caption
+                            %h4= link_to "#{trophy.title.titlecase}" ,  trophy
+                            %p= "(#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)"
+
+
 

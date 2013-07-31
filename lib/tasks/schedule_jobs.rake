@@ -5,11 +5,15 @@ namespace :schedule_jobs do
     #TestJob.schedule
     puts 'starting Boinc Update'
     BoincJob.schedule Time.now
+    puts 'starting Trophy Update'
+    TrophyJob.schedule Time.now
     end
   desc "stops up all scheduled jobs"
   task :stop => :environment do
     #TestJob.unschedule
     puts 'stopping Boinc Update'
     BoincJob.unschedule
+    puts 'stopping Trophy Update'
+    TrophyJob.unschedule
   end
 end

@@ -1,9 +1,11 @@
-object @profile
-attributes :id
-child :trophies do
-  attributes :id, :title, :credits
-  node(:desc) {|t| t.desc(@trophy_ids)}
-  node(:credits) {|t| t.show_credits(@trophy_ids)}
-  node(:image_url) {|t| t.image.url}
-  node(:url) {|t| trophy_url(t,:format => :json)}
+object false
+child @profile => :profile do
+  attributes :id, :name
+end
+
+child @trophies => 'trophy sets' do
+  attributes :id, :name
+  child :profile_trophies => 'trophies' do
+    attributes :id, :title
+  end
 end

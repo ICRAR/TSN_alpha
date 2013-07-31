@@ -45,6 +45,7 @@ module BoincAuth
             end
             unless boinc_item.nil?
               new_user.profile.general_stats_item.boinc_stats_item = boinc_item
+              new_user.profile.general_stats_item.update_credit
             end
 
             success!(new_user)

@@ -34,4 +34,11 @@ class GeneralStatsItem < ActiveRecord::Base
     total
   end
 
+  def update_credit
+    self.total_credit = total_bonus_credit
+    self.total_credit += nereus_stats_item.credit unless nereus_stats_item.nil?
+    self.total_credit += boinc_stats_item.credit unless boinc_stats_item.nil?
+    self.save
+  end
+
 end

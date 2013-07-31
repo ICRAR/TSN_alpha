@@ -7,6 +7,7 @@ class Profile < ActiveRecord::Base
 
   has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
   has_many :trophies, :through => :profiles_trophies
+  has_many :trophy_sets, :through => :trophies
   has_one :general_stats_item, :dependent => :destroy, :inverse_of => :profile
   has_one :invited_by, :class_name => "AllianceInvite", :inverse_of => :redeemed_by, :foreign_key => "redeemed_by_id"
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :invited_by, :foreign_key => "invited_by_id"
@@ -128,6 +129,16 @@ class Profile < ActiveRecord::Base
     default_url = "retro"
     gravatar_id = Digest::MD5.hexdigest(self.user.email.downcase)
     "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
+  end
+
+
+  def trophies_by_set
+    sets = trophy_sets.uniq
+    all_trophies = trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").group_by{|t| t.trophy_set_id}
+    sets.each do |set|
+      set.profile_trophies = all_trophies[set.id]
+    end
+    sets
   end
 
   #search methods

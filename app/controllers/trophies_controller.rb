@@ -7,5 +7,6 @@ class TrophiesController < ApplicationController
       @trophy_ids = nil
     end
     @trophy = Trophy.find(params[:id])
+    @set = @trophy.trophy_set
   end
 end
