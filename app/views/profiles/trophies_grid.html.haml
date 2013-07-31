@@ -22,7 +22,7 @@
                 .row_fluid
                   %ul.thumbnails
                     -trophy_row.each do |trophy|
-                      %li.span3
+                      %li.span2
                         .thumbnail
                           %a.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
                           .caption
