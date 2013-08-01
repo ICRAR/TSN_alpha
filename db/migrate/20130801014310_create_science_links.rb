@@ -8,6 +8,6 @@ class CreateScienceLinks < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :science_portal, [:science_portal_id]
+    add_index :science_links, [:science_portal_id]
   end
 end

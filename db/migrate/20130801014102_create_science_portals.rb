@@ -7,7 +7,7 @@ class CreateSciencePortals < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :id, [:id]
+    add_index :science_portals, [:id]
   end
 
 end
