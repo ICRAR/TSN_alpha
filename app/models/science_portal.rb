@@ -42,7 +42,7 @@ class SciencePortal < ActiveRecord::Base
     end
     field :science_links do
       # configuration here
-      nested_form true
+      #nested_form true
     end
     field :desc, :text do
       ckeditor true

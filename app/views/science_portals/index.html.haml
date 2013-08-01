@@ -12,7 +12,7 @@
           %ul
             - @projects.each do |project|
               %li= link_to project.name, science_portal_path(project)
-          - if !@private_projects.nil?
+          - if !@private_projects.nil? && !@private_projects.empty?
             %h3 Private Projects
             %ul
               - @private_projects.each do |project|
