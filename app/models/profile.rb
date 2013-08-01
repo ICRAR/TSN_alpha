@@ -20,6 +20,18 @@ class Profile < ActiveRecord::Base
   scope :for_leader_boards_small, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").where('general_stats_items.rank IS NOT NULL').where(:general_stats_items => {:power_user => false})
   scope :for_trophies, joins(:general_stats_item).select("profiles.*, general_stats_items.last_trophy_credit_value as last_trophy_credit_value, general_stats_items.total_credit as credits, general_stats_items.id as stats_id").where('general_stats_items.total_credit IS NOT NULL')
 
+  #science portal memberships
+  has_and_belongs_to_many :members_science_portals,
+                          class_name: "SciencePortal",
+                          foreign_key: "member_id",
+                          association_foreign_key: "science_portal_id",
+                          join_table: "members_science_portals"
+  has_and_belongs_to_many :leaders_science_portals,
+                          class_name: "SciencePortal",
+                          foreign_key: "leader_id",
+                          association_foreign_key: "science_portal_id",
+                          join_table: "leaders_science_portals"
+
   def  self.for_show(id)
     includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).find(id)
   end

@@ -75,7 +75,7 @@ CREATE TABLE `bonus_credits` (
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5054 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5055 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `ckeditor_assets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -121,7 +121,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -139,6 +139,18 @@ CREATE TABLE `general_stats_items` (
   KEY `rank_asc` (`rank`),
   KEY `id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9124 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `leaders_science_portals` (
+  `leader_id` int(11) DEFAULT NULL,
+  `science_portal_id` int(11) DEFAULT NULL,
+  KEY `index_leaders_science_portals_on_leader_id_and_science_portal_id` (`leader_id`,`science_portal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `members_science_portals` (
+  `member_id` int(11) DEFAULT NULL,
+  `science_portal_id` int(11) DEFAULT NULL,
+  KEY `index_members_science_portals_on_member_id_and_science_portal_id` (`member_id`,`science_portal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `nereus_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -227,7 +239,7 @@ CREATE TABLE `profiles_trophies` (
   KEY `profile_id_index` (`profile_id`),
   KEY `trophy_id_index` (`trophy_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=106119 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=397623 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `rails_admin_histories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -246,6 +258,26 @@ CREATE TABLE `rails_admin_histories` (
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) NOT NULL,
   UNIQUE KEY `unique_schema_migrations` (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `science_links` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `science_portal_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `science_portals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `public` tinyint(1) DEFAULT NULL,
+  `desc` text,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `site_stats` (
@@ -308,7 +340,7 @@ CREATE TABLE `trophy_sets` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -449,3 +481,11 @@ INSERT INTO schema_migrations (version) VALUES ('20130711041041');
 INSERT INTO schema_migrations (version) VALUES ('20130725081919');
 
 INSERT INTO schema_migrations (version) VALUES ('20130730062642');
+
+INSERT INTO schema_migrations (version) VALUES ('20130801014102');
+
+INSERT INTO schema_migrations (version) VALUES ('20130801014310');
+
+INSERT INTO schema_migrations (version) VALUES ('20130801020956');
+
+INSERT INTO schema_migrations (version) VALUES ('20130801021150');

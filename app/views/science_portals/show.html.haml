@@ -1,0 +1,22 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @project.name
+  -@user_page =  'science'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %h2= @project.name
+      %p= @project.desc.html_safe
+    .row-fluid
+      .span6.well.well-white
+        %h2 Leaders
+        - @leaders.each do |profile|
+          =render "profiles/profile_card", {:profile => profile}
+      .span6.well.well-white
+        %h2 Links
+        %ul
+          - @links.each do |link|
+            %li= link_to link.name, link.url
+

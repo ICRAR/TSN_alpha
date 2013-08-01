@@ -11,7 +11,7 @@ TSNAlpha::Application.routes.draw do
 
   get "/pages/home" => "pages#home", :as => 'home'
   get "/pages/:slug" => "pages#show", :as => 'page'
-
+  resources :science_portals, :only => [:index, :show]
   resources :profiles, :only => [:index, :show, :update] do
     collection do
       get 'search'

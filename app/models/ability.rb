@@ -41,18 +41,26 @@ class Ability
    cannot :leave, Alliance
    can :image, Galaxy
    can :send_report, Galaxy
+   cannot :read, User
 
   if user.id #user is not a quest user
     can :new, NereusStatsItem
     can :create, Alliance
     can :manage, Alliance, :id => user.profile.alliance_leader_id
     can :manage, Profile, :user_id => user.id
+    can :manage, User, :id => user.id
     can :join, Alliance
     can :leave, Alliance
     can :dismiss, News
     can :send_cert, NereusStatsItem
   end
-
+   #mod users can edit pages and science portals that the are a leader on
+   if user.is_mod?
+     can :manage, Page
+     can :manage, SciencePortal
+     can :access, :rails_admin
+     can :dashboard
+   end
    #admin users can do everything :)
    if user.is_admin?
       can :manage, :all

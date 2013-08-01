@@ -21,6 +21,7 @@
                     <li <%=  'class=active' if (@user_page == 'alliance_leaderboard') %>><%= link_to('Alliances', alliances_path)  %></li>
                 </ul>
             </li>
+            <li <%=  'class=active' if (@user_page == 'science') %>><%= link_to('Science',science_portals_path)  %></li>
             <li><%= link_to('Forum', APP_CONFIG['forum_url'])  %></li>
         </ul>
     </div>
