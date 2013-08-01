@@ -46,6 +46,7 @@ class GeneralStatsItem < ActiveRecord::Base
 
   def gflops
     self.recent_avg_credit ||= 0
-    self.recent_avg_credit.to_f * 0.005
+    (self.recent_avg_credit.to_f * 0.005).round(2)
+
   end
 end
