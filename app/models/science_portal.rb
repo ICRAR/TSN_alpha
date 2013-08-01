@@ -11,7 +11,7 @@ class SciencePortal < ActiveRecord::Base
                           foreign_key: "science_portal_id",
                           join_table: "leaders_science_portals"
   has_many :science_links
-  #accepts_nested_attributes_for :science_links, :allow_destroy => true
+  accepts_nested_attributes_for :science_links, :allow_destroy => true
   attr_accessible :science_links_attributes, :as => :admin, :allow_destroy => true
 
   def is_leader(profile_id)
