@@ -6,9 +6,6 @@
     %span#intro-img{:onclick=>"run(getQueryVariable('userID'))"}= ' '
   %span.ribbon
     #ribbon-content
-      = link_to('Sign up now', new_user_session_path, :class => "signupbutton")
-      %p
-        %a{:href=>"#", :onClick=>"run()"} or click here run theSkyNet without having to register
       -if @TFLOPSStat
         #TFLOPS-count.pull-right
           %a{:href=>'#', :title => "Please note this is only an estimate", :data => {:toggle => "tooltip"}}
@@ -18,6 +15,16 @@
       #ribbonsocial.pull-right
         %a{:href=>"http://www.facebook.com/pages/TheSkyNet/214061585306810"}= image_tag('social_fb.png',:width =>29, :height => 29, :alt => "Become a Facebook Fan", :style=> 'margin-right:10px;')
         %a{:href=>"http://www.twitter.com/#!/_theSkyNet"}= image_tag('social_tw.png',:width =>29, :height => 29, :alt => "Follow us on Twitter", :style=> 'margin-right:10px;')
+      - if user_signed_in?
+        #GFLOPS-user
+          =link_to my_profile_path do
+            = "Your currently contributing #{current_user.profile.general_stats_item.gflops} "
+            %abbr{:title => "Giga Floating Point Operations per Second"} GFLOPS
+      -else
+        = link_to('Sign up now!!', new_user_session_path, :class => "signupbutton")
+        %p
+          %a{:href=>"#", :onClick=>"run()"} or click here run theSkyNet without having to register
+
 -content_for(:content) do
   #content-wrap-home
     .row-fluid

@@ -43,4 +43,8 @@
             %p= link_to "Compare to me", profiles_compare_path(@profile.id,current_user.profile.id)
           -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil && @profile.general_stats_item.boinc_stats_item.credit > 0
           -nereus_id= @profile.general_stats_item.nereus_stats_item.nereus_id if @profile.general_stats_item.nereus_stats_item != nil && @profile.general_stats_item.nereus_stats_item.credit > 0
-          #chart_container{:data => {:boinc_id=>boinc_id, :nereus_id=> nereus_id, :profile_id => @profile.id}}
+          -data = {}
+          -data[:nereus_id] = nereus_id if nereus_id
+          -data[:boinc_id] = boinc_id if boinc_id
+          -data[:profile_id] = @profile.id
+          #chart_container{:data => data}
