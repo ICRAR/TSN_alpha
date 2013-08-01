@@ -38,11 +38,14 @@ class GeneralStatsItem < ActiveRecord::Base
     self.total_credit = total_bonus_credit
     self.total_credit += nereus_stats_item.credit unless nereus_stats_item.nil?
     self.total_credit += boinc_stats_item.credit unless boinc_stats_item.nil?
+
+    self.recent_avg_credit = nereus_stats_item.daily_credit unless nereus_stats_item.nil?
+    self.recent_avg_credit += boinc_stats_item.RAC unless boinc_stats_item.nil?
     self.save
   end
 
   def gflops
-    recent_avg_credit ||= 0
-    recent_avg_credit.to_f * 0.005
+    self.recent_avg_credit ||= 0
+    self.recent_avg_credit.to_f * 0.005
   end
 end
