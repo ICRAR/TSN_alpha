@@ -6,7 +6,7 @@ class GalaxiesController < ApplicationController
 
   def check_boinc_id
     @boinc_id = params['boinc_id']
-    unless @boinc_id.nil? || @boinc_id.to_i > 0
+    unless @boinc_id.nil? || @boinc_id.to_i > 0 || @boinc_id == 'all'
       redirect_to root_url, notice: 'Invalid boinc id'
     end
   end
