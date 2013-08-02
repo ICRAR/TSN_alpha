@@ -20,6 +20,6 @@
             = @set.name
           %p= "#{@trophy.desc(@trophy_ids).html_safe}  (#{@trophy.show_credits(@trophy_ids)})"
           %p
-            This trophy has been won be
+            This trophy has been won by
             = @trophy.profiles_trophies.size
             = 'user'.pluralize(@trophy.profiles.size)

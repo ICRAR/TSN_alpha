@@ -5,6 +5,7 @@ child(@galaxies) do
   node (:percentage_complete) {|g| (g.pixel_count == 0 || g.pixels_processed == 0) ? '0.00%' : (g.pixel_count*100.0/g.pixels_processed)}
   node (:more_info_url) {|g| g.more_info_url}
   node (:url) {|g| @boinc_id == nil ? galaxy_url(g,:format => :json) : boinc_galaxy_url(g,g.id,:format => :json)}
+  node (:thumbnail_url) {|g| g.thumbnail_url}
 
 end
 node(:paginate) do

@@ -18,7 +18,7 @@
       - if user_signed_in?
         #GFLOPS-user
           =link_to my_profile_path do
-            = "Your currently contributing #{current_user.profile.general_stats_item.gflops} "
+            = "You're currently contributing #{current_user.profile.general_stats_item.gflops} "
             %abbr{:title => "Giga Floating Point Operations per Second"} GFLOPS
       -else
         = link_to('Sign up now!!', new_user_session_path, :class => "signupbutton")
