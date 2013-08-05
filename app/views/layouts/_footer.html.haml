@@ -1,0 +1,17 @@
+.row-fluid
+  #footer-icrar
+    %a{:href=>"http://www.icrar.org", :target =>"_blank"}= image_tag "icrar.jpg", :size => "276x114", :alt => "ICRAR"
+  #footer-social
+    %ul.unstyled
+      %li
+        %a.icon.twitter{:href => "http://twitter.com/#!/_theskynet"}= t "social.twitter_follow"
+      %li
+        %a.icon.facebook{:href=>"http://www.facebook.com/pages/TheSkyNet/214061585306810"}= t "social.FB_fav"
+  #footer-map
+    %ul.unstlyed
+      %li= link_to t("nav.home"), root_path
+      %li= link_to t("nav.sitemap"), {:controller => "/pages", :action => "show", :slug => "sitemap"}
+      %li= link_to t("nav.privacy"), {:controller => "/pages", :action => "show", :slug => "privacy"}
+      %li= link_to t("nav.contact"), new_contact_form_path
+.row-fluid
+  #language-footer.span4.offset1= render 'layouts/langauge_select'

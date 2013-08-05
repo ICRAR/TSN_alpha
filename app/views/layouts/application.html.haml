@@ -21,8 +21,11 @@
   %body{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : '')}
     #top-nav.navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner
+        #language-top.pull-right
+          %span.navbar-text= render 'layouts/langauge_select'
         .pull-right
           =render 'devise/menu/devise_top_bar'
+
 
     #wrapper.container
       =bootstrap_flash
