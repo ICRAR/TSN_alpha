@@ -52,6 +52,7 @@ gem 'tire'
 gem 'acts-as-taggable-on'
 gem 'rmagick'
 gem 'voruby'
+gem 'globalize3'
 
 gem 'delayed_job_active_record'
 gem 'daemons'

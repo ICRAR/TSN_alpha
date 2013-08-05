@@ -121,7 +121,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -194,17 +194,28 @@ CREATE TABLE `news` (
   KEY `id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `pages` (
+CREATE TABLE `page_translations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_id` int(11) DEFAULT NULL,
+  `locale` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `content` text,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_page_translations_on_page_id` (`page_id`),
+  KEY `index_page_translations_on_locale` (`locale`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `pages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `slug` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -268,7 +279,7 @@ CREATE TABLE `science_links` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `science_portals` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -278,7 +289,7 @@ CREATE TABLE `science_portals` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `site_stats` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -388,9 +399,10 @@ CREATE TABLE `versions` (
   `whodunnit` varchar(255) DEFAULT NULL,
   `object` text,
   `created_at` datetime DEFAULT NULL,
+  `locale` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_versions_on_item_type_and_item_id` (`item_type`,`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 INSERT INTO schema_migrations (version) VALUES ('20130305062419');
 
@@ -489,3 +501,9 @@ INSERT INTO schema_migrations (version) VALUES ('20130801014310');
 INSERT INTO schema_migrations (version) VALUES ('20130801020956');
 
 INSERT INTO schema_migrations (version) VALUES ('20130801021150');
+
+INSERT INTO schema_migrations (version) VALUES ('20130805033701');
+
+INSERT INTO schema_migrations (version) VALUES ('20130805034616');
+
+INSERT INTO schema_migrations (version) VALUES ('20130805072948');

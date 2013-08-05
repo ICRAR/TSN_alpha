@@ -39,4 +39,8 @@ en:
     name: "Name"
     credit: "Credit"
     full_link: "View the full Leaderboards"
+  language_select:
+    language: "Language"
+    english: "English"
+    french: "French"
 
