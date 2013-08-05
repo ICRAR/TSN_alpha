@@ -87,4 +87,6 @@ TSNAlpha::Application.configure do
 
   #google analytics
   GA.tracker = APP_CONFIG['GA_tracker_id']
+
+
 end

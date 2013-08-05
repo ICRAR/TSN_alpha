@@ -2,4 +2,41 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  social:
+    FB_fav: "Become a Facebook Fan"
+    twitter_follow: "Follow us on Twitter"
+  nav:
+    home: "Home"
+    about: "About"
+    dashboard: "My Dashboard"
+    contact: "Contact Us"
+    science: "Science"
+    sitemap: "Sitemap"
+    privacy: "Privacy Statement"
+  pages:
+    index:
+      splash_header: "Play your part and help discover our Universe!"
+      splash_msg: "Have a computer? Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
+      TFLOPS_hover: "Please note this is only an estimate"
+      TFLOPS: "Tera Floating Point Operations per Second"
+      contribution: "You're currently contributing"
+      GFLOPS: "Giga Floating Point Operations per Second"
+      why: "Why should I join?"
+      track: "Contribute to real scientific research and help scientists unlock the mysteries of our Universe!"
+      earn: "Track your contribution and see how you compare against your friends, colleagues and the world!."
+      share: "Share your progress on all your favourite social networks."
+      latest_news: "Latest News"
+      stats:
+        current: "Current"
+        global: "Global Stats"
+        boinc: "BOINC Stats"
+        nereus: "Nereus Stats"
+  leaderboards:
+    title: "Leaderboards"
+    individual: "Individual"
+    alliances: "Alliances"
+    rank: "Rank"
+    name: "Name"
+    credit: "Credit"
+    full_link: "View the full Leaderboards"
+

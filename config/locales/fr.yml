@@ -1,0 +1,39 @@
+---
+fr:
+  leaderboards:
+    alliances: alliances
+    credit: crédit
+    full_link: "Voir les classements complets"
+    individual: personnel
+    name: nom
+    rank: Classez
+    title: Classements
+  nav:
+    about: sur
+    contact: Contactez-nous
+    dashboard: "mon tableau de bord"
+    home: maison
+    privacy: "Déclaration de confidentialité"
+    science: sciences
+    sitemap: "Plan du site"
+  pages:
+    index:
+      GFLOPS: "Giga opérations en virgule flottante par seconde"
+      TFLOPS: "Tera opérations en virgule flottante par seconde"
+      TFLOPS_hover: "Veuillez noter qu'il s'agit seulement d'une estimation"
+      contribution: "Vous êtes en train de contribuer"
+      earn: "Suivi de votre contribution et de voir comment vous vous situez par rapport à vos amis, collègues et le monde ."
+      latest_news: "dernières Nouvelles"
+      share: "Partagez votre progression sur tous vos réseaux sociaux préférés."
+      splash_header: "A vous de jouer et de faire découvrir notre univers!"
+      splash_msg: "Avoir un ordinateur? Vous voulez aider les astronomes à faire des découvertes impressionnantes et de comprendre notre Univers? Puis theSkyNet a besoin de vous!"
+      stats:
+        boinc: "BOINC Stats"
+        current: courant
+        global: "Statistiques générales"
+        nereus: "Nereus Statistiques"
+      track: "Contribuer à la recherche scientifique réelle et aident les scientifiques à percer les mystères de notre Univers !"
+      why: "Pourquoi devrais-je m'inscrire ?"
+  social:
+    FB_fav: "Devenir Fan Facebook"
+    twitter_follow: "Suivez-nous sur Twitter"
