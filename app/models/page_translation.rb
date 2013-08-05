@@ -1,4 +1,4 @@
-class PageTranslation < ActiveRecord::Basel
+class PageTranslation < ActiveRecord::Base
   validates :title, length: { maximum: 255 }, presence: true
   validates :content, :locale, presence: true
 
