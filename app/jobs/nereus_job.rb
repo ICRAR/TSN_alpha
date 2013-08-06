@@ -1,7 +1,9 @@
-namespace :nereus do
+class NereusJob
+  include Delayed::ScheduledJob
+  run_every 1.hour
 
-  desc "loads data from external site"
-  task :update_all => :environment do
+  def perform
+    #start statsd batch
     #start statsd batch
     statsd_batch = Statsd::Batch.new($statsd)
 
@@ -98,13 +100,13 @@ namespace :nereus do
           credit_to_now =  row['credits'].to_i * APP_CONFIG['nereus_to_credit_conversion']
           daily_credit =  (credit_to_now / per_day /2 ).to_i  #esitmate for 2 full days then divided by 2 to get daily average
           total_daily_credit += daily_credit
-          #update DB object
+                                                              #update DB object
           if  daily_credit > 0
             nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
             nereus_update_hash[id][:daily_credit] = daily_credit
             users_with_daily_credit += 1
           end
-          #send to statsd
+                                                              #send to statsd
           statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.daily_credit",daily_credit)
         end
 
@@ -190,25 +192,25 @@ namespace :nereus do
       #also updates active status in remote db as well
       bench.report('update active status') {
         #Upsert.batch(remote_client,'accountstatus') do |upsert|
-          nereus_update_hash.each do |item|
-            id = item[0].to_i
-            update_row = item[1] #fix for using hashes as array
-            old_row = nereus_all_hash[item[0].to_i] #from local db
-            if old_row == nil
-              active = 0
-            else
-              active = (( old_row['network_limit'].to_i == 0 || (update_row[:monthly_network_usage].to_i < old_row['network_limit'].to_i))  && old_row['paused'].to_i == 0) ? 1 : 0
-            end
-            total_active += active
-            #only update old db if active status has changed
-            if active != update_row[:active]
-              #upsert.row({:skynetID => item[0]}, :active => active)
-            end
-            nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
-            nereus_update_hash[id][:active] = active
-            statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.active",active)
-
+        nereus_update_hash.each do |item|
+          id = item[0].to_i
+          update_row = item[1] #fix for using hashes as array
+          old_row = nereus_all_hash[item[0].to_i] #from local db
+          if old_row == nil
+            active = 0
+          else
+            active = (( old_row['network_limit'].to_i == 0 || (update_row[:monthly_network_usage].to_i < old_row['network_limit'].to_i))  && old_row['paused'].to_i == 0) ? 1 : 0
           end
+          total_active += active
+                               #only update old db if active status has changed
+          if active != update_row[:active]
+            #upsert.row({:skynetID => item[0]}, :active => active)
+          end
+          nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
+          nereus_update_hash[id][:active] = active
+          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.active",active)
+
+        end
         #end
         #send totals to stats
         statsd_batch.gauge("nereus.stats.total_active",total_active)
@@ -230,33 +232,5 @@ namespace :nereus do
     end
     statsd_batch.gauge("nereus.stats.update_time",bench_time.inject(0){|sum,n| sum + n.total})
     statsd_batch.flush
-  end
-
-  task :temp => :environment do
-    all =  NereusStatsItem.all
-    temp_var1 = Array.new
-    temp_var2 = Array.new
-    bench_time = Benchmark.bm do |bench|
-      bench.report('rails') {
-        a = Hash[*NereusStatsItem.all.collect {|it| [it.nereus_id, it]}.flatten]
-        all.each do |i|
-          temp_var1 << a[i.nereus_id].credit
-        end
-      }
-
-      bench.report('custom') {
-        #start direct connection to local DB for upsert
-        connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)
-        b = connection.query("SELECT nereus_stats_items.* FROM nereus_stats_items")
-        c = Hash[*b.map{|it| [it["nereus_id"], it]}.flatten]
-        all.each do |i|
-          temp_var2 << c[i.nereus_id.to_s]['credit']
-        end
-      }
-      #user     system      total        real
-      #rails  0.440000   0.020000   0.460000 (  0.497319)
-      #custom  0.280000   0.010000   0.290000 (  0.359830)
-      #show that direct db query is ~35% faster
-    end
   end
 end

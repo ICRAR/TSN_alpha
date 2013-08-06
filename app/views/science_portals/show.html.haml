@@ -4,6 +4,7 @@
   #page-nav.navbar.navbar-inverse
     .navbar-inner
       %ul.nav
+        %li= link_to(t(".all_projects"),science_portals_path)
         %li.active= link_to(@project.name, @project)
         -@pages.each do |page|
           %li= link_to(page.title, page)
@@ -11,16 +12,17 @@
 -content_for(:content) do
   #content-wrap
     .well.well-white
-      %h2= @project.name
       %p= @project.desc.html_safe
     .row-fluid
-      .span6.well.well-white
-        %h2 Leaders
-        - @leaders.each do |profile|
-          =render "profiles/profile_card", {:profile => profile}
-      .span6.well.well-white
-        %h2 Links
-        %ul
-          - @links.each do |link|
-            %li= link_to link.name, link.url
+      - if !@leaders.empty?
+        .span6.well.well-white
+          %h2= t ".leaders"
+          - @leaders.each do |profile|
+            =render "profiles/profile_card", {:profile => profile}
+      - if !@links.empty?
+        .span6.well.well-white
+          %h2= t ".links"
+          %ul
+            - @links.each do |link|
+              %li= link_to link.name, link.url
 

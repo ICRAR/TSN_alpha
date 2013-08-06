@@ -2,6 +2,15 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  trophies:
+    show:
+      warning: "WARNING!!!"
+      denied: "Access denied:
+You have not earned enough credits to view the full details of this trophy"
+      belongs_to: "Belongs to:"
+      won_by: "This trophy has been won by "
+      user: "user"
+
   social:
     FB_fav: "Become a Facebook Fan"
     twitter_follow: "Follow us on Twitter"
@@ -13,6 +22,29 @@ en:
     science: "Science"
     sitemap: "Sitemap"
     privacy: "Privacy Statement"
+    trophies: "My Trophies"
+    my_alliance: "My Alliance"
+    sign_up: "Sign Up"
+    reg: "Register"
+    log_in: "Log in"
+    logout: "Logout"
+    news: "News"
+    forum: "Forum"
+    welcome: "Welcome back,"
+    edit_reg: "Edit Registration"
+    not_logged_in: "You are not logged in."
+
+  science_portals:
+    controller:
+      not_found: "Sorry we could not find a project with that id"
+      not_authed: "Sorry you are not authorised to view that project"
+    index:
+      header: "theSkyNet Science Projects"
+      desc: "theSkyNet is made of many smaller projects. Each has its own unique science contribution"
+    show:
+      all_projects: "All Projects"
+      leaders: "Leaders"
+      links: "Links"
   pages:
     index:
       splash_header: "Play your part and help discover our Universe!"
@@ -43,6 +75,10 @@ en:
     language: "Language"
     english: "English"
     french: "French"
+  announcement:
+    view: "View"
+    hide: "Hide"
+    dismiss: "dismiss"
   js:
     stats:
       latest: "LATEST STATS"

@@ -28,15 +28,15 @@ set :environment, 'production'
 #every '10 * * * *' do
 #  rake "boinc:update_boinc"
 #end
-every '20 * * * *' do
-  rake "nereus:update_all"
-end
-every '30 * * * *' do
-  rake "stats:update_general"
-end
-every '40 * * * *' do
-  rake "stats:update_alliances"
-end
-every '50 * * * *' do
-  rake "stats:update_trophy"
-end
+#every '20 * * * *' do
+#  rake "nereus:update_all"
+#end
+#every '30 * * * *' do
+#  rake "stats:update_general"
+#end
+#every '40 * * * *' do
+#  rake "stats:update_alliances"
+#end
+#every '50 * * * *' do
+#  rake "stats:update_trophy"
+#end

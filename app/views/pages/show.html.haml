@@ -5,13 +5,12 @@
     .navbar-inner
       %ul.nav
         -unless @page.science_portal_id.nil?
+          %li= link_to(t(".all_projects"),science_portals_path)
           %li= link_to(@page.science_portal.name, @page.science_portal)
         -@links.each do |link|
           %li{:class => (link == @page? 'active' : '')}= link_to(link.title, link)
 
 -content_for(:content) do
   #content-wrap
-    .shadowed
-      .inner-boundary
-        #content-inner.page
-          %div= @content
+    .well.well-white
+      %div= @content

@@ -26,7 +26,7 @@
               = link_to(@profile.alliance.name,@profile.alliance)
           %p
             %b Member Since:
-            = @profile.user.confirmed_at
+            = @profile.user.confirmed_at.strftime('%B %d, %Y')
 
           %p
             %b Latest Achievement:

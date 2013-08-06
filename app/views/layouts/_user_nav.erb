@@ -2,27 +2,27 @@
     <div class="navbar-inner">
         <ul class="nav">
             <% if user_signed_in? %>
-                <li <%=  'class=active' if (@user_page == 'dashboard') %>><%= link_to('Dashboard', my_profile_path)  %></li>
-                <li <%=  'class=active' if (@user_page == 'my_trophies') %>><%= link_to('My Trophies', trophies_profile_path(current_user.profile))  %></li>
+                <li <%=  'class=active' if (@user_page == 'dashboard') %>><%= link_to(t("nav.dashboard"), my_profile_path)  %></li>
+                <li <%=  'class=active' if (@user_page == 'my_trophies') %>><%= link_to(t("nav.trophies"), trophies_profile_path(current_user.profile))  %></li>
                 <% if  current_user.profile.alliance %>
-                    <li <%=  'class=active' if (@user_page == 'my_alliance') %>><%= link_to('My Alliance', current_user.profile.alliance)  %></li>
+                    <li <%=  'class=active' if (@user_page == 'my_alliance') %>><%= link_to(t("nav.my_alliance"), current_user.profile.alliance)  %></li>
                 <% end %>
             <% else %>
-                <li><%=  link_to "Sign Up", new_user_registration_path%></li>
+                <li><%=  link_to t("nav.sign_up"), new_user_registration_path%></li>
             <% end %>
-            <li <%=  'class=active' if (@user_page == 'news') %>><%= link_to('News', news_index_path)  %></li>
+            <li <%=  'class=active' if (@user_page == 'news') %>><%= link_to(t("nav.news"), news_index_path)  %></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    Leaderboards
+                    <%= t "leaderboards.title" %>
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li <%=  'class=active' if (@user_page == 'leaderboard') %>><%= link_to('Individual', profiles_path)  %></li>
-                    <li <%=  'class=active' if (@user_page == 'alliance_leaderboard') %>><%= link_to('Alliances', alliances_path)  %></li>
+                    <li <%=  'class=active' if (@user_page == 'leaderboard') %>><%= link_to(t("leaderboards.individual"), profiles_path)  %></li>
+                    <li <%=  'class=active' if (@user_page == 'alliance_leaderboard') %>><%= link_to(t("leaderboards.alliances"), alliances_path)  %></li>
                 </ul>
             </li>
-            <li <%=  'class=active' if (@user_page == 'science') %>><%= link_to('Science',science_portals_path)  %></li>
-            <li><%= link_to('Forum', APP_CONFIG['forum_url'])  %></li>
+            <li <%=  'class=active' if (@user_page == 'science') %>><%= link_to(t("nav.science"),science_portals_path)  %></li>
+            <li><%= link_to(t("nav.forum"), APP_CONFIG['forum_url'])  %></li>
         </ul>
     </div>
 </div>

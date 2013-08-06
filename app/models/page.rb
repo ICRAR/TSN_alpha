@@ -1,5 +1,4 @@
 class Page < ActiveRecord::Base
-  #has_paper_trail
   translates :content, :title, :versioning => true, :fallbacks_for_empty_translations => true
   #translates :content, :title, :fallbacks_for_empty_translations => true
   validates :page_translations, presence: :true

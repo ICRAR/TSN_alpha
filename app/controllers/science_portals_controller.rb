@@ -10,7 +10,7 @@ class SciencePortalsController < ApplicationController
   def show
     @project = SciencePortal.where{id == my{params[:id]}}.includes([:pages,:science_links,:leaders]).first
     if @project.nil?
-      redirect_to root_url, notice: "Sorry we could not find that science project"
+      redirect_to root_url, notice: t("science_portals.controller.not_found")
       return
     end
     if user_signed_in?
@@ -19,7 +19,7 @@ class SciencePortalsController < ApplicationController
       allowed = @project.check_access(nil)
     end
     unless allowed == true
-      redirect_to root_url, notice: "Sorry you are not authorised to view that page"
+      redirect_to root_url, notice: t("science_portals.controller.not_authed")
       return
     end
     @leaders = @project.leaders.all

@@ -1,19 +1,16 @@
 -content_for(:title_bar) do
   #intro-sml-wrap
-    %h1.fontface= "theSkyNet Science Portals"
+    %h1.fontface= t(".header")
   -@user_page =  'science'
   =render 'layouts/user_nav'
 
 -content_for(:content) do
   #content-wrap
-    .shadowed
-      .inner-boundary
-        #content-inner
-          %ul
-            - @projects.each do |project|
-              %li= link_to project.name, science_portal_path(project)
-          - if !@private_projects.nil? && !@private_projects.empty?
-            %h3 Private Projects
-            %ul
-              - @private_projects.each do |project|
-                %li= link_to project.name, science_portal_path(project)
+    .well.well-white
+      %p= t(".desc")
+      %ul
+        - @projects.each do |project|
+          %li= link_to project.name, science_portal_path(project)
+        - if !@private_projects.nil? && !@private_projects.empty?
+          - @private_projects.each do |project|
+            %li= link_to "#{project.name} (private)", science_portal_path(project)
