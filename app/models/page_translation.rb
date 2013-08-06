@@ -3,7 +3,7 @@ class PageTranslation < ActiveRecord::Base
   validates :content, :locale, presence: true
 
   belongs_to :page
-  attr_accessible :locale, :title, :content, :page_attribute, as: :admin
+  attr_accessible :locale, :title, :content, :page_attribute, :page_id, as: :admin
   rails_admin do
     include_all_fields
     field :content , :text do
