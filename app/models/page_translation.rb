@@ -6,6 +6,9 @@ class PageTranslation < ActiveRecord::Base
   attr_accessible :locale, :title, :content, :page_attribute, :page_id, as: :admin
   rails_admin do
     include_all_fields
+    feild :page_id do
+      read_only true
+    end
     field :content , :text do
       ckeditor true
     end
