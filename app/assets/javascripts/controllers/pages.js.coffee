@@ -35,7 +35,7 @@ TSN.pages.index = () ->
   TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),'-24months')
 
   $('#js-news').ticker(
-    titleText: 'Latest Stats',
+    titleText: I18n.t("js.stats.latest"),
     controls: false
   )
 

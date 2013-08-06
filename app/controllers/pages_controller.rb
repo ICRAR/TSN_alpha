@@ -6,6 +6,10 @@ class PagesController < ApplicationController
       @title = @page.parent.title
       @links = @page.parent.sub_pages.all
       @content = @page.content.html_safe
+    elsif (!@page.science_portal_id.nil?)
+      @title = @page.science_portal.name
+      @links = @page.science_portal.pages.all
+      @content = @page.content.html_safe
     else
       @title = @page.title
       @links = @page.sub_pages.all

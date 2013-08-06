@@ -43,4 +43,7 @@ en:
     language: "Language"
     english: "English"
     french: "French"
+  js:
+    stats:
+      latest: "LATEST STATS"
 

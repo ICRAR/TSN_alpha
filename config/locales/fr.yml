@@ -37,3 +37,6 @@ fr:
   social:
     FB_fav: "Devenir Fan Facebook"
     twitter_follow: "Suivez-nous sur Twitter"
+  js:
+    stats:
+      latest: "DERNIÈRES STATISTIQUES"

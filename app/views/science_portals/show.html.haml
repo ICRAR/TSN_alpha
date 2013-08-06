@@ -1,8 +1,12 @@
 -content_for(:title_bar) do
   #intro-sml-wrap
     %h1.fontface= @project.name
-  -@user_page =  'science'
-  =render 'layouts/user_nav'
+  #page-nav.navbar.navbar-inverse
+    .navbar-inner
+      %ul.nav
+        %li.active= link_to(@project.name, @project)
+        -@pages.each do |page|
+          %li= link_to(page.title, page)
 
 -content_for(:content) do
   #content-wrap

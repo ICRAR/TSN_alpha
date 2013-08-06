@@ -8,7 +8,7 @@ class SciencePortalsController < ApplicationController
   end
 
   def show
-    @project = SciencePortal.where{id == my{params[:id]}}.first
+    @project = SciencePortal.where{id == my{params[:id]}}.includes([:pages,:science_links,:leaders]).first
     if @project.nil?
       redirect_to root_url, notice: "Sorry we could not find that science project"
       return
@@ -24,5 +24,6 @@ class SciencePortalsController < ApplicationController
     end
     @leaders = @project.leaders.all
     @links = @project.science_links.all
+    @pages = @project.pages.all
   end
 end

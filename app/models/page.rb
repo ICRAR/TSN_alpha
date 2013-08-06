@@ -12,6 +12,10 @@ class Page < ActiveRecord::Base
   has_many :sub_pages, :class_name => "Page", :foreign_key => "parent_id", :inverse_of => :parent
   belongs_to :parent, :class_name => "Page", :inverse_of => :sub_pages
 
+  #optional for science portals
+  belongs_to :science_portal
+
+
   def to_param
     slug
   end

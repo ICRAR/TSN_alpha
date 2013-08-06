@@ -205,7 +205,7 @@ CREATE TABLE `page_translations` (
   PRIMARY KEY (`id`),
   KEY `index_page_translations_on_page_id` (`page_id`),
   KEY `index_page_translations_on_locale` (`locale`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -213,6 +213,7 @@ CREATE TABLE `pages` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
+  `science_portal_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
@@ -402,7 +403,7 @@ CREATE TABLE `versions` (
   `locale` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_versions_on_item_type_and_item_id` (`item_type`,`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 INSERT INTO schema_migrations (version) VALUES ('20130305062419');
 
@@ -502,8 +503,10 @@ INSERT INTO schema_migrations (version) VALUES ('20130801020956');
 
 INSERT INTO schema_migrations (version) VALUES ('20130801021150');
 
+INSERT INTO schema_migrations (version) VALUES ('20130805022948');
+
 INSERT INTO schema_migrations (version) VALUES ('20130805033701');
 
 INSERT INTO schema_migrations (version) VALUES ('20130805034616');
 
-INSERT INTO schema_migrations (version) VALUES ('20130805072948');
+INSERT INTO schema_migrations (version) VALUES ('20130806003021');

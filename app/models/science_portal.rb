@@ -14,6 +14,11 @@ class SciencePortal < ActiveRecord::Base
   accepts_nested_attributes_for :science_links, :allow_destroy => true
   attr_accessible :science_links_attributes, :as => :admin, :allow_destroy => true
 
+  #optional custom pages
+  has_many :pages
+  accepts_nested_attributes_for :pages, :allow_destroy => true
+  attr_accessible :pages_attributes, :as => :admin, :allow_destroy => true
+
   def is_leader(profile_id)
     self.leader_ids.include?(profile_id)
   end
@@ -30,6 +35,7 @@ class SciencePortal < ActiveRecord::Base
   end
 
   rails_admin do
+    include_all_fields
     field :name
     field :public
     field :members do
