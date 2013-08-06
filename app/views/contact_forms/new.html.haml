@@ -1,17 +1,18 @@
 
 -content_for :title_bar do
   #intro-sml-wrap
-    %h1.fontface Contact Us
+    %h1.fontface= t "contact_forms.title"
 
 -content_for :content do
   #content-wrap
-    #shadowed
-      #inner-boundary
-        #content-inner
-          = simple_form_for @contact_form do |f|
-            = f.input :name, :required => false
-            = f.input :email, :required => false
-            = f.input :message, :as => :text, :required => false
-            .hidden
-              = f.input :nickname, :hint => 'Leave this field blank!'
-            = f.button :submit, 'Send message'
+    .well.well-white
+      %h2= t ".heading"
+      %p= link_to(t(".faq"),{:controller => "/pages", :action => "show", :slug => "faq"}) + ' ' + t(".msg")
+    #contact_form.well.well-white
+      = simple_form_for @contact_form do |f|
+        = f.input :name, :required => false
+        = f.input :email, :required => false
+        = f.input :message, :as => :text, :required => false, :class => ""
+        .hidden
+          = f.input :nickname, :hint => t(".spam_hint")
+        = f.button :submit, t(".submit")
