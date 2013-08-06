@@ -15,7 +15,7 @@ class SciencePortal < ActiveRecord::Base
   attr_accessible :science_links_attributes, :as => :admin, :allow_destroy => true
 
   #optional custom pages
-  has_many :pages
+  has_many :pages, :autosave => true
   accepts_nested_attributes_for :pages, :allow_destroy => true
   attr_accessible :pages_attributes, :as => :admin, :allow_destroy => true
 
