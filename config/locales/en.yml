@@ -2,6 +2,12 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  users:
+    username: "Username"
+    hint: "You can login with either your username or email."
+    sign_up:
+      header: "Help us discover the universe."
+      msg: "Fill in the following form to create your account on theSkyNet. Please note that fields containing an asterisk (*) are required for this registration."
   contact_forms:
     title: "Contact Us"
     controller:

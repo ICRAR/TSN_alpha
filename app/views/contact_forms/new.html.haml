@@ -9,10 +9,10 @@
       %h2= t ".heading"
       %p= link_to(t(".faq"),{:controller => "/pages", :action => "show", :slug => "faq"}) + ' ' + t(".msg")
     #contact_form.well.well-white
-      = simple_form_for @contact_form do |f|
+      = simple_form_for(@contact_form,:html => {:class => 'form-vertical' }) do |f|
         = f.input :name, :required => false
         = f.input :email, :required => false
-        = f.input :message, :as => :text, :required => false, :class => ""
+        = f.input :message, :as => :text, :input_html => {:class => 'input-xxlarge', :cols => 100, :rows => 10}, :required => false, :class => ""
         .hidden
           = f.input :nickname, :hint => t(".spam_hint")
         = f.button :submit, t(".submit")

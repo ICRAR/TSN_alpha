@@ -15,7 +15,7 @@
             = @profile.name
           %p
             %b Country:
-            = @profile.country
+            = @profile.country_name
           %p
             %b Total Credit:
             = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"

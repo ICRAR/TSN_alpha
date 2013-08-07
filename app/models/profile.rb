@@ -53,6 +53,9 @@ class Profile < ActiveRecord::Base
   def trophy_ids
     self.trophies.select("trophies.id").map(&:id)
   end
+  def country_name
+    ::CountrySelect::COUNTRIES[country.downcase]
+  end
   def full_name
     temp_name = ''
     if (first_name)

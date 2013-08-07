@@ -61,7 +61,7 @@ class ProfilesController < ApplicationController
     end
 
     profile_step = @profile.new_profile_step
-    profile_step = params[:step] if current_user.admin? && !params[:step].nil?
+    profile_step = params[:step].to_i if current_user.admin? && !params[:step].nil?
 
     case profile_step
       when 0

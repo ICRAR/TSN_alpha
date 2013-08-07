@@ -1,5 +1,5 @@
 object @profile
-attributes :id, :name, :country
+attributes :id, :name, :country_name
 glue :general_stats_item do |g|
   if g.nereus_stats_item != nil
     child :nereus_stats_item => :nereus do |n|

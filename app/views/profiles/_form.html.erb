@@ -1,5 +1,6 @@
 <h2>Edit my profile details</h2>
-<%= form_for(@profile) do |f| %>
+
+<%= simple_form_for(@profile) do |f| %>
   <% if @profile.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@profile.errors.count, "error") %> prohibited this profile from being saved:</h2>
@@ -25,10 +26,8 @@
     <%= f.label :second_name %> (optional)<br />
     <%= f.text_field :second_name %>
   </div>
-  <div class="field">
-    <%= f.label :country %> (optional)<br />
-    <%= f.text_field :country %>
-  </div>
+  <%= f.input :country, iso_codes: true %>
+
   <div class="actions">
     <%= f.submit %>
   </div>
