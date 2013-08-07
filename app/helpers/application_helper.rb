@@ -9,4 +9,13 @@ module ApplicationHelper
     link_to title.html_safe, params.merge({:sort => column, :direction => direction}), {:class => css_class}
   end
 
+  def form_get_hidden_tag(url)
+    output = ''
+    get_params =  CGI.parse(URI.parse(url).query)
+    get_params.each do |key,value|
+      output += hidden_field_tag key, value
+    end
+    output.html_safe
+  end
+
 end

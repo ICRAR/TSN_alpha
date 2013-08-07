@@ -11,7 +11,9 @@
         <div class="shadowed">
             <div class="inner-boundary">
                 <div id="content-inner">
-                    <%= form_tag(search_alliances_path, :method => "get", :class => "pull-right") do %>
+
+                    <%= form_tag(search_alliances_path, :method => "get", :class => "pull-right") do%>
+                        <%= form_get_hidden_tag(search_alliances_path) %>
                         <%= text_field_tag(:search,nil,:class => "search-query", :placeholder => params["search"] ? params["search"] : "Search") %>
                     <% end %>
                     <table id="leaderboard" class="table table-striped">

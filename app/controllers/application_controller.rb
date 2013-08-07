@@ -1,10 +1,16 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery :except => :check_auth
+  protect_from_forgery :except => [:check_auth, :ping]
   helper :json_api
   require 'act_as_taggable_on'
 
   before_filter :check_announcement, :except => [:check_auth,:ping,:send_report,:send_cert]
   newrelic_ignore :only => [:check_auth,:ping]
+
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
+  def record_not_found
+    redirect_to :controller => "/pages", :action => "show", :slug => "404"
+  end
 
   def check_announcement
     if user_signed_in?

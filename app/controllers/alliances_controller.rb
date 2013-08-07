@@ -118,17 +118,20 @@ class AlliancesController < ApplicationController
     redirect_to my_profile_path
   end
   def search
-    #@alliances = Alliance.search_by_name(params[:search]).includes(:leader).page(params[:page]).per(10)
-    @alliances = Alliance.search params[:search], params[:page], 10
-    #@tags = Alliance.tag_counts.where("tags.name LIKE ?", "%#{params[:search]}%")
-    if @alliances.size == 0
-      @tags = []
+    if params[:search]
+      params[:sort] = "search"
+      #@alliances = Alliance.search_by_name(params[:search]).includes(:leader).page(params[:page]).per(10)
+      @alliances = Alliance.search params[:search], params[:page], 10
+      #@tags = Alliance.tag_counts.where("tags.name LIKE ?", "%#{params[:search]}%")
+      if @alliances.size == 0
+        @tags = []
+      else
+        @tags = Alliance.where("id IN(#{@alliances.map {|a| a.id}.join(', ')})").select(:id).tag_counts
+      end
+      render :index
     else
-      @tags = Alliance.where("id IN(#{@alliances.map {|a| a.id}.join(', ')})").select(:id).tag_counts
+      redirect_to( alliances_path, :alert => "You did not enter a valid search query")
     end
-
-
-    render :index
   end
 
   def invite
