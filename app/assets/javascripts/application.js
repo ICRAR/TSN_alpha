@@ -15,6 +15,7 @@
 //= require jquery.turbolinks
 //= require jquery_ujs
 //= require twitter/bootstrap
+//= require twitter/bootstrap
 //= require jquery.ui.all
 //= require i18n
 //= require i18n/translations

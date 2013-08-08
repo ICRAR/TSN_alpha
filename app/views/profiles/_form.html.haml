@@ -1,0 +1,43 @@
+%h2 Edit my profile details
+.pull-right.js-tooltip{:data => {:toggle => "tooltip", :placement=>"bottom"}, :title => "Change your avatar at gravatar.com"}
+  = link_to(@profile.avatar_edit_url) do
+    = image_tag @profile.avatar_url(170)
+= simple_form_for(@profile) do |f|
+  - if @profile.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@profile.errors.count, "error")
+        prohibited this profile from being saved:
+      %ul
+        - @profile.errors.full_messages.each do |msg|
+          %li= msg
+  .field
+    = f.label :nickname
+    , this name will be used in place of your full name. (optional)
+    %br/
+    = f.text_field :nickname
+    = f.label(:use_full_name, "Display full name on leaderboards.")
+    = f.check_box(:use_full_name)
+  .field
+    = f.label :first_name
+    (optional)
+    %br/
+    = f.text_field :first_name
+  .field
+    = f.label :second_name
+    (optional)
+    %br/
+    = f.text_field :second_name
+  = f.input :country, iso_codes: true
+  .actions
+    = f.submit
+- if @profile.general_stats_item.nereus_stats_item
+  %h2 Edit my Nereus settings
+  = form_for(@profile.general_stats_item.nereus_stats_item, :as => 'nereus_stats_item', :url => update_nereus_settings_path, :html => { :method => :put }) do |f|
+    .field
+      = f.label :network_limit_mb
+      in MegaBytes
+      %br/
+      = f.text_field :network_limit_mb
+    .actions
+      = f.submit

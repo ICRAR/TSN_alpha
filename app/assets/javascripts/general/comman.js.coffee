@@ -69,6 +69,7 @@ $(document).ready( ->
   $('a.fancybox_image').fancybox(
     'type' : 'image'
   )
+  $('.js-tooltip').tooltip()
 )
 
 

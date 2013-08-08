@@ -146,6 +146,10 @@ class Profile < ActiveRecord::Base
     "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
   end
 
+  def avatar_edit_url
+    "http://en.gravatar.com/emails/"
+  end
+
 
   def trophies_by_set
     sets = trophy_sets.order("trophy_sets.main DESC").uniq

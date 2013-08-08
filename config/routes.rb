@@ -1,6 +1,6 @@
 TSNAlpha::Application.routes.draw do
   resources :contact_forms
-
+  resources :stats, :only => [:index]
   get "trophies/show"
 
   root :to => 'pages#index'
