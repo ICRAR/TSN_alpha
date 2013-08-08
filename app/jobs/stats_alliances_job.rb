@@ -1,6 +1,6 @@
 class StatsAlliancesJob
   include Delayed::ScheduledJob
-  run_every 1.minutes
+  run_every 1.hour
   def perform
     statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|

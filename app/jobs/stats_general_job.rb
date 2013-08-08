@@ -1,6 +1,6 @@
 class StatsGeneralJob
   include Delayed::ScheduledJob
-  run_every 1.minutes
+  run_every 1.hour
   def perform
     #start statsd batch
     statsd_batch = Statsd::Batch.new($statsd)
