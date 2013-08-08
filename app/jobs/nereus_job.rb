@@ -98,9 +98,10 @@ class NereusJob
         results.each do |row|
           id = row['skynetID'].to_i
           credit_to_now =  row['credits'].to_i * APP_CONFIG['nereus_to_credit_conversion']
-          daily_credit =  (credit_to_now / per_day /2 ).to_i  #esitmate for 2 full days then divided by 2 to get daily average
+          daily_credit =  (credit_to_now / per_day / 2 ).to_i  #esitmate for 2 full days then divided by 2 to get daily average
           total_daily_credit += daily_credit
                                                               #update DB object
+          puts id
           if  daily_credit > 0
             nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
             nereus_update_hash[id][:daily_credit] = daily_credit
