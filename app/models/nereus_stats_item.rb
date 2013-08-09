@@ -232,7 +232,7 @@ class NereusStatsItem < ActiveRecord::Base
     else
       self.report_time_sent = Time.now
       self.save
-      NereusStatsItem.delay.send_cert(id)
+      NereusStatsItem.delay.send_cert(self.id)
       return true
     end
 
