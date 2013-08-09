@@ -226,7 +226,7 @@ class NereusStatsItem < ActiveRecord::Base
   def send_cert
     #check if user has already requested a report
     #within the last 5 minuets
-    if general_stats_item.nil? || (!report_time_sent.nil? && report_time_sent > 5.minutes.ago)
+    if self.general_stats_item.nil? || (!self.report_time_sent.nil? && self.report_time_sent > 5.minutes.ago)
       return false
 
     else
