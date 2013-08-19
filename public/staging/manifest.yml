@@ -501,6 +501,8 @@ logo_alpha.png: logo_alpha-a0d6552410037dee7fa6acff2366d059.png
 logo_alpha/index.png: logo_alpha-a0d6552410037dee7fa6acff2366d059.png
 logo_alpha_white.png: logo_alpha_white-f327383b55a06728a6c94f5a785d73c9.png
 logo_alpha_white/index.png: logo_alpha_white-f327383b55a06728a6c94f5a785d73c9.png
+logo_beta_purple.png: logo_beta_purple-a46f99735d8c6b80e87880170dbd9d59.png
+logo_beta_purple/index.png: logo_beta_purple-a46f99735d8c6b80e87880170dbd9d59.png
 logosmall.jpg: logosmall-f3368d8c60d2bd41998e30143aacb31d.jpg
 logosmall/index.jpg: logosmall-f3368d8c60d2bd41998e30143aacb31d.jpg
 logosmall.jpg.LCK: logosmall.jpg-f6e897f42ba14b28f985c1cb8fe73820.LCK
@@ -821,8 +823,8 @@ application.js: application-4535185ba08ee36c93669bab6d67047f.js
 application/index.js: application-4535185ba08ee36c93669bab6d67047f.js
 non_includes/deployJava.js: non_includes/deployJava-cc576cb7d85d218dc2e5a5b0b9028401.js
 non_includes/deployJava/index.js: non_includes/deployJava-cc576cb7d85d218dc2e5a5b0b9028401.js
-application.css: application-d2497684fb7a0d513b8f6664cfe7fb03.css
-application/index.css: application-d2497684fb7a0d513b8f6664cfe7fb03.css
+application.css: application-30d84e60fb3fcb3cebfd924248eb0951.css
+application/index.css: application-30d84e60fb3fcb3cebfd924248eb0951.css
 blank.gif: blank-43a4c178cf07ee66c58ad891629374ed.gif
 blank/index.gif: blank-43a4c178cf07ee66c58ad891629374ed.gif
 fancybox_buttons.png: fancybox_buttons-2daeb91b07cb116c5e6db6e04d734052.png

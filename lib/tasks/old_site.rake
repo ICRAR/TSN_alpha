@@ -13,7 +13,7 @@ namespace :old_site do
 
     #********* update nereus objects first ***************
     print "updating all nereus_stats_items \n"
-    Rake::Task["nereus:update_all"].execute
+    NereusJob.new.perform_without_schedule
     print "nereus items update complete \n"
 
     #*********add users************
@@ -159,6 +159,7 @@ end
 #note that it wont overwrite existing users
 def make_user(old_user)
   #create user object
+  return unless User.find_by_email old_user[:email]
   new_user = User.new(
       :email => old_user[:email],
       :username => old_user[:username],

@@ -221,6 +221,7 @@ class NereusJob
         Upsert.batch(connection,table_name) do |upsert|
           nereus_update_hash.each do |item|
             update_row = item[1] #fix for using hashes as array
+            update_row[:daily_credit] ||= 0
             update_row[:updated_at] =  Time.now
             update_row[:created_at] =  Time.now
             upsert.row({:nereus_id => item[0].to_i}, update_row)

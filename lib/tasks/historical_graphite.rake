@@ -10,7 +10,7 @@ namespace :historical_graphite do
 
     print "Starting histroical graphite run ********* \n"
     bench_time = Benchmark.bm do |bench|
-=begin
+
       bench.report('create ranks graphs') {
         ranks(remote_client)
       }
@@ -35,7 +35,7 @@ namespace :historical_graphite do
         main_db.query("DELETE FROM daily_alliance_credit WHERE 1=1")
         load_all_alliance_days(main_db,remote_client_front_end)
       }
-=end
+
       bench.report('update alliance ranks') {
         create_graphite_alliance_ranks(main_db)
       }
