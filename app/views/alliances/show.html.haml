@@ -51,7 +51,8 @@
             .span12.well.well-white
               %h2 Who are we:
               %blockquote.pull-right
-                %p= @alliance.desc
+                - desc = Sanitize.clean(@alliance.desc, Sanitize::Config::BASIC).html_safe
+                %p= desc
                 %small= @alliance.leader.name if @alliance.leader != nil
               .clearfix
               -if user_signed_in? && current_user.profile.alliance == nil

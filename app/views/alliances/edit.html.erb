@@ -1,41 +1,5 @@
 <h1>Editing alliance</h1>
 
-<%= form_for(@alliance) do |f| %>
-    <% if @alliance.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@alliance.errors.count, "error") %> prohibited this alliance from being saved:</h2>
-
-          <ul>
-            <% @alliance.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
-            <% end %>
-          </ul>
-        </div>
-    <% end %>
-
-    <div class="field">
-      <%= f.label :name %><br />
-      <%= f.text_field :name %>
-    </div>
-    <div class="field">
-      <%= f.label :leader %><br />
-      <%= f.collection_select(:leader, @alliance.members, :id, :name,{:selected => @alliance.leader.id}) %>
-    </div>
-  <div class="field">
-      <%= f.label :desc %><br />
-      <%= f.text_area(:desc,:rows => 5) %>
-  </div>
-  <div class="field">
-      <%= f.label :invite_only %><br />
-      <%= f.check_box(:invite_only) %>
-  </div>
-  <div class="field">
-      <%= f.label :tag_list %><br />
-      <%= f.text_field(:tag_list,:id => "alliance_tags",:data => {:pre => @alliance.tags.map{|t| {:id => t.id, :name => t.name }}.to_json}) %>
-  </div>
-    <div class="actions">
-      <%= f.submit %>
-    </div>
-<% end %>
+<%= render 'alliances/form' %>
 
 <%= link_to 'Back', @alliance %>
