@@ -145,10 +145,16 @@ class Galaxy < PogsModel
   #returns a image blob with the users area's added
   def color_image_user(user_id, colour, scale = false, size=500)
     require 'RMagick'
-    #get original image
-    image_url = self.image_url(colour)
-    urlimage = open(image_url)
-    image = Magick::ImageList.new.from_blob(urlimage.read)
+    begin
+       #get original image
+      image_url = self.image_url(colour)
+      urlimage = open(image_url)
+      image = Magick::ImageList.new.from_blob(urlimage.read)
+    rescue OpenURI::HTTPError
+      #else make a new image
+      image = Magick::Image.new(self.dimension_x,self.dimension_y) { self.background_color = "black" }
+      image.format = 'png'
+    end
 
     #load areas
     areas = GalaxyArea.areas(self.id, user_id)
