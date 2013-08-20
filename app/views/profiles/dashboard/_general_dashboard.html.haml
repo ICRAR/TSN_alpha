@@ -7,7 +7,7 @@
   %h3 YOUR RANK:
   #totalCredits.processed-data-number= number_with_delimiter(@profile.general_stats_item.rank)
   %p= link_to "Show my place in the leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank)
-  %p (Please note that in may take a couple of hours for your credit values to update)
+  %p (Please note that it may take a couple of hours for your credit values to update)
 #trophy.row-fluid
   .span12
     %h3 Latest Achievement:
