@@ -6,22 +6,44 @@
 
 -content_for(:content) do
   #content-wrap
-    .shadowed
-      .inner-boundary
-        #content-inner
-          - if !@profile.general_stats_item.nereus_stats_item.nil? && @profile.general_stats_item.nereus_stats_item.founding?
-            .well
-              %p Congratulations on being a Founding Member!
-              #founding_cert_box
-                =form_tag(send_cert_nereus_path, :method => "post", :remote => true, :id => 'founding_cert_form') do
-                  =submit_tag('Click here to generate your Founding member Certificate.', :class => "btn btn-tsn")
-          -@trophies.each do |set|
-            .well
-              %h3=  set.name
-              -set.profile_trophies.each do |trophy|
-                .media
-                  %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
-                  .media-body
-                    %h4.media-heading= link_to "#{trophy.title.titlecase} (#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)" ,  trophy
-                    %p=trophy.desc(@trophy_ids)
+    .well.well-white
+      - if !@profile.general_stats_item.nereus_stats_item.nil? && @profile.general_stats_item.nereus_stats_item.founding?
+        .well
+          %p Congratulations on being a Founding Member!
+          #founding_cert_box
+            =form_tag(send_cert_nereus_path, :method => "post", :remote => true, :id => 'founding_cert_form') do
+              =submit_tag('Click here to generate your Founding member Certificate.', :class => "btn btn-tsn")
+      .well
+        %p
+          -num = TrophySet.count_trophies @trophies
+          ="You've been awarded #{num} trophies."
+        %p
+          - if params[:style] == 'grid'
+            =link_to 'view all of your trophies as list', params.merge(:style => 'list')
+          -else
+            =link_to 'view all of your trophies as grid', params.merge(:style => 'grid')
+      -if params[:style] == 'grid'
+        -@trophies.each do |set|
+          .well
+            %h3=  set.name
+            -set.profile_trophies.each_slice(4) do |trophy_row|
+              .row_fluid
+                %ul.thumbnails
+                  -trophy_row.each do |trophy|
+                    %li.span2
+                      .thumbnail
+                        %a.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
+                        .caption
+                          %h4= link_to "#{trophy.title.titlecase}" ,  trophy
+                          %p= "(#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)"
+      -else
+        -@trophies.each do |set|
+          .well
+            %h3=  set.name
+            -set.profile_trophies.each do |trophy|
+              .media
+                %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
+                .media-body
+                  %h4.media-heading= link_to "#{trophy.title.titlecase} (#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)" ,  trophy
+                  %p=trophy.desc(@trophy_ids)
 

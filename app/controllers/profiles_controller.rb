@@ -96,7 +96,6 @@ class ProfilesController < ApplicationController
     end
     @profile = Profile.find(params[:id])
     @trophies = @profile.trophies_by_set
-    render 'profiles/trophies_grid' if params[:style] == 'grid'
 
   end
 
