@@ -2,6 +2,8 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  helpers:
+
   stats:
     index:
       title: "Site Statistics"
@@ -98,6 +100,7 @@ You have not earned enough credits to view the full details of this trophy"
   leaderboards:
     title: "Leaderboards"
     individual: "Individual"
+    individual_rank: "My Position"
     alliances: "Alliances"
     rank: "Rank"
     name: "Name"

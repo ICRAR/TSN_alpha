@@ -6,6 +6,7 @@ class ProfilesController < ApplicationController
   def index
     per_page = params[:per_page]
     per_page ||= 30
+    per_page = per_page.to_i
     if (params[:rank] && !params[:page] )
       rank = [[params[:rank].to_i,per_page/2+1].max,Profile.for_leader_boards.count].min
       page_num = (rank-per_page/2) / per_page + 1

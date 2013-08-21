@@ -45,6 +45,7 @@
                     </table>
                     <%= paginate @profiles %>
                     <%= page_entries_info @profiles, :entry_name => 'Profile'  %>
+                    <%= render 'shared/per_page_selector' %>
                 </div>
             </div>
         </div>
