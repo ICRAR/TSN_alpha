@@ -7,16 +7,29 @@ class ProfilesController < ApplicationController
     per_page = params[:per_page]
     per_page ||= 30
     per_page = per_page.to_i
-    if (params[:rank] && !params[:page] )
+    #Finds and highlights a users postion in the tables
+    if (params[:rank])
       rank = [[params[:rank].to_i,per_page/2+1].max,Profile.for_leader_boards.count].min
-      page_num = (rank-per_page/2) / per_page + 1
-      page_padding = (rank-per_page/2) % per_page-1
+      if (params[:page] ==  'me')
+        page_num = (rank-per_page/2) / per_page + 1
+        page_padding = (rank-per_page/2) % per_page-1
+        if page_padding > (per_page/2)
+          page_num += 1
+          page_padding -= per_page
+        end
+      elsif params[:page]
+        page_num = params[:page]
+        page_padding = (rank-per_page/2) % per_page-1
+        page_padding = 0
+      else
+        page_num = 1
+        page_padding = 0
+      end
     else
       page_num = params[:page]
       page_padding = 0;
     end
     @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).order("-"+sort_column + " " + sort_direction)
-
   end
 
   # GET /profiles/1

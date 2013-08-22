@@ -18,7 +18,7 @@ glue :general_stats_item do |g|
     end
   end
   attributes :credits_to_next_trophy, :rank
-  node(:postition_in_ladder_url) {profiles_url({:rank => @profile.general_stats_item.rank, :format => :json}) }
+  node(:postition_in_ladder_url) {profiles_url({:rank => @profile.general_stats_item.rank, :format => :json, :page=>'me'}) }
 
 end
 node(:total_credit) {|p| p.general_stats_item.total_credit }

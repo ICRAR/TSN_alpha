@@ -19,7 +19,7 @@
                 <ul class="dropdown-menu">
                     <li <%=  'class=active' if (@user_page == 'leaderboard') %>><%= link_to(t("leaderboards.individual"), profiles_path)  %></li>
                     <% if user_signed_in? %>
-                      <li><%= link_to(t("leaderboards.individual_rank"), profiles_path(:rank => current_user.profile.general_stats_item.rank))  %></li>
+                      <li><%= link_to(t("leaderboards.individual_rank"), profiles_path(:rank => current_user.profile.general_stats_item.rank, :page => 'me'))  %></li>
                     <% end %>
                     <li <%=  'class=active' if (@user_page == 'alliance_leaderboard') %>><%= link_to(t("leaderboards.alliances"), alliances_path)  %></li>
                 </ul>
