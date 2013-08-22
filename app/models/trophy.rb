@@ -4,7 +4,7 @@ class Trophy < ActiveRecord::Base
   has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
   has_many :profiles, :through => :profiles_trophies
   belongs_to :trophy_set
-  validates_presence_of  :desc, :title, :image
+  validates_presence_of  :desc, :title, :image, :trophy_set
 
   scope :all_credit_active, joins(:trophy_set).where{trophy_sets.set_type =~ "credit_active"}.where("credits IS NOT NULL")
 
@@ -79,5 +79,14 @@ class Trophy < ActiveRecord::Base
       db_conn.execute sql
       #print sql
     end
+  end
+
+  rails_admin do
+    field :credits
+    field :desc
+    field :title
+    field :image
+    field :hidden
+    field :trophy_set
   end
 end
