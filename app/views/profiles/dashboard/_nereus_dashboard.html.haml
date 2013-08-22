@@ -2,9 +2,10 @@
 -if nereus == nil
   = render 'profiles/nereus_form'
 -else
-  %h2.pagination-centered
-    =image_tag('nereusv_logo_small.png')
-    Nereus-V
+  = link_to science_portal_path(:id => "SourceFinder") do
+    %h2.pagination-centered
+      =image_tag('nereusv_logo_small.png')
+      theSkyNet: SourceFinder
   .row-fluid
     .span11.offset1
       %dl.dl-horizontal

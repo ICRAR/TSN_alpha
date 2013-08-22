@@ -9,6 +9,7 @@ class SciencePortalsController < ApplicationController
 
   def show
     @project = SciencePortal.where{id == my{params[:id]}}.includes([:pages,:science_links,:leaders]).first
+    @project ||= SciencePortal.where{name =~ my{"%#{params[:id]}%"}}.includes([:pages,:science_links,:leaders]).first
     if @project.nil?
       redirect_to root_url, notice: t("science_portals.controller.not_found")
       return

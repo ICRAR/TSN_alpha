@@ -1,5 +1,9 @@
-.pagination-centered=image_tag('boinc_bar.gif')
 -boinc = @profile.general_stats_item.boinc_stats_item
+=link_to science_portal_path(:id => 'POGS') do
+  %h2.pagination-centered
+    =image_tag('boinc_bar.gif')
+    %br
+    theSkyNet: POGS
 -if boinc == nil
   = render 'profiles/boinc_forms'
 -else
@@ -11,7 +15,7 @@
         %dt
           %abbr{:title => "Recent Average Credit"} RAC
         %dd= boinc.RAC
-        %dt Your Boinc ID
+        %dt Your POGS ID
         %dd= boinc.boinc_id
   .well.well-small
     -if @boinc_galaxy != nil

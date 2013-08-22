@@ -2,7 +2,7 @@ object @profile
 attributes :id, :name, :country
 glue :general_stats_item do |g|
   if g.nereus_stats_item != nil
-    child :nereus_stats_item => :nereus do |n|
+    child :nereus_stats_item => :SourceFinder do |n|
       attributes :nereus_id, :active, :paused, :online_now, :mips_now,
                  :online_today, :mips_today, :monthly_network_usage_mb,
                  :network_limit_mb, :limited => :network_limited
@@ -13,7 +13,7 @@ glue :general_stats_item do |g|
     end
   end
   if g.boinc_stats_item != nil
-    child :boinc_stats_item do
+    child :boinc_stats_item => :POGS do
       attributes :boinc_id, :credit, :RAC
     end
   end

@@ -2,7 +2,7 @@ object @profile
 attributes :id, :name, :country_name
 glue :general_stats_item do |g|
   if g.nereus_stats_item != nil
-    child :nereus_stats_item => :nereus do |n|
+    child :nereus_stats_item => :SourceFinder do |n|
       attributes :nereus_id, :online_now, :mips_now,
                  :online_today, :mips_today
     end
