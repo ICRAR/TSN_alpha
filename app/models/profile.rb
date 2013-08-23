@@ -11,7 +11,7 @@ class Profile < ActiveRecord::Base
   has_one :general_stats_item, :dependent => :destroy, :inverse_of => :profile
   has_one :invited_by, :class_name => "AllianceInvite", :inverse_of => :redeemed_by, :foreign_key => "redeemed_by_id"
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :invited_by, :foreign_key => "invited_by_id"
-  attr_accessible :country, :use_full_name, :nickname, :first_name, :second_name, :as => [:default, :admin]
+  attr_accessible :country, :use_full_name, :nickname, :first_name, :second_name, :old_site_user,  :as => [:default, :admin]
   attr_accessible :trophy_ids, :new_profile_step, as: :admin
 
   #validates :nickname, :uniqueness => true

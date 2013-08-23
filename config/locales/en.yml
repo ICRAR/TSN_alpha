@@ -38,7 +38,7 @@ en:
     show:
       warning: "WARNING!!!"
       denied: "Access denied:
-You have not earned enough credits to view the full details of this trophy"
+You have not earned the rights to view the full details of this trophy yet."
       belongs_to: "Belongs to:"
       won_by: "This trophy has been won by "
       user: "user"

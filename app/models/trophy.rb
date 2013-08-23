@@ -28,17 +28,17 @@ class Trophy < ActiveRecord::Base
   end
 
 
- #ToDo add a method to add a new trophy to existing users
-
-  def award_by_credit
-    profiles = Profile.for_trophies.where{sift :does_not_have_trophy, my{self.id}}
-    .where{general_stats_items.total_credit >= my{self.credits}}
+  def award_by_credit(profiles = nil)
+    profiles ||= Profile
+    profiles = profiles.for_trophies
+      .where{general_stats_items.total_credit >= my{self.credits}}
     self.award_to_profiles profiles
   end
 
   #not this function skips active record
   def award_to_profiles(profiles)
     inserts = []
+    profiles = profiles.where{sift :does_not_have_trophy, my{self.id}}
     profiles.each do |p|
       inserts.push("(#{self.id}, #{p.id}, '#{Time.now}', '#{Time.now}')")
     end
@@ -46,6 +46,7 @@ class Trophy < ActiveRecord::Base
       sql = "INSERT INTO profiles_trophies (trophy_id , profile_id, created_at, updated_at) VALUES #{inserts.join(", ")}"
       db_conn = ActiveRecord::Base.connection
       db_conn.execute sql
+
       #puts sql
     end
   end

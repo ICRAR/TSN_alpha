@@ -5,9 +5,21 @@ class TrophiesJob
     @statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|
       bench.report('update trophies') {
-        #load all trophies
-        trophies = Trophy.all_credit_active.order("credits ASC")
-        Trophy.handout_by_credit(trophies)
+        #update classic credit trophies
+        classic_sets = TrophySet.where{set_type == 'credit_classic'}
+        classic_sets.each do |set|
+          set.trophies.each do |trophy|
+            trophy.award_by_credit(Profile.where{old_site_user  == true})
+          end
+        end
+
+        #update modern credit trophies
+        modern_sets = TrophySet.where{set_type == 'credit_active'}
+        modern_sets.each do |set|
+          set.trophies.each do |trophy|
+            trophy.award_by_credit()
+          end
+        end
       }
       @statsd_batch.flush
     end
