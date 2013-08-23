@@ -1,5 +1,5 @@
 class Trophy < ActiveRecord::Base
-  attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, as: :admin
+  attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, as: [:default, :admin]
   has_attached_file :image
   has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
   has_many :profiles, :through => :profiles_trophies
@@ -32,6 +32,13 @@ class Trophy < ActiveRecord::Base
     profiles ||= Profile
     profiles = profiles.for_trophies
       .where{general_stats_items.total_credit >= my{self.credits}}
+    self.award_to_profiles profiles
+  end
+
+  def award_by_rac(profiles = nil)
+    profiles ||= Profile
+    profiles = profiles.for_trophies
+      .where{general_stats_items.recent_avg_credit >= my{self.credits}}
     self.award_to_profiles profiles
   end
 

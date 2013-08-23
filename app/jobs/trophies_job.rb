@@ -20,6 +20,14 @@ class TrophiesJob
             trophy.award_by_credit()
           end
         end
+
+        #update modern rac trophies
+        modern_sets = TrophySet.where{set_type == 'rac_active'}
+        modern_sets.each do |set|
+          set.trophies.each do |trophy|
+            trophy.award_by_rac()
+          end
+        end
       }
       @statsd_batch.flush
     end
