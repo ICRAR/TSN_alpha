@@ -30,6 +30,26 @@ class Trophy < ActiveRecord::Base
 
  #ToDo add a method to add a new trophy to existing users
 
+  def award_by_credit
+    profiles = Profile.for_trophies.where{sift :does_not_have_trophy, my{self.id}}
+    .where{general_stats_items.total_credit >= my{self.credits}}
+    self.award_to_profiles profiles
+  end
+
+  #not this function skips active record
+  def award_to_profiles(profiles)
+    inserts = []
+    profiles.each do |p|
+      inserts.push("(#{self.id}, #{p.id}, '#{Time.now}', '#{Time.now}')")
+    end
+    if inserts != []
+      sql = "INSERT INTO profiles_trophies (trophy_id , profile_id, created_at, updated_at) VALUES #{inserts.join(", ")}"
+      db_conn = ActiveRecord::Base.connection
+      db_conn.execute sql
+      #puts sql
+    end
+  end
+
   def self.next_trophy(cr)
     tr = Trophy.all_credit_active.where("credits >= ?",cr).order("credits ASC").first
   end
@@ -37,6 +57,9 @@ class Trophy < ActiveRecord::Base
     tr =  Trophy.all_credit_active.where("credits <= ?",cr).order("credits DESC").first
   end
 
+  #takes a list of trophies and awards them bassed on credit.
+  #NOTE this function skips active record
+  #main indicates that this is the main trophy group as represented by the progress bar on the users dashboard
   def self.handout_by_credit(trophies,main = true)
     all_trophies = trophies
     trophies_credit_only = trophies.pluck(:credits)
@@ -54,7 +77,7 @@ class Trophy < ActiveRecord::Base
         if main
           trophy_index  = trophies_credit_only.index(profile.last_trophy_credit_value.to_i)
           #check for new users with no existing trophy ie last_trophy_credit_value = 0
-          trophy_index = trophy_index == nil ? -1: trophy_index
+          trophy_index ||=  -1
         else
           trophy_index = -1
         end
