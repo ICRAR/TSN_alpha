@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: "theskynet-dev@gmail.com"
+  default from: APP_CONFIG['smtp_default_from']
   def alliance_invite(invite)
     @name = invite.invited_by.name
     @alliance_name = invite.alliance.name
