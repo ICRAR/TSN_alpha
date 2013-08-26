@@ -25,7 +25,7 @@ class GalaxiesController < ApplicationController
     search_options << "galaxy.dec_cent <= \"#{Mysql2::Client.escape(params[:dec_to])}\"" if params[:dec_to] != nil && params[:dec_to] != ''
     search_options = search_options.join(' AND ')
 
-    if @boinc_id == nil
+    if (@boinc_id == nil) || (@boinc_id == 'all')
       @galaxies = Galaxy.page(page_num).per(per_page).where(search_options).order(sort_column + " " + sort_direction)
     else
       @galaxies = Galaxy.page(page_num).per(per_page).find_by_user_id(@boinc_id).where(search_options).order(sort_column + " " + sort_direction)
