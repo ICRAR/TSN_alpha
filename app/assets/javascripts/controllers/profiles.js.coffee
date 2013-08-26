@@ -15,11 +15,18 @@ profile_show_graphs = () ->
   name = []
   metrics = []
 
-  name.push("Boinc Credit") if boinc_id
-  name.push("Nereus Credit") if nereus_id
-
-  metrics.push("stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.credit") if boinc_id
-  metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.credit") if nereus_id
+  if boinc_id
+    name.push("POGS Credit")
+    name.push("POGS RAC")
+    metrics.push("stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.credit")
+    metrics.push("stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.rac")
+  if nereus_id
+    name.push("SourceFinder Credit")
+    name.push("SourceFinder MIPS")
+    name.push("SourceFinder RAC")
+    metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.credit")
+    metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.mips_now")
+    metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.daily_credit")
 
   name.push("Rank")
   name.push("Total Credit")
@@ -41,10 +48,10 @@ TSN.profiles.compare = () ->
   name = []
   metrics = []
 
-  name.push("#{name1} Boinc Credit") if boinc_id1
-  name.push("#{name2} Boinc Credit") if boinc_id2
-  name.push("#{name1} Nereus Credit") if nereus_id1
-  name.push("#{name2} Nereus Credit") if nereus_id2
+  name.push("#{name1} POGS Credit") if boinc_id1
+  name.push("#{name2} POGS Credit") if boinc_id2
+  name.push("#{name1} SourceFinder Credit") if nereus_id1
+  name.push("#{name2} SourceFinder Credit") if nereus_id2
 
   metrics.push("stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id1)}.credit") if boinc_id1
   metrics.push("stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id2)}.credit") if boinc_id2

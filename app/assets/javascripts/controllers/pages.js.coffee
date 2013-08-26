@@ -22,7 +22,7 @@ TSN.pages.index = () ->
     'stats.gauges.TSN_dev.boinc.stat.total_users'
     'scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)'
   ]
-  names_boinc =  ['Boinc Total Credit','Boinc Active Users','Boinc Total Users','Boinc Current TFLOPS']
+  names_boinc =  ['POGS Total Credit','POGS Active Users','POGS Total Users','POGS Current TFLOPS']
   TSN.rickshaw_graph(metrics_boinc,names_boinc,$("#boinc_graphs"),'-24months')
 
   metrics = [
@@ -31,7 +31,7 @@ TSN.pages.index = () ->
     'stats.gauges.TSN_dev.nereus.stats.total_user'
     'scale(stats.gauges.TSN_dev.nereus.stats.total_daily_credit%2C0.000005)'
   ]
-  names =  ['Nereus Total Credit','Nereus Active Users','Nereus Total Users','Nereus Current TFLOPS (estimate)']
+  names =  ['SourceFinder Total Credit','SourceFinder Active Users','SourceFinder Total Users','SourceFinder Current TFLOPS (estimate)']
   TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),'-24months')
 
   $('#js-news').ticker(
