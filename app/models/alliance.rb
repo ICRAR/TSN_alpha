@@ -4,7 +4,7 @@ class Alliance < ActiveRecord::Base
   attr_accessible :name,:tags,:desc,:country, :old_id, :tag_list, :invite_only,  :as => [:default, :admin]
   attr_accessible :leader_id, :member_ids, as: :admin
 
-  scope :temp_credit, joins(:member_items).select("alliances.*, sum(alliance_members.leave_credit-alliance_members.start_credit) as temp_credit").group('alliances.id')
+  scope :temp_credit, joins(:member_items).select("alliances.*, sum(alliance_members.leave_credit-IFNULL(alliance_members.start_credit,0)) as temp_credit").group('alliances.id')
   scope :temp_rac, joins(:members => [:general_stats_item]).select("alliances.*, sum(general_stats_items.recent_avg_credit) as temp_rac, count(general_stats_items.id) as total_members").group('alliances.id')
   scope :ranked, where("credit IS NOT NULL").order("credit DESC")
   scope :for_leaderboard, where("credit IS NOT NULL").includes(:leader)

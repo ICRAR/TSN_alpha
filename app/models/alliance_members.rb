@@ -5,7 +5,7 @@ class AllianceMembers < ActiveRecord::Base
 
   def self.for_alliance_show(alliance_id)
     joins(:profile => [:general_stats_item]).
-        select("alliance_members.*, (alliance_members.leave_credit-alliance_members.start_credit) as credit_contributed, general_stats_items.rank as rank, general_stats_items.total_credit as credits").
+        select("alliance_members.*, (alliance_members.leave_credit-IFNULL(alliance_members.start_credit,0)) as credit_contributed, general_stats_items.rank as rank, general_stats_items.total_credit as credits").
         where("alliance_members.alliance_id = #{alliance_id}").order("credit_contributed DESC").includes(:profile => :user)
   end
   def total_credits

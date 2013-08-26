@@ -11,6 +11,24 @@ namespace :update_profiles do
       item.save
     end
   end
+  desc "fix countries"
+  task :fix_countries => :environment do
+    #get all affected profiles
+    profiles = Profile.where{length(country) > 2}
+    countries = CountrySelect.const_get :COUNTRIES
+
+    profiles.each do |p|
+      new_name = countries.key(p.country.titleize)
+      new_name = 'ru' if  p.country == "Russia"
+      puts "#{p.country} : #{new_name}"
+      unless new_name.nil?
+        puts "change #{new_name}"
+        p.country =  new_name
+        p.save
+      end
+    end
+
+  end
   desc "gives every user a nickname"
   task :fix_nicknames => :environment do
 
