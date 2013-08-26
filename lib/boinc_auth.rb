@@ -3,7 +3,7 @@ module BoincAuth
     module Strategies
       class FromBoinc < ::Devise::Strategies::Base
         def valid?
-          return false unless params[:commit] == 'Sign in'
+          return false unless (params[:commit] == 'Sign in') || (params[:commit] == 'Log in')
           # this strategy is only valid if the user does not have an account in the local db
           user = User.where(["lower(username) = :value OR lower(email) = :value", { :value => params[:user][:login] }]).first
           APP_CONFIG['use_boinc_auth'] && user.nil?
