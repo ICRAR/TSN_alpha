@@ -7,29 +7,36 @@ class StatsGeneralJob
     total_daily_credits = 0
     bench_time = Benchmark.bm do |bench|
       bench.report('copy credit user') {
-        #start direct connection to DB for upsert
-        connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)
-        table_name = :general_stats_items
+        #add credits and record totals
+        combined_credits.each do |stat|
+          total_credits = stat.nereus_credit.to_i+stat.boinc_credit.to_i+stat.total_bonus_credit.to_i
+          avg_daily_credit = stat.nereus_daily.to_i+stat.boinc_daily.to_i
+          stat.total_credit = total_credits
+          stat.recent_avg_credit = avg_daily_credit
+          statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.credit",total_credits)
+          statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.avg_daily_credit",avg_daily_credit)
+          total_daily_credits += avg_daily_credit
+        end
 
-        combined_credits = GeneralStatsItem.for_update_credits
-        #start upsert batch for all
-        Upsert.batch(connection,table_name) do |upsert|
+        #sort by total credit
+        combined_credits.sort! {|a,b| b.total_credit <=> a.total_credit}
+        i = 1
+
+        #update ranks and load to DB
+        GeneralStatsItem.transaction do
           combined_credits.each do |stat|
-            #******* THIS LINE IS WHERE CREDITS********
-            total_credits = stat.nereus_credit.to_i+stat.boinc_credit.to_i+stat.total_bonus_credit.to_i
-            avg_daily_credit = stat.nereus_daily.to_i+stat.boinc_daily.to_i
-            upsert.row({:id => stat.id}, :total_credit => total_credits, :updated_at => Time.now, :created_at => Time.now)
-            upsert.row({:id => stat.id}, :recent_avg_credit=>avg_daily_credit, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.credit",total_credits)
-            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.avg_daily_credit",avg_daily_credit)
-            total_daily_credits += avg_daily_credit
+            if stat.total_credit > 0 && stat.power_user == false
+              stat.rank = i
+              i += 1
+            else
+              stat.rank = nil
+            end
+            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.rank",stat.rank)
+            stat.save()
           end
-
-          #recorded total tflops reading
-          total_tflops = SiteStat.get("nereus_TFLOPS").value.to_f + SiteStat.get("boinc_TFLOPS").value.to_f
-          SiteStat.set("global_TFLOPS",(total_tflops).round(2))
         end
       }
+
       bench.report('site stats') {
         #recorded total tflops reading
         total_tflops = SiteStat.get("nereus_TFLOPS").value.to_f + SiteStat.get("boinc_TFLOPS").value.to_f
@@ -65,30 +72,6 @@ class StatsGeneralJob
         SiteStat.set("galaxies_running",galaxies_running)
 
 
-      }
-      bench.report('update ranks user') {
-        connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)
-        table_name = :general_stats_items
-
-        stats = GeneralStatsItem.has_credit
-        #start upsert batch for all
-        Upsert.batch(connection,table_name) do |upsert|
-          rank = 1
-          stats.each do |stat|
-            upsert.row({:id => stat.id}, :rank => rank, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.rank",rank)
-            rank += 1
-          end
-        end
-
-        stats = GeneralStatsItem.no_credit
-        #start upsert batch for all
-        Upsert.batch(connection,table_name) do |upsert|
-          stats.each do |stat|
-            upsert.row({:id => stat.id}, :rank => nil, :updated_at => Time.now, :created_at => Time.now)
-            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.rank",0)
-          end
-        end
       }
     end
   end

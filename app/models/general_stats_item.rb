@@ -5,8 +5,10 @@ class GeneralStatsItem < ActiveRecord::Base
   scope :no_credit,  where("total_credit IS NULL OR total_credit = 0")
   scope :for_update_credits, joins('LEFT JOIN boinc_stats_items ON boinc_stats_items.general_stats_item_id = general_stats_items.id
                                     LEFT JOIN nereus_stats_items ON nereus_stats_items.general_stats_item_id = general_stats_items.id').
-                                   select("general_stats_items.id as id, general_stats_items.profile_id as profile_id,
-                                          boinc_stats_items.credit as boinc_credit, boinc_stats_items.`RAC` as boinc_daily, nereus_stats_items.credit as nereus_credit,
+                                   select("general_stats_items.*,
+                                          boinc_stats_items.credit as boinc_credit,
+                                          boinc_stats_items.`RAC` as boinc_daily,
+                                          nereus_stats_items.credit as nereus_credit,
                                           nereus_stats_items.daily_credit as nereus_daily").
                                    includes(:bonus_credits)
 
