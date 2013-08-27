@@ -38,7 +38,7 @@ class NereusJob
 
       #loads local database into memory
       bench.report('load_local') {
-        nereus_all = connection.query("SELECT nereus_stats_items.* FROM nereus_stats_items", :as => :hash)
+        nereus_all = NereusStatsItem.all
         nereus_all_hash = Hash[*nereus_all.map{|it| [it["nereus_id"], it]}.flatten]
       }
 
@@ -216,8 +216,33 @@ class NereusJob
         statsd_batch.gauge("nereus.stats.total_active",total_active)
       }
       bench.report('save all') {
+        NereusStatsItem.transaction do
+          nereus_update_hash.each do |item|
+            id = item[0].to_i
+            update_row = item[1] #fix for using hashes as array
+            update_row[:daily_credit] ||= 0
+
+            local =  nereus_all_hash[id.to_i]
+            if local.nil?
+              local = NereusStatsItem.new
+              local.network_limit = 0
+            end
+
+            local.credit = update_row[:credit]
+            local.daily_credit = update_row[:daily_credit]
+            local.monthly_network_usage = update_row[:monthly_network_usage]
+            local.online_now = update_row[:online_now]
+            local.online_today = update_row[:online_today]
+            local.mips_now = update_row[:mips_now]
+            local.mips_today = update_row[:mips_today]
+            local.active = update_row[:active]
+
+            local.save
+          end
+        end
 
         #start upsert batch for this slice
+=begin
         Upsert.batch(connection,table_name) do |upsert|
           nereus_update_hash.each do |item|
             update_row = item[1] #fix for using hashes as array
@@ -227,6 +252,7 @@ class NereusJob
             upsert.row({:nereus_id => item[0].to_i}, update_row)
           end
         end
+=end
       }
 
 
