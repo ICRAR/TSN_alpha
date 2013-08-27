@@ -143,11 +143,11 @@ class NereusStatsItem < ActiveRecord::Base
   end
 
   def network_limit_mb
-    (network_limit / 1024 / 1024).to_i
+    (network_limit.to_i / 1024 / 1024).to_i
   end
 
   def monthly_network_usage_mb
-    (monthly_network_usage / 1024 / 1024).to_i
+    (monthly_network_usage.to_i / 1024 / 1024).to_i
   end
 
   def self.next_nereus_id
