@@ -7,6 +7,8 @@ class StatsGeneralJob
     total_daily_credits = 0
     bench_time = Benchmark.bm do |bench|
       bench.report('copy credit user') {
+        #load From DB
+        combined_credits = GeneralStatsItem.for_update_credits
         #add credits and record totals
         combined_credits.each do |stat|
           total_credits = stat.nereus_credit.to_i+stat.boinc_credit.to_i+stat.total_bonus_credit.to_i
