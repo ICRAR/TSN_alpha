@@ -221,6 +221,8 @@ class NereusJob
             id = item[0].to_i
             update_row = item[1] #fix for using hashes as array
             update_row[:daily_credit] ||= 0
+            statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.daily_credit",0) if update_row[:daily_credit] == 0
+            statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.daily_credit",0) if update_row[:daily_credit] == 0
 
             local =  nereus_all_hash[id.to_i]
             if local.nil?

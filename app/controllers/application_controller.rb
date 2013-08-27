@@ -15,6 +15,8 @@ class ApplicationController < ActionController::Base
   def check_announcement
     if user_signed_in?
       @announcement = News.announcement(current_user.profile.announcement_time)
+
+      ::NewRelic::Agent.add_custom_parameters(:profile_id => current_user.profile.id)
     end
 
   end
