@@ -70,6 +70,7 @@ gem 'rabl'
 gem 'oj'
 
 gem 'debugger'
+gem 'turnout'
 
 group :development do
   gem 'rack-mini-profiler'

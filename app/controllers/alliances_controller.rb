@@ -17,7 +17,8 @@ class AlliancesController < ApplicationController
 
 
   def index
-    per_page = [params[:per_page].to_i,1000].min    per_page ||= 20
+    per_page = [params[:per_page].to_i,1000].min
+    per_page ||= 20
     @alliances = Alliance.for_leaderboard.page(params[:page]).per(per_page).order("`" + sort_column + "`" " " + sort_direction)
     @tags = Alliance.tag_counts.where("taggings.tags_count > 2")
   end
