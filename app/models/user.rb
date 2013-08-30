@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
   attr_accessible :login
 
   validates :username, :uniqueness => true
-  validates :username, :email, :password, :password_confirmation, :presence => true
+  #validates :username, :email, :password, :password_confirmation, :presence => true
   validates :email, :uniqueness => true
 
   has_one :profile, :dependent => :destroy, :inverse_of => :user
