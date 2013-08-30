@@ -42,6 +42,7 @@ class Ability
    can :image, Galaxy
    can :send_report, Galaxy
    cannot :read, User
+   can :alliance_history, Profile
 
   if user.id #user is not a quest user
     can :new, NereusStatsItem
