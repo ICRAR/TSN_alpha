@@ -5,7 +5,7 @@ class ProfilesController < ApplicationController
   helper_method :sort_column, :sort_direction
   def index
     per_page = [params[:per_page].to_i,1000].min
-    per_page ||= 30
+    per_page = 30 if per_page == 0
     #Finds and highlights a users postion in the tables
     if (params[:rank])
       rank = [[params[:rank].to_i,per_page/2+1].max,Profile.for_leader_boards.count].min
