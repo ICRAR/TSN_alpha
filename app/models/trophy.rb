@@ -68,7 +68,9 @@ class Trophy < ActiveRecord::Base
   #takes a list of trophies and awards them bassed on credit.
   #NOTE this function skips active record
   #main indicates that this is the main trophy group as represented by the progress bar on the users dashboard
+  #this function should not be used
   def self.handout_by_credit(trophies,main = true)
+    puts "depreciation:: use award_by_credit instead, its faster and better :)"
     all_trophies = trophies
     trophies_credit_only = trophies.pluck(:credits)
 

@@ -12,7 +12,9 @@ class NereusStatsItem < ActiveRecord::Base
       remote_client=false
     end
   end
-
+  def credit
+    self[:credit].to_i
+  end
   #returns current state out of
   #  pausing: acitve and paused
   #  paused: not active and paused

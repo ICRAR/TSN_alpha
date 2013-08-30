@@ -4,9 +4,8 @@ class ProfilesController < ApplicationController
   authorize_resource
   helper_method :sort_column, :sort_direction
   def index
-    per_page = params[:per_page]
+    per_page = [params[:per_page].to_i,1000].min
     per_page ||= 30
-    per_page = per_page.to_i
     #Finds and highlights a users postion in the tables
     if (params[:rank])
       rank = [[params[:rank].to_i,per_page/2+1].max,Profile.for_leader_boards.count].min
@@ -293,16 +292,11 @@ class ProfilesController < ApplicationController
   end
 
   def alliance_history
-    if user_signed_in?
-      @profile = Profile.where(:user_id => current_user.id).first
+      @profile = Profile.where(:user_id => params[:id]).first
       @memberships = @profile.alliance_items.order(:id).includes(:alliance)
       @alliance = @profile.alliance
 
       @total_members  = @alliance ? AllianceMembers.where(:alliance_id =>@alliance.id).count : nil
-    else
-      redirect_to root_url, notice: 'You must be logged in to view your own profile.'
-      return
-    end
   end
 
   private

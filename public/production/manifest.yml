@@ -821,6 +821,8 @@ windowbg.jpg.LCK: windowbg.jpg-9950989e21859e7402ff6aa4d5ab9019.LCK
 windowbg/index.jpg.LCK: windowbg.jpg-9950989e21859e7402ff6aa4d5ab9019.LCK
 application.js: application-0100aeb6e1a68803d8daf197fedd1ca3.js
 application/index.js: application-0100aeb6e1a68803d8daf197fedd1ca3.js
+ckeditor/config.js: ckeditor/config-a49471dd2c92fbd7a9b63b438833632a.js
+ckeditor/config/index.js: ckeditor/config-a49471dd2c92fbd7a9b63b438833632a.js
 non_includes/deployJava.js: non_includes/deployJava-14136cae47de34abcb2d4604268d1dad.js
 non_includes/deployJava/index.js: non_includes/deployJava-14136cae47de34abcb2d4604268d1dad.js
 application.css: application-5ec66a6330782c965d2d096e38f3247c.css
@@ -837,8 +839,6 @@ fancybox_sprite.png: fancybox_sprite-6db739144c51af76aea8960fc35dbda7.png
 fancybox_sprite/index.png: fancybox_sprite-6db739144c51af76aea8960fc35dbda7.png
 ckeditor/application.js: ckeditor/application-c5627afd8f0424491629c47d8ada7618.js
 ckeditor/application/index.js: ckeditor/application-c5627afd8f0424491629c47d8ada7618.js
-ckeditor/config.js: ckeditor/config-d7dea19e4c5bad8956ffa2aebaeb3bfc.js
-ckeditor/config/index.js: ckeditor/config-d7dea19e4c5bad8956ffa2aebaeb3bfc.js
 ckeditor/filebrowser/images/gal_add.jpg: ckeditor/filebrowser/images/gal_add-eeb256bdeb48266c9891e7d1c20b7e67.jpg
 ckeditor/filebrowser/images/gal_add/index.jpg: ckeditor/filebrowser/images/gal_add-eeb256bdeb48266c9891e7d1c20b7e67.jpg
 ckeditor/filebrowser/images/gal_add.png: ckeditor/filebrowser/images/gal_add-25bbe2481e1238501fa8858c96bf1769.png

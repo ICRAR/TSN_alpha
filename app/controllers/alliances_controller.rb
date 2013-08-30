@@ -4,9 +4,20 @@ class AlliancesController < ApplicationController
   authorize_resource
   helper_method :sort_column, :sort_direction
 
+  before_filter :check_boinc, :except => [:index, :show, :search, :new]
+  def check_boinc
+    if params[:id]
+      a = Alliance.where{id == my{params[:id]}}.select(:is_boinc).first
+      if a.is_boinc?
+        redirect_to my_profile_url, alert: "Sorry Boinc alliances must be edited on the boinc site http://pogs.theskynet.org/pogs"
+        return
+      end
+    end
+  end
+
+
   def index
-    per_page = params[:per_page]
-    per_page ||= 20
+    per_page = [params[:per_page].to_i,1000].min    per_page ||= 20
     @alliances = Alliance.for_leaderboard.page(params[:page]).per(per_page).order("`" + sort_column + "`" " " + sort_direction)
     @tags = Alliance.tag_counts.where("taggings.tags_count > 2")
   end

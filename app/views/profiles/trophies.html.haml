@@ -7,7 +7,7 @@
 -content_for(:content) do
   #content-wrap
     .well.well-white
-      - if !@profile.general_stats_item.nereus_stats_item.nil? && @profile.general_stats_item.nereus_stats_item.founding?
+      - if @profile.id == current_user.profile.id && !@profile.general_stats_item.nereus_stats_item.nil? && @profile.general_stats_item.nereus_stats_item.founding?
         .well
           %p Congratulations on being a Founding Member!
           #founding_cert_box
@@ -16,12 +16,12 @@
       .well
         %p
           -num = TrophySet.count_trophies @trophies
-          ="You've been awarded #{num} trophies."
+          ="#{@profile.name.titlecase} has been awarded #{num} trophies."
         %p
           - if params[:style] == 'grid'
-            =link_to 'view all of your trophies as list', params.merge(:style => 'list')
+            =link_to 'view all of the trophies as list', params.merge(:style => 'list')
           -else
-            =link_to 'view all of your trophies as grid', params.merge(:style => 'grid')
+            =link_to 'view all of the trophies as grid', params.merge(:style => 'grid')
       -if params[:style] == 'grid'
         -@trophies.each do |set|
           .well

@@ -142,6 +142,11 @@ class Galaxy < PogsModel
       return nil
     end
   end
+  #inverts y coordiante
+  def fix_y(y)
+    fixed = [self.dimension_y-y,0].max
+    [self.dimension_y,fixed].min
+  end
   #returns a image blob with the users area's added
   def color_image_user(user_id, colour, scale = false, size=500)
     require 'RMagick'
@@ -166,7 +171,7 @@ class Galaxy < PogsModel
       drawing.fill_opacity(0.5)
       drawing.stroke_opacity(0)
       drawing.stroke_width(0)
-      drawing.rectangle(area.top_x,area.top_y,area.bottom_x,area.bottom_y)
+      drawing.rectangle(area.top_x,fix_y(area.top_y),area.bottom_x,fix_y(area.bottom_y))
     end
     drawing.draw(image)
 

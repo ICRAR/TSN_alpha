@@ -5,9 +5,13 @@ class Profile < ActiveRecord::Base
   belongs_to :alliance, inverse_of: :members
   has_many :alliance_items, :class_name => 'AllianceMembers'
 
-  has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
+  has_many :profiles_trophies
   has_many :trophies, :through => :profiles_trophies
   has_many :trophy_sets, :through => :trophies
+  before_destroy :remove_trophies
+  def remove_trophies
+    self.profiles_trophies.delete_all
+  end
   has_one :general_stats_item, :dependent => :destroy, :inverse_of => :profile
   has_one :invited_by, :class_name => "AllianceInvite", :inverse_of => :redeemed_by, :foreign_key => "redeemed_by_id"
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :invited_by, :foreign_key => "invited_by_id"
@@ -104,7 +108,7 @@ class Profile < ActiveRecord::Base
       item.start_credit = self.general_stats_item.total_credit
       item.start_credit ||= 0
       item.leave_credit = self.general_stats_item.total_credit
-      item.start_credit ||= 0
+      item.leave_credit ||= 0
       item.leave_date = nil
 
       self.alliance_items << item
@@ -118,7 +122,7 @@ class Profile < ActiveRecord::Base
     if self.alliance == nil
       false
     else
-      item = self.alliance_items.where(:leave_date => nil).first
+      item = self.alliance_items.where{(leave_date == nil) & alliance_id == my{self.alliance.id}}.first
       item.leave_date = Time.now
       item.leave_credit = self.general_stats_item.total_credit
       item.save
@@ -164,6 +168,8 @@ class Profile < ActiveRecord::Base
     end
     sets
   end
+
+
 
   #search methods
   include Tire::Model::Search

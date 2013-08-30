@@ -29,7 +29,7 @@ CREATE TABLE `alliance_members` (
   KEY `profile_id_index` (`profile_id`),
   KEY `alliance_id_index` (`alliance_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2704 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2705 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -44,11 +44,14 @@ CREATE TABLE `alliances` (
   `country` varchar(255) DEFAULT NULL,
   `old_id` int(11) DEFAULT NULL,
   `invite_only` tinyint(1) DEFAULT NULL,
+  `is_boinc` tinyint(1) DEFAULT '0',
+  `pogs_team_id` int(11) DEFAULT '0',
+  `pogs_update_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `credit_desc` (`credit`),
   KEY `ranking_asc` (`ranking`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=524 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=526 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `boinc_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -63,7 +66,7 @@ CREATE TABLE `boinc_stats_items` (
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2283 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7107 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `bonus_credits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -121,7 +124,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=198 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=223 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -138,7 +141,7 @@ CREATE TABLE `general_stats_items` (
   KEY `total_credit_index_desc` (`total_credit`),
   KEY `rank_asc` (`rank`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9124 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9128 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `leaders_science_portals` (
   `leader_id` int(11) DEFAULT NULL,
@@ -238,7 +241,7 @@ CREATE TABLE `profiles` (
   KEY `user_id_index` (`user_id`),
   KEY `alliance_leader_id_index` (`alliance_leader_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9124 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9128 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `profiles_trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -252,7 +255,7 @@ CREATE TABLE `profiles_trophies` (
   KEY `profile_id_index` (`profile_id`),
   KEY `trophy_id_index` (`trophy_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=807423 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=888454 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `rails_admin_histories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -306,7 +309,7 @@ CREATE TABLE `site_stats` (
   PRIMARY KEY (`id`),
   KEY `show_index` (`show_in_list`),
   KEY `name_index` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `taggings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -343,7 +346,7 @@ CREATE TABLE `trophies` (
   `trophy_set_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `trophy_sets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -353,7 +356,7 @@ CREATE TABLE `trophy_sets` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -383,6 +386,7 @@ CREATE TABLE `users` (
   `invitation_limit` int(11) DEFAULT NULL,
   `invited_by_id` int(11) DEFAULT NULL,
   `invited_by_type` varchar(255) DEFAULT NULL,
+  `boinc_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_users_on_email` (`email`),
   UNIQUE KEY `index_users_on_reset_password_token` (`reset_password_token`),
@@ -391,7 +395,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `index_users_on_invitation_token` (`invitation_token`),
   KEY `index_users_on_invited_by_id` (`invited_by_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9124 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9128 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `versions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -513,3 +517,9 @@ INSERT INTO schema_migrations (version) VALUES ('20130805034616');
 INSERT INTO schema_migrations (version) VALUES ('20130806003021');
 
 INSERT INTO schema_migrations (version) VALUES ('20130823034324');
+
+INSERT INTO schema_migrations (version) VALUES ('20130827082957');
+
+INSERT INTO schema_migrations (version) VALUES ('20130828003127');
+
+INSERT INTO schema_migrations (version) VALUES ('20130828043328');

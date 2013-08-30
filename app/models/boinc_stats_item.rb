@@ -129,4 +129,11 @@ class BoincStatsItem < ActiveRecord::Base
     end
     return_hash
   end
+
+  #returns the lowest boinc_id that hasn't been connected or the highest recored boinc_id
+  def self.next_id
+    i = BoincStatsItem.where{general_stats_item_id == nil}.minimum(:boinc_id)
+    i ||= BoincStatsItem.maximum(:boinc_id)
+  end
+
 end

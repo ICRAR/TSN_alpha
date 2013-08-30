@@ -292,7 +292,7 @@ def generate_old_alliance(row)
       :country    => row['country'].to_s,
       :team_id    => row['id'].to_i,
       :created_on => row['creationDate'],
-      :invite_only => row['type'].to_i.zero?
+      :invite_only => !row['type'].to_i.zero?
   }
 end
 def get_profile_by_nereus_id(nereus_id)

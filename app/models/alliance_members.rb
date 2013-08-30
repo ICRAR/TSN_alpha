@@ -22,4 +22,5 @@ class AllianceMembers < ActiveRecord::Base
   def leave_credit
     self[:leave_credit].to_i
   end
+
 end

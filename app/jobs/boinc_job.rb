@@ -6,7 +6,7 @@ class BoincJob
     #start statsd batch
     statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|
-      bench.report('test') {
+      bench.report('stats') {
         total_credit = 0
         total_RAC = 0
         users_with_RAC = 0
@@ -46,6 +46,53 @@ class BoincJob
         statsd_batch.gauge("boinc.stat.active_users",users_with_RAC)
         statsd_batch.flush
 
+      }
+      bench.report('users and alliances') {
+        BoincRemoteUser.where{id >= my{BoincStatsItem.next_id}}.each do |b|
+            b.check_local
+        end
+
+        PogsTeam.where{nusers > 0}.each {|a| a.copy_to_local}
+
+
+        #update team members not in team_delta
+        ids = BoincRemoteUser.teamid_no_team_delta.where{total_credit > 0}.select([:id, :teamid])
+        ids_array = ids.map {|i| i.id}
+        team_hash = ids.map {|i| i.teamid}
+        ids_team_hash = Hash[*ids.map{|i| [i.id, i.teamid]}.flatten]
+        alliances = Alliance.where{pogs_team_id.in team_hash}
+        alliances_by_teamid = Hash[*alliances.map{|i| [i.pogs_team_id, i]}.flatten]
+
+        profiles = Profile.joins{general_stats_item.boinc_stats_item}.
+            where{(alliance_id == nil) & (boinc_stats_items.boinc_id.in ids_array)}.
+            select('profiles.*').
+            select{boinc_stats_items.boinc_id.as boinc_id}.
+            select{general_stats_items.total_credit.as total_credit}
+        Profile.transaction do
+          profiles.each do |profile|
+            team_id = ids_team_hash[profile.boinc_id]
+            alliance = alliances_by_teamid[team_id]
+
+            member = AllianceMembers.new
+            member.alliance_id = alliance.id
+            member.profile_id = profile.id
+            member.join_date = alliance.created_at
+            member.start_credit = 0
+            member.leave_credit = profile.total_credit
+            member.leave_credit ||= 0
+            member.leave_date = nil
+            member.save
+
+            if profile.alliance.nil?
+              profile.alliance = alliance
+              profile.save
+            else
+              profile.leave_alliance
+              profile.alliance = alliance
+              profile.save
+            end
+          end
+        end
       }
     end
     statsd_batch.gauge("boinc.stat.update_time",bench_time[0].total)

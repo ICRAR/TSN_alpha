@@ -15,7 +15,7 @@ class GeneralStatsItem < ActiveRecord::Base
   has_one :boinc_stats_item
   has_one :nereus_stats_item
   belongs_to :profile
-  has_many :bonus_credits
+  has_many :bonus_credits, :dependent => :delete_all
 
   def credits_to_next_trophy
     self.total_credit = 0 if total_credit == nil
@@ -37,12 +37,13 @@ class GeneralStatsItem < ActiveRecord::Base
   end
 
   def update_credit
-    self.total_credit = total_bonus_credit
-    self.total_credit += nereus_stats_item.credit unless nereus_stats_item.nil?
-    self.total_credit += boinc_stats_item.credit unless boinc_stats_item.nil?
+    self.total_credit = total_bonus_credit.to_i
+    self.total_credit += nereus_stats_item.credit.to_i unless nereus_stats_item.nil?
+    self.total_credit += boinc_stats_item.credit.to_i unless boinc_stats_item.nil?
 
-    self.recent_avg_credit = nereus_stats_item.daily_credit unless nereus_stats_item.nil?
-    self.recent_avg_credit += boinc_stats_item.RAC unless boinc_stats_item.nil?
+    self.recent_avg_credit = 0
+    self.recent_avg_credit += nereus_stats_item.daily_credit.to_i unless nereus_stats_item.nil?
+    self.recent_avg_credit += boinc_stats_item.RAC.to_i unless boinc_stats_item.nil?
     self.save
   end
 

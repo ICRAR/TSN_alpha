@@ -18,12 +18,12 @@ TSNAlpha::Application.routes.draw do
     end
     member do
       get 'trophies'
+      get 'alliance_history'
     end
 
   end
 
   get "/profiles/compare/:id1/:id2" => 'profiles#compare', :as => 'profiles_compare'
-  get "/profile/alliance_history" => 'profiles#alliance_history', :as => 'my_alliance_history'
   get "/profile" => "profiles#dashboard",  :as => 'my_profile'
   get "/profile/edit" => "profiles#edit", :as => 'edit_profile'
   post "/profile/update_nereus_id"  => "profiles#update_nereus_id", :as => 'update_nereus_id'
