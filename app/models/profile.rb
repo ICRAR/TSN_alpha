@@ -63,7 +63,10 @@ class Profile < ActiveRecord::Base
     self.trophies.select("trophies.id").map(&:id)
   end
   def country_name
-    ::CountrySelect::COUNTRIES[country.downcase]
+    return '' if country.nil?
+    out = ::CountrySelect::COUNTRIES[country.downcase]
+    out = country if out.nil?
+    return out
   end
   def full_name
     temp_name = ''
