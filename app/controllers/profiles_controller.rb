@@ -292,7 +292,7 @@ class ProfilesController < ApplicationController
   end
 
   def alliance_history
-      @profile = Profile.where(:user_id => params[:id]).first
+      @profile = Profile.find(params[:id])
       @memberships = @profile.alliance_items.order(:id).includes(:alliance)
       @alliance = @profile.alliance
 
