@@ -299,6 +299,7 @@ class ProfilesController < ApplicationController
       @total_members  = @alliance ? AllianceMembers.where(:alliance_id =>@alliance.id).count : nil
   end
 
+
   private
 
   def sort_column

@@ -21,7 +21,9 @@
         font-style: normal;
       }
     =analytics_init :local => Rails.env.development?
-
+    :javascript
+      window.rails = new Object;
+      window.rails.user_signed_in = #{user_signed_in?}
   %body{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : '')}
     #top-nav.navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner

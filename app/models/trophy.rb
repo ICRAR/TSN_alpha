@@ -1,10 +1,13 @@
 class Trophy < ActiveRecord::Base
+  include ActionView::Helpers::UrlHelper
   attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, as: [:default, :admin]
   has_attached_file :image
-  has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
+  has_many :profiles_trophies, :dependent => :destroy, :autosave => true
   has_many :profiles, :through => :profiles_trophies
   belongs_to :trophy_set
   validates_presence_of  :desc, :title, :image, :trophy_set
+  has_many :notifications, foreign_key: :notified_object_id, conditions: {notified_object_type: 'Trophyp.clas'}, dependent: :destroy
+
 
   scope :all_credit_active, joins(:trophy_set).where{trophy_sets.set_type =~ "credit_active"}.where("credits IS NOT NULL")
 
@@ -45,10 +48,18 @@ class Trophy < ActiveRecord::Base
   #not this function skips active record
   def award_to_profiles(profiles)
     inserts = []
-    profiles = profiles.where{sift :does_not_have_trophy, my{self.id}}
-    profiles.each do |p|
-      inserts.push("(#{self.id}, #{p.id}, '#{Time.now}', '#{Time.now}')")
+    update_profiles = nil
+    if profiles.class == Profile
+      update_profiles = Profile.where{(id == my{profiles.id}) & (sift :does_not_have_trophy, my{self.id})}
+    elsif profiles.class == ActiveRecord::Relation
+      update_profiles = profiles.where{sift :does_not_have_trophy, my{self.id}}
     end
+
+    update_profiles.each do |p|
+      inserts.push("(#{self.id}, #{p.id}, '#{Time.now}', '#{Time.now}')")
+
+    end
+    create_notification(update_profiles)
     if inserts != []
       sql = "INSERT INTO profiles_trophies (trophy_id , profile_id, created_at, updated_at) VALUES #{inserts.join(", ")}"
       db_conn = ActiveRecord::Base.connection
@@ -56,6 +67,13 @@ class Trophy < ActiveRecord::Base
 
       #puts sql
     end
+  end
+
+  def create_notification(profiles)
+    subject = "You have been awarded a new trophy, #{self.title}"
+    link = link_to(self.title, Rails.application.routes.url_helpers.trophy_path(self))
+    body = "Congratulations! \n You have been awarded a new trophy, #{link}. \n Thank you and happy computing! \n theSkyNet"
+    Notification.notify_all(profiles,subject, body, self)
   end
 
   def self.next_trophy(cr)

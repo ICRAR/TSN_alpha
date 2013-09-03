@@ -25,4 +25,6 @@
 //= require_tree ./controllers
 //= require turbolinks
 //= require fancybox
+//= require messenger
+//= require messenger-theme-future
 

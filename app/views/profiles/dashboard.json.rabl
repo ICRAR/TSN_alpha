@@ -6,10 +6,9 @@ glue :general_stats_item do |g|
       attributes :nereus_id, :active, :paused, :online_now, :mips_now,
                  :online_today, :mips_today, :monthly_network_usage_mb,
                  :network_limit_mb, :limited => :network_limited
-      node(:pause_url) {url_for(pause_nereus_url :format => :json)}
+      node(:pause_url) {url_for(pause_nereus_url)}
       node(:resume_url) {url_for(resume_nereus_url :format => :json)}
       node(:run_url) {url_for(run_nereus_url :format => :json)}
-
     end
   end
   if g.boinc_stats_item != nil

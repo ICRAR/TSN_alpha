@@ -41,6 +41,18 @@ class Profile < ActiveRecord::Base
                           association_foreign_key: "science_portal_id",
                           join_table: "leaders_science_portals"
 
+  #sets up simple messaging
+  acts_as_messageable
+  #Returning the email address of the model if an email should be sent for this object (Message or Notification).
+  #If no mail has to be sent, return nil.
+  def mailboxer_email(object)
+    #Check if an email should be sent for that object
+    #if true
+    #return "define_email@on_your.model"
+    #if false
+    return nil
+  end
+
   def  self.for_show(id)
     includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).find(id)
   end
@@ -125,7 +137,7 @@ class Profile < ActiveRecord::Base
     if self.alliance == nil
       false
     else
-      item = self.alliance_items.where{(leave_date == nil) & alliance_id == my{self.alliance.id}}.first
+      item = self.alliance_items.where{(leave_date == nil) & (alliance_id == my{self.alliance.id})}.first
       item.leave_date = Time.now
       item.leave_credit = self.general_stats_item.total_credit
       item.save

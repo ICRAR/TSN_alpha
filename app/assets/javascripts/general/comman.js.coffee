@@ -70,6 +70,10 @@ $(document).ready( ->
     'type' : 'image'
   )
   $('.js-tooltip').tooltip()
+  if rails.user_signed_in
+    Notifications.update()
+    if (!TSN.notifications_timer?)
+      TSN.notifications_timer = $.timer(Notifications.update,60000, true)
 )
 
 

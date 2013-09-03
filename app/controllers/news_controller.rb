@@ -10,6 +10,10 @@ class NewsController < ApplicationController
   end
   def index
     @news = News.published.all
+    if user_signed_in?
+      profile = current_user.profile
+      @notifications =  profile.mailbox.notifications.limit(10)
+    end
     render :index
   end
   def dismiss

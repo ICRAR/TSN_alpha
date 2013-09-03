@@ -55,6 +55,8 @@ gem 'voruby'
 gem 'globalize3'
 gem 'i18n-js'
 gem 'sanitize'
+gem 'mailboxer'
+gem "messengerjs-rails", "~> 1.3.6"
 
 gem 'delayed_job_active_record'
 gem 'daemons'
