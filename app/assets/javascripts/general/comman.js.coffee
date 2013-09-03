@@ -74,6 +74,16 @@ $(document).ready( ->
     Notifications.update()
     if (!TSN.notifications_timer?)
       TSN.notifications_timer = $.timer(Notifications.update,60000, true)
+
+  #setup an idle timer stop updating users notifications if they've been idle for 2 mins
+  $( document ).idleTimer( 120000 );
+  $(document).on "idle.idleTimer", ->
+    # function you want to fire when the user goes idle
+    TSN.notifications_timer.pause();
+
+  $(document).on "active.idleTimer", ->
+    # function you want to fire when the user becomes active again
+    TSN.notifications_timer.play()
 )
 
 
