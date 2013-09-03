@@ -71,6 +71,20 @@ TSN.profiles.compare = () ->
   TSN.rickshaw_graph(metrics,name,$("#chart_container"),'-24months')  if name.length != 0
 
 TSN.profiles.trophies = () ->
+  #share on facebook
+  $(".facebook_share_trophy").click(->
+    trophy = $(this).data()
+    FB.ui
+      method: "feed"
+      link: trophy.trophyUrl
+      picture: trophy.trophyImage
+      name: "I just earned #{trophy.trophyTitle} trophy on theSkynet.org for playing my part in discovering our Universe!"
+      caption: "theSkyNet.org"
+      description: "Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
+    , (response) ->
+  )
+
+  #founding certs
   $("#founding_cert_form").bind("ajax:success", (evt, data, status, xhr) ->
     if data.success
       #replace button with success msg

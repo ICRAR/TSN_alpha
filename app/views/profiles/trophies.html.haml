@@ -36,6 +36,8 @@
                         .caption
                           %h4= link_to "#{trophy.title.titlecase}" ,  trophy
                           %p= "(#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)"
+                          - if user_signed_in? && @profile.id == current_user.profile.id
+                            %p.facebook_share_trophy{:data => {:trophy_image => trophy.image.url, :trophy_url => trophy_url(trophy), :trophy_title => trophy.title.titlecase}} Share on facebook
       -else
         -@trophies.each do |set|
           .well

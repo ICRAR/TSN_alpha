@@ -84,6 +84,7 @@ $(document).ready( ->
   $(document).on "active.idleTimer", ->
     # function you want to fire when the user becomes active again
     TSN.notifications_timer.play()
+
 )
 
 

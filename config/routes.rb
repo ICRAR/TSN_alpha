@@ -66,6 +66,7 @@ TSNAlpha::Application.routes.draw do
   get "/check_auth" => "application#check_auth"
   post "/check_auth" => "application#check_auth"
   get "/ping" => "application#ping"
+  get "/facebook_channel" => "application#facebook_channel", :as => 'facebook_channel'
 
   resources :news, :only => [:index, :show] do
     member do

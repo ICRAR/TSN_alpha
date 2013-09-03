@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery :except => [:check_auth, :ping]
+  protect_from_forgery :except => [:check_auth, :ping, :facebook_channel]
   helper :json_api
   require 'act_as_taggable_on'
 
-  before_filter :check_announcement, :except => [:check_auth,:ping,:send_report,:send_cert]
+  before_filter :check_announcement, :except => [:check_auth,:ping,:send_report,:send_cert, :facebook_channel]
   newrelic_ignore :only => [:check_auth,:ping]
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -34,9 +34,6 @@ class ApplicationController < ActionController::Base
     options
   end
 
-  if Rails.env.development? || false
-    Rack::MiniProfiler.authorize_request
-  end
 
   def after_sign_in_path_for(resource)
     my_profile_path
@@ -72,5 +69,10 @@ class ApplicationController < ActionController::Base
 
   def not_found
     raise ActionController::RoutingError.new('Not Found')
+  end
+
+  def facebook_channel
+    expires_in 1.day, :public => true
+    render text: '<script src="//connect.facebook.net/en_US/all.js"></script>'
   end
 end

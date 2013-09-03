@@ -41,12 +41,12 @@ TSN.pages.index = () ->
 
   #news slider
   news_items = []
-  for item in $('.news_item')
+  for item in $('#news_list .news_item')
     news_items.push item
     $(item).remove()
 
   news_add_item = () ->
-    if $('.news_item').length > 2
+    if $('#news_list .news_item').length > 2
       item = $('.news_item').get(-1)
       news_items.push item
       old_item = $(item)
