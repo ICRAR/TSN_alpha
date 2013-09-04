@@ -5,7 +5,7 @@ module ApplicationHelper
     desc =  hsh[:description] + "\n Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
     meta :title => title,
          :description => desc
-    meta [:itemprop => "name", :content => title]
+    meta [:content => title, :itemprop => "name"]
     meta [:itemprop => "description", :content => desc]
 
   end

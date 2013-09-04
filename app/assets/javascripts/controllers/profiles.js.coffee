@@ -72,18 +72,21 @@ TSN.profiles.compare = () ->
 
 TSN.profiles.trophies = () ->
   tbx = document.getElementById("toolbox")
-  svcs =
-    email: "Email"
-    print: "Print"
-    facebook: "Facebook"
-    expanded: "More"
+  svcs = [1..4]
 
   for s of svcs
-    tbx.innerHTML += "<a class=\"addthis_button_" + s + "\">" + svcs[s] + "</a>"
-  addthis.toolbox "#toolbox", {}, {
+    tbx.innerHTML += "<a class=\"addthis_button_preferred_" + s + "\"></a>"
+  tbx.innerHTML += "<a class=\"addthis_button_compact\"></a>"
+  tbx.innerHTML += "<a class=\"addthis_counter addthis_bubble_style\"></a>"
+
+  addthis.toolbox "#toolbox", {ui_cobrand: "theSkyNet"}, {
     url: "http://staging.theskynet.org/trophies/54?locale=en",
-    title: "hellow world"
+    title: "hellow world",
+    templates:
+      twitter: "check out {{url}} (from @example_dot_com)"
   }
+
+
   #share on facebook
   $(".facebook_share_trophy").click(->
     trophy = $(this).data()
