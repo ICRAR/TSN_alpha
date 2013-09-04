@@ -61,10 +61,11 @@ class BoincJob
         team_hash = ids.map {|i| i.teamid}
         ids_team_hash = Hash[*ids.map{|i| [i.id, i.teamid]}.flatten]
         alliances = Alliance.where{pogs_team_id.in team_hash}
+        alliance_ids = alliances.map {|i| i.id}
         alliances_by_teamid = Hash[*alliances.map{|i| [i.pogs_team_id, i]}.flatten]
 
         profiles = Profile.joins{general_stats_item.boinc_stats_item}.
-            where{(alliance_id == nil) & (boinc_stats_items.boinc_id.in ids_array)}.
+            where{(alliance_id.not_in alliance_ids) & (boinc_stats_items.boinc_id.in ids_array)}.
             select('profiles.*').
             select{boinc_stats_items.boinc_id.as boinc_id}.
             select{general_stats_items.total_credit.as total_credit}
