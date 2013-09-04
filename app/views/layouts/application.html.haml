@@ -27,28 +27,6 @@
     %script{:src => "//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-522683943e4f7e56", :type => "text/javascript"}
 
   %body{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : '')}
-    :javascript
-      var addthis_config = {
-        ui_cobrand: "theSkyNet"
-      }
-    //sets up facebook JS SDK
-    #fb-root
-    :javascript
-      $(document).ready(function() {
-        if (window.FBinitStatus == undefined) {
-          $.ajaxSetup({ cache: true });
-          $.getScript('//connect.facebook.net/en_UK/all.js', function(){
-            FB.init({
-              appId: #{APP_CONFIG['facebook_app_id']},
-              channelUrl: "//#{facebook_channel_url.sub(/^https?\:\/\//, '')}",
-              status: false,
-              xfbml: true
-            });
-            window.FBinitStatus = true;
-          });
-        }
-      });
-
     #top-nav.navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner
         #language-top.pull-right

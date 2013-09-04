@@ -184,7 +184,9 @@ class Profile < ActiveRecord::Base
     sets
   end
 
-
+  def has_trophy(trophy)
+    ProfilesTrophy.where{(profile_id == my{self.id}) & (trophy_id == my{trophy.id})}.count > 0
+  end
 
   #search methods
   include Tire::Model::Search

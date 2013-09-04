@@ -71,34 +71,11 @@ TSN.profiles.compare = () ->
   TSN.rickshaw_graph(metrics,name,$("#chart_container"),'-24months')  if name.length != 0
 
 TSN.profiles.trophies = () ->
-  tbx = document.getElementById("toolbox")
-  svcs = [1..4]
-
-  for s of svcs
-    tbx.innerHTML += "<a class=\"addthis_button_preferred_" + s + "\"></a>"
-  tbx.innerHTML += "<a class=\"addthis_button_compact\"></a>"
-  tbx.innerHTML += "<a class=\"addthis_counter addthis_bubble_style\"></a>"
-
-  addthis.toolbox "#toolbox", {ui_cobrand: "theSkyNet"}, {
-    url: "http://staging.theskynet.org/trophies/54?locale=en",
-    title: "hellow world",
-    templates:
-      twitter: "check out {{url}} (from @example_dot_com)"
-  }
-
-
-  #share on facebook
-  $(".facebook_share_trophy").click(->
+  $.each($(".trophy_share_toolbox"), ->
     trophy = $(this).data()
-    FB.ui
-      method: "feed"
-      link: trophy.trophyUrl
-      picture: trophy.trophyImage
-      name: "I just earned #{trophy.trophyTitle} trophy on theSkynet.org for playing my part in discovering our Universe!"
-      caption: "theSkyNet.org"
-      description: "Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
-    , (response) ->
+    TSN.trophy_share($(this).attr('id'), trophy.trophyTitle, trophy.trophyUrl)
   )
+
 
   #founding certs
   $("#founding_cert_form").bind("ajax:success", (evt, data, status, xhr) ->

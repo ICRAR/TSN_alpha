@@ -5,7 +5,10 @@ TSN = this.TSN
 TSN.trophies = new Object;
 
 
-TSN.trophies.index = () ->
-
+TSN.trophies.show = () ->
+  $.each($(".trophy_share_toolbox"), ->
+    trophy = $(this).data()
+    TSN.trophy_share($(this).attr('id'), trophy.trophyTitle, trophy.trophyUrl)
+  )
 
 

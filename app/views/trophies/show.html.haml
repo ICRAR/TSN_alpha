@@ -24,3 +24,5 @@
             = t".won_by"
             = @trophy.profiles_trophies.size
             = t(".user").pluralize(@trophy.profiles.size)
+          - if user_signed_in? && current_user.profile.has_trophy(@trophy)
+            = render 'trophies/trophys_share', :trophy => @trophy

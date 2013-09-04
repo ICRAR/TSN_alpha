@@ -1,5 +1,21 @@
 this.TSN = new Object();
+#**** share box for trophies
+TSN.trophy_share = (obj_id,trophy_name, trophy_url) ->
+  tbx = document.getElementById(obj_id)
+  svcs = [1..4]
 
+  for s of svcs
+    tbx.innerHTML += "<a class=\"addthis_button_preferred_" + s + "\"></a>"
+  tbx.innerHTML += "<a class=\"addthis_button_compact\"></a>"
+  tbx.innerHTML += "<a class=\"addthis_counter addthis_bubble_style\"></a>"
+
+  addthis.toolbox "##{obj_id}", {ui_cobrand: "theSkyNet"}, {
+    url: trophy_url,
+    title: "I just earned '#{trophy_name}' from theSkyNet for playing my part in discovering our Universe! ",
+    templates:
+      twitter: "I just earned '#{trophy_name}' from @_theSkyNet for playing my part in discovering our Universe! {{url}}"
+  }
+#**************************************
 
 
 #******* custom alert box using bootbox

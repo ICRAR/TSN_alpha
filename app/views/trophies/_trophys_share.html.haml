@@ -1,0 +1,7 @@
+.trophy_share_links
+  Share your success!
+  .trophy_share_toolbox.addthis_default_style.addthis_32x32_style{:id => "trophy_share_toolbox_#{trophy.id}",
+    :data => {:trophy_image => trophy.image.url,
+              :trophy_url => trophy_url(trophy),
+              :trophy_title => trophy.title.titlecase}}
+
