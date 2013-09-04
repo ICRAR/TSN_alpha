@@ -193,6 +193,7 @@ GEM
       foreigner (>= 0.9.1)
       rails (> 3.0.0)
     messengerjs-rails (1.3.6)
+    metamagic (2.0.5)
     mime-types (1.23)
     multi_json (1.7.4)
     multi_xml (0.5.3)
@@ -392,6 +393,7 @@ DEPENDENCIES
   mail_form
   mailboxer
   messengerjs-rails (~> 1.3.6)
+  metamagic
   mysql2 (~> 0.3.12b6)
   newrelic_rpm
   nokogiri

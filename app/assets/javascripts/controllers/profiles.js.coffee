@@ -71,6 +71,19 @@ TSN.profiles.compare = () ->
   TSN.rickshaw_graph(metrics,name,$("#chart_container"),'-24months')  if name.length != 0
 
 TSN.profiles.trophies = () ->
+  tbx = document.getElementById("toolbox")
+  svcs =
+    email: "Email"
+    print: "Print"
+    facebook: "Facebook"
+    expanded: "More"
+
+  for s of svcs
+    tbx.innerHTML += "<a class=\"addthis_button_" + s + "\">" + svcs[s] + "</a>"
+  addthis.toolbox "#toolbox", {}, {
+    url: "http://staging.theskynet.org/trophies/54?locale=en",
+    title: "hellow world"
+  }
   #share on facebook
   $(".facebook_share_trophy").click(->
     trophy = $(this).data()
