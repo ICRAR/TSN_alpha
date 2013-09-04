@@ -1,6 +1,14 @@
 module ApplicationHelper
   include GraphiteUrlModule
+  def my_meta(hsh = {})
+    title = "theSkyNet: #{hsh[:title]}"
+    desc =  hsh[:description] + "\n Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
+    meta :title => title,
+         :description => desc
+    meta [:itemprop => "name", :content => title]
+    meta [:itemprop => "description", :content => desc]
 
+  end
   def sortable(column, title = nil)
     title ||= column.titleize
     css_class = column == sort_column ? "current #{sort_direction}" : nil
