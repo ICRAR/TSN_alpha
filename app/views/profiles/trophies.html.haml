@@ -9,14 +9,14 @@
 
 -content_for(:content) do
   #content-wrap
-    .well.well-white
+    .well
       - if user_signed_in? && @profile.id == current_user.profile.id && !@profile.general_stats_item.nereus_stats_item.nil? && @profile.general_stats_item.nereus_stats_item.founding?
-        .well
+        .well.well-white
           %p Congratulations on being a Founding Member!
           #founding_cert_box
             =form_tag(send_cert_nereus_path, :method => "post", :remote => true, :id => 'founding_cert_form') do
               =submit_tag('Click here to generate your Founding member Certificate.', :class => "btn btn-tsn")
-      .well
+      .well.well-white
         %p
           -num = TrophySet.count_trophies @trophies
           ="#{@profile.name.titlecase} has been awarded #{num} trophies."
@@ -28,7 +28,7 @@
 
       -if params[:style] == 'grid'
         -@trophies.each do |set|
-          .well
+          .well.well-white
             %h3=  set.name
             -set.profile_trophies.each_slice(4) do |trophy_row|
               .row_fluid
@@ -44,7 +44,7 @@
                             = render 'trophies/trophys_share', :trophy => trophy
       -else
         -@trophies.each do |set|
-          .well
+          .well-white.well
             %h3=  set.name
             -set.profile_trophies.each do |trophy|
               .media
