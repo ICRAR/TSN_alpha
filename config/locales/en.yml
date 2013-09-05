@@ -2,6 +2,36 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  profiles:
+    new_profile_step_1:
+      header: "Welcome to theSkyNet!"
+      msg: "Thank you for signing up to theSkyNet. Before you can get started processing radio astronomy data we just need to gather a few details for your profile."
+    new_profile_step_2:
+      heading: "Excellent, next we need to setup your account to start collecting credits"
+      msg: "theSkyNet is currently running two different projects, POGS and SourceFinder. Both projects will allow you to gain credits and compete in theSkyNet leader boards. More importantly contributing to either project will help us process more radio astronomy data. Find out more details about each project below."
+      thank_you: "Thank you for joining <br /> - theSKyNet team"
+      continue: "Continue to your dashboard"
+      source_finder:
+        about: "SourceFinder is one of the two methods of data processing the we are using, it allows processing through Java."
+        exisiting: "It looks like you are all ready connected to the SourceFinder System"
+        link_to: "For more information about the SourceFinder project click here"
+        not_yet_a_member: "You account is not yet linked with the SourceFinder system."
+        enter_your_nereus_id: "If you had an account on the existing theSkyNet and it was not automaticly linked please enter yourr existing 'theSkyNet Account ID' below:"
+        new: "Would you like to join the SourceFinder project? If so simply click the button here and we will create you an account."
+        create: "Create a SourceFinder account"
+        link: "Link your account now."
+      pogs:
+        about: "theSkyNet POGS is a research project that uses Internet-connected computers to do research in astronomy. We will combine the spectral coverage of GALEX, Pan-STARRS1, and WISE to generate a multi-wavelength UV-optical-NIR galaxy atlas for the nearby Universe. We will measure physical parameters (such as stellar mass surface density, star formation rate surface density, attenuation, and first-order star formation history) on a resolved pixel-by-pixel basis using spectral energy distribution (SED) fitting techniques in a distributed computing mode. You can participate by downloading and running a free program on your computer."
+        existing: "It looks like you are all ready connected to the POGS System"
+        not_yet_a_member: "You account is not yet linked with the POGS system."
+        enter_your_details: "Enter your details below to link your account"
+        link_to: "For more information about the POGS project click here"
+        new: "Or if you don't have an existing POGS account re-enter your theSkyNet password and we will create a new POGS account for you."
+        create: "Create new POGS account"
+        email: "POGS email address:"
+        password_pogs: "POGS password:"
+        link: "Link your account now."
+        password_tsn: "theSKyNet password:"
   helpers:
 
   stats:

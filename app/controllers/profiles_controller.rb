@@ -74,7 +74,11 @@ class ProfilesController < ApplicationController
     end
 
     profile_step = @profile.new_profile_step
-    profile_step = params[:step].to_i if current_user.admin? && !params[:step].nil?
+    if profile_step == 1 && !params[:next_step].nil?
+      @profile.new_profile_step = [3,@profile.new_profile_step].max
+      @profile.save
+    end
+    profile_step = params[:step].to_i - 1 if current_user.admin? && !params[:step].nil?
 
     case profile_step
       when 0

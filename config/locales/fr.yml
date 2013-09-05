@@ -1,42 +1,123 @@
----
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
 fr:
-  leaderboards:
-    alliances: alliances
-    credit: crédit
-    full_link: "Voir les classements complets"
-    individual: personnel
-    name: nom
-    rank: Classez
-    title: Classements
+  helpers:
+
+  stats:
+    index:
+      title: "Statistiques du site"
+
+  users:
+    username: "Nom d'utilisateur"
+    hint: "Vous pouvez utiliser votre nom d'utilisateur theSkyNet, votre email ou votre email POGS."
+    sign_up:
+      header: "Aidez-nous à découvrir l'Univers."
+      msg: "Remplissez le formulaire suivant pour créer votre compte theSkyNet. Les champs marqués d'une astérisque (*) sont obligatoires."
+  contact_forms:
+    title: "Nous contacter"
+    controller:
+      thank_you: "Merci pour votre message !"
+      spam: "Désolé, ce message semble être du spam et n'a pas été envoyé."
+    create:
+      msg: "Nous vous répondrons dès que possible."
+    new:
+      heading: "Vous voulez en savoir plus sur theSkyNet ?"
+      faq: "Avez-vous lu la FAQ ?"
+      msg: "Votre question a peut-être déjà été répondue ! Si ce n'est pas le cas, complétez le formulaire ci-dessous et nous vous recontacterons prochainement."
+      submit: "Envoyer"
+      spam_hint: "Ne pas remplir ce champ !"
+  mail_form:
+    attributes:
+      contact_form:
+        email: "E-mail"
+        name: "Votre nom"
+        message: "Votre question ou commentaire"
+
+  trophies:
+    show:
+      warning: "ATTENTION !!!"
+      denied: "Accès refusé :
+vous n'avez pas encore atteint le niveau suffisant pour voir tous les détails de ce trophée."
+      belongs_to: "Appartient à"
+      won_by: "Ce trophée a été remporté par "
+      user: "utilisateur"
+
+  social:
+    FB_fav: "Devenir un fan sur Facebook"
+    twitter_follow: "Nous suivre sur Twitter"
   nav:
-    about: sur
-    contact: Contactez-nous
-    dashboard: "mon tableau de bord"
-    home: maison
-    privacy: "Déclaration de confidentialité"
-    science: sciences
+    home: "Accueil"
+    about: "À propos"
+    dashboard: "Mon tableau de bord"
+    contact: "Nous contacter"
+    science: "Science"
     sitemap: "Plan du site"
+    privacy: "Protection des données"
+    trophies: "Mes trophées"
+    my_alliance: "Mon alliance"
+    sign_up: "S'inscrire"
+    reg: "Enregistrer"
+    log_in: "Connexion"
+    logout: "Déconnexion"
+    news: "Infos"
+    forum: "Forum"
+    welcome: "Bienvenue,"
+    edit_reg: "Modifier vos données"
+    not_logged_in: "Vous n'êtes pas connecté."
+
+  science_portals:
+    controller:
+      not_found: "Désolé, pas de projet avec cet identifiant"
+      not_authed: "Désolé, vous n'êtes pas autorisé à voir ce projet"
+    index:
+      header: "Projets de recherche theSkyNet"
+      desc: "theSkyNet est composé de nombreux projets. Chacun contribue de manière unique à la recherche."
+    show:
+      all_projects: "Tous les projets"
+      leaders: "Les plus populaires"
+      links: "Liens"
   pages:
     index:
-      GFLOPS: "Giga opérations en virgule flottante par seconde"
-      TFLOPS: "Tera opérations en virgule flottante par seconde"
-      TFLOPS_hover: "Veuillez noter qu'il s'agit seulement d'une estimation"
-      contribution: "Vous êtes en train de contribuer"
-      earn: "Suivi de votre contribution et de voir comment vous vous situez par rapport à vos amis, collègues et le monde ."
-      latest_news: "dernières Nouvelles"
-      share: "Partagez votre progression sur tous vos réseaux sociaux préférés."
-      splash_header: "A vous de jouer et de faire découvrir notre univers!"
-      splash_msg: "Avoir un ordinateur? Vous voulez aider les astronomes à faire des découvertes impressionnantes et de comprendre notre Univers? Puis theSkyNet a besoin de vous!"
+      splash_header: "Aidez-nous à découvrir notre Univers !"
+      splash_msg: "Vous avez un ordinateur ? Vous voulez aider les astronomes à faire des découvertes fascinantes et à comprendre notre Univers ? Alors theSkyNet a besoin de vous !"
+      TFLOPS_hover: "Estimation"
+      TFLOPS: "Téra opérations à virgule flottante par seconde"
+      contribution: "Contribution en cours"
+      GFLOPS: "Giga opération à virgule flottante par seconde"
+      why: "Pourquoi participer ?"
+      track: "Contribuez à de la véritable recherche scientifique et aidez les chercheurs à explorer les mystères de notre Univers !"
+      earn: "Suivez et comparez votre contribution à celle de vos amis, collègues et du reste du monde !"
+      share: "Partagez votre progression sur vos réseaux sociaux favoris."
+      latest_news: "Dernières infos"
       stats:
-        boinc: "BOINC Stats"
-        current: courant
-        global: "Statistiques générales"
-        nereus: "Nereus Statistiques"
-      track: "Contribuer à la recherche scientifique réelle et aident les scientifiques à percer les mystères de notre Univers !"
-      why: "Pourquoi devrais-je m'inscrire ?"
-  social:
-    FB_fav: "Devenir Fan Facebook"
-    twitter_follow: "Suivez-nous sur Twitter"
+        current: "Actuelles"
+        global: "Statistiques globales"
+        boinc: "Statistiques POGS"
+        nereus: "Statistiques SourceFinder"
+      json:
+        welcome: "Bienvenue sur l'interface de programmation JSON de theSkyNet"
+  leaderboards:
+    title: "Tête du classement"
+    individual: "Individuel"
+    individual_rank: "Mon classement"
+    alliances: "Alliances"
+    rank: "Classement"
+    name: "Nom"
+    credit: "Crédit"
+    full_link: "Voir tout le classement"
+  language_select:
+    language: "Langue"
+    english: "anglais"
+    french: "français"
+  announcement:
+    view: "Lire"
+    hide: "Réduire"
+    dismiss: "Ignorer"
   js:
     stats:
       latest: "DERNIÈRES STATISTIQUES"
+  admin:
+    actions:
+      publish_news:
+        menu: "Publier"

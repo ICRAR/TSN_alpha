@@ -1,10 +1,10 @@
 - nereus = @profile.general_stats_item.nereus_stats_item
+= link_to science_portal_path(:id => "SourceFinder") do
+  %h2.pagination-centered
+    =image_tag('sub_brands/SourceFinder-Small.png')
 -if nereus == nil
   = render 'profiles/nereus_form'
 -else
-  = link_to science_portal_path(:id => "SourceFinder") do
-    %h2.pagination-centered
-      =image_tag('sub_brands/SourceFinder-Small.png')
   .row-fluid
     .span11.offset1
       %dl.dl-horizontal
