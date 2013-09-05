@@ -55,13 +55,6 @@ class Ability
     can :dismiss, News
     can :send_cert, NereusStatsItem
   end
-   #mod users can edit pages and science portals that the are a leader on
-   if user.is_mod?
-     can :manage, Page
-     can :manage, SciencePortal
-     can :access, :rails_admin
-     can :dashboard
-   end
    #admin users can do everything :)
    if user.is_admin?
       can :manage, :all

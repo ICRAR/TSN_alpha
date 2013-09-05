@@ -167,7 +167,7 @@ RailsAdmin.config do |config|
   # end
 
   config.attr_accessible_role  { :admin }
-  config.authorize_with :cancan
+  config.authorize_with :cancan, AdminAbility
 
   config.actions do
     # root actions

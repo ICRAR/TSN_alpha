@@ -65,12 +65,13 @@ class PogsTeam < BoincPogsModel
               member.profile_id = profile.id
               member.join_date = Time.at(m.timestamp)
               member.start_credit = m.total_credit
-              member.start_credit ||= 0
-              member.leave_credit = profile.general_stats_item.total_credit
               #if timestamp is within 1 day and the users local credit is higher than POGS credit use local credit
               if m.timestamp > 1.day.ago.to_i &&  profile.general_stats_item.total_credit.to_i > m.total_credit
-                member.leave_credit = profile.general_stats_item.total_credit
+                member.start_credit = profile.general_stats_item.total_credit
               end
+              member.start_credit ||= 0
+              member.leave_credit = profile.general_stats_item.total_credit
+
               member.leave_credit ||= 0
               member.leave_date = nil
               member.save
