@@ -667,6 +667,30 @@ startedbutton.png: startedbutton-419eecd2ba8189fa7d4b08c8590746d8.png
 startedbutton/index.png: startedbutton-419eecd2ba8189fa7d4b08c8590746d8.png
 startedbutton.png.LCK: startedbutton.png-f6e897f42ba14b28f985c1cb8fe73820.LCK
 startedbutton/index.png.LCK: startedbutton.png-f6e897f42ba14b28f985c1cb8fe73820.LCK
+sub_brands/POGS Small.eps: sub_brands/POGS Small-9a5207525da247b8b5bf9fafabd35721.eps
+sub_brands/POGS Small/index.eps: sub_brands/POGS Small-9a5207525da247b8b5bf9fafabd35721.eps
+sub_brands/POGS-Small.jpg: sub_brands/POGS-Small-d5a0b1442990449e44242538e2f27523.jpg
+sub_brands/POGS-Small/index.jpg: sub_brands/POGS-Small-d5a0b1442990449e44242538e2f27523.jpg
+sub_brands/POGS-Small.png: sub_brands/POGS-Small-8cb34b6584ee50186fc575fda240db42.png
+sub_brands/POGS-Small/index.png: sub_brands/POGS-Small-8cb34b6584ee50186fc575fda240db42.png
+sub_brands/POGS.eps: sub_brands/POGS-2bec3c87d194ac2b90fab19624c1b167.eps
+sub_brands/POGS/index.eps: sub_brands/POGS-2bec3c87d194ac2b90fab19624c1b167.eps
+sub_brands/POGS.jpg: sub_brands/POGS-49a317d066ad2113d13380d49ba5967a.jpg
+sub_brands/POGS/index.jpg: sub_brands/POGS-49a317d066ad2113d13380d49ba5967a.jpg
+sub_brands/POGS.png: sub_brands/POGS-d78eb7dfe3e3c1b82868002aeec8e494.png
+sub_brands/POGS/index.png: sub_brands/POGS-d78eb7dfe3e3c1b82868002aeec8e494.png
+sub_brands/SourceFinder Small.eps: sub_brands/SourceFinder Small-9790c048016843f51280370bd30c1643.eps
+sub_brands/SourceFinder Small/index.eps: sub_brands/SourceFinder Small-9790c048016843f51280370bd30c1643.eps
+sub_brands/SourceFinder-Small.jpg: sub_brands/SourceFinder-Small-683444a050e4dc1c6c2835ff0ce984d6.jpg
+sub_brands/SourceFinder-Small/index.jpg: sub_brands/SourceFinder-Small-683444a050e4dc1c6c2835ff0ce984d6.jpg
+sub_brands/SourceFinder-Small.png: sub_brands/SourceFinder-Small-9aee08a79a1b50119c2a2432eae5e09d.png
+sub_brands/SourceFinder-Small/index.png: sub_brands/SourceFinder-Small-9aee08a79a1b50119c2a2432eae5e09d.png
+sub_brands/SourceFinder.eps: sub_brands/SourceFinder-349ebfbe7312a95c1249f97f8492a15e.eps
+sub_brands/SourceFinder/index.eps: sub_brands/SourceFinder-349ebfbe7312a95c1249f97f8492a15e.eps
+sub_brands/SourceFinder.jpg: sub_brands/SourceFinder-3f68aa095f25d98f656b634ce36929e4.jpg
+sub_brands/SourceFinder/index.jpg: sub_brands/SourceFinder-3f68aa095f25d98f656b634ce36929e4.jpg
+sub_brands/SourceFinder.png: sub_brands/SourceFinder-0b2fd0f8d0fbca08c621d8b8d30adbbb.png
+sub_brands/SourceFinder/index.png: sub_brands/SourceFinder-0b2fd0f8d0fbca08c621d8b8d30adbbb.png
 subnavon.png: subnavon-e8de4d48cc9f55656759badb0aac3849.png
 subnavon/index.png: subnavon-e8de4d48cc9f55656759badb0aac3849.png
 telescope.png: telescope-2aaac3d54003c5c088dfe5f41b7f0bbe.png
