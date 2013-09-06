@@ -35,7 +35,7 @@ class PogsTeam < BoincPogsModel
     leader_boinc_item = BoincStatsItem.where{boinc_id == my{leader_boinc_id}}.first
     unless leader_boinc_item.try(:general_stats_item).nil?
       profile = leader_boinc_item.general_stats_item.profile
-      local.leader = profile unless local.leader_id == profile.id
+      local.leader = profile unless (local.leader_id == profile.id) || !profile.alliance_leader_id.nil?
     end
   end
 
