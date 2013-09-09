@@ -6,4 +6,4 @@ Linguistics.use( :en )
 APP_CONFIG = YAML.load_file("#{Rails.root}/config/custom_config.yml")[Rails.env]
 
 # Initialize the rails application
-TSNAlpha::Application.initialize!
+Tsn::Application.initialize!
