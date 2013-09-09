@@ -57,13 +57,13 @@ vous n'avez pas encore atteint le niveau suffisant pour voir tous les détails d
     trophies: "Mes trophées"
     my_alliance: "Mon alliance"
     sign_up: "S'inscrire"
-    reg: "Enregistrer"
+    reg: "S'inscrire"
     log_in: "Connexion"
     logout: "Déconnexion"
     news: "Infos"
     forum: "Forum"
     welcome: "Bienvenue,"
-    edit_reg: "Modifier vos données"
+    edit_reg: "Modifier vos renseignements"
     not_logged_in: "Vous n'êtes pas connecté."
 
   science_portals:
@@ -75,7 +75,7 @@ vous n'avez pas encore atteint le niveau suffisant pour voir tous les détails d
       desc: "theSkyNet est composé de nombreux projets. Chacun contribue de manière unique à la recherche."
     show:
       all_projects: "Tous les projets"
-      leaders: "Les plus populaires"
+      leaders: "Responsable(s)"
       links: "Liens"
   pages:
     index:
@@ -104,7 +104,7 @@ vous n'avez pas encore atteint le niveau suffisant pour voir tous les détails d
     alliances: "Alliances"
     rank: "Classement"
     name: "Nom"
-    credit: "Crédit"
+    credit: "Crédits"
     full_link: "Voir tout le classement"
   language_select:
     language: "Langue"
@@ -112,11 +112,11 @@ vous n'avez pas encore atteint le niveau suffisant pour voir tous les détails d
     french: "français"
   announcement:
     view: "Lire"
-    hide: "Réduire"
-    dismiss: "Ignorer"
+    hide: "Ignorer"
+    dismiss: "Effacer"
   js:
     stats:
-      latest: "DERNIÈRES STATISTIQUES"
+      latest: "DERNIÈRES STATS"
   admin:
     actions:
       publish_news:

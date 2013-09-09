@@ -40,7 +40,7 @@ en:
 
   users:
     username: "Username"
-    hint: "You can login with either your theSkynet username or email or your POGS email."
+    hint: "You can login with either your theSkyNet username, your theSkyNet email or your POGS email."
     sign_up:
       header: "Help us discover the universe."
       msg: "Fill in the following form to create your account on theSkyNet. Please note that fields containing an asterisk (*) are required for this registration."
@@ -54,7 +54,7 @@ en:
     new:
       heading: "Want to find out more about theSkyNet?"
       faq: "Have you read the FAQs?"
-      msg: "The answer to your question may already be answered! If it isn't, complete the form below and we will get back to you promptly."
+      msg: "Your question may already have be answered! If it isn't, complete the form below and we will get back to you promptly."
       submit: "Send message"
       spam_hint: "Leave this field blank!"
   mail_form:
