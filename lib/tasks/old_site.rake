@@ -40,7 +40,7 @@ namespace :old_site do
     end
     print "finished user import, we imported #{users_imported} new users\n"
     #************ add bonus credit to all users ****************
-
+=begin
     update_bonus_credit(remote_client)
     fix_credit_with_bonus(remote_client)
 
@@ -122,7 +122,7 @@ namespace :old_site do
     create_trophies(remote_client)
     Rake::Task["stats:update_trophy"].execute
 
-
+=end
   end
 end
 =begin
