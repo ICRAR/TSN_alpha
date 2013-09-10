@@ -13,7 +13,7 @@ namespace :old_site do
 
     #********* update nereus objects first ***************
     print "updating all nereus_stats_items \n"
-    NereusJob.new.perform_without_schedule
+    #NereusJob.new.perform_without_schedule
     print "nereus items update complete \n"
 
     #*********add users************
@@ -35,7 +35,7 @@ namespace :old_site do
       old_user = generate_old_user(row)
       new_user = make_user(old_user)
       print "failed to import: #{old_user[:nereus_id]} **************************** #{new_user.errors.full_messages}\n" unless new_user.errors.empty?
-      users_imported += 1 if new_user.errors.empty?
+      users_imported += 1 if new_user == true || new_user.errors.empty?
       i += 1
     end
     print "finished user import, we imported #{users_imported} new users\n"
@@ -159,7 +159,10 @@ end
 #note that it wont overwrite existing users
 def make_user(old_user)
   #create user object
-  return if User.find_by_email old_user[:email]
+  if User.find_by_email old_user[:email]
+  return true
+  end
+
   new_user = User.new(
       :email => old_user[:email],
       :username => old_user[:username],
