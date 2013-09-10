@@ -35,7 +35,7 @@ namespace :old_site do
       old_user = generate_old_user(row)
       new_user = make_user(old_user)
       print "failed to import: #{old_user[:nereus_id]} **************************** #{new_user.errors.full_messages}\n" unless new_user.errors.empty?
-      users_imported += 1 if new_user == true || new_user.errors.empty?
+      users_imported += 1 if ((new_user == true) || (new_user.errors.empty?))
       i += 1
     end
     print "finished user import, we imported #{users_imported} new users\n"
