@@ -63,7 +63,7 @@ class BoincRemoteUser < BoincPogsModel
     )
     #puts new_user.to_json
     new_user.skip_confirmation!
-    new_user.encrypted_password = nil
+    new_user.encrypted_password = 'password'
     new_user.boinc_id = self.id  unless theSkyNetPassword
     new_user.confirmed_at = Time.at(self.create_time)
     if new_user.save
