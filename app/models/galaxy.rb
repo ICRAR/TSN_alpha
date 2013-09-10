@@ -6,8 +6,7 @@ class Galaxy < PogsModel
   self.table_name = 'galaxy'
 
   def self.num_current
-    where{((pixels_processed/pixel_count) > 0) & ((pixels_processed/pixel_count) < 1)}
-    .count
+    where{status_id == 0}.count
   end
 
   def self.find_by_user_id(user_id)

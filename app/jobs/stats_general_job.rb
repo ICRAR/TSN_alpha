@@ -73,6 +73,10 @@ class StatsGeneralJob
         galaxies_running = Galaxy.num_current
         SiteStat.set("galaxies_running",galaxies_running)
 
+        #number of galaxies currently being processed
+        galaxies_queued = GalaxyRegister.where{create_time == nil}.count
+        SiteStat.set("galaxies_queued",galaxies_queued)
+
 
       }
     end
