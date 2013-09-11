@@ -66,3 +66,40 @@ TSN.pages.index = () ->
     news_timer.play()
   )
 
+TSN.pages.show = () ->
+  $("#download_pop_up strong").each(() ->
+    $(this).text(window.rails.nereus_id) if $(this).text() == "nereus_id"
+  )
+
+  $('#installer_windows_32').click( ->
+    event.preventDefault()
+    url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_32-0.2.exe"
+    download_popup(url)
+  )
+  $('#installer_windows_32_silent').click( ->
+    event.preventDefault()
+    url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_32_Silent-0.2.exe"
+    download_popup(url)
+  )
+  $('#installer_windows_64').click( ->
+    event.preventDefault()
+    url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_64-0.2.exe"
+    download_popup(url)
+  )
+  $('#installer_windows_64_silent').click( ->
+    event.preventDefault()
+    url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_64_Silent-0.2.exe"
+    download_popup(url)
+  )
+  $('#installer_mac').click( ->
+    event.preventDefault()
+    url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_Mac.zip"
+    download_popup(url)
+  )
+
+download_popup = (url) ->
+  text = $("#download_pop_up").html() + '<div style="text-align:center"><a href="'+ url + '" class="btn btn-success"> Download</a><a href="#" class="btn btn-tsn">Close</a></div>'
+  bootbox.dialog text
+  $(".modal-body a").click( ->
+   bootbox.hideAll()
+  )

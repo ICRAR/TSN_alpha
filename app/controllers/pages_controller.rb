@@ -16,6 +16,7 @@ class PagesController < ApplicationController
       @content = @page.content.html_safe
     end
     render :show
+
   end
   def index
     $statsd.increment 'index.view'
