@@ -42,4 +42,11 @@ namespace :update_profiles do
       i += 1
     end
   end
+  desc "fix broken current alliance membership"
+  task :fix_membership => :enviroment do
+    AllianceMembers.where{(leave_date == nil) & (profile.alliance_id == nil)}.joins{profile}.each do |m|
+      m.profile.alliance = m.alliance
+      m.profile.save
+    end
+  end
 end
