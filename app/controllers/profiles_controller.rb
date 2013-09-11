@@ -111,7 +111,12 @@ class ProfilesController < ApplicationController
       @trophy_ids = nil
     end
     @profile = Profile.find(params[:id])
-    @trophies = @profile.trophies_by_set
+    if params[:style] == "credit"
+      @trophies = @profile.trophies.order{credits.desc}
+    else
+      @trophies = @profile.trophies_by_set
+    end
+
 
   end
 
