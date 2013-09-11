@@ -159,7 +159,7 @@ end
 #note that it wont overwrite existing users
 def make_user(old_user)
   #create user object
-  if User.find_by_email old_user[:email]
+  if User.find_by_email( old_user[:email] ) || User.find_by_username( old_user[:username] )
   return true
   end
 
