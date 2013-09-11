@@ -537,6 +537,8 @@ nereusv_logo.png: nereusv_logo-520779f8d08f58f0213b6c970c43ca20.png
 nereusv_logo/index.png: nereusv_logo-520779f8d08f58f0213b6c970c43ca20.png
 nereusv_logo_small.png: nereusv_logo_small-17df81584f227be6fcadd069979df19c.png
 nereusv_logo_small/index.png: nereusv_logo_small-17df81584f227be6fcadd069979df19c.png
+new_bg.jpg: new_bg-7034222552f9505d255fede4668390f2.jpg
+new_bg/index.jpg: new_bg-7034222552f9505d255fede4668390f2.jpg
 newsbg.jpg: newsbg-7c8334df3b0ea3ccd7b7f4609f5dc6fd.jpg
 newsbg/index.jpg: newsbg-7c8334df3b0ea3ccd7b7f4609f5dc6fd.jpg
 newsbg.jpg.LCK: newsbg.jpg-f6e897f42ba14b28f985c1cb8fe73820.LCK
@@ -849,8 +851,8 @@ ckeditor/config.js: ckeditor/config-c325c7030981b2339e4f98d40df85552.js
 ckeditor/config/index.js: ckeditor/config-c325c7030981b2339e4f98d40df85552.js
 non_includes/deployJava.js: non_includes/deployJava-71b153b8982c7914d1dce6b5521107d6.js
 non_includes/deployJava/index.js: non_includes/deployJava-71b153b8982c7914d1dce6b5521107d6.js
-application.css: application-c603330cc89b814e7e36169e6dbc35b8.css
-application/index.css: application-c603330cc89b814e7e36169e6dbc35b8.css
+application.css: application-111c1971c0142e980eec47b1f24f5e3a.css
+application/index.css: application-111c1971c0142e980eec47b1f24f5e3a.css
 blank.gif: blank-43a4c178cf07ee66c58ad891629374ed.gif
 blank/index.gif: blank-43a4c178cf07ee66c58ad891629374ed.gif
 fancybox_buttons.png: fancybox_buttons-2daeb91b07cb116c5e6db6e04d734052.png
