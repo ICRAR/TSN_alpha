@@ -191,27 +191,27 @@ class NereusJob
       #update active status + check network usage
       #also updates active status in remote db as well
       bench.report('update active status') {
-        #Upsert.batch(remote_client,'accountstatus') do |upsert|
-        nereus_update_hash.each do |item|
-          id = item[0].to_i
-          update_row = item[1] #fix for using hashes as array
-          old_row = nereus_all_hash[item[0].to_i] #from local db
-          if old_row == nil
-            active = 0
-          else
-            active = (( old_row['network_limit'].to_i == 0 || (update_row[:monthly_network_usage].to_i < old_row['network_limit'].to_i))  && old_row['paused'].to_i == 0) ? 1 : 0
-          end
-          total_active += active
-                               #only update old db if active status has changed
-          if active != update_row[:active]
-            upsert.row({:skynetID => item[0]}, :active => active)
-          end
-          nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
-          nereus_update_hash[id][:active] = active
-          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.active",active)
+        Upsert.batch(remote_client,'accountstatus') do |upsert|
+          nereus_update_hash.each do |item|
+            id = item[0].to_i
+            update_row = item[1] #fix for using hashes as array
+            old_row = nereus_all_hash[item[0].to_i] #from local db
+            if old_row == nil
+              active = 0
+            else
+              active = (( old_row['network_limit'].to_i == 0 || (update_row[:monthly_network_usage].to_i < old_row['network_limit'].to_i))  && old_row['paused'].to_i == 0) ? 1 : 0
+            end
+            total_active += active
+                                 #only update old db if active status has changed
+            if active != update_row[:active]
+              upsert.row({:skynetID => item[0]}, :active => active)
+            end
+            nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
+            nereus_update_hash[id][:active] = active
+            statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.active",active)
 
+          end
         end
-        #end
         #send totals to stats
         statsd_batch.gauge("nereus.stats.total_active",total_active)
       }
