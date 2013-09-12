@@ -40,7 +40,7 @@ class AllianceMembers < ActiveRecord::Base
     am = AllianceMembers.find id
 
     #send to member
-    subject = "Welcome to the allinace, #{am.alliance.name}"
+    subject = "Welcome to the alliance, #{am.alliance.name}"
     link_alliance = ActionController::Base.helpers.link_to(am.alliance.name, Rails.application.routes.url_helpers.alliance_path(am.alliance))
     body = "Welcome #{am.profile.name} \nThank you for joining the #{link_alliance} alliance. \n Happy Computing! \n  - theSkyNet"
     am.profile.notify(subject, body, am)

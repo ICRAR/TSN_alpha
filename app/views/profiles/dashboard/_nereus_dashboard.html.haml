@@ -42,5 +42,6 @@
         %p
           %span.label.label-warning Note:
           Due to technical difficulties with the test site, the pause and resume functionality has been temporarily disabled.
+  %p= link_to "Or download the background installer here", page_path(:slug => 'download')
   %p.muted
     %small= "Last updated: " + nereus.last_checked_time.to_s

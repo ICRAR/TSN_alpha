@@ -2,6 +2,6 @@
   %a.pull-left=image_tag  item.image.url(:thumb), :class=>"media-object"
   .media-body
     .media-heading=link_to item.title, item
-    .published_date= "Published on " + item.published_time.to_s
+    .published_date= "Published on " + item.published_time.strftime("#{item.published_time.day.ordinalize} of %B, %Y")
     .short= item.short
     =  link_to "View full article", item

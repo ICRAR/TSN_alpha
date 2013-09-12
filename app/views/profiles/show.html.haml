@@ -48,7 +48,7 @@
           .row-fluid
             .span12.well.well-white
               = link_to science_portal_path(:id => "SourceFinder") do
-                %h2.pagination-centered= "#{@profile.name} has contirbuted to:"
+                %h2.pagination-centered= "#{@profile.name} has contributed to:"
                 =image_tag('sub_brands/SourceFinder-Small.png')
               - nereus = @profile.general_stats_item.nereus_stats_item
               %dl.dl-horizontal
@@ -72,7 +72,7 @@
             .span12.well.well-white
               -boinc = @profile.general_stats_item.boinc_stats_item
               =link_to science_portal_path(:id => 'POGS') do
-                %h2.pagination-centered= "#{@profile.name} has contirbuted to:"
+                %h2.pagination-centered= "#{@profile.name} has contributed to:"
                 =image_tag('sub_brands/POGS-Small.png')
               .row-fluid
                 .span8.offset1

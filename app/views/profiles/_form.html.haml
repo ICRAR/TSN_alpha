@@ -12,8 +12,7 @@
         - @profile.errors.full_messages.each do |msg|
           %li= msg
   .field
-    = f.label :nickname
-    , this name will be used in place of your full name. (optional)
+    = f.label :nickname, "Nickname, this name will be used in on the leaderboards. (optional)"
     %br/
     = f.text_field :nickname
     = f.label(:use_full_name, "Display full name on leaderboards.")
@@ -32,7 +31,7 @@
   .actions
     = f.submit
 - if @profile.general_stats_item.nereus_stats_item
-  %h2 Edit my Nereus settings
+  %h2 Edit my SourceFinder settings
   = form_for(@profile.general_stats_item.nereus_stats_item, :as => 'nereus_stats_item', :url => update_nereus_settings_path, :html => { :method => :put }) do |f|
     .field
       = f.label :network_limit_mb
@@ -41,3 +40,7 @@
       = f.text_field :network_limit_mb
     .actions
       = f.submit
+  %h2 Edit my POGS settings
+  %p
+    To edit your POGS (BOINC) settings head to
+    =link_to "http://pogs.theskynet.org/pogs/home", "http://pogs.theskynet.org/pogs/home"

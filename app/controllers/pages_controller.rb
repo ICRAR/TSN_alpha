@@ -21,7 +21,7 @@ class PagesController < ApplicationController
   def index
     $statsd.increment 'index.view'
     @page =  Page.find_by_slug('index')
-    @news = News.published.all
+    @news = News.published.order{published_time.desc}.limit(5)
     @TFLOPSStat = SiteStat.get('global_TFLOPS')
     @feed = SiteStat.for_feed
     @top_profiles = Profile.for_leader_boards_small.order("rank asc").limit(10)
