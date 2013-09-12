@@ -204,7 +204,7 @@ class NereusJob
           total_active += active
                                #only update old db if active status has changed
           if active != update_row[:active]
-            #upsert.row({:skynetID => item[0]}, :active => active)
+            upsert.row({:skynetID => item[0]}, :active => active)
           end
           nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
           nereus_update_hash[id][:active] = active

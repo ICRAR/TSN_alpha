@@ -38,10 +38,13 @@
       .media-body
         %h4#startHeader.media-heading
           %a{:href => "#",:onClick=>"run(101032);"}= nereus.nereus_control_details[:heading]
-        %p#startText= nereus.nereus_control_details[:desc].html_safe
-        %p
-          %span.label.label-warning Note:
-          Due to technical difficulties with the test site, the pause and resume functionality has been temporarily disabled.
+        -if nereus.nereus_control_details[:link] == "Pause"
+          %p#startText= link_to (nereus.nereus_control_details[:desc].html_safe), pause_nereus_path
+        -elsif nereus.nereus_control_details[:link] == "Resume"
+          %p#startText= link_to (nereus.nereus_control_details[:desc].html_safe), resume_nereus_path
+        -else
+          %p#startText= (nereus.nereus_control_details[:desc].html_safe)
+
   %p= link_to "Or download the background installer here", page_path(:slug => 'download')
   %p.muted
     %small= "Last updated: " + nereus.last_checked_time.to_s

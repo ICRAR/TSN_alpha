@@ -48,12 +48,14 @@ class NereusStatsItem < ActiveRecord::Base
     all = {
       :pausing =>{
         :heading => "Your contribution is currently paused.",
-        :desc =>  '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.resume();">Click here</a> to resume your contribution.<br />Your client(s) will continue to process for a few minutes before ceasing activity.',
+        :desc =>  'Click here to resume your contribution.<br />Your client(s) will continue to process for a few minutes before ceasing activity.',
+        :link => 'Resume',
         :image => 'button_disable.png',
         :image_alt => 'theSkyNet is paused',
       },
       :running =>{:heading => "You are now contributing to theSkyNet.",
-                  :desc =>   '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.pause();">Click here</a> to pause your contribution.<br />Why not tell your friends on facebook and build an alliance?',
+                  :desc =>   'Click here to pause your contribution.<br />Why not tell your friends on facebook and build an alliance?',
+                  :link => 'Pause',
                   :image => 'startedbutton.png',
                   :image_alt => 'theSkyNet is now active',
       },
@@ -63,22 +65,26 @@ class NereusStatsItem < ActiveRecord::Base
                 :image_alt => 'Start theSkyNet',
       },
       :paused =>{:heading => "Your account is currently inactive.",
-                 :desc =>  'You have paused your account, so you wont be processing any more data for now.<br /><a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.resume();">Click here</a> to unpause your account.',
+                 :desc =>  'You have paused your account, so you wont be processing any more data for now.<br />Click here to unpause your account.',
+                 :link => 'Resume',
                  :image => 'button_disable.png',
                  :image_alt => "theSkyNet is paused",
       },
       :network_limited =>{:heading => "Your account is currently inactive.",
-                          :desc =>  'You have reached your <a href="/account/manage">network limit</a>, so you wont process any more data until next month.<br />If you wish to resume contributing, either increase or disable your network limit.',
+                          :desc =>  'You have reached your network limit, so you wont process any more data until next month.<br />If you wish to resume contributing, either increase or disable your network limit.',
+                          :link => 'None',
                           :image => 'button_disable.png',
                           :image_alt => "theSkyNet is paused",
       },
       :resuming =>{:heading => "You are now contributing to theSkyNet.",
-                   :desc =>  '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.pause();">Click here</a> to pause your contribution.<br />Your client(s) may take a few minutes before beginning activity.<br />Why not tell your friends on facebook and build an alliance?',
+                   :desc =>  'Click here to pause your contribution.<br />Your client(s) may take a few minutes before beginning activity.<br />Why not tell your friends on facebook and build an alliance?',
+                   :link => 'Pause',
                    :image => 'startedbutton.png',
                    :image_alt => 'theSkyNet is now active',
       },
       :unknown =>{:heading => "Your account is currently inactive.",
-                  :desc =>  '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.resume();">Click here</a> to unpause your account.',
+                  :desc =>  'Click here to unpause your account.',
+                  :link => 'Resume',
                   :image => 'button_disable.png',
                   :image_alt => "theSkyNet is paused",
       },
@@ -93,7 +99,7 @@ class NereusStatsItem < ActiveRecord::Base
     query = "UPDATE accountstatus
                           SET time = #{(Time.now.to_f*1000).to_i}, active = #{active}
                           WHERE skynetID = #{nereus_id}"
-    #remote_client.query(query)
+    remote_client.query(query)
   end
 
   #queues status update
