@@ -96,10 +96,8 @@ class NereusStatsItem < ActiveRecord::Base
     self.active = (!self.limited?  && paused == 0) ? 1 : 0
     self.save
     remote_client =  NereusStatsItem.connect_to_backend_db
-    query = "UPDATE accountstatus
-                          SET time = #{(Time.now.to_f*1000).to_i}, active = #{active}
-                          WHERE skynetID = #{nereus_id}"
-    remote_client.query(query)
+    query = "UPDATE accountstatus SET time = #{(Time.now.to_f*1000).to_f}, active = #{active} WHERE skynetID = #{nereus_id}"
+    #remote_client.query(query)
   end
 
   #queues status update
