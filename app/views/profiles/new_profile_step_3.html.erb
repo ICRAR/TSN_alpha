@@ -13,20 +13,55 @@
             <div class="inner-boundary">
                 <div id="content-inner">
                     <h2>Welcome to the NEW theSkyNet webpage!</h2>
-                    <p>You will find all the same features as the old website, plus some exciting new ones</p>
-                    <p>First up, we have integrated the POGS BOINC trail into theSkyNet.</p>
+                    <p>You might notice something a little different about theSkyNet today - we have a whole new website for you. On the face of it it might seem like theSkyNet Transofrm 2 (T2) is basically the same as our old website, it looks similar and does all the things that the old one did, but it&#39;s been completely rebuilt from the ground up, giving us some amazing capabilities for future development (at a much faster pace than in the past two years) and more control over little day to day things.</p>
+
+                    <p>The major addition to the new site is that our test project on BOINC, theSkyNet POGS, is now fully integrated - that includes credits, trophies and the ability to join in easily from within the site. We hope you&#39;ll give it a go either instead of, or together with, theSkyNet SourceFinder (theSkyNet that launches in your browser, based on the Nereus software.)</p>
+
+                    <p>As for the rest of the site, there are two main differences you might notice right away:</p>
+
+                    <p><strong>1. Your credits will have increased by a factor of 10.</strong></p>
+
+                    <p style="margin-left:40px">TheSkyNet T2 incorporates our BOINC project, theSkyNet POGS, into the site for the first time since it began testing late last year. To combine the BOINC credit systems with theSkyNet SourceFinder&#39;s we needed to work out a conversion factor that would make credit earnt between the two systems equivalent - it turned out this was quite simple, a factor of ten. This multiplication was applied to all credits earnt on theSkyNet SourceFinder (based on the Nereus technology).</p>
+
+                    <p><strong>2. Your rank in the ladders probably will have changed. </strong></p>
+
+                    <p style="margin-left:40px">TheSkyNet POGS has been in testing on BOINC for almost a year and has grown larger than we thought a test ever would. So, combining the two groups together added over 3,000 theSkyNet members to the ladders, most of which have been processing theSkyNet data in testing for quite a few months.&nbsp;</p>
+
                     <% if @profile.general_stats_item.boinc_stats_item == nil %>
-                        <%= render 'boinc_forms' %>
+                      <%= render 'boinc_forms' %>
                     <% else %>
-                        <p>We detected that you already had an account with POGS@BOINC and have connected this to you theSkyNet Account.</p>
+                      <p>We detected that you already had an account with POGS@BOINC and have connected this to you theSkyNet Account.</p>
                     <% end %>
-                    <p>Some Key Points to note about the new site.
-                        <ul>
-                            <li>theSkyNet now consists of two subsystems. Nereus (the old system) and Boinc.</li>
-                            <li>Your old credits from Nereus are now worth 10 times as much :) congratulations!</li>
-                            <li>All statistics such as total credit and rank are updated every hour.</li>
-                        </ul>
-                    </p>
+
+                    <p><strong>Some of the new features we&#39;ve added:</strong></p>
+
+                    <ul>
+                        <li>Graphs, so many graphs.
+                            <ul>
+                                <li>On the home page, and on your dashboard there are now graphs of your contribution, from the date you joined until now. Want a new graph? Tell us in the comments and we&#39;ll try and make it happen.</li>
+                            </ul>
+                        </li>
+                        <li>An API
+                            <ul>
+                                <li>Now our members can access their stats in a simple way that&#39;s useable in other applications. TheSkyNet helper Daniel Carrion from RMIT has already developed a Stellarium plugin (watch out for it on Monday) and is developing an iPhone app using the API. Alex, our programmer, will write up some more details about the API in coming weeks.</li>
+                            </ul>
+                        </li>
+                        <li>New trophies for all, and new ways to award trophies.</li>
+                        <li>You might notice that the trophies you&#39;ve come to know and love are now called &#39;classic&#39; trophies. We&#39;re retiring these trophies today - which means that if you weren&#39;t a member on the 12th of Septmeber 2013, then you can never win the classic trophies. If you are a current member then you can continue to work towards these trophies, as well as the suite of new ones we&#39;ve added. We also have new ways to award trophies - such as by segemnt of data processed, how many credits you earn in a day and many other things, so some trophies might be a bit of a mystery how you wont them. Others will be more obvious!</li>
+                    </ul>
+
+                    <p>Upcoming features:</p>
+
+                    <ul>
+                        <li>As we&#39;ve already mentioned an iPhone app is upcoming, and on Monday we&#39;ll be releasing a plugin for Stellarium that will let you see where int eh sky your POGS galaxies are.</li>
+                        <li>We plan on running mini challenges for period of time, with prizes and trophies specific to the challenges. Both team and indidivual challenges will be on offer.</li>
+                    </ul>
+
+                    <p>There&#39;s lots more to come everyone, but in the meantime we hope you enjoy the new site. As always, we&#39;d love to hear from you if you find a bug or have a suggestion, so please fel free to <a href="/contact_form/new">contact us</a>!</p>
+
+                    <p>From theSkyNet team.</p>
+
+
                     <p><%= link_to "Click here to head to your new dashboard page.", my_profile_path %></p>
 
                 </div>
