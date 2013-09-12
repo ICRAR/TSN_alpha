@@ -49,4 +49,19 @@ namespace :update_profiles do
       m.profile.save
     end
   end
+
+  desc "fix alliance founded on dates"
+  task :fix_alliance_founded => :enviroment do
+    #connect to old front end db
+    remote_client = Mysql2::Client.new(:host => APP_CONFIG['nereus_host_front_end'], :username => APP_CONFIG['nereus_username_front_end'], :database => APP_CONFIG['nereus_database_front_end'], :password => APP_CONFIG['nereus_password_front_end'])
+    results = remote_client.query("SELECT * FROM `Team`", :cache_rows => false)
+    results.each do |row|
+      old_id = row['id'].to_i
+      new_alliance = Alliance.where{(alliances.old_id == my{old_id})}.first
+      unless new_alliance.nil?
+        new_alliance.created_at = row['creationDate']
+        new_alliance.save
+      end
+    end
+  end
 end

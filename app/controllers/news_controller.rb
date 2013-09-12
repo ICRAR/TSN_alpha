@@ -2,7 +2,7 @@ class NewsController < ApplicationController
   authorize_resource
   def show
     @news_item = News.published.where(:id => params[:id]).first
-    if @new_item.nil?
+    if @news_item.nil?
       redirect_to root_url, notice: "Sorry we couldn't find that item"
     else
       render :show
