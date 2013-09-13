@@ -73,24 +73,25 @@ class BoincJob
           profiles.each do |profile|
             team_id = ids_team_hash[profile.boinc_id]
             alliance = alliances_by_teamid[team_id]
+            unless alliance.nil?
+              member = AllianceMembers.new
+              member.alliance_id = alliance.id
+              member.profile_id = profile.id
+              member.join_date = alliance.created_at
+              member.start_credit = 0
+              member.leave_credit = profile.total_credit
+              member.leave_credit ||= 0
+              member.leave_date = nil
+              member.save
 
-            member = AllianceMembers.new
-            member.alliance_id = alliance.id
-            member.profile_id = profile.id
-            member.join_date = alliance.created_at
-            member.start_credit = 0
-            member.leave_credit = profile.total_credit
-            member.leave_credit ||= 0
-            member.leave_date = nil
-            member.save
-
-            if profile.alliance.nil?
-              profile.alliance = alliance
-              profile.save
-            else
-              profile.leave_alliance
-              profile.alliance = alliance
-              profile.save
+              if profile.alliance.nil?
+                profile.alliance = alliance
+                profile.save
+              else
+                profile.leave_alliance
+                profile.alliance = alliance
+                profile.save
+              end
             end
           end
         end
