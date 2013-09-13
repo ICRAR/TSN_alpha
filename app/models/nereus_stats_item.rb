@@ -93,11 +93,17 @@ class NereusStatsItem < ActiveRecord::Base
   end
   #sets active status on remote server
   def set_status
-    self.active = (!self.limited?  && paused == 0) ? 1 : 0
-    self.save
+  #sets active status on remote server
+    NereusStatsItem.delay.set_status(id)
+  end
+  def self.set_status(id)
+    nereus = NereusStatsItem.find(id)
+    nereus.active = (!nereus.limited?  && nereus.paused == 0) ? 1 : 0
+    nereus.save
     remote_client =  NereusStatsItem.connect_to_backend_db
-    query = "UPDATE accountstatus SET time = #{(Time.now.to_f*1000).to_f}, active = #{active} WHERE skynetID = #{nereus_id}"
-    #remote_client.query(query)
+    query = "UPDATE accountstatus SET time = #{(Time.now.to_i*1000)}, active = #{nereus.active} WHERE skynetID = '#{nereus.nereus_id}'"
+    #puts query
+    remote_client.query(query)
   end
 
   #queues status update
