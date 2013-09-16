@@ -86,7 +86,7 @@ namespace :update_profiles do
 
   end
   desc "award trophies from file"
-  task :trophies_csv => enviroment do
+  task :trophies_csv => :environment do
     trophy_id = nil
     trophy = Trophy.find trophy_id
     file = "./tmp/galaxy_7000.csv"
