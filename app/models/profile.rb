@@ -103,7 +103,6 @@ class Profile < ActiveRecord::Base
     temp_name.titleize
   end
   def name
-    raise 'debug'
     temp_name = ''
     if use_full_name
       temp_name = full_name
