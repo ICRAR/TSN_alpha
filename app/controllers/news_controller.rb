@@ -9,7 +9,7 @@ class NewsController < ApplicationController
     end
   end
   def index
-    @news = News.published.all
+    @news = News.published.order{published_time.desc}.limit(10)
     if user_signed_in?
       profile = current_user.profile
       @notifications =  profile.mailbox.notifications.limit(10)

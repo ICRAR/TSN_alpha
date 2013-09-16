@@ -40,7 +40,7 @@
             .media
               %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
               .media-body
-                %h4.media-heading= link_to "#{trophy.title.titlecase} (#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)" ,  trophy
+                %h4.media-heading= link_to trophy.heading(@trophy_ids) ,  trophy
                 %p=trophy.desc(@trophy_ids)
                 - if user_signed_in? && @profile.id == current_user.profile.id
                   = render 'trophies/trophys_share', :trophy => trophy
@@ -58,9 +58,8 @@
                           %a.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
                           .caption
                             %h4= link_to "#{trophy.title.titlecase}" ,  trophy
-                            %p= "(#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)"
-                            - if user_signed_in? && @profile.id == current_user.profile.id
-                              = render 'trophies/trophys_share', :trophy => trophy
+                            -unless trophy.credits.nil? || trophy.credits == 0
+                              %p= "(#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)"
         -else
           -@trophies.each do |set|
             .well-white.well
@@ -69,7 +68,7 @@
                 .media
                   %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
                   .media-body
-                    %h4.media-heading= link_to "#{trophy.title.titlecase} (#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)" ,  trophy
+                    %h4.media-heading= link_to trophy.heading(@trophy_ids) ,  trophy
                     %p=trophy.desc(@trophy_ids)
                     - if user_signed_in? && @profile.id == current_user.profile.id
                       = render 'trophies/trophys_share', :trophy => trophy

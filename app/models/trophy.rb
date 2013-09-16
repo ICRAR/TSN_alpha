@@ -1,5 +1,6 @@
 class Trophy < ActiveRecord::Base
   include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::NumberHelper
   attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, as: [:default, :admin]
   has_attached_file :image
   has_many :profiles_trophies, :dependent => :destroy, :autosave => true
@@ -10,6 +11,14 @@ class Trophy < ActiveRecord::Base
 
 
   scope :all_credit_active, joins(:trophy_set).where{trophy_sets.set_type =~ "credit_active"}.where("credits IS NOT NULL")
+
+  def heading(trophy_ids)
+    if credits.nil? || credits == 0
+      title.titlecase
+    else
+      "#{title.titlecase} (#{number_with_delimiter(self.show_credits(trophy_ids))} cr)"
+    end
+  end
 
   def desc(trophy_ids = nil)
 

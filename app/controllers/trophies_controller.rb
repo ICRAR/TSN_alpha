@@ -6,7 +6,12 @@ class TrophiesController < ApplicationController
     else
       @trophy_ids = nil
     end
+
     @trophy = Trophy.find(params[:id])
+    if params[:show_all]
+      @profiles = @trophy.profiles.select([:id, :first_name, :second_name, :use_full_name,:nickname])
+    end
+
     @set = @trophy.trophy_set
   end
 end

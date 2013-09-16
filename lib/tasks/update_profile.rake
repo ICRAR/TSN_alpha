@@ -85,4 +85,16 @@ namespace :update_profiles do
     end
 
   end
+  desc "award trophies from file"
+  task :trophies_csv => enviroment do
+    trophy_id = nil
+    trophy = Trophy.find trophy_id
+    file = "./tmp/galaxy_7000.csv"
+    csv =  CSV.parse(File.read(file), :headers => true)
+
+    ids = csv.map {|i| i["id"].to_i}
+
+    profiles = Profile.joins{general_stats_item.boinc_stats_item}.where{general_stats_item.boinc_stats_item.id.in ids}
+    trophy.award_to_profiles(profiles)
+  end
 end

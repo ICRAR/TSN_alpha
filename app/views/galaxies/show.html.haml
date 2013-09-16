@@ -29,7 +29,7 @@
                 %abbr{:title => "Percentage Complete"} %
               %dd= "#{@galaxy.per_complete}%"
               %dt
-              %dd= link_to "More Galaxy details", @galaxy.more_info_url
+              %dd= link_to "More Galaxy details (this is an external link)", @galaxy.more_info_url
             %p
               - if @boinc_id
                 The following are images of the galaxy using four combinations of filters where the bright square or rectangular areas are those where you have been credited with the processing.
