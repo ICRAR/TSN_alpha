@@ -19,7 +19,7 @@ class NotificationsController < ApplicationController
   end
   def index
 
-    #@notifications =  @profile.mailbox.notifications.limit(10).unread
+    @notifications =  @profile.mailbox.notifications.limit(10).unread
 
   end
   def show
