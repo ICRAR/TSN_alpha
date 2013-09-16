@@ -132,7 +132,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -149,7 +149,7 @@ CREATE TABLE `general_stats_items` (
   KEY `total_credit_index_desc` (`total_credit`),
   KEY `rank_asc` (`rank`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15977 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15978 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `leaders_science_portals` (
   `leader_id` int(11) DEFAULT NULL,
@@ -239,7 +239,7 @@ CREATE TABLE `page_translations` (
   PRIMARY KEY (`id`),
   KEY `index_page_translations_on_page_id` (`page_id`),
   KEY `index_page_translations_on_locale` (`locale`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -250,7 +250,7 @@ CREATE TABLE `pages` (
   `science_portal_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -272,7 +272,7 @@ CREATE TABLE `profiles` (
   KEY `user_id_index` (`user_id`),
   KEY `alliance_leader_id_index` (`alliance_leader_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15977 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15978 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `profiles_trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -315,6 +315,7 @@ CREATE TABLE `receipts` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index_receipts_on_notification_id` (`notification_id`),
+  KEY `index_receiver_id_is_read` (`receiver_id`,`is_read`),
   CONSTRAINT `receipts_on_notification_id` FOREIGN KEY (`notification_id`) REFERENCES `notifications` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2030 DEFAULT CHARSET=latin1;
 
@@ -442,7 +443,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `index_users_on_invitation_token` (`invitation_token`),
   KEY `index_users_on_invited_by_id` (`invited_by_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15977 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15979 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `versions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -584,3 +585,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130902022557');
 INSERT INTO schema_migrations (version) VALUES ('20130902022558');
 
 INSERT INTO schema_migrations (version) VALUES ('20130911074607');
+
+INSERT INTO schema_migrations (version) VALUES ('20130916034852');
