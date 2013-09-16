@@ -9,7 +9,7 @@ class TrophiesController < ApplicationController
 
     @trophy = Trophy.find(params[:id])
     if params[:show_all]
-      @profiles = @trophy.profiles.select([:id, :first_name, :second_name, :use_full_name,:nickname])
+      @profiles = @trophy.profiles.select([:id, :first_name, :second_name, :use_full_name, :nickname]).select{user.username.as(user_name)}.joins{:user}
     end
 
     @set = @trophy.trophy_set

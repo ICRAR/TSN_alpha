@@ -10,7 +10,12 @@ class Trophy < ActiveRecord::Base
   has_many :notifications, foreign_key: :notified_object_id, conditions: {notified_object_type: 'Trophyp.clas'}, dependent: :destroy
 
 
-  scope :all_credit_active, joins(:trophy_set).where{trophy_sets.set_type =~ "credit_active"}.where("credits IS NOT NULL")
+  scope :all_credit_active, joins(:trophy_set).
+      where{trophy_sets.set_type =~ "credit_active"}.
+      where("credits IS NOT NULL")
+  scope :all_credit_active_plus_classic, joins(:trophy_set).
+      where{(trophy_sets.set_type =~ "credit_active") | (trophy_sets.set_type =~ "credit_classic")}.
+      where("credits IS NOT NULL")
 
   def heading(trophy_ids)
     if credits.nil? || credits == 0
@@ -85,11 +90,19 @@ class Trophy < ActiveRecord::Base
     Notification.notify_all(profiles,subject, body, self)
   end
 
-  def self.next_trophy(cr)
-    tr = Trophy.all_credit_active.where("credits >= ?",cr).order("credits ASC").first
+  def self.next_trophy(cr,classic = false)
+    if classic == true
+      tr = Trophy.all_credit_active_plus_classic.where("credits >= ?",cr).order("credits ASC").first
+    else
+      tr = Trophy.all_credit_active.where("credits >= ?",cr).order("credits ASC").first
+    end
   end
-  def self.last_trophy(cr)
-    tr =  Trophy.all_credit_active.where("credits <= ?",cr).order("credits DESC").first
+  def self.last_trophy(cr,classic = false)
+    if classic == true
+      tr =  Trophy.all_credit_active_plus_classic.where("credits <= ?",cr).order("credits DESC").first
+    else
+      tr =  Trophy.all_credit_active.where("credits <= ?",cr).order("credits DESC").first
+    end
   end
 
   #takes a list of trophies and awards them bassed on credit.

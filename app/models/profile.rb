@@ -111,6 +111,19 @@ class Profile < ActiveRecord::Base
     end
     return temp_name
   end
+  def name_quick
+    temp_name = ''
+    if use_full_name
+      temp_name = full_name
+    else
+      if (nickname)
+        temp_name = nickname
+      else
+        temp_name = user_name if user_name
+      end
+    end
+    return temp_name
+  end
 
 
   def join_alliance(alliance)

@@ -31,7 +31,7 @@
             %p
               %small
                 - @profiles.each do |p|
-                  = link_to p.name, p
-                ,
+                  = link_to p.name_quick, p
+                  ,
           - if user_signed_in? && current_user.profile.has_trophy(@trophy)
             = render 'trophies/trophys_share', :trophy => @trophy

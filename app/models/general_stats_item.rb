@@ -19,12 +19,12 @@ class GeneralStatsItem < ActiveRecord::Base
 
   def credits_to_next_trophy
     self.total_credit = 0 if total_credit == nil
-    tr = Trophy.next_trophy(total_credit)
+    tr = Trophy.next_trophy(total_credit, profile.old_site_user?)
     return tr ? tr.credits - total_credit : 0
   end
   def credits_from_last_trophy
     self.total_credit = 0 if total_credit == nil
-    tr = Trophy.last_trophy(total_credit)
+    tr = Trophy.last_trophy(total_credit, profile.old_site_user?)
     return tr ? total_credit-tr.credits : 0
   end
 
