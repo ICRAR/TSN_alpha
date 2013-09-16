@@ -94,7 +94,11 @@ class Profile < ActiveRecord::Base
       temp_name = temp_name + second_name
     end
     unless (first_name || second_name || nickname)
-      temp_name = user.username if user.username
+      if self.user_name
+        temp_name = self.user_name
+      else
+        temp_name = user.username if user.username
+      end
     end
     temp_name.titleize
   end
@@ -106,20 +110,11 @@ class Profile < ActiveRecord::Base
       if (nickname)
         temp_name = nickname
       else
-        temp_name = user.username if user.username
-      end
-    end
-    return temp_name
-  end
-  def name_quick
-    temp_name = ''
-    if use_full_name
-      temp_name = full_name
-    else
-      if (nickname)
-        temp_name = nickname
-      else
-        temp_name = user_name if user_name
+        if self.user_name
+          temp_name = self.user_name
+        else
+          temp_name = user.username if user.username
+        end
       end
     end
     return temp_name
