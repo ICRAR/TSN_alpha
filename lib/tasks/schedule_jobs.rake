@@ -13,6 +13,8 @@ namespace :schedule_jobs do
     StatsGeneralJob.schedule Time.now
     puts 'starting stats alliances Update'
     StatsAlliancesJob.schedule Time.now
+    puts 'starting elastic search check'
+    ElasticSearchJob.schedule Time.now
     end
   desc "stops up all scheduled jobs"
   task :stop => :environment do
@@ -27,5 +29,7 @@ namespace :schedule_jobs do
     StatsGeneralJob.unschedule
     puts 'stopping stats alliances Update'
     StatsAlliancesJob.unschedule
+    puts 'starting elastic search check'
+    ElasticSearchJob.unschedule
   end
 end
