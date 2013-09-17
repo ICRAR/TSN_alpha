@@ -13,6 +13,10 @@
         %dt
           %abbr{:title => "Recent Average Credit"} RAC
         %dd= boinc.RAC
+        %dt Jobs in progress
+        %dd= boinc.total_in_progress
+        %dt Pending validation
+        %dd= boinc.total_pending
         %dt Your POGS ID
         %dd= boinc.boinc_id
   .well.well-small
@@ -26,4 +30,6 @@
           %ul.unstyled
             %li= link_to "See all your galaxies here", boinc_galaxies_path(boinc.boinc_id)
             %li= link_to "And see all of the POGS galaxies here", galaxies_path
+            %li= link_to "See your galaxies in stellarium", page_path(:slug => 'pogs_stellarium')
+
   %p= link_to "For more information on POGS head to pogs.theskynet.org/pogs/home", "http://pogs.theskynet.org/pogs/home", :target => "_blank"

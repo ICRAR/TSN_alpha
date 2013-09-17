@@ -136,4 +136,13 @@ class BoincStatsItem < ActiveRecord::Base
     i ||= BoincStatsItem.maximum(:boinc_id)
   end
 
+
+  #quieres the results table in the pogs db
+  def total_pending
+    BoincResult.total_pending self.boinc_id
+  end
+  def total_in_progress
+    BoincResult.total_in_progress self.boinc_id
+  end
+
 end
