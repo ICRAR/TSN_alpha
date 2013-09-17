@@ -4,14 +4,6 @@ class ApplicationController < ActionController::Base
   require 'act_as_taggable_on'
 
   before_filter :check_announcement, :except => [:check_auth,:ping,:send_report,:send_cert, :facebook_channel]
-  newrelic_ignore :only => [:check_auth,:ping]
-
-  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
-
-  def record_not_found
-    redirect_to :controller => "/pages", :action => "show", :slug => "404"
-  end
-
   def check_announcement
     if user_signed_in?
       @announcement = News.announcement(current_user.profile.announcement_time)
@@ -20,9 +12,16 @@ class ApplicationController < ActionController::Base
     end
 
   end
+  newrelic_ignore :only => [:check_auth,:ping]
+
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+  def record_not_found
+    redirect_to :controller => "/pages", :action => "show", :slug => "404"
+  end
+
+
 
   before_filter :set_locale
-
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
   end
@@ -34,9 +33,20 @@ class ApplicationController < ActionController::Base
     options
   end
 
+  before_filter :store_location
+
+  def store_location
+    # store last url - this is needed for post-login redirect to whatever the user last visited.
+    if ((request.fullpath =~ /\/users/).nil? && \
+        !request.xhr?) # don't store ajax calls
+      session[:previous_url] = request.fullpath
+    elsif params['prev_path'] == 'forum'
+      session[:previous_url] = APP_CONFIG['forum_url']
+    end
+  end
 
   def after_sign_in_path_for(resource)
-    my_profile_path
+    session[:previous_url] || my_profile_path
   end
 
   rescue_from CanCan::AccessDenied do |exception|

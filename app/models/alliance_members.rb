@@ -25,7 +25,7 @@ class AllianceMembers < ActiveRecord::Base
   end
 
   #A user should be notifed whenever a they join or leave an alliance. We will also notify the alliance leader.
-  has_many :notifications, foreign_key: :notified_object_id, conditions: {notified_object_type: 'ProfilesTrophy'}, dependent: :destroy
+  has_many :notifications, foreign_key: :notified_object_id, conditions: {notified_object_type: 'AllianceMembers'}, dependent: :destroy
   after_commit :create_notification_join, on: :create
   after_commit :create_notification_leave, on: :update
 
@@ -48,9 +48,9 @@ class AllianceMembers < ActiveRecord::Base
     #send to leader unless you are the leader
     leader = am.alliance.leader
     unless leader.nil? || leader.id == am.profile.id
-      subject = "#{am.profile.name} as joined your Alliance"
+      subject = "#{am.profile.name} has joined your Alliance"
       link_profile = ActionController::Base.helpers.link_to(am.profile.name, Rails.application.routes.url_helpers.profile_path(am.profile))
-      body = "#{link_profile} is eager to help and has joined  the #{link_alliance} alliance. \n Happy Computing! \n  - theSkyNet"
+      body = "#{link_profile} is eager to help and has joined the #{link_alliance} alliance. \n Happy Computing! \n  - theSkyNet"
       leader.notify(subject, body, am)
     end
   end
