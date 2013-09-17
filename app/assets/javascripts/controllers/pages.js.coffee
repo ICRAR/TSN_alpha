@@ -72,29 +72,29 @@ TSN.pages.show = () ->
   )
 
   $('#installer_windows_32').click( ->
-    event.preventDefault()
     url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_32-0.2.exe"
     download_popup(url)
+    false
   )
   $('#installer_windows_32_silent').click( ->
-    event.preventDefault()
     url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_32_Silent-0.2.exe"
     download_popup(url)
+    false
   )
   $('#installer_windows_64').click( ->
-    event.preventDefault()
     url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_64-0.2.exe"
     download_popup(url)
+    false
   )
   $('#installer_windows_64_silent').click( ->
-    event.preventDefault()
     url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_64_Silent-0.2.exe"
     download_popup(url)
+    false
   )
   $('#installer_mac').click( ->
-    event.preventDefault()
     url = "http://tsn.production.public.s3.amazonaws.com/sourcefinder/theSkyNet_Install_Mac.zip"
     download_popup(url)
+    false
   )
 
 download_popup = (url) ->
