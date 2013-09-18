@@ -208,9 +208,9 @@ class NereusJob
           if active != update_row[:active]
             #upsert.row({:skynetID => item[0]}, :active => active)
             if active == 1
-              new_active << item[0]
+              new_active << "'#{item[0]}'"
             elsif active == 0
-              new_unactive << item[0]
+              new_unactive << "'#{item[0]}'"
             end
           end
           nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
