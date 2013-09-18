@@ -230,7 +230,7 @@ class NereusJob
         statsd_batch.gauge("nereus.stats.total_active",total_active)
       }
       bench.report('save all') {
-=begin        NereusStatsItem.transaction do
+        NereusStatsItem.transaction do
           nereus_update_hash.each do |item|
             id = item[0].to_i
             update_row = item[1] #fix for using hashes as array
