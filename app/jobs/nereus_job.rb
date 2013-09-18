@@ -4,7 +4,6 @@ class NereusJob
 
   def perform
     #start statsd batch
-    #start statsd batch
     statsd_batch = Statsd::Batch.new($statsd)
 
     #connect to remote db
@@ -193,32 +192,45 @@ class NereusJob
       #update active status + check network usage
       #also updates active status in remote db as well
       bench.report('update active status') {
-        Upsert.batch(remote_client,'accountstatus') do |upsert|
-          nereus_update_hash.each do |item|
-            id = item[0].to_i
-            update_row = item[1] #fix for using hashes as array
-            old_row = nereus_all_hash[item[0].to_i] #from local db
-            if old_row == nil
-              active = 0
-            else
-              active = (( old_row['network_limit'].to_i == 0 || (update_row[:monthly_network_usage].to_i < old_row['network_limit'].to_i))  && old_row['paused'].to_i == 0) ? 1 : 0
-            end
-            total_active += active
-                                 #only update old db if active status has changed
-            if active != update_row[:active]
-              #upsert.row({:skynetID => item[0]}, :active => active)
-            end
-            nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
-            nereus_update_hash[id][:active] = active
-            statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.active",active)
-
+        new_active = []
+        new_unactive = []
+        nereus_update_hash.each do |item|
+          id = item[0].to_i
+          update_row = item[1] #fix for using hashes as array
+          old_row = nereus_all_hash[item[0].to_i] #from local db
+          if old_row == nil
+            active = 0
+          else
+            active = (( old_row['network_limit'].to_i == 0 || (update_row[:monthly_network_usage].to_i < old_row['network_limit'].to_i))  && old_row['paused'].to_i == 0) ? 1 : 0
           end
+          total_active += active
+                               #only update old db if active status has changed
+          if active != update_row[:active]
+            #upsert.row({:skynetID => item[0]}, :active => active)
+            if active == 1
+              new_active << item[0]
+            elsif active == 0
+              new_unactive << item[0]
+            end
+          end
+          nereus_update_hash[id] = Hash.new unless nereus_update_hash.has_key?(id)
+          nereus_update_hash[id][:active] = active
+          statsd_batch.gauge("nereus.users.#{GraphitePathModule.path_for_stats(id)}.active",active)
+
         end
+
+        #update accountstatus on nereus server
+        #this pauses or resumes peoples accounts bassed on network usage and paused status
+        query =  "UPDATE accountstatus SET time = #{(Time.now.to_i*1000)}, active = 0 WHERE skynetID IN (#{new_unactive.join(', ')})"
+        remote_client.query(query)
+        query =  "UPDATE accountstatus SET time = #{(Time.now.to_i*1000)}, active = 1 WHERE skynetID IN (#{new_active.join(', ')})"
+        remote_client.query(query)
+
         #send totals to stats
         statsd_batch.gauge("nereus.stats.total_active",total_active)
       }
       bench.report('save all') {
-        NereusStatsItem.transaction do
+=begin        NereusStatsItem.transaction do
           nereus_update_hash.each do |item|
             id = item[0].to_i
             update_row = item[1] #fix for using hashes as array
