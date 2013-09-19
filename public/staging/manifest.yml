@@ -503,6 +503,8 @@ logo_alpha_white.png: logo_alpha_white-f327383b55a06728a6c94f5a785d73c9.png
 logo_alpha_white/index.png: logo_alpha_white-f327383b55a06728a6c94f5a785d73c9.png
 logo_beta_purple.png: logo_beta_purple-a46f99735d8c6b80e87880170dbd9d59.png
 logo_beta_purple/index.png: logo_beta_purple-a46f99735d8c6b80e87880170dbd9d59.png
+logo_pirate.png: logo_pirate-d48e13a5c87b17bf86c00c71b715c3d6.png
+logo_pirate/index.png: logo_pirate-d48e13a5c87b17bf86c00c71b715c3d6.png
 logosmall.jpg: logosmall-f3368d8c60d2bd41998e30143aacb31d.jpg
 logosmall/index.jpg: logosmall-f3368d8c60d2bd41998e30143aacb31d.jpg
 logosmall.jpg.LCK: logosmall.jpg-f6e897f42ba14b28f985c1cb8fe73820.LCK
@@ -845,14 +847,14 @@ windowbg.jpg: windowbg-c81c60e2640128c4c66728b08b954ae5.jpg
 windowbg/index.jpg: windowbg-c81c60e2640128c4c66728b08b954ae5.jpg
 windowbg.jpg.LCK: windowbg.jpg-f6e897f42ba14b28f985c1cb8fe73820.LCK
 windowbg/index.jpg.LCK: windowbg.jpg-f6e897f42ba14b28f985c1cb8fe73820.LCK
-application.js: application-8e81f974c9d2542598fc381af2640073.js
-application/index.js: application-8e81f974c9d2542598fc381af2640073.js
+application.js: application-1b30c5a30e6cb25b14777ed1f7a54d65.js
+application/index.js: application-1b30c5a30e6cb25b14777ed1f7a54d65.js
 ckeditor/config.js: ckeditor/config-6656c9acd5d90e0bac9066293bac46c5.js
 ckeditor/config/index.js: ckeditor/config-6656c9acd5d90e0bac9066293bac46c5.js
 non_includes/deployJava.js: non_includes/deployJava-304b95b3e32d05a3230f5583e444768f.js
 non_includes/deployJava/index.js: non_includes/deployJava-304b95b3e32d05a3230f5583e444768f.js
-application.css: application-1dce670189d6c03a71afdbb4b93f4f57.css
-application/index.css: application-1dce670189d6c03a71afdbb4b93f4f57.css
+application.css: application-1e847651ead4d8d37db018c9333a7a75.css
+application/index.css: application-1e847651ead4d8d37db018c9333a7a75.css
 blank.gif: blank-43a4c178cf07ee66c58ad891629374ed.gif
 blank/index.gif: blank-43a4c178cf07ee66c58ad891629374ed.gif
 fancybox_buttons.png: fancybox_buttons-2daeb91b07cb116c5e6db6e04d734052.png

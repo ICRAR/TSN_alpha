@@ -132,7 +132,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -226,7 +226,7 @@ CREATE TABLE `notifications` (
   PRIMARY KEY (`id`),
   KEY `index_notifications_on_conversation_id` (`conversation_id`),
   CONSTRAINT `notifications_on_conversation_id` FOREIGN KEY (`conversation_id`) REFERENCES `conversations` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `page_translations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -248,6 +248,8 @@ CREATE TABLE `pages` (
   `updated_at` datetime NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `science_portal_id` int(11) DEFAULT NULL,
+  `preview` tinyint(1) NOT NULL DEFAULT '0',
+  `sort_order` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
@@ -286,7 +288,7 @@ CREATE TABLE `profiles_trophies` (
   KEY `profile_id_index` (`profile_id`),
   KEY `trophy_id_index` (`trophy_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=890474 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=890475 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `rails_admin_histories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -317,7 +319,7 @@ CREATE TABLE `receipts` (
   KEY `index_receipts_on_notification_id` (`notification_id`),
   KEY `index_receiver_id_is_read` (`receiver_id`,`is_read`),
   CONSTRAINT `receipts_on_notification_id` FOREIGN KEY (`notification_id`) REFERENCES `notifications` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2030 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2031 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) NOT NULL,
@@ -587,3 +589,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130902022558');
 INSERT INTO schema_migrations (version) VALUES ('20130911074607');
 
 INSERT INTO schema_migrations (version) VALUES ('20130916034852');
+
+INSERT INTO schema_migrations (version) VALUES ('20130919061425');
