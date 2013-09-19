@@ -58,6 +58,7 @@ gem 'sanitize'
 gem 'mailboxer'
 gem "messengerjs-rails", "~> 1.3.6"
 gem 'metamagic'
+gem 'talk_like_a_pirate'
 
 gem 'delayed_job_active_record'
 gem 'daemons'

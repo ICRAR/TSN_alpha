@@ -312,6 +312,7 @@ GEM
       activesupport (~> 3.0)
       polyamorous (~> 0.5.0)
     statsd-ruby (1.2.0)
+    talk_like_a_pirate (0.1.0)
     therubyracer (0.11.4)
       libv8 (~> 3.11.8.12)
       ref
@@ -416,6 +417,7 @@ DEPENDENCIES
   simple_form
   squeel
   statsd-ruby
+  talk_like_a_pirate
   therubyracer
   tire
   turbolinks
