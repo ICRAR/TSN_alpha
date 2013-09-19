@@ -12,7 +12,7 @@ class Galaxy < PogsModel
   def self.find_by_user_id(user_id)
     uniq.joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
             INNER JOIN area_user ON area.area_id = area_user.area_id")
-    .where("area_user.userid = #{user_id}")
+    .where("area_user.userid = ?",user_id )
   end
 
   def thumbnail_url
