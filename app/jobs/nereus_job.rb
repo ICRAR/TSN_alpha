@@ -221,10 +221,14 @@ class NereusJob
 
         #update accountstatus on nereus server
         #this pauses or resumes peoples accounts bassed on network usage and paused status
-        query =  "UPDATE accountstatus SET time = #{(Time.now.to_i*1000)}, active = 0 WHERE skynetID IN (#{new_unactive.join(', ')})"
-        remote_client.query(query)
-        query =  "UPDATE accountstatus SET time = #{(Time.now.to_i*1000)}, active = 1 WHERE skynetID IN (#{new_active.join(', ')})"
-        remote_client.query(query)
+        if new_unactive.size > 0
+          query =  "UPDATE accountstatus SET time = #{(Time.now.to_i*1000)}, active = 0 WHERE skynetID IN (#{new_unactive.join(', ')})"
+          remote_client.query(query)
+        end
+        if new_active.size > 0
+          query =  "UPDATE accountstatus SET time = #{(Time.now.to_i*1000)}, active = 1 WHERE skynetID IN (#{new_active.join(', ')})"
+          remote_client.query(query)
+        end
 
         #send totals to stats
         statsd_batch.gauge("nereus.stats.total_active",total_active)
