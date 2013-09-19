@@ -15,7 +15,7 @@ arr:
         more radio astronomy data. Find out more details about each project below.
         Yo ho ho!!
       thank_you: Thank ye fer joinin' <br /> - theskynet team
-      continue: Continue t' yer shanty
+      continue: Continue t' yer ship
       source_finder:
         about: Sourcefinder is one o' tha two methods o' data processin' tha our jolly
           crew be usin', it allows processin' through Java. Swab the poop deck!!
@@ -96,7 +96,7 @@ arr:
   nav:
     home: Port
     about: About
-    dashboard: Me Shanty
+    dashboard: Me Treasure Trove
     contact: Message Us
     science: Magic
     sitemap: Chart
