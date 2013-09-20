@@ -44,8 +44,8 @@
     #news.span6.well
       %h2= t ".latest_news"
       #news_list
-        -@news.each do |item|
-          = render 'news/news_short', :item => item
+        -@news.each_with_index do |item, index|
+          = render 'news/news_short', :item => item, :index => index
 
     #leaderboards.span6.well
       = render 'profiles/dashboard/ladder_dashboard'

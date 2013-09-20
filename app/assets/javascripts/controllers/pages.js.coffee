@@ -46,16 +46,16 @@ TSN.pages.index = () ->
     $(item).remove()
 
   news_add_item = () ->
-    if $('#news_list .news_item').length > 2
-      item = $('.news_item').get(-1)
+    if $('#news_list .news_item').length > 3
+      item = $('.news_item').get(0)
       news_items.push item
       old_item = $(item)
       old_item.slideUp(2000,'easeOutQuad', () ->
         old_item.remove()
       )
     if news_items.length > 0
-      $('#news_list').prepend(news_items.shift())
-      new_item = $($('.news_item').get(0))
+      $('#news_list').append(news_items.shift())
+      new_item = $('.news_item').last()
       new_item.hide()
       new_item.slideDown(2000,'easeOutQuad')
   news_timer = $.timer(news_add_item,4000, true)
