@@ -14,6 +14,13 @@ class Galaxy < PogsModel
             INNER JOIN area_user ON area.area_id = area_user.area_id")
     .where("area_user.userid = ?",user_id )
   end
+  def self.find_by_user_id_last(user_id)
+    joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
+            INNER JOIN area_user ON area.area_id = area_user.area_id")
+    .where("area_user.userid = ?",user_id )
+    .order("`area_user`.`areauser_id` DESC")
+    .limit(1).first
+  end
 
   def thumbnail_url
     APP_CONFIG['pogs_graphs_url'] + s3_name + "tn_colour_1.png"

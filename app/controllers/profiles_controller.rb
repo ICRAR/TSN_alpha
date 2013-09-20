@@ -67,7 +67,7 @@ class ProfilesController < ApplicationController
     @top_alliances = Alliance.for_leaderboard_small.order('ranking asc').limit(5)
     if @profile.general_stats_item.boinc_stats_item != nil
       begin
-        @boinc_galaxy = Galaxy.find_by_user_id(@profile.general_stats_item.boinc_stats_item.boinc_id).order("galaxy.galaxy_id DESC").limit(1).first
+        @boinc_galaxy = Galaxy.find_by_user_id_last(@profile.general_stats_item.boinc_stats_item.boinc_id)
       rescue
         @boinc_galaxy = nil
       end
