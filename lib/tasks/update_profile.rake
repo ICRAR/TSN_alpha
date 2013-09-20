@@ -89,12 +89,18 @@ namespace :update_profiles do
   task :trophies_csv => :environment do
     trophy_id = nil
     trophy = Trophy.find trophy_id
-    file = "./tmp/galaxy_7000.csv"
+    file = "./tmp/rac_today.csv"
     csv =  CSV.parse(File.read(file), :headers => true)
 
     ids = csv.map {|i| i["id"].to_i}
 
-    profiles = Profile.joins{general_stats_item.boinc_stats_item}.where{general_stats_item.boinc_stats_item.id.in ids}
+    profiles = Profile.where{id.in ids}
+
+    extra = NereusStatsItem.founding_ids
+    first = NereusStatsItem.founding_first
+    last = NereusStatsItem.founding_last
+
+    Profile.joins{general_stats_item.nereus_stats_item}.where{((nereus_stats_items.nereus_id >= first) & (nereus_stats_items.nereus_id <= last)) | (nereus_stats_items.nereus_id.in extra)}.count
     trophy.award_to_profiles(profiles)
   end
 end
