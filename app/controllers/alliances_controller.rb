@@ -138,7 +138,8 @@ class AlliancesController < ApplicationController
       if @alliances.size == 0
         @tags = []
       else
-        @tags = Alliance.where("id IN(#{@alliances.map {|a| a.id}.join(', ')})").select(:id).tag_counts
+        ids =  @alliances.map {|a| a.id}
+        @tags = Alliance.where{id.in ids}.select(:id).tag_counts
       end
       render :index
     else
