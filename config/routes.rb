@@ -1,7 +1,10 @@
 Tsn::Application.routes.draw do
   #redirect all to host name in custom config
   match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host']}:#{req.port}/#{params[:path]}"},
-        constraints: lambda{|request| (request.host != APP_CONFIG['site_host'] && request.host !='localhost')}
+        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host']) &&
+          (request.host !='localhost') &&
+          (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
+        )}
 
   resources :contact_forms
   resources :stats, :only => [:index]
