@@ -16,6 +16,13 @@ module BoincAuth
             #failed to authenticate against the boincdb
             fail!('No user was found with that username and password')
           else
+            #check that the boinc account is not already linked if it is return that user
+            boinc_item = BoincStatsItem.where(:boinc_id => boinc_user.id).first
+            unless boinc_item.nil?
+              unless boinc_item.general_stats_item.try(:profile).try(:user).nil?
+                success!(boinc_item.general_stats_item.profile.user)
+              end
+            end
             #They have a vaild boinc account but no skynet account, we need to create a skynet account for them
             #first create new account
             new_user = boinc_user.copy_to_local(params[:user][:password])
