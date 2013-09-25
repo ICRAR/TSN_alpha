@@ -2,6 +2,13 @@
 .processed-data
   %h3 TOTAL CREDIT EARNED:
   #totalCredits.processed-data-number= number_with_delimiter(@profile.general_stats_item.total_credit)
+  %p
+    %a#credit_explain{:href => "#", :data => {:toggle => "popover",
+      :placement => "bottom",
+      :content => credit_location(@profile),
+      :html => 'true',
+      :no => {:turbolink => true}},
+      :title => "theSkyNet credit is an amalgamation from several sources:"} Explain
   %h3 AVERAGE DAILY CREDIT:
   #totalCredits.processed-data-number= number_with_delimiter(@profile.general_stats_item.recent_avg_credit)
   %h3 YOUR RANK:

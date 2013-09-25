@@ -8,7 +8,9 @@ TSN.profiles = new Object;
 TSN.profiles.show = () ->
   profile_show_graphs(false)
   $("#credit_explain").popover()
-TSN.profiles.dashboard = () ->  profile_show_graphs(true)
+TSN.profiles.dashboard = () ->
+  profile_show_graphs(true)
+  $("#credit_explain").popover()
 
 profile_show_graphs = (all) ->
   profile_id = $("#chart_container").data("profile-id")
