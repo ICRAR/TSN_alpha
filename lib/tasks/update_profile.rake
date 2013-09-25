@@ -112,5 +112,7 @@ namespace :update_profiles do
     old = "Fix for old site conversion"
     new = "T2 Conversion Hiccup (T2 credit didn't match old credit when we converted, shortfall in credit applied as a bonus)"
     BonusCredit.where{reason == old}.update_all(:reason => new)
+
+    BonusCredit.where{amount <= 0}.delete_all
   end
 end
