@@ -103,4 +103,14 @@ namespace :update_profiles do
     Profile.joins{general_stats_item.nereus_stats_item}.where{((nereus_stats_items.nereus_id >= first) & (nereus_stats_items.nereus_id <= last)) | (nereus_stats_items.nereus_id.in extra)}.count
     trophy.award_to_profiles(profiles)
   end
+  desc "change bonus credit desc"
+  task :trophies_csv => :environment do
+    old = "imported from old site"
+    new = "Pre-T2 Bonus Credit (no reason stored, contact support if you have a question)"
+    BonusCredit.where{reason == old}.update_all(:reason => new)
+
+    old = "Fix for old site conversion"
+    new = "T2 Conversion Hiccup (T2 credit didn't match old credit when we converted, shortfall in credit applied as a bonus)"
+    BonusCredit.where{reason == old}.update_all(:reason => new)
+  end
 end

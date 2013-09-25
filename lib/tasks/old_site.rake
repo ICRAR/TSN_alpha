@@ -391,7 +391,7 @@ def update_bonus_credit(front_end_db)
     print "-- importing bonus credit items #{j} to #{j+10} \n" if j%10 == 0
     profile = get_profile_by_nereus_id(row['userID'])
     if profile
-      bonus = BonusCredit.new(:amount => row['credits']* APP_CONFIG['nereus_to_credit_conversion'], :reason => "imported from old site")
+      bonus = BonusCredit.new(:amount => row['credits']* APP_CONFIG['nereus_to_credit_conversion'], :reason => "Pre-T2 Bonus Credit (no reason stored, contact support if you have a question)")
       bonus.created_at = Time.at(row['day'].to_i*86400)
       profile.general_stats_item.bonus_credits << bonus
     end
@@ -417,7 +417,7 @@ def fix_credit_with_bonus(front_end_db)
       if diff.to_i > 0
         profile = nereus_item.general_stats_item.profile if nereus_item.general_stats_item
         if profile
-          bonus = BonusCredit.new(:amount => diff, :reason => "Fix for old site conversion")
+          bonus = BonusCredit.new(:amount => diff, :reason => "T2 Conversion Hiccup (T2 credit didn't match old credit when we converted, shortfall in credit applied as a bonus)")
           print "-- -- Adding #{diff} cr to old_id: #{row['userID']} \n"
           bonus.created_at = Time.at(row['day'].to_i*86400)
           profile.general_stats_item.bonus_credits << bonus

@@ -22,15 +22,15 @@ module ProfilesHelper
       out << "<dt>#{reason}</dt> <dd>#{first}#{number_with_delimiter(b.amount)} cr</dd>"
       first = " + "
     end
-    if !pogs.try(:credit).nil? & (pogs.try(:credit)  > 0)
+    if !pogs.try(:credit).nil? && (pogs.credit  > 0)
       out << "<dt>POGS</dt> <dd>#{first}#{number_with_delimiter(pogs.credit)} cr</dd>"
       first = " + "
     end
-    if !nereus.try(:credit).nil? & (nereus.try(:credit) > 0)
+    if !nereus.try(:credit).nil? && (nereus.credit > 0)
       out << "<dt>SourceFinder</dt> <dd>#{first}#{number_with_delimiter(nereus.credit)} cr</dd>"
       first = " + "
     end
-    out << "<dt>total</dt> <dd> = #{number_with_delimiter(gsi.total_credit)} cr </dd>"
+    out << "<dt>Total</dt> <dd> = #{number_with_delimiter(gsi.total_credit)} cr </dd>"
     "<dl class=\"dl-horizontal\">#{out.join()}</dl>".html_safe
   end
 end
