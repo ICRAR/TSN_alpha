@@ -847,8 +847,8 @@ windowbg.jpg: windowbg-ee45828b57ed42422471253d53fcdc1d.jpg
 windowbg/index.jpg: windowbg-ee45828b57ed42422471253d53fcdc1d.jpg
 windowbg.jpg.LCK: windowbg.jpg-9950989e21859e7402ff6aa4d5ab9019.LCK
 windowbg/index.jpg.LCK: windowbg.jpg-9950989e21859e7402ff6aa4d5ab9019.LCK
-application.js: application-dd9981e335adc45e15dfa8aa262d721a.js
-application/index.js: application-dd9981e335adc45e15dfa8aa262d721a.js
+application.js: application-38fc9e460c0fdce04e34835062d9f896.js
+application/index.js: application-38fc9e460c0fdce04e34835062d9f896.js
 ckeditor/config.js: ckeditor/config-7b4e5a708501bfaab628f81d3161a763.js
 ckeditor/config/index.js: ckeditor/config-7b4e5a708501bfaab628f81d3161a763.js
 non_includes/deployJava.js: non_includes/deployJava-5a3b44b01a6c791a3ff3773b2c769a30.js
