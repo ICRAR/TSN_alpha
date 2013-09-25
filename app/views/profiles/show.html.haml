@@ -59,16 +59,7 @@
                 %dt
                   %abbr{:title => "Recent Average Credit"} RAC
                 %dd= number_with_delimiter(nereus.daily_credit)
-                %dt Current Connections
-                %dd
-                  = "#{nereus.online_now} (#{nereus.mips_now}"
-                  %abbr{:title=>"Million Instructions per Second"} MIPS
-                  )
-                %dt Connections Today
-                %dd
-                  = "#{nereus.online_today} (#{nereus.mips_today}"
-                  %abbr{:title=>"Million Instructions per Second"} MIPS
-                  )
+
         -if @profile.general_stats_item.boinc_stats_item != nil
           .row-fluid
             .span12.well.well-white

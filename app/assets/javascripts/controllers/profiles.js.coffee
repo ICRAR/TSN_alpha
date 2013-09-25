@@ -5,10 +5,10 @@ TSN = this.TSN
 TSN.profiles = new Object;
 
 
-TSN.profiles.show = () ->  profile_show_graphs()
-TSN.profiles.dashboard = () ->  profile_show_graphs()
+TSN.profiles.show = () ->  profile_show_graphs(false)
+TSN.profiles.dashboard = () ->  profile_show_graphs(true)
 
-profile_show_graphs = () ->
+profile_show_graphs = (all) ->
   profile_id = $("#chart_container").data("profile-id")
   boinc_id = $("#chart_container").data("boinc-id")
   nereus_id = $("#chart_container").data("nereus-id")
@@ -22,10 +22,10 @@ profile_show_graphs = () ->
     metrics.push("stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.rac")
   if nereus_id
     name.push("SourceFinder Credit")
-    name.push("SourceFinder MIPS")
+    name.push("SourceFinder MIPS") if all == true
     name.push("SourceFinder RAC")
     metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.credit")
-    metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.mips_now")
+    metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.mips_now") if all == true
     metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.daily_credit")
 
   name.push("Rank")
