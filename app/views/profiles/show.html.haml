@@ -19,6 +19,8 @@
           %b Total Credit:
           = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"
           =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank, :page=>'me')
+        %p
+          = credit_location(@profile)
         -if @profile.alliance
           %p
             %b Proud member of :
