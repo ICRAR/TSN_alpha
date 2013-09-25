@@ -101,6 +101,9 @@ $(document).ready( ->
     # function you want to fire when the user becomes active again
     TSN.notifications_timer.play()
 
+  $("a[data-toggle=popover]").popover().click (e) ->
+    e.preventDefault()
+
 )
 
 

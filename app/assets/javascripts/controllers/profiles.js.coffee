@@ -5,7 +5,9 @@ TSN = this.TSN
 TSN.profiles = new Object;
 
 
-TSN.profiles.show = () ->  profile_show_graphs(false)
+TSN.profiles.show = () ->
+  profile_show_graphs(false)
+  $("#credit_explain").popover()
 TSN.profiles.dashboard = () ->  profile_show_graphs(true)
 
 profile_show_graphs = (all) ->
