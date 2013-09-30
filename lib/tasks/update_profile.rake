@@ -100,7 +100,23 @@ namespace :update_profiles do
     first = NereusStatsItem.founding_first
     last = NereusStatsItem.founding_last
 
-    Profile.joins{general_stats_item.nereus_stats_item}.where{((nereus_stats_items.nereus_id >= first) & (nereus_stats_items.nereus_id <= last)) | (nereus_stats_items.nereus_id.in extra)}.count
+    #Profile.joins{general_stats_item.nereus_stats_item}.where{((nereus_stats_items.nereus_id >= first) & (nereus_stats_items.nereus_id <= last)) | (nereus_stats_items.nereus_id.in extra)}
+    trophy.award_to_profiles(profiles)
+  end
+  desc "award trophies for galaxy"
+  task :trophies_csv => :environment do
+    trophy_id = 124
+    trophy = Trophy.find trophy_id
+    galaxy_id = 8000
+
+    db_ids = Galaxy.connection.execute("select distinct au.userid
+                from area_user au, area a
+                where au.area_id = a.area_id
+                and a.galaxy_id = #{galaxy_id};
+                ")
+    boinc_ids = db_ids.map {|i| i[0].to_i}
+
+    profiles = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id.in boinc_ids}
     trophy.award_to_profiles(profiles)
   end
   desc "change bonus credit desc"
