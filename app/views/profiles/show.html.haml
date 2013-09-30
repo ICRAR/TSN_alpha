@@ -26,7 +26,7 @@
                         :content => credit_location(@profile),
                         :html => 'true',
                         :no => {:turbolink => true}},
-                       :title => "theSkyNet credit is an amalgamation from several sources:"} Explain
+                       :title => "theSkyNet credit is an amalgamation from several sources: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#credit_explain&quot;).popover(&quot;hide&quot;);\">&times;</button>"} Explain
         -if @profile.alliance
           %p
             %b Proud member of :

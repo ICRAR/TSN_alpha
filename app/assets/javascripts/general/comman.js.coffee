@@ -113,3 +113,15 @@ TSN.GRAPHITE =  {
     padded = (pad+id).slice(-9)
     padded.match(/.{3}/g).join('.')
 }
+
+TSN.monthDiff = (d1, d2) ->
+  months = undefined
+  months = (d2.getFullYear() - d1.getFullYear()) * 12
+  months -= d1.getMonth()
+  months += d2.getMonth()
+  months += (if (d2.getDate() > d1.getDate()) then 1 else 0)
+  (if months <= 0 then 0 else months)
+TSN.months_from_launch = ->
+  d1 = new Date(2011, 8, 13)
+  d2 = new Date()
+  TSN.monthDiff d1, d2
