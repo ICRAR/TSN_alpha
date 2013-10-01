@@ -13,7 +13,7 @@
               %a.pull-left{:href=>@trophy.image.url}= image_tag @trophy.image.url, :class=>"media-object"
               .media-body
                 %h4.media-heading= link_to @trophy.heading() ,  @trophy
-                %p Showing all the people who have been awarded this trophy
+                %p This Trophy has been won by the following people.
         .span5
           = form_tag(search_profiles_path, :method => "get", :class => "pull-right") do
             = form_get_hidden_tag(search_profiles_path)
