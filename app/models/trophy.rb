@@ -17,7 +17,7 @@ class Trophy < ActiveRecord::Base
       where{(trophy_sets.set_type =~ "credit_active") | (trophy_sets.set_type =~ "credit_classic")}.
       where("credits IS NOT NULL")
 
-  def heading(trophy_ids)
+  def heading(trophy_ids = nil)
     if credits.nil? || credits == 0
       title.titlecase
     else
