@@ -291,9 +291,16 @@ class ProfilesController < ApplicationController
     end
   end
   def search
+    per_page = [params[:per_page].to_i,1000].min
+    per_page = 30 if per_page == 0
+    page_num = params[:page]
     if params[:search]
       @profiles = Profile.search(params[:search], params[:page], 10)
       params[:sort] = "search"
+      render :index
+    elsif params[:trophy_id]
+      @trophy = Trophy.find params[:trophy_id] || not_found
+      @profiles = @trophy.profiles.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
       render :index
     else
       redirect_to( profiles_path, :alert => "You did not enter a valid search query")
