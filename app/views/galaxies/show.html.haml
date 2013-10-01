@@ -30,6 +30,7 @@
               %dd= "#{@galaxy.per_complete}%"
               %dt
               %dd= link_to "More Galaxy details (external link)", @galaxy.more_info_url
+              %dd= link_to "Click here to see all the users that worked on this Galaxy.", search_profiles_path(:galaxy_id => @galaxy.id)
             %p
               - if @boinc_id
                 The following are images of the galaxy using four combinations of filters where the bright square or rectangular areas are those where you have been credited with the processing.
