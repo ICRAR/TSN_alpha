@@ -39,12 +39,17 @@ class ApplicationController < ActionController::Base
 
   def store_location
     # store last url - this is needed for post-login redirect to whatever the user last visited.
-    if ((request.fullpath =~ /\/users/).nil? && \
-        !request.xhr?) # don't store ajax calls
+    # this works a white listed regex system
+    allowed_paths = [/^\/profile/,/^\/alliance/,/^\/admin/]
+    #only store html requests and requests that match at least one of allowed_paths
+    if (request.format == 'text/html') && allowed_paths.map{|r| !request.fullpath.index(r).nil?}.include?(true)
       session[:previous_url] = request.fullpath
-    elsif params['prev_path'] == 'forum'
+    elsif params['prev_path'] == 'forum'       #or if the users just came from the forum redirect them back after
       session[:previous_url] = APP_CONFIG['forum_url']
+    elsif (request.format == 'text/html' && (request.fullpath =~ /\/pages\/denied/).nil? && (request.fullpath =~ /\/users/).nil? ) # reset on pages that are not the sign in page
+      session[:previous_url] = nil
     end
+
   end
 
   def after_sign_in_path_for(resource)

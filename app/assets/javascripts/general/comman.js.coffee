@@ -124,4 +124,4 @@ TSN.monthDiff = (d1, d2) ->
 TSN.months_from_launch = ->
   d1 = new Date(2011, 8, 13)
   d2 = new Date()
-  TSN.monthDiff d1, d2
+  TSN.monthDiff(d1, d2) + 1
