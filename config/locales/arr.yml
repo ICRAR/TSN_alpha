@@ -1,0 +1,174 @@
+---
+arr:
+  profiles:
+    new_profile_step_1:
+      header: Welcome t' theskynet!
+      msg: Thank ye fer signin' up t' theskynet. Afore ye can get started processin'
+        radio astronomy data our jolly crew just need t' gather a few details fer
+        yer profile.
+    new_profile_step_2:
+      heading: Excellent, next our jolly crew need t' setup yer account t' start collectin'
+        doubloons
+      msg: theskynet is currently runnin' two different projects, POGS n' Sourcefinder.
+        Both projects will allow ye t' gain doubloons n' compete in theskynet leader
+        boards. More importantly contributin' t' either project will help us process
+        more radio astronomy data. Find out more details about each project below.
+      thank_you: Thank ye fer joinin' <br /> - theskynet team
+      continue: Continue t' yer Treasure Trove
+      source_finder:
+        about: Sourcefinder is one o' tha two methods o' data processin' tha our jolly
+          crew be usin', it allows processin' through Java.
+        exisiting: It looks like ye be all ready connected t' tha Sourcefinder System
+        link_to: Fer more information about tha Sourcefinder project click here
+        not_yet_a_member: Ye account is not yet linked wit' tha Sourcefinder system.
+        enter_your_nereus_id: ! 'If ye had a account on tha existin'' theskynet n''
+          it was not automaticly linked please enter yourr existin'' ''theskynet Account
+          ID'' below:'
+        new: Would ye like t' join tha Sourcefinder project? If so simply click tha
+          button here n' our jolly crew will create ye a account.
+        create: Create a Sourcefinder account
+        link: Link yer account now.
+      pogs:
+        about: theskynet POGS is a research project that uses Internet-connected computers
+          t' d' research in astronomy. Our jolly crew will combine tha spectral coverage
+          o' GALEX, Pan-starrs1, n' WISE t' generate a multi-wavelength Uv-optical-nir
+          galaxy atlas fer tha nearby Universe. Our jolly crew will measure physical
+          parameters (such as stellar mass surface density, star formation rate surface
+          density, attenuation, n' first-order star formation history) on a resolved
+          pixel-by-pixel basis usin' spectral energy distribution (SED) fittin' techniques
+          in a distributed computin' mode. Ye can participate by downloadin' n' runnin'
+          a free program on yer computer.
+        existing: It looks like ye be all ready connected t' tha POGS System
+        not_yet_a_member: Ye account is not yet linked wit' tha POGS system. Yarrr!
+        enter_your_details: Enter yer details below t' link yer account
+        link_to: Fer more information about tha POGS project click here
+        new: Or if ye don't have a existin' POGS account re-enter yer theskynet password
+          n' our jolly crew will create a new POGS account fer ye.
+        create: Create new POGS account
+        email: ! 'POGS email address:'
+        password_pogs: ! 'POGS password:'
+        link: Link yer account now.
+        password_tsn: ! 'theskynet password:'
+  helpers: 
+  stats:
+    index:
+      title: Site Statistics
+  users:
+    username: Username
+    hint: Ye can login wit' either yer theskynet username, yer theskynet email or
+      yer POGS email.
+    sign_up:
+      header: Help us discover tha universe.
+      msg: Fill in tha followin' form t' create yer account on theskynet. Please note
+        that fields containin' a asterisk (*) be required fer this registration.
+  contact_forms:
+    title: Message Us
+    controller:
+      thank_you: Thank ye fer yer message!
+      spam: Yarr, this message appears t' be spam n' was not delivered.
+    create:
+      msg: We'll get back t' ye as soon as possible. Shiver me timbers!!
+    new:
+      heading: Want t' find out more about theskynet?
+      faq: Have ye read tha Faqs?
+      msg: Yer question may already have be answered! If it be not, complete tha form
+        below n' our jolly crew will get back t' ye promptly.
+      submit: Send message
+      spam_hint: Leave this field blank!
+  mail_form:
+    attributes:
+      contact_form:
+        email: E-mail
+        name: Yer Name
+        message: Yer Question or comment
+  trophies:
+    show:
+      warning: WARNIN'!!!
+      denied: ! 'Access denied: Ye have not earned tha rights t'' view tha full details
+        o'' this loot yet.'
+      belongs_to: ! 'Belongs t'':'
+      won_by: This loot has been won by
+      user: user
+  social:
+    FB_fav: Become a Facebook Fan
+    twitter_follow: Follow us on Twitter
+  nav:
+    home: Port
+    about: About
+    dashboard: Me Treasure Trove
+    contact: Message Us
+    science: Magic
+    sitemap: Chart
+    privacy: Privacy Statement
+    trophies: Me Loots
+    my_alliance: Me Crew
+    sign_up: Sign Up
+    reg: Board
+    log_in: Log in
+    logout: Walk the plank
+    news: News
+    forum: Forum
+    welcome: Welcome back,
+    edit_reg: Edit Registration
+    not_logged_in: Ye be not logged in.
+    faq: FAQ
+  science_portals:
+    controller:
+      not_found: Yarr our jolly crew could not find a project wit' that id
+      not_authed: Yarr ye be not authorised t' view that project
+    index:
+      header: theskynet Magic Projects
+      desc: theskynet is made o' many smaller projects. Each has its own unique magic
+        contribution
+    show:
+      all_projects: All Projects
+      leaders: Leaders
+      links: Links
+  pages:
+    index:
+      splash_header: Play yer part n' help discover our Universe! Ye landlubber!!
+      splash_msg: Have a computer? Want t' help astronomers make awesome discoveries
+        n' understand our Universe? Then theskynet needs ye!
+      TFLOPS_hover: Please note this is only a estimate
+      TFLOPS: Tera Floatin' Point Operations per Second
+      contribution: You be currently contributin'
+      GFLOPS: Giga Floatin' Point Operations per Second
+      why: Why should I join?
+      track: Contribute t' real scientific research n' help scientists unlock tha
+        mysteries o' our Universe! Hang 'im from the yardarm.
+      earn: Track yer contribution n' see how ye compare against yer shipmates, colleagues
+        n' tha world! And swab the deck.
+      share: Share yer progress on all yer favourite social networks.
+      latest_news: Latest News
+      stats:
+        current: Current
+        global: Global Stats
+        boinc: POGS Stats
+        nereus: Sourcefinder Stats
+      json:
+        welcome: Welcome t' theskynet JSON API
+  leaderboards:
+    title: Rankings
+    individual: Pirate
+    individual_rank: Me Position
+    alliances: Crews
+    rank: Rank
+    name: Name
+    credit: Doubloon
+    full_link: View tha full Rankings
+  language_select:
+    language: Scrawl
+    english: Non pirate
+    french: French
+    pirate: Arrrrrrrrrrr
+  announcement:
+    view: View
+    hide: Hide
+    dismiss: dismiss
+  js:
+    stats:
+      latest: LATEST STATS
+  admin:
+    actions:
+      publish_news:
+        menu: Publish Now

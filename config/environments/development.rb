@@ -1,4 +1,4 @@
-TSNAlpha::Application.configure do
+Tsn::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # In the development environment your application's code is reloaded on
@@ -45,4 +45,7 @@ TSNAlpha::Application.configure do
 
   #config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
   config.assets.prefix = "/assets_dev"
+
+  # fallback to what's specified in config.i18n.default_locale
+  config.i18n.fallbacks = true
 end

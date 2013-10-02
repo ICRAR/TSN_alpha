@@ -12,6 +12,7 @@ gem "squeel"
 #gems for user auth
 gem 'devise'
 gem 'devise_invitable', '~> 1.1.0'
+gem 'devise-async'
 gem 'cancan'
 
 gem 'rails_admin'
@@ -51,6 +52,13 @@ gem 'tire'
 gem 'acts-as-taggable-on'
 gem 'rmagick'
 gem 'voruby'
+gem 'globalize3'
+gem 'i18n-js'
+gem 'sanitize'
+gem 'mailboxer'
+gem "messengerjs-rails", "~> 1.3.6"
+gem 'metamagic'
+gem 'talk_like_a_pirate'
 
 gem 'delayed_job_active_record'
 gem 'daemons'
@@ -65,12 +73,16 @@ gem 'rabl'
 # Also add either `oj` or `yajl-ruby` as the JSON parser
 gem 'oj'
 
+gem 'debugger'
+gem 'turnout'
+
 group :development do
-  gem 'rack-mini-profiler'
+#  gem 'rack-mini-profiler'
   gem 'rails-footnotes', '>= 3.7.9'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'railroady'
+  gem 'rename'
 end
 
 #Gems required for testing

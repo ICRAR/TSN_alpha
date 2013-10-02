@@ -1,0 +1,28 @@
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Latest news
+  - @user_page =  'news'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %ul.nav.nav-tabs
+        %li.active
+          %a{"data-toggle" => "tab", :href => "#latest_news"} Latest News
+        %li
+          %a{"data-toggle" => "tab", :href => "#notifications"} Notifications
+        %li
+      .tab-content
+        .tab-pane.active#latest_news
+          - @news.each do |item|
+            = render 'news_short', :item => item
+        .tab-pane#notifications
+          -if @notifications.nil?
+            You must be signed in to view your notifications
+          -else
+            Your 10 most recent notifications
+            -@notifications.each do |note|
+              .noteification_item.well{:id=>note.id}
+                %h3= note.subject
+                .published_date= "Sent on " + note.created_at.to_s
+                .short= note.body.html_safe

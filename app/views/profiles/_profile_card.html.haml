@@ -1,0 +1,5 @@
+.well
+  .media
+    .pull-left= image_tag profile.avatar_url(30), :class => 'media-object'
+    .media-body
+      %h4.media-heading= link_to profile.name, profile_path(profile)

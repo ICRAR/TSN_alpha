@@ -1,0 +1,16 @@
+-content_for :title_bar do
+  #intro-sml-wrap
+    %h1.fontface= t "nav.log_in"
+
+-content_for :content do
+  #content-wrap
+    .well.well-white.telescopebg
+      = simple_form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {:class => 'form-horizontal' }) do |f|
+        = f.input :login, :autofocus => true, :label => t("users.username"), :hint => t("users.hint")
+        = f.input :password, :required => false
+        -if devise_mapping.rememberable?
+          = f.input :remember_me, as: :boolean
+
+        .controls
+          = f.button :submit, t("nav.log_in")
+      = render "devise/shared/links"

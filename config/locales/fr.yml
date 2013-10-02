@@ -1,0 +1,123 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+fr:
+  helpers:
+
+  stats:
+    index:
+      title: "Statistiques du site"
+
+  users:
+    username: "Nom d'utilisateur"
+    hint: "Vous pouvez utiliser votre nom d'utilisateur theSkyNet, votre email ou votre email POGS."
+    sign_up:
+      header: "Aidez-nous à découvrir l'Univers."
+      msg: "Remplissez le formulaire suivant pour créer votre compte theSkyNet. Les champs marqués d'une astérisque (*) sont obligatoires."
+  contact_forms:
+    title: "Nous contacter"
+    controller:
+      thank_you: "Merci pour votre message !"
+      spam: "Désolé, ce message semble être du spam et n'a pas été envoyé."
+    create:
+      msg: "Nous vous répondrons dès que possible."
+    new:
+      heading: "Vous voulez en savoir plus sur theSkyNet ?"
+      faq: "Avez-vous lu la FAQ ?"
+      msg: "Votre question a peut-être déjà été répondue ! Si ce n'est pas le cas, complétez le formulaire ci-dessous et nous vous recontacterons prochainement."
+      submit: "Envoyer"
+      spam_hint: "Ne pas remplir ce champ !"
+  mail_form:
+    attributes:
+      contact_form:
+        email: "E-mail"
+        name: "Votre nom"
+        message: "Votre question ou commentaire"
+
+  trophies:
+    show:
+      warning: "ATTENTION !!!"
+      denied: "Accès refusé :
+vous n'avez pas encore atteint le niveau suffisant pour voir tous les détails de ce trophée."
+      belongs_to: "Appartient à"
+      won_by: "Ce trophée a été remporté par "
+      user: "utilisateur"
+
+  social:
+    FB_fav: "Devenir un fan sur Facebook"
+    twitter_follow: "Nous suivre sur Twitter"
+  nav:
+    home: "Accueil"
+    about: "À propos"
+    dashboard: "Mon tableau de bord"
+    contact: "Nous contacter"
+    science: "Science"
+    sitemap: "Plan du site"
+    privacy: "Protection des données"
+    trophies: "Mes trophées"
+    my_alliance: "Mon alliance"
+    sign_up: "S'inscrire"
+    reg: "S'inscrire"
+    log_in: "Connexion"
+    logout: "Déconnexion"
+    news: "Infos"
+    forum: "Forum"
+    welcome: "Bienvenue,"
+    edit_reg: "Modifier vos renseignements"
+    not_logged_in: "Vous n'êtes pas connecté."
+
+  science_portals:
+    controller:
+      not_found: "Désolé, pas de projet avec cet identifiant"
+      not_authed: "Désolé, vous n'êtes pas autorisé à voir ce projet"
+    index:
+      header: "Projets de recherche theSkyNet"
+      desc: "theSkyNet est composé de nombreux projets. Chacun contribue de manière unique à la recherche."
+    show:
+      all_projects: "Tous les projets"
+      leaders: "Responsable(s)"
+      links: "Liens"
+  pages:
+    index:
+      splash_header: "Aidez-nous à découvrir notre Univers !"
+      splash_msg: "Vous avez un ordinateur ? Vous voulez aider les astronomes à faire des découvertes fascinantes et à comprendre notre Univers ? Alors theSkyNet a besoin de vous !"
+      TFLOPS_hover: "Estimation"
+      TFLOPS: "Téra opérations à virgule flottante par seconde"
+      contribution: "Contribution en cours"
+      GFLOPS: "Giga opération à virgule flottante par seconde"
+      why: "Pourquoi participer ?"
+      track: "Contribuez à de la véritable recherche scientifique et aidez les chercheurs à explorer les mystères de notre Univers !"
+      earn: "Suivez et comparez votre contribution à celle de vos amis, collègues et du reste du monde !"
+      share: "Partagez votre progression sur vos réseaux sociaux favoris."
+      latest_news: "Dernières infos"
+      stats:
+        current: "Actuelles"
+        global: "Statistiques globales"
+        boinc: "Statistiques POGS"
+        nereus: "Statistiques SourceFinder"
+      json:
+        welcome: "Bienvenue sur l'interface de programmation JSON de theSkyNet"
+  leaderboards:
+    title: "Tête du classement"
+    individual: "Individuel"
+    individual_rank: "Mon classement"
+    alliances: "Alliances"
+    rank: "Classement"
+    name: "Nom"
+    credit: "Crédits"
+    full_link: "Voir tout le classement"
+  language_select:
+    language: "Langue"
+    english: "anglais"
+    french: "français"
+  announcement:
+    view: "Lire"
+    hide: "Ignorer"
+    dismiss: "Effacer"
+  js:
+    stats:
+      latest: "DERNIÈRES STATS"
+  admin:
+    actions:
+      publish_news:
+        menu: "Publier"

@@ -1,17 +1,11 @@
 
 -content_for :title_bar do
   #intro-sml-wrap
-    %h1.fontface Contact Us
+    %h1.fontface= t "contact_forms.title"
 
 -content_for :content do
   #content-wrap
-    #shadowed
-      #inner-boundary
-        #content-inner
-          %h2 Thank you for your message.
-
-          %p
-            We'll get back to you as soon as possible.
-
-          %p
-            = link_to 'Home', root_url, :class => 'button'
+    .well.well-white
+      %h2= t "contact_forms.controller.thank_you"
+      %p= t ".msg"
+      %p= link_to t("nav.home"), root_url, :class => 'button'

@@ -1,5 +1,21 @@
 this.TSN = new Object();
+#**** share box for trophies
+TSN.trophy_share = (obj_id,trophy_name, trophy_url) ->
+  tbx = document.getElementById(obj_id)
+  svcs = [1..4]
 
+  for s of svcs
+    tbx.innerHTML += "<a class=\"addthis_button_preferred_" + s + "\"></a>"
+  tbx.innerHTML += "<a class=\"addthis_button_compact\"></a>"
+  tbx.innerHTML += "<a class=\"addthis_counter addthis_bubble_style\"></a>"
+
+  addthis.toolbox "##{obj_id}", {ui_cobrand: "theSkyNet"}, {
+    url: trophy_url,
+    title: "I just earned '#{trophy_name}' from theSkyNet for playing my part in discovering our Universe! ",
+    templates:
+      twitter: "I just earned '#{trophy_name}' from @_theSkyNet for playing my part in discovering our Universe! {{url}}"
+  }
+#**************************************
 
 
 #******* custom alert box using bootbox
@@ -47,9 +63,20 @@ setup_announcement = ->
     )
   )
 
+placeholder_check = () ->
+  if jQuery.support.placeholder == false
+    $('[placeholder]').each (index, element) =>
+      label = $(element).wrap(
+        '<label for="' + $(element).attr('id') + '" />'
+      ).parent()
+      label.html(
+        $(element).attr('placeholder') + ': ' + label.html()
+      )
+
 $(document).ready( ->
   setup_announcement()
   custom_alert_box()
+  placeholder_check()
   #using bootstrap-progressbar
   $('.progress .bar').progressbar(
     display_text: 1
@@ -58,10 +85,25 @@ $(document).ready( ->
   $('a.fancybox_image').fancybox(
     'type' : 'image'
   )
-  $('#js-news').ticker(
-    titleText: 'Latest Stats',
-    controls: false
-  )
+  $('.js-tooltip').tooltip()
+  if rails.user_signed_in
+    Notifications.update()
+    if (!TSN.notifications_timer?)
+      TSN.notifications_timer = $.timer(Notifications.update,60000, true)
+
+  #setup an idle timer stop updating users notifications if they've been idle for 2 mins
+  $( document ).idleTimer( 120000 );
+  $(document).on "idle.idleTimer", ->
+    # function you want to fire when the user goes idle
+    TSN.notifications_timer.pause();
+
+  $(document).on "active.idleTimer", ->
+    # function you want to fire when the user becomes active again
+    TSN.notifications_timer.play()
+
+  $("a[data-toggle=popover]").popover().click (e) ->
+    e.preventDefault()
+
 )
 
 
@@ -71,3 +113,15 @@ TSN.GRAPHITE =  {
     padded = (pad+id).slice(-9)
     padded.match(/.{3}/g).join('.')
 }
+
+TSN.monthDiff = (d1, d2) ->
+  months = undefined
+  months = (d2.getFullYear() - d1.getFullYear()) * 12
+  months -= d1.getMonth()
+  months += d2.getMonth()
+  months += (if (d2.getDate() > d1.getDate()) then 1 else 0)
+  (if months <= 0 then 0 else months)
+TSN.months_from_launch = ->
+  d1 = new Date(2011, 8, 13)
+  d2 = new Date()
+  TSN.monthDiff(d1, d2) + 1

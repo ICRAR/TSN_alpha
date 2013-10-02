@@ -16,10 +16,15 @@
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require jquery.ui.all
+//= require i18n
+//= require i18n/translations
 //= require init.js.coffee
 //= require_tree ./vendor
 //= require_tree ./general
 //= require_tree ./controllers
 //= require turbolinks
 //= require fancybox
+//= require messenger
+//= require messenger-theme-future
+//= require ckeditor/init
 

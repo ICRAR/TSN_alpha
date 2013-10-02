@@ -15,7 +15,7 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
-module TSNAlpha
+module Tsn
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -83,6 +83,11 @@ module TSNAlpha
 
 
 
+    end
+
+    # Catch 404s
+    config.after_initialize do |app|
+      app.routes.append{match '*path', :to => 'pages#show', :format => false, :defaults => {:slug => '404'}}
     end
   end
 end

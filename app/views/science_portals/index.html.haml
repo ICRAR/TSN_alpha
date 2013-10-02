@@ -1,0 +1,16 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= t(".header")
+  -@user_page =  'science'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %p= t(".desc")
+      %ul
+        - @projects.each do |project|
+          %li= link_to project.name, science_portal_path(:id => project.name)
+        - if !@private_projects.nil? && !@private_projects.empty?
+          - @private_projects.each do |project|
+            %li= link_to "#{project.name} (private)", science_portal_path(:id => project.name)

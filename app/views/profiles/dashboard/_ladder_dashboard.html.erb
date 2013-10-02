@@ -1,16 +1,16 @@
-<h2>Leaderboards</h2>
+<h2><%= t "leaderboards.title" %></h2>
 <div class="tabbable">
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#tab-individual" data-toggle="tab">Individual</a></li>
-        <li><a href="#tab-alliances" data-toggle="tab">Alliances</a></li>
+        <li class="active"><a href="#tab-individual" data-toggle="tab"><%= t "leaderboards.individual" %></a></li>
+        <li><a href="#tab-alliances" data-toggle="tab"><%= t "leaderboards.alliances" %></a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active fade in" id="tab-individual">
             <table class="table table-striped">
                 <thead><tr>
-                    <th>Rank</th>
-                    <th>Name</th>
-                    <th>Credit</th>
+                    <th><%= t "leaderboards.rank" %></th>
+                    <th><%= t "leaderboards.name" %></th>
+                    <th><%= t "leaderboards.credit" %></th>
                 </tr></thead>
 
                 <tbody>
@@ -28,9 +28,9 @@
         <div class="tab-pane fade" id="tab-alliances">
             <table class="table table-striped">
             <thead><tr>
-                <th>Rank</th>
-                <th>Name</th>
-                <th>Credit</th>
+                <th><%= t "leaderboards.rank" %></th>
+                <th><%= t "leaderboards.name" %></th>
+                <th><%= t "leaderboards.credit" %></th>
             </tr></thead>
 
             <tbody>
@@ -43,7 +43,7 @@
             <% end %>
             </tbody>
             </table>
-            <%= link_to "View full leaderboards", alliances_path, :class=>"btn btn-tsn"%>
+            <%= link_to t("leaderboards.full_link"), alliances_path, :class=>"btn btn-tsn"%>
         </div>
     </div>
 

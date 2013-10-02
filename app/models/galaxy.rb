@@ -5,10 +5,35 @@ include VORuby
 class Galaxy < PogsModel
   self.table_name = 'galaxy'
 
+
+  def self.num_current
+    where{status_id == 0}.count
+  end
+
   def self.find_by_user_id(user_id)
     uniq.joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
             INNER JOIN area_user ON area.area_id = area_user.area_id")
-    .where("area_user.userid = #{user_id}")
+    .where("area_user.userid = ?",user_id )
+  end
+  def self.find_by_user_id_last(user_id)
+    joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
+            INNER JOIN area_user ON area.area_id = area_user.area_id")
+    .where("area_user.userid = ?",user_id )
+    .order("`area_user`.`areauser_id` DESC")
+    .limit(1).first
+  end
+
+
+  #returns an active relations object containing the profiles of all people who worked on this galaxy
+  def profiles
+    db_ids = Galaxy.connection.execute("select distinct au.userid
+                from area_user au, area a
+                where au.area_id = a.area_id
+                and a.galaxy_id = #{self.id};
+                ")
+    boinc_ids = db_ids.map {|i| i[0].to_i}
+
+    profiles = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id.in boinc_ids}
   end
 
   def thumbnail_url
@@ -31,6 +56,10 @@ class Galaxy < PogsModel
 
   def more_info_url
     "http://ned.ipac.caltech.edu/cgi-bin/objsearch?objname=#{name}&extend=no&hconst=73&omegam=0.27&omegav=0.73&corr_z=1&out_csys=Equatorial&out_equinox=J2000.0&obj_sort=RA+or+Longitude&of=pre_text&zv_breaker=30000.0&list_limit=5&img_stamp=YES"
+  end
+
+  def per_complete
+    ((self.pixel_count == 0 || self.pixels_processed == 0) ? '0.00' : (self.pixels_processed*100.0/self.pixel_count).round(2).to_s)
   end
 
   def send_report(boinc_id)
@@ -67,10 +96,10 @@ class Galaxy < PogsModel
       galaxy_data = {
           'galid' => "#{galaxy_item.name} (version #{galaxy_item.version_number})",
           #user images
-          'pic1' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,1))}",
-          'pic2' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,2))}",
-          'pic3' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,3))}",
-          'pic4' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,4))}",
+          'pic1' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,1,true,500))}",
+          'pic2' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,2,true,500))}",
+          'pic3' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,3,true,500))}",
+          'pic4' => "image:base64:#{Base64.encode64(galaxy_item.color_image_user(boinc_id,4,true,500))}",
           'pic1_label' => galaxy_item.label(1),
           'pic2_label' => galaxy_item.label(2),
           'pic3_label' => galaxy_item.label(3),
@@ -133,17 +162,28 @@ class Galaxy < PogsModel
       return nil
     end
   end
+  #inverts y coordiante
+  def fix_y(y)
+    fixed = [self.dimension_y-y,0].max
+    [self.dimension_y,fixed].min
+  end
   #returns a image blob with the users area's added
-  def color_image_user(user_id, colour)
+  def color_image_user(user_id, colour, scale = false, size=500)
     require 'RMagick'
-    #get original image
-    image_url = self.image_url(colour)
-    urlimage = open(image_url)
-    image = Magick::ImageList.new.from_blob(urlimage.read)
+    begin
+       #get original image
+      image_url = self.image_url(colour)
+      urlimage = open(image_url)
+      image = Magick::ImageList.new.from_blob(urlimage.read)
+    rescue OpenURI::HTTPError
+      #else make a new image
+      image = Magick::Image.new(self.dimension_x,self.dimension_y) { self.background_color = "black" }
+      image.format = 'png'
+    end
 
     #load areas
     areas = GalaxyArea.areas(self.id, user_id)
-
+    return image.to_blob if areas.size == 0
     #apply areas
     drawing = Magick::Draw.new
     areas.each do |area|
@@ -151,11 +191,16 @@ class Galaxy < PogsModel
       drawing.fill_opacity(0.5)
       drawing.stroke_opacity(0)
       drawing.stroke_width(0)
-      drawing.rectangle(area.top_x,area.top_y,area.bottom_x,area.bottom_y)
+      drawing.rectangle(area.top_x,fix_y(area.top_y),area.bottom_x,fix_y(area.bottom_y))
     end
     drawing.draw(image)
 
     #return blob
+    if scale == true
+      max_size = [image.rows,image.columns].max
+      scale_factor = size.to_f/max_size.to_f
+      image = image.scale(scale_factor) unless scale_factor >= 1
+    end
     image.to_blob
 
 
@@ -164,9 +209,12 @@ class Galaxy < PogsModel
   #searchs the NED and HyperLeda databases for the galaxy data using VOTable.
   def get_galaxy_info
     return_hash = {}
+    #removes the last charcture of the name if its lower case, see Kevin for reason
+    name = self.name[-1].match(/\p{Lower}/).nil? ? self.name : self.name[0..-2]
 
     #ned
     begin
+
       votable = get_vo_table('http://ned.ipac.caltech.edu/cgi-bin/objsearch',
                                 {
                                   :expand => 'no',
@@ -221,8 +269,9 @@ class Galaxy < PogsModel
       return return_hash
     rescue Exception => e
       Rails.logger.error e.message
-      return nil
+      return {}
     end
+
   end
 end
 

@@ -1,5 +1,7 @@
-.pagination-centered=image_tag('boinc_bar.gif')
 -boinc = @profile.general_stats_item.boinc_stats_item
+=link_to science_portal_path(:id => 'POGS') do
+  %h2.pagination-centered
+    =image_tag('sub_brands/POGS-Small.png')
 -if boinc == nil
   = render 'profiles/boinc_forms'
 -else
@@ -11,7 +13,7 @@
         %dt
           %abbr{:title => "Recent Average Credit"} RAC
         %dd= boinc.RAC
-        %dt Your Boinc ID
+        %dt Your POGS ID
         %dd= boinc.boinc_id
   .well.well-small
     -if @boinc_galaxy != nil
@@ -20,7 +22,10 @@
         %a.pull-left{:href=>link}= image_tag @boinc_galaxy.thumbnail_url, :class=>"media-object"
         .media-body
           %h4.media-heading= link_to @boinc_galaxy.name, link
-          %p This is one of the galaxy's your computer has been procession. Click on it for more details.
+          %p This is one of the galaxies your computer has been processing. Click on it for more details
           %ul.unstyled
             %li= link_to "See all your galaxies here", boinc_galaxies_path(boinc.boinc_id)
             %li= link_to "And see all of the POGS galaxies here", galaxies_path
+            %li= link_to "See your galaxies in stellarium", page_path(:slug => 'pogs_stellarium')
+
+  %p= link_to "For more information on POGS head to pogs.theskynet.org/pogs/home", "http://pogs.theskynet.org/pogs/home", :target => "_blank"

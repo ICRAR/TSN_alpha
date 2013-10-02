@@ -38,7 +38,7 @@ RailsAdmin.config do |config|
   # config.default_items_per_page = 20
 
   # Exclude specific models (keep the others):
-  # config.excluded_models = ['Page', 'User']
+  config.excluded_models = ['Galaxy', 'GalaxyArea', "GalaxyRegister","ProfileTrophy","Receipt","GalaxyImageFilter","BoincResult"]
 
   # Include specific models (exclude the others):
   # config.included_models = ['Page', 'User']
@@ -167,7 +167,7 @@ RailsAdmin.config do |config|
   # end
 
   config.attr_accessible_role  { :admin }
-  config.authorize_with :cancan
+  config.authorize_with :cancan, AdminAbility
 
   config.actions do
     # root actions

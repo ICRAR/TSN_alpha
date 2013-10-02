@@ -1,0 +1,13 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= t ".title"
+  =  render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .well.well-white
+      .row-fluid
+        .span12
+          %ul
+            -@stats.each do |s|
+              %li= s.desc

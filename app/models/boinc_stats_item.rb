@@ -53,12 +53,12 @@ class BoincStatsItem < ActiveRecord::Base
   end
 
   #Creates a new boinc account
-  def self.create_new_account(email, password)
+  def self.create_new_account(email, password, username)
 
     item = self.new
 
     #create new boinc account
-    query = {email_addr: email, passwd_hash: Digest::MD5.hexdigest(password+email.downcase), user_name: email}.to_query
+    query = {email_addr: email, passwd_hash: Digest::MD5.hexdigest(password+email.downcase), user_name: username}.to_query
     url = APP_CONFIG['boinc_url'] + "create_account.php?"+ query
     remote_file = open(url)
     xml = Nokogiri::XML(remote_file)
@@ -129,4 +129,20 @@ class BoincStatsItem < ActiveRecord::Base
     end
     return_hash
   end
+
+  #returns the lowest boinc_id that hasn't been connected or the highest recored boinc_id
+  def self.next_id
+    i = BoincStatsItem.where{general_stats_item_id == nil}.minimum(:boinc_id)
+    i ||= BoincStatsItem.maximum(:boinc_id)
+  end
+
+
+  #quieres the results table in the pogs db
+  def total_pending
+    BoincResult.total_pending self.boinc_id
+  end
+  def total_in_progress
+    BoincResult.total_in_progress self.boinc_id
+  end
+
 end

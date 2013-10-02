@@ -4,7 +4,7 @@ Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = APP_CONFIG['smtp_user_name'] +"@" + APP_CONFIG['smtp_domain']
+  config.mailer_sender = APP_CONFIG['smtp_default_from']
 
   # Configure the class responsible to send e-mails.
   config.mailer = "Devise::Mailer"
@@ -268,4 +268,10 @@ Devise.setup do |config|
   # config.omniauth_path_prefix = "/my_engine/users/auth"
 
 
+end
+
+Devise::Async.setup do |config|
+  config.enabled = true
+  config.backend = :delayed_job
+  #config.queue   = :my_custom_queue
 end

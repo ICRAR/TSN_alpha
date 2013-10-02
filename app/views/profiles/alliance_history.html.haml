@@ -1,6 +1,6 @@
 -content_for(:title_bar) do
   #intro-sml-wrap
-    %h1.fontface Your alliance history
+    %h1.fontface= "#{@profile.name.titlecase.possessive} alliance history"
   -@user_page =  'dashboard'
   =render 'layouts/user_nav'
 
@@ -9,12 +9,15 @@
     #alliance-show
       .row-fluid
         .span7.well.well-white
-          %h2 Since you joined theSkyNet you have:
+          %h2
+            Since
+            =link_to @profile.name.titlecase ,profile_path(@profile)
+            joined theSkyNet they have:
           %dl.dl-horizontal
             %dt been a member of
             %dd= pluralize(@memberships.size, "Alliance")
             %dt contributed
-            %dd= pluralize(@memberships.map(&:total_credits).inject(0, :+), "credits")
+            %dd= pluralize(number_with_delimiter(@memberships.map(&:total_credits).inject(0, :+)), "credits")
             %dt spent
             - total_days_in_alliance  = @memberships.map(&:days_in_alliance).inject(0, :+)
             %dd= pluralize(total_days_in_alliance, "day") + " in an alliance"
@@ -24,7 +27,7 @@
 
         -if @alliance
           .span5.well.well-white
-            %h2 Your current Alliance
+            %h2= "#{@profile.name.titlecase.possessive} current Alliance"
             %dl.dl-horizontal
               %dt Name
               %dd= link_to @alliance.name.titleize, @alliance
@@ -48,7 +51,7 @@
 
       .row-fluid
         .span12.well.well-white
-          %h2 All Your Memberships:
+          %h2 All Memberships:
           %table.table.table-striped
             %thead
               %tr
@@ -69,5 +72,5 @@
                     %td= link_to date_left.strftime("#{date_left.day.ordinalize} of %B, %Y"), member.alliance
                   -else
                     %td Still a member
-                  %td= link_to  member.total_credits, member.alliance
+                  %td= link_to number_with_delimiter(member.total_credits), member.alliance
                   %td= link_to member.alliance.ranking, member.alliance

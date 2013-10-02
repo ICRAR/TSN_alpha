@@ -13,7 +13,7 @@ namespace :old_site do
 
     #********* update nereus objects first ***************
     print "updating all nereus_stats_items \n"
-    Rake::Task["nereus:update_all"].execute
+    #NereusJob.new.perform_without_schedule
     print "nereus items update complete \n"
 
     #*********add users************
@@ -23,7 +23,7 @@ namespace :old_site do
     results = remote_client.query("SELECT `Account`.*, t1.first_day FROM `Account`
                                       LEFT JOIN (SELECT userID, MIN(`day`) as first_day FROM `dailyCredits` GROUP BY  userID) t1
                                       ON   `Account`.`userID` = t1.`userID`
-                                      WHERE  `Account`.`userID` >= 10000 AND `Account`.`userID` <= 99999 ",
+                                      WHERE  `Account`.`userID` >= 10000 AND `Account`.`userID` <= 999999 ",
                                   :cache_rows => false)
     print "found #{results.count} accounts \n"
     #iterate across results and update local data
@@ -34,13 +34,13 @@ namespace :old_site do
       print "importing users #{i} to #{i+10} \n" if i%10 == 0
       old_user = generate_old_user(row)
       new_user = make_user(old_user)
-      print "failed to import: #{old_user[:nereus_id]} **************************** #{new_user.errors.full_messages}\n" unless new_user.errors.empty?
-      users_imported += 1 if new_user.errors.empty?
+      print "failed to import: #{old_user[:nereus_id]} **************************** #{new_user.errors.full_messages}\n" unless ((new_user == true) || (new_user.errors.empty?))
+      users_imported += 1 if ((new_user == true) || (new_user.errors.empty?))
       i += 1
     end
     print "finished user import, we imported #{users_imported} new users\n"
     #************ add bonus credit to all users ****************
-
+=begin
     update_bonus_credit(remote_client)
     fix_credit_with_bonus(remote_client)
 
@@ -122,7 +122,7 @@ namespace :old_site do
     create_trophies(remote_client)
     Rake::Task["stats:update_trophy"].execute
 
-
+=end
   end
 end
 =begin
@@ -159,6 +159,10 @@ end
 #note that it wont overwrite existing users
 def make_user(old_user)
   #create user object
+  if User.find_by_email( old_user[:email] ) || User.find_by_username( old_user[:username] )
+  return true
+  end
+
   new_user = User.new(
       :email => old_user[:email],
       :username => old_user[:username],
@@ -291,7 +295,7 @@ def generate_old_alliance(row)
       :country    => row['country'].to_s,
       :team_id    => row['id'].to_i,
       :created_on => row['creationDate'],
-      :invite_only => row['type'].to_i.zero?
+      :invite_only => !row['type'].to_i.zero?
   }
 end
 def get_profile_by_nereus_id(nereus_id)
@@ -387,7 +391,7 @@ def update_bonus_credit(front_end_db)
     print "-- importing bonus credit items #{j} to #{j+10} \n" if j%10 == 0
     profile = get_profile_by_nereus_id(row['userID'])
     if profile
-      bonus = BonusCredit.new(:amount => row['credits']* APP_CONFIG['nereus_to_credit_conversion'], :reason => "imported from old site")
+      bonus = BonusCredit.new(:amount => row['credits']* APP_CONFIG['nereus_to_credit_conversion'], :reason => "Pre-T2 Bonus Credit (no reason stored, contact support if you have a question)")
       bonus.created_at = Time.at(row['day'].to_i*86400)
       profile.general_stats_item.bonus_credits << bonus
     end
@@ -413,7 +417,7 @@ def fix_credit_with_bonus(front_end_db)
       if diff.to_i > 0
         profile = nereus_item.general_stats_item.profile if nereus_item.general_stats_item
         if profile
-          bonus = BonusCredit.new(:amount => diff, :reason => "Fix for old site conversion")
+          bonus = BonusCredit.new(:amount => diff, :reason => "T2 Conversion Hiccup (T2 credit didn't match old credit when we converted, shortfall in credit applied as a bonus)")
           print "-- -- Adding #{diff} cr to old_id: #{row['userID']} \n"
           bonus.created_at = Time.at(row['day'].to_i*86400)
           profile.general_stats_item.bonus_credits << bonus

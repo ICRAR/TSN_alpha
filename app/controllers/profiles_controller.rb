@@ -4,18 +4,31 @@ class ProfilesController < ApplicationController
   authorize_resource
   helper_method :sort_column, :sort_direction
   def index
-    per_page = params[:per_page]
-    per_page ||= 30
-    if (params[:rank] && !params[:page] )
+    per_page = [params[:per_page].to_i,1000].min
+    per_page = 30 if per_page == 0
+    #Finds and highlights a users postion in the tables
+    if (params[:rank])
       rank = [[params[:rank].to_i,per_page/2+1].max,Profile.for_leader_boards.count].min
-      page_num = (rank-per_page/2) / per_page + 1
-      page_padding = (rank-per_page/2) % per_page-1
+      if (params[:page] ==  'me')
+        page_num = (rank-per_page/2) / per_page + 1
+        page_padding = (rank-per_page/2) % per_page-1
+        if page_padding > (per_page/2)
+          page_num += 1
+          page_padding -= per_page
+        end
+      elsif params[:page]
+        page_num = params[:page]
+        page_padding = (rank-per_page/2) % per_page-1
+        page_padding = 0
+      else
+        page_num = 1
+        page_padding = 0
+      end
     else
       page_num = params[:page]
       page_padding = 0;
     end
     @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).order("-"+sort_column + " " + sort_direction)
-
   end
 
   # GET /profiles/1
@@ -26,28 +39,48 @@ class ProfilesController < ApplicationController
 
   def compare
     @profiles = Profile.for_compare(params[:id1],params[:id2])
+    if @profiles.length != 2
+      redirect_to profiles_url, notice: 'Sorry we could not find both of those users'
+      return
+    end
   end
 
   def dashboard
     if user_signed_in?
-      @profile = current_user.profile
+      if current_user.admin? && !params[:profile_id].nil?
+        @profile = Profile.find(params[:profile_id])
+      else
+        @profile = current_user.profile
+      end
+      if @profile.nil?
+        redirect_to profiles_url, notice: 'Sorry could not find your profile'
+        return
+      end
       @profile.general_stats_item.nereus_stats_item.update_status  if @profile.general_stats_item.nereus_stats_item != nil
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'
       return
     end
 
+
     @top_profiles = Profile.for_leader_boards_small.order("rank asc").limit(5)
     @top_alliances = Alliance.for_leaderboard_small.order('ranking asc').limit(5)
     if @profile.general_stats_item.boinc_stats_item != nil
       begin
-        @boinc_galaxy = Galaxy.find_by_user_id(@profile.general_stats_item.boinc_stats_item.boinc_id).order("galaxy.galaxy_id DESC").limit(1).first
+        @boinc_galaxy = Galaxy.find_by_user_id_last(@profile.general_stats_item.boinc_stats_item.boinc_id)
       rescue
         @boinc_galaxy = nil
       end
     end
 
-    case @profile.new_profile_step
+    profile_step = @profile.new_profile_step
+    if profile_step == 1 && !params[:next_step].nil?
+      @profile.new_profile_step = [3,@profile.new_profile_step].max
+      @profile.save
+    end
+    profile_step = params[:step].to_i - 1 if current_user.admin? && !params[:step].nil?
+
+    case profile_step
       when 0
         @profile.nickname = @profile.user.username
         respond_to do |format|
@@ -78,7 +111,12 @@ class ProfilesController < ApplicationController
       @trophy_ids = nil
     end
     @profile = Profile.find(params[:id])
-    @trophies = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC")
+    if params[:style] == "credit"
+      @trophies = @profile.trophies.order{credits.desc}
+    else
+      @trophies = @profile.trophies_by_set
+    end
+
 
   end
 
@@ -158,7 +196,7 @@ class ProfilesController < ApplicationController
       @profile = current_user.profile
       #check that password is correct
       if  current_user.valid_password?(params['password'])
-        boinc = BoincStatsItem.create_new_account(current_user.email,params['password'])
+        boinc = BoincStatsItem.create_new_account(current_user.email,params['password'],current_user.username)
         if boinc.new_record?
           redirect_to my_profile_path, alert: boinc.errors.full_messages.to_sentence
         else
@@ -253,9 +291,20 @@ class ProfilesController < ApplicationController
     end
   end
   def search
+    per_page = [params[:per_page].to_i,1000].min
+    per_page = 30 if per_page == 0
+    page_num = params[:page]
     if params[:search]
       @profiles = Profile.search(params[:search], params[:page], 10)
       params[:sort] = "search"
+      render :index
+    elsif params[:trophy_id]
+      @trophy = Trophy.find params[:trophy_id] || not_found
+      @profiles = @trophy.profiles.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
+      render :index
+    elsif params[:galaxy_id]
+      @galaxy = Galaxy.where(:galaxy_id => params[:galaxy_id]).first || not_found
+      @profiles = @galaxy.profiles.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
       render :index
     else
       redirect_to( profiles_path, :alert => "You did not enter a valid search query")
@@ -263,22 +312,23 @@ class ProfilesController < ApplicationController
   end
 
   def alliance_history
-    if user_signed_in?
-      @profile = Profile.where(:user_id => current_user.id).first
+      @profile = Profile.find(params[:id])
       @memberships = @profile.alliance_items.order(:id).includes(:alliance)
       @alliance = @profile.alliance
 
       @total_members  = @alliance ? AllianceMembers.where(:alliance_id =>@alliance.id).count : nil
-    else
-      redirect_to root_url, notice: 'You must be logged in to view your own profile.'
-      return
-    end
   end
+
 
   private
 
   def sort_column
-    %w[rank rac credits search].include?(params[:sort]) ? params[:sort] : "rank"
+    col = %w[rank rac credits search].include?(params[:sort]) ? params[:sort] : "rank"
+    if %w[rank].include?(col)
+      "general_stats_items.#{col}"
+    else
+      col
+    end
   end
 
   def sort_direction

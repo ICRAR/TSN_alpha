@@ -1,38 +1,44 @@
 -content_for(:title_home) do
-  #intro-home{:style => "cursor:pointer;", :onclick=>"run(getQueryVariable('userID'))"}
-    #intro-home-wrap{:style=>"cursor:pointer;", :onClick=> "run(getQueryVariable('userID'))"}
-      %h1.fontface Play your part and help discover our Universe!
-      %p Have a computer? Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!
-    %span#intro-img{:onclick=>"run(getQueryVariable('userID'))"}= ' '
+  #intro-home
+    #intro-home-wrap
+      %h1.fontface= t '.splash_header'
+      %p= t".splash_msg"
+    %span#intro-img= ' '
   %span.ribbon
     #ribbon-content
-      = link_to('Sign up now', new_user_session_path, :class => "signupbutton")
-      %p
-        %a{:href=>"#", :onClick=>"run()"} or click here run theSkyNet without having to register
       -if @TFLOPSStat
         #TFLOPS-count.pull-right
-          %a{:href=>'#', :title => "Please note this is only an estimate", :data => {:toggle => "tooltip"}}
+          %a{:href=>'#', :title => t(".TFLOPS_hover"), :data => {:toggle => "tooltip"}}
             =@TFLOPSStat.value.to_s
             %i{:class=>"icon-#{@TFLOPSStat.dir == "asc" ? "arrow-up" : "arrow-down"}"}
-            %abbr{:title => "Tera Floating Point Operations per Second"} TFLOPS
-      #ribbonsocial
-        %a{:href=>"http://www.facebook.com/pages/TheSkyNet/214061585306810"}= image_tag('social_fb.png',:width =>32, :height => 32, :alt => "Become a Facebook Fan", :style=> 'margin-right:10px;')
-        %a{:href=>"http://www.twitter.com/#!/_theSkyNet"}= image_tag('social_tw.png',:width =>32, :height => 32, :alt => "Follow us on Twitter", :style=> 'margin-right:10px;')
+            %abbr{:title => t(".TFLOPS")} TFLOPS
+      #ribbonsocial.pull-right
+        %a{:href=>"http://www.facebook.com/pages/TheSkyNet/214061585306810"}= image_tag('social_fb.png',:width =>29, :height => 29, :alt => t("social.FB_fav"), :style=> 'margin-right:10px;')
+        %a{:href=>"http://www.twitter.com/#!/_theSkyNet"}= image_tag('social_tw.png',:width =>29, :height => 29, :alt => t("social.twitter_follow"), :style=> 'margin-right:10px;')
+      - if user_signed_in?
+        #GFLOPS-user
+          =link_to my_profile_path do
+            = "#{t(".contribution")} #{current_user.profile.general_stats_item.gflops} "
+            %abbr{:title => t(".GFLOPS")} GFLOPS
+      -else
+        = link_to('Sign up now!!', new_user_session_path, :class => "signupbutton")
+
 -content_for(:content) do
   #content-wrap-home
     .row-fluid
       .span12
-        =render 'layouts/feed'
+        =link_to stats_path do
+          =render 'layouts/feed'
     .row-fluid
       .span6.page_content
         = @page.content.html_safe if @page
       .span6
         #info-skynet.info-about.last
-          %h2 Why should I join?
+          %h2= t ".why"
           %ul#reasons
-            %li.track Contribute to real scientific research and help scientists unlock the mysteries of our Universe!
-            %li.earn Track your contribution and see how you compare against your friends, colleagues and the world!.
-            %li.share Share your progress on all your favourite social networks.
+            %li.track= t ".track"
+            %li.earn= t ".earn"
+            %li.share= t ".share"
 
   .row-fluid
     #activity_feed.span12.well
@@ -49,10 +55,10 @@
 
   .row-fluid
     #news.span6.well
-      %h2 Latest News
+      %h2= t ".latest_news"
       #news_list
-        -@news.each do |item|
-          = render 'news/news_short', :item => item
+        -@news.each_with_index do |item, index|
+          = render 'news/news_short', :item => item, :index => index
 
     #leaderboards.span6.well
       = render 'profiles/dashboard/ladder_dashboard'
@@ -60,21 +66,21 @@
   #main-graphs.row-fluid.tabbable.well
     %ul.nav.nav-tabs
       %li.active
-        %a{:href=>"#tab-global", :data => {:toggle=>"tab"}} Global Stats
+        %a{:href=>"#tab-global", :data => {:toggle=>"tab"}}= t ".stats.global"
       %li
-        %a{:href=>"#tab-boinc", :data => {:toggle=>"tab"}} BOINC Stats
+        %a{:href=>"#tab-boinc", :data => {:toggle=>"tab"}}= t ".stats.boinc"
       %li
-        %a{:href=>"#tab-nereus", :data => {:toggle=>"tab"}} Nereus Stats
+        %a{:href=>"#tab-nereus", :data => {:toggle=>"tab"}}= t ".stats.nereus"
     .span12
       .tab-content
         .tab-pane.fade.in.active#tab-global
-          %h2 Current Global Stats
+          %h2= "#{t(".stats.current")} #{t(".stats.global")}"
           #global_graphs
         .tab-pane.fade.in#tab-boinc
-          %h2 Current Global Boinc Stats
+          %h2= "#{t(".stats.current")} #{t(".stats.boinc")}"
           #boinc_graphs
         .tab-pane.fade.in#tab-nereus
-          %h2 Current Global Nereus Stats
+          %h2= "#{t(".stats.current")} #{t(".stats.nereus")}"
           #nereus_graphs
 
 

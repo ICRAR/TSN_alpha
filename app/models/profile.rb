@@ -5,12 +5,17 @@ class Profile < ActiveRecord::Base
   belongs_to :alliance, inverse_of: :members
   has_many :alliance_items, :class_name => 'AllianceMembers'
 
-  has_many :profiles_trophies, :dependent => :delete_all, :autosave => true
+  has_many :profiles_trophies
   has_many :trophies, :through => :profiles_trophies
+  has_many :trophy_sets, :through => :trophies
+  before_destroy :remove_trophies
+  def remove_trophies
+    self.profiles_trophies.delete_all
+  end
   has_one :general_stats_item, :dependent => :destroy, :inverse_of => :profile
   has_one :invited_by, :class_name => "AllianceInvite", :inverse_of => :redeemed_by, :foreign_key => "redeemed_by_id"
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :invited_by, :foreign_key => "invited_by_id"
-  attr_accessible :country, :use_full_name, :nickname, :first_name, :second_name, :as => [:default, :admin]
+  attr_accessible :country, :use_full_name, :nickname, :first_name, :second_name, :old_site_user,  :as => [:default, :admin]
   attr_accessible :trophy_ids, :new_profile_step, as: :admin
 
   #validates :nickname, :uniqueness => true
@@ -18,6 +23,35 @@ class Profile < ActiveRecord::Base
   scope :for_leader_boards, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").where('general_stats_items.rank IS NOT NULL').where(:general_stats_items => {:power_user => false}).includes(:alliance, :user)
   scope :for_leader_boards_small, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").where('general_stats_items.rank IS NOT NULL').where(:general_stats_items => {:power_user => false})
   scope :for_trophies, joins(:general_stats_item).select("profiles.*, general_stats_items.last_trophy_credit_value as last_trophy_credit_value, general_stats_items.total_credit as credits, general_stats_items.id as stats_id").where('general_stats_items.total_credit IS NOT NULL')
+
+
+  sifter :does_not_have_trophy do |trophy_id|
+    id.not_in(ProfilesTrophy.select(:profile_id).where{profiles_trophies.trophy_id == my{trophy_id}})
+  end
+
+  #science portal memberships
+  has_and_belongs_to_many :members_science_portals,
+                          class_name: "SciencePortal",
+                          foreign_key: "member_id",
+                          association_foreign_key: "science_portal_id",
+                          join_table: "members_science_portals"
+  has_and_belongs_to_many :leaders_science_portals,
+                          class_name: "SciencePortal",
+                          foreign_key: "leader_id",
+                          association_foreign_key: "science_portal_id",
+                          join_table: "leaders_science_portals"
+
+  #sets up simple messaging
+  acts_as_messageable
+  #Returning the email address of the model if an email should be sent for this object (Message or Notification).
+  #If no mail has to be sent, return nil.
+  def mailboxer_email(object)
+    #Check if an email should be sent for that object
+    #if true
+    #return "define_email@on_your.model"
+    #if false
+    return nil
+  end
 
   def  self.for_show(id)
     includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).find(id)
@@ -40,23 +74,34 @@ class Profile < ActiveRecord::Base
   def trophy_ids
     self.trophies.select("trophies.id").map(&:id)
   end
+  def country_name
+    return '' if country.nil?
+    out = ::CountrySelect::COUNTRIES[country.downcase]
+    out = country if out.nil?
+    return out
+  end
+  def full_name
+    temp_name = ''
+    if (first_name)
+      temp_name = first_name + temp_name
+    end
+    if ((first_name || second_name) && nickname)
+      temp_name = temp_name + " '#{nickname}' "
+    elsif (nickname)
+      temp_name = nickname
+    end
+    if (second_name)
+      temp_name = temp_name + second_name
+    end
+    unless (first_name || second_name || nickname)
+      temp_name = user.username if user.username
+    end
+    temp_name.titleize
+  end
   def name
     temp_name = ''
     if use_full_name
-      if (first_name)
-        temp_name = first_name + temp_name
-      end
-      if ((first_name || second_name) && nickname)
-        temp_name = temp_name + " '#{nickname}' "
-      elsif (nickname)
-        temp_name = nickname
-      end
-      if (second_name)
-        temp_name = temp_name + second_name
-      end
-      unless (first_name || second_name || nickname)
-        temp_name = user.username if user.username
-      end
+      temp_name = full_name
     else
       if (nickname)
         temp_name = nickname
@@ -64,7 +109,7 @@ class Profile < ActiveRecord::Base
         temp_name = user.username if user.username
       end
     end
-    return temp_name.titleize
+    return temp_name
   end
 
 
@@ -78,7 +123,7 @@ class Profile < ActiveRecord::Base
       item.start_credit = self.general_stats_item.total_credit
       item.start_credit ||= 0
       item.leave_credit = self.general_stats_item.total_credit
-      item.start_credit ||= 0
+      item.leave_credit ||= 0
       item.leave_date = nil
 
       self.alliance_items << item
@@ -92,7 +137,7 @@ class Profile < ActiveRecord::Base
     if self.alliance == nil
       false
     else
-      item = self.alliance_items.where(:leave_date => nil).first
+      item = self.alliance_items.where{(leave_date == nil) & (alliance_id == my{self.alliance.id})}.first
       item.leave_date = Time.now
       item.leave_credit = self.general_stats_item.total_credit
       item.save
@@ -123,6 +168,24 @@ class Profile < ActiveRecord::Base
     default_url = "retro"
     gravatar_id = Digest::MD5.hexdigest(self.user.email.downcase)
     "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
+  end
+
+  def avatar_edit_url
+    "http://en.gravatar.com/emails/"
+  end
+
+
+  def trophies_by_set
+    sets = trophy_sets.order("trophy_sets.main DESC").uniq
+    all_trophies = trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").group_by{|t| t.trophy_set_id}
+    sets.each do |set|
+      set.profile_trophies = all_trophies[set.id]
+    end
+    sets
+  end
+
+  def has_trophy(trophy)
+    ProfilesTrophy.where{(profile_id == my{self.id}) & (trophy_id == my{trophy.id})}.count > 0
   end
 
   #search methods

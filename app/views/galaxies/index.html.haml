@@ -63,11 +63,11 @@
                       =galaxy.name
                       = image_tag galaxy.thumbnail_url
                   %td= link_to galaxy.galaxy_type, link
-                  %td= link_to galaxy.redshift.to_i, link
+                  %td= link_to galaxy.redshift.to_s, link
                   %td= link_to "#{galaxy.dimension_x} x #{galaxy.dimension_y}", link
                   %td= link_to galaxy.ra_cent, link
                   %td= link_to galaxy.dec_cent, link
-                  %td= link_to ((galaxy.pixel_count == 0 || galaxy.pixels_processed == 0) ? '0.00%' : (galaxy.pixels_processed*100.0/galaxy.pixel_count).to_s + '%'), link
+                  %td= link_to "#{galaxy.per_complete}%", link
                   %td= link_to "More Galaxy details", galaxy.more_info_url
           - @galaxies.total_count(:galaxy_id,:distinct => true)
           = paginate @galaxies

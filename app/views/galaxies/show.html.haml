@@ -27,9 +27,10 @@
               %dd= "#{@galaxy.dimension_x} x #{@galaxy.dimension_y}"
               %dt
                 %abbr{:title => "Percentage Complete"} %
-              %dd= (@galaxy.pixel_count == 0 || @galaxy.pixels_processed == 0) ? '0.00%' : (@galaxy.pixel_count*100.0/@galaxy.pixels_processed).to_s + '%'
+              %dd= "#{@galaxy.per_complete}%"
               %dt
-              %dd= link_to "More Galaxy details", @galaxy.more_info_url
+              %dd= link_to "More Galaxy details (external link)", @galaxy.more_info_url
+              %dd= link_to "Click here to see all the users that worked on this Galaxy.", search_profiles_path(:galaxy_id => @galaxy.id)
             %p
               - if @boinc_id
                 The following are images of the galaxy using four combinations of filters where the bright square or rectangular areas are those where you have been credited with the processing.
@@ -37,15 +38,17 @@
                 The following are images of the galaxy using four combinations of filters.
             %ul.thumbnails
               - if @boinc_id
-                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>1), :title => @galaxy.label(1).html_safe}
-                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>2), :title => @galaxy.label(2).html_safe}
-                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>3), :title => @galaxy.label(3).html_safe}
-                =render "galaxies/image", {:link => image_boinc_galaxy_url(:id => @galaxy.id, :boinc_id => @boinc_id, :colour =>4), :title => @galaxy.label(4).html_safe}
+                -scale = ([@galaxy.dimension_x,@galaxy.dimension_y].max > 500)
+                -#present the scaled galaxy if the image dimensions are > 500
+                =render "galaxies/user_image", {:colour => 1, :scale => scale}
+                =render "galaxies/user_image", {:colour => 2, :scale => scale}
+                =render "galaxies/user_image", {:colour => 3, :scale => scale}
+                =render "galaxies/user_image", {:colour => 4, :scale => scale}
               -else
-                =render "galaxies/image", {:link => @galaxy.image_url(1), :title => "i,r,g"}
-                =render "galaxies/image", {:link => @galaxy.image_url(2), :title => "r,6, NUV"}
-                =render "galaxies/image", {:link => @galaxy.image_url(3), :title => "3.4&micro;m, g, NUV".html_safe}
-                =render "galaxies/image", {:link => @galaxy.image_url(4), :title => "22&micro;m, r, NUV".html_safe}
+                =render "galaxies/image", {:link => @galaxy.image_url(1), :title => @galaxy.label(1).html_safe}
+                =render "galaxies/image", {:link => @galaxy.image_url(2), :title => @galaxy.label(2).html_safe}
+                =render "galaxies/image", {:link => @galaxy.image_url(3), :title => @galaxy.label(3).html_safe}
+                =render "galaxies/image", {:link => @galaxy.image_url(4), :title => @galaxy.label(4).html_safe}
 
             %p
               The following images show the results of the calculations performed against this galaxy to date.

@@ -1,0 +1,10 @@
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Welcome to theSkyNet
+- content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %h2= t '.header'
+      %p= t '.msg'
+    .well.well-white
+      = render 'form'

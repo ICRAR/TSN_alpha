@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-TSNAlpha::Application.load_tasks
+Tsn::Application.load_tasks

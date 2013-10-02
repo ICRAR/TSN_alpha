@@ -51,17 +51,21 @@
             .span12.well.well-white
               %h2 Who are we:
               %blockquote.pull-right
-                %p= @alliance.desc
+                - desc = Sanitize.clean(@alliance.desc, Sanitize::Config::BASIC).html_safe
+                %p= desc
                 %small= @alliance.leader.name if @alliance.leader != nil
               .clearfix
               -if user_signed_in? && current_user.profile.alliance == nil
-                -if @alliance.invite_only?
-                  ="#{@alliance.name.titleize} is an invite only alliance. To join you must be invited by an existing member."
-
+                -if @alliance.is_boinc?
+                  This team is managed at pogs.theskynet.org
                 -else
-                  ="#{@alliance.name.titleize} is currently accepting members, would you like to join?"
-                  %br
-                  =link_to "Join #{@alliance.name.titleize}", join_alliance_path, :class => "btn btn-success"
+                  -if @alliance.invite_only?
+                    ="#{@alliance.name.titleize} is an invite only alliance. To join you must be invited by an existing member."
+
+                  -else
+                    ="#{@alliance.name.titleize} is currently accepting members, would you like to join?"
+                    %br
+                    =link_to "Join #{@alliance.name.titleize}", join_alliance_path, :class => "btn btn-success"
 
 
 

@@ -4,8 +4,20 @@ class AlliancesController < ApplicationController
   authorize_resource
   helper_method :sort_column, :sort_direction
 
+  before_filter :check_boinc, :except => [:index, :show, :search, :new]
+  def check_boinc
+    if params[:id]
+      a = Alliance.where{id == my{params[:id]}}.select(:is_boinc).first
+      if a.is_boinc?
+        redirect_to my_profile_url, alert: "Sorry Boinc alliances must be edited on the boinc site http://pogs.theskynet.org/pogs"
+        return
+      end
+    end
+  end
+
+
   def index
-    per_page = params[:per_page]
+    per_page = [params[:per_page].to_i,1000].min
     per_page ||= 20
     @alliances = Alliance.for_leaderboard.page(params[:page]).per(per_page).order("`" + sort_column + "`" " " + sort_direction)
     @tags = Alliance.tag_counts.where("taggings.tags_count > 2")
@@ -18,7 +30,7 @@ class AlliancesController < ApplicationController
     @per_page = 20 if @per_page == 0
     @page =  params[:page].to_i
     @page = 1 if @page == 0
-    @alliance = Alliance.for_show(params[:id])
+    @alliance = Alliance.for_show(params[:id]) || not_found
     @members = AllianceMembers.page(@page).per(@per_page).for_alliance_show(params[:id])
     @total_members  = AllianceMembers.where(:alliance_id =>params[:id]).count
   end
@@ -118,13 +130,21 @@ class AlliancesController < ApplicationController
     redirect_to my_profile_path
   end
   def search
-    #@alliances = Alliance.search_by_name(params[:search]).includes(:leader).page(params[:page]).per(10)
-    @alliances = Alliance.search params[:search], params[:page], 10
-    #@tags = Alliance.tag_counts.where("tags.name LIKE ?", "%#{params[:search]}%")
-    @tags = Alliance.where("id IN(#{@alliances.map {|a| a.id}.join(', ')})").select(:id).tag_counts
-
-
-    render :index
+    if params[:search]
+      params[:sort] = "search"
+      #@alliances = Alliance.search_by_name(params[:search]).includes(:leader).page(params[:page]).per(10)
+      @alliances = Alliance.search params[:search], params[:page], 10
+      #@tags = Alliance.tag_counts.where("tags.name LIKE ?", "%#{params[:search]}%")
+      if @alliances.size == 0
+        @tags = []
+      else
+        ids =  @alliances.map {|a| a.id}
+        @tags = Alliance.where{id.in ids}.select(:id).tag_counts
+      end
+      render :index
+    else
+      redirect_to( alliances_path, :alert => "You did not enter a valid search query")
+    end
   end
 
   def invite
@@ -148,7 +168,7 @@ class AlliancesController < ApplicationController
             invite.save
 
             #send email
-            UserMailer.alliance_invite(invite).deliver
+            UserMailer.delay.alliance_invite(invite)
             #return success
             success = true
             msg = "Invite for #{Alliance.name} sent to #{email}"

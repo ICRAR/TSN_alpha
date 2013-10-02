@@ -1,6 +1,13 @@
-TSNAlpha::Application.routes.draw do
-  resources :contact_forms
+Tsn::Application.routes.draw do
+  #redirect all to host name in custom config
+  match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
+        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host']) &&
+          (request.host !='localhost') &&
+          (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
+        )}
 
+  resources :contact_forms
+  resources :stats, :only => [:index]
   get "trophies/show"
 
   root :to => 'pages#index'
@@ -12,18 +19,26 @@ TSNAlpha::Application.routes.draw do
   get "/pages/home" => "pages#home", :as => 'home'
   get "/pages/:slug" => "pages#show", :as => 'page'
 
+  resources :notifications, :only => [:index, :show] do
+    member do
+      get 'dismiss'
+    end
+  end
+
+  resources :science_portals, :only => [:index, :show]
   resources :profiles, :only => [:index, :show, :update] do
     collection do
       get 'search'
     end
     member do
       get 'trophies'
+      get 'alliance_history'
+
     end
 
   end
 
   get "/profiles/compare/:id1/:id2" => 'profiles#compare', :as => 'profiles_compare'
-  get "/profile/alliance_history" => 'profiles#alliance_history', :as => 'my_alliance_history'
   get "/profile" => "profiles#dashboard",  :as => 'my_profile'
   get "/profile/edit" => "profiles#edit", :as => 'edit_profile'
   post "/profile/update_nereus_id"  => "profiles#update_nereus_id", :as => 'update_nereus_id'
@@ -33,8 +48,12 @@ TSNAlpha::Application.routes.draw do
   get "/profile/pause_nereus" => "profiles#pause_nereus", :as => 'pause_nereus'
   get "/profile/resume_nereus" => "profiles#resume_nereus", :as => 'resume_nereus'
 
-get "/nereus/run" => "nereus#run", :as => 'run_nereus'
-get "/nereus/new" => "nereus#new", :as => 'new_nereus'
+  get "/nereus/run" => "nereus#run", :as => 'run_nereus'
+  get "/nereus/new" => "nereus#new", :as => 'new_nereus'
+  post "/nereus/new" => "nereus#new", :as => 'new_nereus'
+  post "/nereus/send_cert" => "nereus#send_cert", :as => 'send_cert_nereus'
+  get "/nereus/send_cert" => "nereus#send_cert", :as => 'send_cert_nereus'
+
   resources :alliances do
     member do
        get 'join'
@@ -54,6 +73,7 @@ get "/nereus/new" => "nereus#new", :as => 'new_nereus'
   get "/check_auth" => "application#check_auth"
   post "/check_auth" => "application#check_auth"
   get "/ping" => "application#ping"
+  get "/facebook_channel" => "application#facebook_channel", :as => 'facebook_channel'
 
   resources :news, :only => [:index, :show] do
     member do

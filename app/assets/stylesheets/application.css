@@ -17,5 +17,8 @@
  *= require bootstrap_and_overrides
  *= require jquery.ui.all
  *= require fancybox
+ *= require messenger
+ *= require messenger-spinner
+ *= require messenger-theme-future
  */
 

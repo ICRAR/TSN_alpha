@@ -13,7 +13,7 @@ CREATE TABLE `alliance_invites` (
   PRIMARY KEY (`id`),
   KEY `profile_id_index` (`invited_by_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliance_members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -29,7 +29,7 @@ CREATE TABLE `alliance_members` (
   KEY `profile_id_index` (`profile_id`),
   KEY `alliance_id_index` (`alliance_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2702 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12547 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -44,11 +44,14 @@ CREATE TABLE `alliances` (
   `country` varchar(255) DEFAULT NULL,
   `old_id` int(11) DEFAULT NULL,
   `invite_only` tinyint(1) DEFAULT NULL,
+  `is_boinc` tinyint(1) DEFAULT '0',
+  `pogs_team_id` int(11) DEFAULT '0',
+  `pogs_update_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `credit_desc` (`credit`),
   KEY `ranking_asc` (`ranking`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=523 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1979 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `boinc_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -63,7 +66,7 @@ CREATE TABLE `boinc_stats_items` (
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1899 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7195 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `bonus_credits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -75,7 +78,7 @@ CREATE TABLE `bonus_credits` (
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5054 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5055 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `ckeditor_assets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -92,6 +95,14 @@ CREATE TABLE `ckeditor_assets` (
   PRIMARY KEY (`id`),
   KEY `idx_ckeditor_assetable_type` (`assetable_type`,`type`,`assetable_id`),
   KEY `idx_ckeditor_assetable` (`assetable_type`,`assetable_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `conversations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subject` varchar(255) DEFAULT '',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `daily_alliance_credit` (
@@ -121,7 +132,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -138,7 +149,19 @@ CREATE TABLE `general_stats_items` (
   KEY `total_credit_index_desc` (`total_credit`),
   KEY `rank_asc` (`rank`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9087 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15978 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `leaders_science_portals` (
+  `leader_id` int(11) DEFAULT NULL,
+  `science_portal_id` int(11) DEFAULT NULL,
+  KEY `index_leaders_science_portals_on_leader_id_and_science_portal_id` (`leader_id`,`science_portal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `members_science_portals` (
+  `member_id` int(11) DEFAULT NULL,
+  `science_portal_id` int(11) DEFAULT NULL,
+  KEY `index_members_science_portals_on_member_id_and_science_portal_id` (`member_id`,`science_portal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `nereus_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -158,10 +181,11 @@ CREATE TABLE `nereus_stats_items` (
   `mips_now` int(11) DEFAULT NULL,
   `mips_today` int(11) DEFAULT NULL,
   `last_checked_time` datetime DEFAULT NULL,
+  `report_time_sent` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9222 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9238 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `news` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -176,22 +200,59 @@ CREATE TABLE `news` (
   `image_content_type` varchar(255) DEFAULT NULL,
   `image_file_size` int(11) DEFAULT NULL,
   `image_updated_at` datetime DEFAULT NULL,
+  `notify` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `pubished_time_index_asc` (`published_time`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) DEFAULT NULL,
+  `body` text,
+  `subject` varchar(255) DEFAULT '',
+  `sender_id` int(11) DEFAULT NULL,
+  `sender_type` varchar(255) DEFAULT NULL,
+  `conversation_id` int(11) DEFAULT NULL,
+  `draft` tinyint(1) DEFAULT '0',
+  `updated_at` datetime NOT NULL,
+  `created_at` datetime NOT NULL,
+  `notified_object_id` int(11) DEFAULT NULL,
+  `notified_object_type` varchar(255) DEFAULT NULL,
+  `notification_code` varchar(255) DEFAULT NULL,
+  `attachment` varchar(255) DEFAULT NULL,
+  `global` tinyint(1) DEFAULT '0',
+  `expires` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_notifications_on_conversation_id` (`conversation_id`),
+  CONSTRAINT `notifications_on_conversation_id` FOREIGN KEY (`conversation_id`) REFERENCES `conversations` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `page_translations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_id` int(11) DEFAULT NULL,
+  `locale` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `content` text,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_page_translations_on_page_id` (`page_id`),
+  KEY `index_page_translations_on_locale` (`locale`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) DEFAULT NULL,
-  `content` text,
   `slug` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
+  `science_portal_id` int(11) DEFAULT NULL,
+  `preview` tinyint(1) NOT NULL DEFAULT '0',
+  `sort_order` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -208,11 +269,12 @@ CREATE TABLE `profiles` (
   `nickname` varchar(255) DEFAULT NULL,
   `use_full_name` tinyint(1) DEFAULT '1',
   `announcement_time` datetime DEFAULT NULL,
+  `old_site_user` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`user_id`),
   KEY `alliance_leader_id_index` (`alliance_leader_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9087 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15978 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `profiles_trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -226,7 +288,7 @@ CREATE TABLE `profiles_trophies` (
   KEY `profile_id_index` (`profile_id`),
   KEY `trophy_id_index` (`trophy_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=106121 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=890475 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `rails_admin_histories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -242,10 +304,47 @@ CREATE TABLE `rails_admin_histories` (
   KEY `index_rails_admin_histories` (`item`,`table`,`month`,`year`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `receipts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `receiver_id` int(11) DEFAULT NULL,
+  `receiver_type` varchar(255) DEFAULT NULL,
+  `notification_id` int(11) NOT NULL,
+  `is_read` tinyint(1) DEFAULT '0',
+  `trashed` tinyint(1) DEFAULT '0',
+  `deleted` tinyint(1) DEFAULT '0',
+  `mailbox_type` varchar(25) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_receipts_on_notification_id` (`notification_id`),
+  KEY `index_receiver_id_is_read` (`receiver_id`,`is_read`),
+  CONSTRAINT `receipts_on_notification_id` FOREIGN KEY (`notification_id`) REFERENCES `notifications` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2031 DEFAULT CHARSET=latin1;
+
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) NOT NULL,
   UNIQUE KEY `unique_schema_migrations` (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `science_links` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `science_portal_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `science_portals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `public` tinyint(1) DEFAULT NULL,
+  `desc` text,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `site_stats` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -260,7 +359,7 @@ CREATE TABLE `site_stats` (
   PRIMARY KEY (`id`),
   KEY `show_index` (`show_in_list`),
   KEY `name_index` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `taggings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -274,13 +373,13 @@ CREATE TABLE `taggings` (
   PRIMARY KEY (`id`),
   KEY `index_taggings_on_tag_id` (`tag_id`),
   KEY `index_taggings_on_taggable_id_and_taggable_type_and_context` (`taggable_id`,`taggable_type`,`context`)
-) ENGINE=InnoDB AUTO_INCREMENT=1041 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2082 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=866 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=867 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -294,9 +393,20 @@ CREATE TABLE `trophies` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `hidden` tinyint(1) DEFAULT NULL,
+  `trophy_set_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `trophy_sets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `set_type` varchar(255) DEFAULT NULL,
+  `main` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -326,6 +436,7 @@ CREATE TABLE `users` (
   `invitation_limit` int(11) DEFAULT NULL,
   `invited_by_id` int(11) DEFAULT NULL,
   `invited_by_type` varchar(255) DEFAULT NULL,
+  `boinc_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_users_on_email` (`email`),
   UNIQUE KEY `index_users_on_reset_password_token` (`reset_password_token`),
@@ -334,7 +445,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `index_users_on_invitation_token` (`invitation_token`),
   KEY `index_users_on_invited_by_id` (`invited_by_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9087 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15979 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `versions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -344,9 +455,10 @@ CREATE TABLE `versions` (
   `whodunnit` varchar(255) DEFAULT NULL,
   `object` text,
   `created_at` datetime DEFAULT NULL,
+  `locale` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_versions_on_item_type_and_item_id` (`item_type`,`item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 INSERT INTO schema_migrations (version) VALUES ('20130305062419');
 
@@ -433,3 +545,49 @@ INSERT INTO schema_migrations (version) VALUES ('20130701081452');
 INSERT INTO schema_migrations (version) VALUES ('20130711033610');
 
 INSERT INTO schema_migrations (version) VALUES ('20130711041041');
+
+INSERT INTO schema_migrations (version) VALUES ('20130725081919');
+
+INSERT INTO schema_migrations (version) VALUES ('20130730062642');
+
+INSERT INTO schema_migrations (version) VALUES ('20130801014102');
+
+INSERT INTO schema_migrations (version) VALUES ('20130801014310');
+
+INSERT INTO schema_migrations (version) VALUES ('20130801020956');
+
+INSERT INTO schema_migrations (version) VALUES ('20130801021150');
+
+INSERT INTO schema_migrations (version) VALUES ('20130805022948');
+
+INSERT INTO schema_migrations (version) VALUES ('20130805033701');
+
+INSERT INTO schema_migrations (version) VALUES ('20130805034616');
+
+INSERT INTO schema_migrations (version) VALUES ('20130806003021');
+
+INSERT INTO schema_migrations (version) VALUES ('20130823034324');
+
+INSERT INTO schema_migrations (version) VALUES ('20130827082957');
+
+INSERT INTO schema_migrations (version) VALUES ('20130828003127');
+
+INSERT INTO schema_migrations (version) VALUES ('20130828043328');
+
+INSERT INTO schema_migrations (version) VALUES ('20130902022553');
+
+INSERT INTO schema_migrations (version) VALUES ('20130902022554');
+
+INSERT INTO schema_migrations (version) VALUES ('20130902022555');
+
+INSERT INTO schema_migrations (version) VALUES ('20130902022556');
+
+INSERT INTO schema_migrations (version) VALUES ('20130902022557');
+
+INSERT INTO schema_migrations (version) VALUES ('20130902022558');
+
+INSERT INTO schema_migrations (version) VALUES ('20130911074607');
+
+INSERT INTO schema_migrations (version) VALUES ('20130916034852');
+
+INSERT INTO schema_migrations (version) VALUES ('20130919061425');

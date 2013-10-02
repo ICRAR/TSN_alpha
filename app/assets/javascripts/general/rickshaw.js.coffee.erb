@@ -58,7 +58,7 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
             remote_data[i].data.push {x: d[1], y: d[0]}
           else
             last_y = 0
-            if remote_data[i].data.length > 0
+            if (remote_data[i].data.length > 0) && (meteric['target'].indexOf("daily_credit") == -1) && (meteric['target'].indexOf("rac") == -1) && (meteric['target'].indexOf("mips_now") == -1)
               last_y = remote_data[i].data[remote_data[i].data.length - 1].y
             remote_data[i].data.push {x: d[1], y: last_y}
         remote_data[i].name = names[i]
@@ -121,7 +121,7 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
                 graph.series[i].data.push {x: d[1], y: d[0]}
               else
                 last_y = 0
-                if graph.series[i].data.length > 0
+                if (graph.series[i].data.length > 0) && (meteric['target'].indexOf("daily_credit") == -1) && (meteric['target'].indexOf("rac") == -1) && (meteric['target'].indexOf("mips_now") == -1)
                   last_y = graph.series[i].data[graph.series[i].data.length - 1].y
                 graph.series[i].data.push {x: d[1], y: last_y}
             #remote_data[i].data.push {x: d[1], y: d[0]} for d in meteric['datapoints']

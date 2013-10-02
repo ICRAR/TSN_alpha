@@ -1,7 +1,7 @@
 class NereusStatsItem < ActiveRecord::Base
   attr_accessible :credit, :daily_credit, :nereus_id, :rank, :network_limit,
                   :monthly_network_usage, :paused, :active, :online_today, :online_now,
-                  :mips_now, :mips_today, :last_checked_time
+                  :mips_now, :mips_today, :last_checked_time, :report_time_sent
   scope :connected, where('general_stats_item_id IS NOT NULL')
   belongs_to :general_stats_item
 
@@ -12,7 +12,9 @@ class NereusStatsItem < ActiveRecord::Base
       remote_client=false
     end
   end
-
+  def credit
+    self[:credit].to_i
+  end
   #returns current state out of
   #  pausing: acitve and paused
   #  paused: not active and paused
@@ -46,12 +48,14 @@ class NereusStatsItem < ActiveRecord::Base
     all = {
       :pausing =>{
         :heading => "Your contribution is currently paused.",
-        :desc =>  '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.resume();">Click here</a> to resume your contribution.<br />Your client(s) will continue to process for a few minutes before ceasing activity.',
+        :desc =>  'Click here to resume your contribution.<br />Your client(s) will continue to process for a few minutes before ceasing activity.',
+        :link => 'Resume',
         :image => 'button_disable.png',
         :image_alt => 'theSkyNet is paused',
       },
       :running =>{:heading => "You are now contributing to theSkyNet.",
-                  :desc =>   '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.pause();">Click here</a> to pause your contribution.<br />Why not tell your friends on facebook and build an alliance?',
+                  :desc =>   'Click here to pause your contribution.<br />Why not tell your friends on facebook and build an alliance?',
+                  :link => 'Pause',
                   :image => 'startedbutton.png',
                   :image_alt => 'theSkyNet is now active',
       },
@@ -61,22 +65,26 @@ class NereusStatsItem < ActiveRecord::Base
                 :image_alt => 'Start theSkyNet',
       },
       :paused =>{:heading => "Your account is currently inactive.",
-                 :desc =>  'You have paused your account, so you wont be processing any more data for now.<br /><a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.resume();">Click here</a> to unpause your account.',
+                 :desc =>  'You have paused your account, so you wont be processing any more data for now.<br />Click here to unpause your account.',
+                 :link => 'Resume',
                  :image => 'button_disable.png',
                  :image_alt => "theSkyNet is paused",
       },
       :network_limited =>{:heading => "Your account is currently inactive.",
-                          :desc =>  'You have reached your <a href="/account/manage">network limit</a>, so you wont process any more data until next month.<br />If you wish to resume contributing, either increase or disable your network limit.',
+                          :desc =>  'You have reached your network limit, so you wont process any more data until next month.<br />If you wish to resume contributing, either increase or disable your network limit.',
+                          :link => 'None',
                           :image => 'button_disable.png',
                           :image_alt => "theSkyNet is paused",
       },
       :resuming =>{:heading => "You are now contributing to theSkyNet.",
-                   :desc =>  '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.pause();">Click here</a> to pause your contribution.<br />Your client(s) may take a few minutes before beginning activity.<br />Why not tell your friends on facebook and build an alliance?',
+                   :desc =>  'Click here to pause your contribution.<br />Your client(s) may take a few minutes before beginning activity.<br />Why not tell your friends on facebook and build an alliance?',
+                   :link => 'Pause',
                    :image => 'startedbutton.png',
                    :image_alt => 'theSkyNet is now active',
       },
       :unknown =>{:heading => "Your account is currently inactive.",
-                  :desc =>  '<a style="cursor:pointer;text-decoration:underline;" onclick="limitEvent(event);skynet.dashboard.resume();">Click here</a> to unpause your account.',
+                  :desc =>  'Click here to unpause your account.',
+                  :link => 'Resume',
                   :image => 'button_disable.png',
                   :image_alt => "theSkyNet is paused",
       },
@@ -85,13 +93,17 @@ class NereusStatsItem < ActiveRecord::Base
   end
   #sets active status on remote server
   def set_status
-    self.active = (!self.limited?  && paused == 0) ? 1 : 0
-    self.save
+  #sets active status on remote server
+    NereusStatsItem.delay.set_status(id)
+  end
+  def self.set_status(id)
+    nereus = NereusStatsItem.find(id)
+    nereus.active = (!nereus.limited?  && nereus.paused == 0) ? 1 : 0
+    nereus.save
     remote_client =  NereusStatsItem.connect_to_backend_db
-    query = "UPDATE accountstatus
-                          SET time = #{(Time.now.to_f*1000).to_i}, active = #{active}
-                          WHERE skynetID = #{nereus_id}"
-    #remote_client.query(query)
+    query = "UPDATE accountstatus SET time = #{(Time.now.to_i*1000)}, active = #{nereus.active} WHERE skynetID = '#{nereus.nereus_id}'"
+    #puts query
+    remote_client.query(query)
   end
 
   #queues status update
@@ -127,14 +139,17 @@ class NereusStatsItem < ActiveRecord::Base
   #forces pausing of all open clients
   def pause_resume
     self.paused = paused == 1 ? 0 : 1
+    self.save
     self.set_status
   end
   def pause
     self.paused = 1
+    self.save
     self.set_status
   end
   def resume
     self.paused = 0
+    self.save
     self.set_status
   end
 
@@ -143,11 +158,11 @@ class NereusStatsItem < ActiveRecord::Base
   end
 
   def network_limit_mb
-    (network_limit / 1024 / 1024).to_i
+    (network_limit.to_i / 1024 / 1024).to_i
   end
 
   def monthly_network_usage_mb
-    (monthly_network_usage / 1024 / 1024).to_i
+    (monthly_network_usage.to_i / 1024 / 1024).to_i
   end
 
   def self.next_nereus_id
@@ -172,5 +187,95 @@ class NereusStatsItem < ActiveRecord::Base
     )
     new_item.save
     return new_item
+  end
+
+  #***********************************
+  #***********************************
+  #founding Member
+  #list of extra founding members
+  def self.founding_ids
+    [10001,10003,10006,10017,10018,10019,10020,10021,10023,10024,104351]
+  end
+  #first founding member
+  def self.founding_first
+    100010
+  end
+  #last founding member
+  def self.founding_last
+    102939
+  end
+  # checks if user is a founding member
+  def founding?
+    extra = NereusStatsItem.founding_ids
+    first = NereusStatsItem.founding_first
+    last = NereusStatsItem.founding_last
+    ((nereus_id >= first) && (nereus_id <= last)) || (extra.include?(nereus_id))
+  end
+  #returns the users founding member poistion of number
+  def founding_num
+    extra = NereusStatsItem.founding_ids
+    first = NereusStatsItem.founding_first
+    last = NereusStatsItem.founding_last
+    my_id = nereus_id
+    NereusStatsItem.where{(((nereus_stats_items.nereus_id >= first) &
+        (nereus_stats_items.nereus_id <= last)) |
+        (nereus_stats_items.nereus_id.in extra)) &
+        (nereus_stats_items.nereus_id <= my_id) &
+        (general_stats_item_id != nil)
+        }.count
+  end
+  #the total number of founding members according to the database
+  def self.total_founding
+    extra = NereusStatsItem.founding_ids
+    first = NereusStatsItem.founding_first
+    last = NereusStatsItem.founding_last
+    my_id = [last].concat(extra).max
+    NereusStatsItem.where{(((nereus_stats_items.nereus_id >= first) &
+        (nereus_stats_items.nereus_id <= last)) |
+        (nereus_stats_items.nereus_id.in extra)) &
+        (nereus_stats_items.nereus_id <= my_id) &
+        (general_stats_item_id != nil)
+    }.count
+  end
+
+  def send_cert
+    #check if user has already requested a report
+    #within the last 5 minuets
+    if self.general_stats_item.nil? || (!self.report_time_sent.nil? && self.report_time_sent > 5.minutes.ago)
+      return false
+
+    else
+      self.report_time_sent = Time.now
+      self.save
+      NereusStatsItem.delay.send_cert(self.id)
+      return true
+    end
+
+  end
+  #connects to docmosis to generate a cert then emails the cert users email
+  def self.send_cert(id)
+    nereus_item = NereusStatsItem.find(id)
+
+    if nereus_item.nil? || nereus_item.general_stats_item.nil?
+      return false
+    else
+      profile = nereus_item.general_stats_item.profile
+      return false if profile.nil?
+
+      data = {
+          'Name' => profile.full_name,
+          'number' => nereus_item.founding_num,
+          'total' => NereusStatsItem.total_founding
+      }
+      template = 'Founding_Members_Certificate_Template.odt'
+      output_name = 'Founding Members Certificate.pdf'
+      doc = Docmosis.new(
+          :template => template,
+          :output_name => output_name,
+          :data => data,
+          :email => profile.user.email
+      )
+      doc.email_pdf
+    end
   end
 end

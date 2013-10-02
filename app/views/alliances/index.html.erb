@@ -11,7 +11,11 @@
         <div class="shadowed">
             <div class="inner-boundary">
                 <div id="content-inner">
-                    <%= form_tag(search_alliances_path, :method => "get", :class => "pull-right") do %>
+                    <div class="alert alert-info">
+                        The Alliance system has been modified. For more information head to the <strong><%= link_to "Alliance FAQ", page_path(:slug => 'alliance_faq') %></strong>
+                    </div>
+                    <%= form_tag(search_alliances_path, :method => "get", :class => "pull-right") do%>
+                        <%= form_get_hidden_tag(search_alliances_path) %>
                         <%= text_field_tag(:search,nil,:class => "search-query", :placeholder => params["search"] ? params["search"] : "Search") %>
                     <% end %>
                     <table id="leaderboard" class="table table-striped">
@@ -35,8 +39,10 @@
                                 <td><%= number_with_delimiter(alliance.credit) %></td>
                                 <td><%= alliance.RAC %></td>
                                 <td><%= link_to alliance.leader.name, alliance.leader if alliance.leader != nil%></td>
-                                <% if user_signed_in? && !current_user.profile.alliance_id %>
+                                <% if user_signed_in? && !current_user.profile.alliance_id && alliance.joinable?%>
                                     <td><%= link_to 'Join', join_alliance_path(alliance) %></td>
+                                <% else %>
+                                  <td></td>
                                 <% end %>
 
                               </tr>
@@ -45,6 +51,7 @@
                     </table>
                     <%=  paginate @alliances %>
                     <%=  page_entries_info @alliances, :entry_name => 'Alliance' %>
+                    <%= render 'shared/per_page_selector' %>
                     <div id="tag_cloud">
                         <h2>Tags:</h2>
                         <% tag_cloud @tags, %w[cloud1 cloud2 cloud3 cloud4 cloud5 cloud5 cloud6] do |tag, css_class| %>

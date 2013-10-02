@@ -1,0 +1,33 @@
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Welcome to theSkyNet
+- content_for(:content) do
+  #content-wrap
+    .well
+      .well.well-white
+        %h2= t '.heading'
+        %p= t('.msg')
+        %p.text-right= t('.thank_you').html_safe
+      .well.well-white#pogs
+        =link_to science_portal_path(:id => 'POGS') do
+          %h2= image_tag 'sub_brands/POGS-Small.png'
+        %p
+          = t '.pogs.about'
+          = link_to t('.pogs.link_to'), science_portal_path(:id => 'POGS')
+        .well
+          -if @profile.general_stats_item.boinc_stats_item.nil?
+            = render 'boinc_forms'
+          -else
+            %p= t '.pogs.existing'
+      .well.well-white#sourcefinder
+        =link_to science_portal_path(:id => 'SourceFinder') do
+          %h2= image_tag 'sub_brands/SourceFinder-Small.png'
+        %p
+          =t '.source_finder.about'
+          = link_to t('.source_finder.link_to'), science_portal_path(:id => 'SourceFinder')
+        .well
+          -if @profile.general_stats_item.boinc_stats_item.nil?
+            = render 'profiles/nereus_form'
+          -else
+            %p= t '.source_finder.exisiting'
+      %p= link_to t('.continue'), my_profile_path(:next_step => true), :class => "btn btn-tsn"

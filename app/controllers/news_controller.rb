@@ -2,10 +2,18 @@ class NewsController < ApplicationController
   authorize_resource
   def show
     @news_item = News.published.where(:id => params[:id]).first
-    render :show
+    if @news_item.nil?
+      redirect_to root_url, notice: "Sorry we couldn't find that item"
+    else
+      render :show
+    end
   end
   def index
-    @news = News.published.all
+    @news = News.published.order{published_time.desc}.limit(10)
+    if user_signed_in?
+      profile = current_user.profile
+      @notifications =  profile.mailbox.notifications.limit(10)
+    end
     render :index
   end
   def dismiss

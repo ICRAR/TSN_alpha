@@ -44,7 +44,7 @@ a:link {
   width:900px;
 }
 body {
-  background:#000000 image-url("bodybg.jpg") top center no-repeat;
+  background:#000000 image-url("new_bg.jpg") top center no-repeat;
   margin:0;
   padding:0;
   padding-top: 55px;
@@ -55,10 +55,11 @@ body {
   background-color: rgba(0,0,0,0.4);
   background-image: none;
   .pull-right {
-    background-color: black;
+    //background-color: black;
     padding: 5px;
     .navbar-text {
       color: white;
+      text-shadow: 2px 2px black;
     }
     .btn-toolbar {
       margin-top: 10px;
@@ -76,7 +77,7 @@ body {
   &.navbar-inverse .navbar-inner   {
     background-image: linear-gradient(bottom, rgb(107,107,107) 65%, rgb(0,0,0) 31%);
     background-image: -o-linear-gradient(bottom, rgb(107,107,107) 65%, rgb(0,0,0) 31%);
-    background-image: -moz-linear-gradient(bottom, rgb(107,107,107) 65%, rgb(0,0,0) 31%);
+    background-image: -moz-linear-gradient(bottom, rgb(107,107,107), rgb(0,0,0));
     background-image: -webkit-linear-gradient(bottom, rgb(107,107,107) 65%, rgb(0,0,0) 31%);
     background-image: -ms-linear-gradient(bottom, rgb(107,107,107) 65%, rgb(0,0,0) 31%);
 
@@ -111,6 +112,22 @@ body {
   border-color: #541c5e #541c5e hsl(291, 54%, 18%);
   color: #fff !important;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.39);
+  -webkit-font-smoothing: antialiased;
+}
+.btn-tsn-red {
+  background-color: hsl(8, 59%, 33%) !important;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#c64633", endColorstr="#852f22");
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#c64633), to(#852f22));
+  background-image: -moz-linear-gradient(top, #c64633, #852f22);
+  background-image: -ms-linear-gradient(top, #c64633, #852f22);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #c64633), color-stop(100%, #852f22));
+  background-image: -webkit-linear-gradient(top, #c64633, #852f22);
+  background-image: -o-linear-gradient(top, #c64633, #852f22);
+  background-image: linear-gradient(#c64633, #852f22);
+  border-color: #852f22 #852f22 hsl(8, 59%, 29%);
+  color: #fff !important;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.26);
   -webkit-font-smoothing: antialiased;
 }
 .btn-tsn {
@@ -181,6 +198,9 @@ body {
   .page_content h2 {background:image-url("icon_question.png") 0 0 no-repeat; height:32px; padding-left:42px; padding-top:2px;}
 }
 #news {
+  .first {
+    border-top: 1px solid black;
+  }
   height: 587px;
   overflow: hidden;
   h2 {padding-left:43px; background:image-url('icon-news.gif') 0 0 no-repeat; height:31px; margin:0; padding-top:2px;}
@@ -321,4 +341,42 @@ body {
   .cloud4 { font-size: 1.0em; }
   .cloud5 { font-size: 1.3em; }
   .cloud6 { font-size: 1.6em; }
+}
+
+#TFLOPS-count, #GFLOPS-user, #ribbonsocial{
+  margin-top: 15px;
+  a, i, abbr {
+    color: white;
+  }
+}
+
+#footer {
+  #language-footer {
+    color: white;
+
+  }
+}
+.telescopebg {
+  background:image-url('telescopebg.jpg') top right no-repeat;
+}
+#contact_form {
+  .telescopebg
+}
+#sign_in {
+  .telescopebg
+}
+
+.modal-body {
+  max-height: 500px;
+}
+
+.popover-content {
+  dl.dl-horizontal {
+    dt {
+      width: 119px
+    }
+    dd {
+      margin-left: 129px
+    }
+  }
 }

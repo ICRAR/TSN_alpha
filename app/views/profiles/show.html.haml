@@ -6,41 +6,90 @@
 
 -content_for(:content) do
   #content-wrap
-    .shadowed
-      .inner-boundary
-        #content-inner
-          = image_tag @profile.avatar_url(128)
+    .row-fluid
+      .span7.well.well-white#general
+        = image_tag @profile.avatar_url(128)
+        %p
+          %b Name:
+          = @profile.name
+        %p
+          %b Country:
+          = @profile.country_name
+        %p
+          %b Total Credit:
+          = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"
+          |
+          =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank, :page=>'me')
+          |
+          %a#credit_explain{:href => "#", :data => {:toggle => "popover",
+                        :placement => "bottom",
+                        :content => credit_location(@profile),
+                        :html => 'true',
+                        :no => {:turbolink => true}},
+                       :title => "theSkyNet credit is an amalgamation from several sources: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#credit_explain&quot;).popover(&quot;hide&quot;);\">&times;</button>"} Explain
+        -if @profile.alliance
           %p
-            %b Name:
-            = @profile.name
-          %p
-            %b Country:
-            = @profile.country
-          %p
-            %b Total Credit:
-            = number_with_delimiter(@profile.general_stats_item.total_credit).to_s + "cr"
-            =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank)
-          -if @profile.alliance
-            %p
-              %b Proud member of :
-              = link_to(@profile.alliance.name,@profile.alliance)
-          %p
-            %b Member Since:
-            = @profile.user.confirmed_at
+            %b Proud member of :
+            = link_to(@profile.alliance.name,@profile.alliance)
+        %p
+          %b Member Since:
+          = @profile.user.confirmed_at.try(:strftime, '%B %d, %Y')
 
-          %p
-            %b Latest Achievement:
-            -if @profile.trophies.empty?
-              = @profile.name + " hasn't won any trophies yet."
-            -else
-              = link_to (image_tag @profile.trophies.last.image.url), @profile.trophies.last
-              = link_to @profile.trophies.last.title,  @profile.trophies.last
-          %p
-            = link_to  trophies_profile_path(@profile) do
-              = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
+        %p
+          %b Latest Achievement:
+          -if @profile.trophies.empty?
+            = @profile.name + " hasn't won any trophies yet."
+          -else
+            - trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
+            = link_to (image_tag trophy.image.url), trophy
+            = link_to trophy.title,  trophy
+        %p
+          = link_to  trophies_profile_path(@profile) do
+            = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
+        %p
+          = link_to alliance_history_profile_path(@profile) do
+            = "See #{@profile.name.titlecase.possessive} alliance history."
+        -if user_signed_in?
+          %p= link_to "Compare #{@profile.name.titlecase.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
 
-          -if user_signed_in?
-            %p= link_to "Compare to me", profiles_compare_path(@profile.id,current_user.profile.id)
-          -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil
-          -nereus_id= @profile.general_stats_item.nereus_stats_item.nereus_id if @profile.general_stats_item.nereus_stats_item != nil
-          #chart_container{:data => {:boinc_id=>boinc_id, :nereus_id=> nereus_id, :profile_id => @profile.id}}
+      .span5
+        -if @profile.general_stats_item.nereus_stats_item != nil
+          .row-fluid
+            .span12.well.well-white
+              = link_to science_portal_path(:id => "SourceFinder") do
+                %h2.pagination-centered= "#{@profile.name} has contributed to:"
+                =image_tag('sub_brands/SourceFinder-Small.png')
+              - nereus = @profile.general_stats_item.nereus_stats_item
+              %dl.dl-horizontal
+                %dt Total Credit
+                %dd= number_with_delimiter(nereus.credit)
+                %dt
+                  %abbr{:title => "Recent Average Credit"} RAC
+                %dd= number_with_delimiter(nereus.daily_credit)
+
+        -if @profile.general_stats_item.boinc_stats_item != nil
+          .row-fluid
+            .span12.well.well-white
+              -boinc = @profile.general_stats_item.boinc_stats_item
+              =link_to science_portal_path(:id => 'POGS') do
+                %h2.pagination-centered= "#{@profile.name} has contributed to:"
+                =image_tag('sub_brands/POGS-Small.png')
+              .row-fluid
+                .span8.offset1
+                  %dl.dl-horizontal
+                    %dt Total Credit
+                    %dd= number_with_delimiter(boinc.credit)
+                    %dt
+                      %abbr{:title => "Recent Average Credit"} RAC
+                    %dd= boinc.RAC
+
+
+    .row-fluid
+      .span12.well.well-white.graphs
+        -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil && @profile.general_stats_item.boinc_stats_item.credit > 0
+        -nereus_id= @profile.general_stats_item.nereus_stats_item.nereus_id if @profile.general_stats_item.nereus_stats_item != nil && @profile.general_stats_item.nereus_stats_item.credit > 0
+        -data = {}
+        -data[:nereus_id] = nereus_id if nereus_id
+        -data[:boinc_id] = boinc_id if boinc_id
+        -data[:profile_id] = @profile.id
+        #chart_container{:data => data}

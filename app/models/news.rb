@@ -1,6 +1,6 @@
 class News < ActiveRecord::Base
 
-  attr_accessible :long, :short, :title, :published, :published_time, :image, as: :admin
+  attr_accessible :long, :short, :title, :published, :published_time, :image, :notify, as: :admin
   has_attached_file :image, :styles => { :medium => "300x300>", :thumb => "75x75>"}
   def publish
       self.published = true
@@ -14,6 +14,7 @@ class News < ActiveRecord::Base
 
     field :title
     field :short
+    field :notify
     field :published
     field :published_time
     field :image
@@ -24,6 +25,6 @@ class News < ActiveRecord::Base
 
   def self.announcement(time)
       time ||= Time.at(0)
-      where('published = true AND published_time > ?', time).order('published_time ASC').first
+      where{(notify ==true) & (published == true) & (published_time > my{time})}.order{published_time.asc}.first
   end
 end
