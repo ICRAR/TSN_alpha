@@ -196,7 +196,7 @@ class ProfilesController < ApplicationController
       @profile = current_user.profile
       #check that password is correct
       if  current_user.valid_password?(params['password'])
-        boinc = BoincStatsItem.create_new_account(current_user.email,params['password'])
+        boinc = BoincStatsItem.create_new_account(current_user.email,params['password'],current_user.username)
         if boinc.new_record?
           redirect_to my_profile_path, alert: boinc.errors.full_messages.to_sentence
         else
