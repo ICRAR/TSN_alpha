@@ -84,6 +84,7 @@ class Trophy < ActiveRecord::Base
   end
 
   def create_notification(profiles)
+    Activity.track(profiles,'award',self)
     subject = "You have been awarded a new trophy, #{self.title}"
     link = link_to(self.title, Rails.application.routes.url_helpers.trophy_path(self))
     body = "Congratulations! \n You have been awarded a new trophy, #{link}. \n Thank you and happy computing! \n theSkyNet"

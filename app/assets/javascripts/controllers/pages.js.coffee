@@ -13,7 +13,7 @@ TSN.pages.index = () ->
     'sumSeries(scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)','scale(stats.gauges.TSN_dev.nereus.stats.total_daily_credit%2C0.000005))'
   ]
   names_global =  ['Total Credit','Active Users','Total Users','Current TFLOPS']
-  TSN.rickshaw_graph(metrics_global,names_global,$("#global_graphs"),'-24months')
+  TSN.rickshaw_graph(metrics_global,names_global,$("#global_graphs"),"-#{TSN.months_from_launch()}months")
 
 
   metrics_boinc = [
@@ -22,8 +22,8 @@ TSN.pages.index = () ->
     'stats.gauges.TSN_dev.boinc.stat.total_users'
     'scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)'
   ]
-  names_boinc =  ['Boinc Total Credit','Boinc Active Users','Boinc Total Users','Boinc Current TFLOPS']
-  TSN.rickshaw_graph(metrics_boinc,names_boinc,$("#boinc_graphs"),'-24months')
+  names_boinc =  ['POGS Total Credit','POGS Active Users','POGS Total Users','POGS Current TFLOPS']
+  TSN.rickshaw_graph(metrics_boinc,names_boinc,$("#boinc_graphs"),"-#{TSN.months_from_launch()}months")
 
   metrics = [
     'stats.gauges.TSN_dev.nereus.stats.total_credit'
@@ -31,28 +31,32 @@ TSN.pages.index = () ->
     'stats.gauges.TSN_dev.nereus.stats.total_user'
     'scale(stats.gauges.TSN_dev.nereus.stats.total_daily_credit%2C0.000005)'
   ]
-  names =  ['Nereus Total Credit','Nereus Active Users','Nereus Total Users','Nereus Current TFLOPS (estimate)']
-  TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),'-24months')
+  names =  ['SourceFinder Total Credit','SourceFinder Active Users','SourceFinder Total Users','SourceFinder Current TFLOPS (estimate)']
+  TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),"-#{TSN.months_from_launch()}months")
 
+  $('#js-news').ticker(
+    titleText: I18n.t("js.stats.latest"),
+    controls: false
+  )
 
 
   #news slider
   news_items = []
-  for item in $('.news_item')
+  for item in $('#news_list .news_item')
     news_items.push item
     $(item).remove()
 
   news_add_item = () ->
-    if $('.news_item').length > 2
-      item = $('.news_item').get(-1)
+    if $('#news_list .news_item').length > 3
+      item = $('.news_item').get(0)
       news_items.push item
       old_item = $(item)
       old_item.slideUp(2000,'easeOutQuad', () ->
         old_item.remove()
       )
     if news_items.length > 0
-      $('#news_list').prepend(news_items.shift())
-      new_item = $($('.news_item').get(0))
+      $('#news_list').append(news_items.shift())
+      new_item = $('.news_item').last()
       new_item.hide()
       new_item.slideDown(2000,'easeOutQuad')
   news_timer = $.timer(news_add_item,4000, true)
@@ -65,13 +69,13 @@ TSN.pages.index = () ->
 
   #activity feed
   activity_items = []
-  for item in $('.activity_item')
+  for item in $('#activity_list .activity_item')
     activity_items.push item
     $(item).remove()
 
   activity_add_item = () ->
-    if $('.activity_item').length > 2
-      item = $('.activity_item').get(-1)
+    if $('#activity_list .activity_item').length > 0
+      item = $('#activity_list .activity_item').get(-1)
       activity_items.push item
       old_item = $(item)
       old_item.slideUp(600,'easeOutQuad', () ->
@@ -79,7 +83,7 @@ TSN.pages.index = () ->
       )
     if activity_items.length > 0
       $('#activity_list').prepend(activity_items.shift())
-      new_item = $($('.activity_item').get(0))
+      new_item = $($('#activity_list .activity_item').get(0))
       new_item.hide()
       new_item.slideDown(600,'easeOutQuad')
   activity_timer = $.timer(activity_add_item,4000, true)

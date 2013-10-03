@@ -4,6 +4,7 @@ class Profile < ActiveRecord::Base
   belongs_to :alliance_leader, :class_name => 'Alliance', inverse_of: :leader
   belongs_to :alliance, inverse_of: :members
   has_many :alliance_items, :class_name => 'AllianceMembers'
+  has_many :activities
 
   has_many :profiles_trophies
   has_many :trophies, :through => :profiles_trophies

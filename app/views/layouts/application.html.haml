@@ -24,7 +24,7 @@
     :javascript
       window.rails = new Object;
       window.rails.user_signed_in = #{user_signed_in?}
-      window.rails.nereus_id = #{current_user.try(:profile).try(:general_stats_item).try(:nereus_stats_item).try(:nereus_id)}
+      window.rails.nereus_id = #{current_user.try(:profile).try(:general_stats_item).try(:nereus_stats_item).try(:nereus_id) || 0}
     %script{:src => "//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-522683943e4f7e56", :type => "text/javascript"}
 
   %body{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : '')}
