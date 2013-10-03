@@ -11,7 +11,13 @@ class Activity < ActiveRecord::Base
     if profiles.class == Profile
       profiles.activities.create!(:action => action, :trackable => trackable)
     elsif profiles.class == ActiveRecord::Relation
-      Activity.create(:action => action, :trackable => trackable, :num_profiles => profiles.count)
+      if profiles.size < 4
+        profiles.each do |profile|
+          profile.activities.create!(:action => action, :trackable => trackable)
+        end
+      else
+        Activity.create(:action => action, :trackable => trackable, :num_profiles => profiles.count)
+      end
     end
   end
 
