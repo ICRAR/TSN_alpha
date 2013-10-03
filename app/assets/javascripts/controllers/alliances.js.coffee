@@ -16,7 +16,7 @@ TSN.alliances.show = () ->
   ]
   names = ['Current Members','Rank','Total Credit','Daily Credit']
 
-  TSN.rickshaw_graph(metrics,names,$("#alliance_graph"),'-24months')
+  TSN.rickshaw_graph(metrics,names,$("#alliance_graph"),"-#{TSN.months_from_launch()}months")
 
   $("#invite_form").bind("ajax:success", (evt, data, status, xhr) ->
     if data.success

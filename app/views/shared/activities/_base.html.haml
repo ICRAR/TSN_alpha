@@ -1,0 +1,15 @@
+.activity_item{:id=>"activity_item_#{activity.id}"}
+  - if activity.is_single?
+    = link_to activity.profile do
+      = image_tag  activity.profile.avatar_url(24)
+      = activity.profile.name
+
+  -else
+    - if activity.num_profiles.nil?
+      Somebody
+    -else
+      = "#{activity.num_profiles} people"
+
+  = render sub_path, local_assigns
+  = distance_of_time_in_words(Time.now, activity.created_at)
+  ago

@@ -196,7 +196,7 @@ class ProfilesController < ApplicationController
       @profile = current_user.profile
       #check that password is correct
       if  current_user.valid_password?(params['password'])
-        boinc = BoincStatsItem.create_new_account(current_user.email,params['password'])
+        boinc = BoincStatsItem.create_new_account(current_user.email,params['password'],current_user.username)
         if boinc.new_record?
           redirect_to my_profile_path, alert: boinc.errors.full_messages.to_sentence
         else
@@ -291,9 +291,20 @@ class ProfilesController < ApplicationController
     end
   end
   def search
+    per_page = [params[:per_page].to_i,1000].min
+    per_page = 30 if per_page == 0
+    page_num = params[:page]
     if params[:search]
       @profiles = Profile.search(params[:search], params[:page], 10)
       params[:sort] = "search"
+      render :index
+    elsif params[:trophy_id]
+      @trophy = Trophy.find params[:trophy_id] || not_found
+      @profiles = @trophy.profiles.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
+      render :index
+    elsif params[:galaxy_id]
+      @galaxy = Galaxy.where(:galaxy_id => params[:galaxy_id]).first || not_found
+      @profiles = @galaxy.profiles.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
       render :index
     else
       redirect_to( profiles_path, :alert => "You did not enter a valid search query")
@@ -312,7 +323,12 @@ class ProfilesController < ApplicationController
   private
 
   def sort_column
-    %w[rank rac credits search].include?(params[:sort]) ? params[:sort] : "rank"
+    col = %w[rank rac credits search].include?(params[:sort]) ? params[:sort] : "rank"
+    if %w[rank].include?(col)
+      "general_stats_items.#{col}"
+    else
+      col
+    end
   end
 
   def sort_direction

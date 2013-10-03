@@ -8,7 +8,7 @@
       :content => credit_location(@profile),
       :html => 'true',
       :no => {:turbolink => true}},
-      :title => "theSkyNet credit is an amalgamation from several sources:"} Explain
+      :title => "theSkyNet credit is an amalgamation from several sources: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#credit_explain&quot;).popover(&quot;hide&quot;);\">&times;</button>"} Explain
   %h3 AVERAGE DAILY CREDIT:
   #totalCredits.processed-data-number= number_with_delimiter(@profile.general_stats_item.recent_avg_credit)
   %h3 YOUR RANK:

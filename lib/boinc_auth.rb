@@ -21,6 +21,7 @@ module BoincAuth
             unless boinc_item.nil?
               unless boinc_item.general_stats_item.try(:profile).try(:user).nil?
                 success!(boinc_item.general_stats_item.profile.user)
+                return
               end
             end
             #They have a vaild boinc account but no skynet account, we need to create a skynet account for them

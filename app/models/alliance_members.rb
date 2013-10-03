@@ -39,6 +39,8 @@ class AllianceMembers < ActiveRecord::Base
   def self.create_notification_join(id)
     am = AllianceMembers.find id
 
+    Activity.track(am.profile, "joined", am.alliance)
+
     #send to member
     subject = "Welcome to the alliance, #{am.alliance.name}"
     link_alliance = ActionController::Base.helpers.link_to(am.alliance.name, Rails.application.routes.url_helpers.alliance_path(am.alliance))

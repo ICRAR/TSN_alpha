@@ -17,14 +17,16 @@ glue :general_stats_item do |g|
 end
 node(:total_credit) {|p| p.general_stats_item.total_credit }
 node(:gravtar_url) { |p| p.avatar_url(128) }
-child :alliance do
+child(:alliance, :if => lambda { |p| !p.alliance.nil? }) do
   attributes :id, :name
   node(:url) {|a| alliance_url(a,:format => :json)}
-end
-child :trophies, :object_root => false do
+  end
+node(:alliance, :if => lambda { |p| p.alliance.nil? }) {nil}
+child @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first => :most_recent_trophy do
   attributes :id, :title, :credits
   node(:desc) {|t| t.desc(@trophy_ids)}
   node(:credits) {|t| t.show_credits(@trophy_ids)}
   node(:image_url) {|t| t.image.url}
   node(:url) {|t| trophy_url(t,:format => :json)}
 end
+node(:trophies_url) {|p| trophies_profile_url(p)}

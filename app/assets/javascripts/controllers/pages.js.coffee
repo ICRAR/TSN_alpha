@@ -13,7 +13,7 @@ TSN.pages.index = () ->
     'sumSeries(scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)','scale(stats.gauges.TSN_dev.nereus.stats.total_daily_credit%2C0.000005))'
   ]
   names_global =  ['Total Credit','Active Users','Total Users','Current TFLOPS']
-  TSN.rickshaw_graph(metrics_global,names_global,$("#global_graphs"),'-24months')
+  TSN.rickshaw_graph(metrics_global,names_global,$("#global_graphs"),"-#{TSN.months_from_launch()}months")
 
 
   metrics_boinc = [
@@ -23,7 +23,7 @@ TSN.pages.index = () ->
     'scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)'
   ]
   names_boinc =  ['POGS Total Credit','POGS Active Users','POGS Total Users','POGS Current TFLOPS']
-  TSN.rickshaw_graph(metrics_boinc,names_boinc,$("#boinc_graphs"),'-24months')
+  TSN.rickshaw_graph(metrics_boinc,names_boinc,$("#boinc_graphs"),"-#{TSN.months_from_launch()}months")
 
   metrics = [
     'stats.gauges.TSN_dev.nereus.stats.total_credit'
@@ -32,12 +32,13 @@ TSN.pages.index = () ->
     'scale(stats.gauges.TSN_dev.nereus.stats.total_daily_credit%2C0.000005)'
   ]
   names =  ['SourceFinder Total Credit','SourceFinder Active Users','SourceFinder Total Users','SourceFinder Current TFLOPS (estimate)']
-  TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),'-24months')
+  TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),"-#{TSN.months_from_launch()}months")
 
   $('#js-news').ticker(
     titleText: I18n.t("js.stats.latest"),
     controls: false
   )
+
 
   #news slider
   news_items = []
@@ -64,6 +65,34 @@ TSN.pages.index = () ->
     news_timer.pause()
   ).mouseout(() ->
     news_timer.play()
+  )
+
+  #activity feed
+  activity_items = []
+  for item in $('#activity_list .activity_item')
+    activity_items.push item
+    $(item).remove()
+
+  activity_add_item = () ->
+    if $('#activity_list .activity_item').length > 0
+
+      item = $('#activity_list .activity_item').get(-1)
+      old_item = $(item)
+      old_item.slideUp(600,'easeOutQuad', () ->
+        activity_items.push item
+        old_item.remove()
+      )
+    if activity_items.length > 0
+      $('#activity_list').prepend(activity_items.shift())
+      new_item = $($('#activity_list .activity_item').get(0))
+      new_item.hide()
+      new_item.slideDown(600,'easeOutQuad')
+  activity_timer = $.timer(activity_add_item,4000, true)
+
+  $('#activity_feed').mouseover(() ->
+    activity_timer.pause()
+  ).mouseout(() ->
+    activity_timer.play()
   )
 
 TSN.pages.show = () ->

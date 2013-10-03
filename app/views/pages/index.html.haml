@@ -39,6 +39,13 @@
             %li.track= t ".track"
             %li.earn= t ".earn"
             %li.share= t ".share"
+  - if @activity.size > 0
+    .row-fluid
+      #activity_feed.span12.well
+        %h2 Latest Activity
+        #activity_list
+          - @activity.each do |activity|
+            = ActivityPresenter.new(activity, self).render_activity
 
   .row-fluid
     #news.span6.well

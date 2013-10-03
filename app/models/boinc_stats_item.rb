@@ -53,12 +53,12 @@ class BoincStatsItem < ActiveRecord::Base
   end
 
   #Creates a new boinc account
-  def self.create_new_account(email, password)
+  def self.create_new_account(email, password, username)
 
     item = self.new
 
     #create new boinc account
-    query = {email_addr: email, passwd_hash: Digest::MD5.hexdigest(password+email.downcase), user_name: email}.to_query
+    query = {email_addr: email, passwd_hash: Digest::MD5.hexdigest(password+email.downcase), user_name: username}.to_query
     url = APP_CONFIG['boinc_url'] + "create_account.php?"+ query
     remote_file = open(url)
     xml = Nokogiri::XML(remote_file)

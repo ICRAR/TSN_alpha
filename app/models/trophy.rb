@@ -17,7 +17,7 @@ class Trophy < ActiveRecord::Base
       where{(trophy_sets.set_type =~ "credit_active") | (trophy_sets.set_type =~ "credit_classic")}.
       where("credits IS NOT NULL")
 
-  def heading(trophy_ids)
+  def heading(trophy_ids = nil)
     if credits.nil? || credits == 0
       title.titlecase
     else
@@ -27,20 +27,20 @@ class Trophy < ActiveRecord::Base
 
   def desc(trophy_ids = nil)
 
-    if trophy_ids == nil || self.hidden?(trophy_ids) == true
+    if self.hidden?(trophy_ids) == true
       "This description is a secret that you have yet to earn"
     else
       self[:desc]
     end
   end
   def show_credits(trophy_ids = nil)
-    if trophy_ids == nil || self.hidden?(trophy_ids) == true
+    if self.hidden?(trophy_ids) == true
       "-"
     else
       self.credits
     end
   end
-  def hidden?(trophy_ids)
+  def hidden?(trophy_ids = nil)
     (self.hidden == true && (trophy_ids.nil? || !trophy_ids.include?(self.id)))
   end
 
@@ -68,7 +68,7 @@ class Trophy < ActiveRecord::Base
     elsif profiles.class == ActiveRecord::Relation
       update_profiles = profiles.where{sift :does_not_have_trophy, my{self.id}}
     end
-
+    return if update_profiles.empty?
     update_profiles.each do |p|
       inserts.push("(#{self.id}, #{p.id}, '#{Time.now}', '#{Time.now}')")
 
@@ -84,6 +84,7 @@ class Trophy < ActiveRecord::Base
   end
 
   def create_notification(profiles)
+    Activity.track(profiles,'award',self)
     subject = "You have been awarded a new trophy, #{self.title}"
     link = link_to(self.title, Rails.application.routes.url_helpers.trophy_path(self))
     body = "Congratulations! \n You have been awarded a new trophy, #{link}. \n Thank you and happy computing! \n theSkyNet"

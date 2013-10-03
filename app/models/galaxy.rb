@@ -5,6 +5,7 @@ include VORuby
 class Galaxy < PogsModel
   self.table_name = 'galaxy'
 
+
   def self.num_current
     where{status_id == 0}.count
   end
@@ -20,6 +21,19 @@ class Galaxy < PogsModel
     .where("area_user.userid = ?",user_id )
     .order("`area_user`.`areauser_id` DESC")
     .limit(1).first
+  end
+
+
+  #returns an active relations object containing the profiles of all people who worked on this galaxy
+  def profiles
+    db_ids = Galaxy.connection.execute("select distinct au.userid
+                from area_user au, area a
+                where au.area_id = a.area_id
+                and a.galaxy_id = #{self.id};
+                ")
+    boinc_ids = db_ids.map {|i| i[0].to_i}
+
+    profiles = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id.in boinc_ids}
   end
 
   def thumbnail_url
@@ -257,6 +271,7 @@ class Galaxy < PogsModel
       Rails.logger.error e.message
       return {}
     end
+
   end
 end
 
