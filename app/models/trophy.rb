@@ -27,20 +27,20 @@ class Trophy < ActiveRecord::Base
 
   def desc(trophy_ids = nil)
 
-    if trophy_ids == nil || self.hidden?(trophy_ids) == true
+    if self.hidden?(trophy_ids) == true
       "This description is a secret that you have yet to earn"
     else
       self[:desc]
     end
   end
   def show_credits(trophy_ids = nil)
-    if trophy_ids == nil || self.hidden?(trophy_ids) == true
+    if self.hidden?(trophy_ids) == true
       "-"
     else
       self.credits
     end
   end
-  def hidden?(trophy_ids)
+  def hidden?(trophy_ids = nil)
     (self.hidden == true && (trophy_ids.nil? || !trophy_ids.include?(self.id)))
   end
 
