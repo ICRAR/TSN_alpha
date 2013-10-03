@@ -75,10 +75,11 @@ TSN.pages.index = () ->
 
   activity_add_item = () ->
     if $('#activity_list .activity_item').length > 0
+
       item = $('#activity_list .activity_item').get(-1)
-      activity_items.push item
       old_item = $(item)
       old_item.slideUp(600,'easeOutQuad', () ->
+        activity_items.push item
         old_item.remove()
       )
     if activity_items.length > 0
