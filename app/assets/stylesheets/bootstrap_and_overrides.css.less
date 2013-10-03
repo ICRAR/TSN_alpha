@@ -53,6 +53,12 @@ body {
   font-family: Arial,Helvetica,sans-serif;
   font-size: 16px;
 }
+#content {
+  &.home{
+    background-color: white;
+    background-image: none;
+  }
+}
 #top-nav.navbar-inverse .navbar-inner {
   background-color: rgba(0,0,0,0.4);
   background-image: none;
@@ -382,9 +388,10 @@ body {
     }
   }
 }
+body.petes {
+  background-color: #16002f;
 
-.petes {
-  #top-nav.navbar-inverse {
+  #top-nav.navbar-inverse, #page-nav.navbar-inverse {
     .navbar-inner {
       background-image: -moz-linear-gradient(top, #7f00ff, #3f007f);
       background-image: -ms-linear-gradient(top, #7f00ff, #3f007f);
@@ -414,4 +421,26 @@ body {
       color: #ff56ff;
     }
   }
+
+  #content, #intro-sml, #footer{
+    background-color: #430086;
+    background-image: none;
+  }
+  .well{
+    background-color: #9f5f8f !important;
+  }
+  .well-white{
+    background-color: #fbb4ff !important;
+  }
+  .ribbon{
+    background: #430086;
+  }
+  #content {
+    &.home{
+      background-color: #cfc8ff;
+      background-image: none;
+    }
+  }
+
+
 }

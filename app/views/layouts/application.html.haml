@@ -45,7 +45,7 @@
       #main
         -if content_for?(:title_home)
           = yield(:title_home)
-          #content{:style=>"background:#ffffff;"}= content_for?(:content) ? yield(:content) : yield
+          #content.home= content_for?(:content) ? yield(:content) : yield
         -else
           -if content_for?(:title_bar)
             #intro-sml=  yield(:title_bar)
