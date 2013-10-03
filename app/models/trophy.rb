@@ -68,7 +68,7 @@ class Trophy < ActiveRecord::Base
     elsif profiles.class == ActiveRecord::Relation
       update_profiles = profiles.where{sift :does_not_have_trophy, my{self.id}}
     end
-
+    return if update_profiles.empty?
     update_profiles.each do |p|
       inserts.push("(#{self.id}, #{p.id}, '#{Time.now}', '#{Time.now}')")
 
