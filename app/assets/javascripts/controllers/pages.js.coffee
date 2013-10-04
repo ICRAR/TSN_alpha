@@ -78,16 +78,23 @@ TSN.pages.index = () ->
 
       item = $('#activity_list .activity_item').get(-1)
       old_item = $(item)
-      old_item.slideUp(600,'easeOutQuad', () ->
+      old_item.fadeOut(600,'easeOutQuad', () ->
         activity_items.push item
         old_item.remove()
+        activity_add_single()
       )
+  activity_add_single = () ->
     if activity_items.length > 0
       $('#activity_list').prepend(activity_items.shift())
       new_item = $($('#activity_list .activity_item').get(0))
-      new_item.hide()
-      new_item.slideDown(600,'easeOutQuad')
+      #new_item.hide()
+      new_item.show()
+      #new_item.slideDown(600,'easeOutQuad')
+      w = new_item.width()
+      new_item.width(0)
+      new_item.animate({width: w}, 4000,'linear')
   activity_timer = $.timer(activity_add_item,4000, true)
+  activity_add_single()
 
   $('#activity_feed').mouseover(() ->
     activity_timer.pause()
