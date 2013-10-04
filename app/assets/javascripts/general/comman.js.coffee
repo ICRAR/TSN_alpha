@@ -106,6 +106,30 @@ $(document).ready( ->
 
 )
 
+class TSN.Bat
+  constructor: (id) ->
+    @home = [100,100]
+    @name = "bat#{id}"
+    @pos = [50,50]
+    @vel = [10,10]
+    $('body').append("<div id=\"#{@name}\" class=\"bat\">/^v^\\</div>")
+  move: () ->
+    @vel[0] += Math.floor((Math.random()*6)-3) + Math.sqrt(@home[0]-@pos[0])* 0.01*Math.random()
+    @vel[1] += Math.floor((Math.random()*6)-3) + Math.sqrt(@home[1]-@pos[1])* 0.01*Math.random()
+    @pos[0] += @vel[0]
+    @pos[1] += @vel[1]
+    $("\##{@name}").animate({
+      left:@pos[0],
+      top: @pos[1]
+    }, 100)
+  fly: () ->
+    @timer = $.timer =>
+      @move()
+    , 100
+    , true
+  stop: () ->
+    @timer.pause()
+
 
 TSN.GRAPHITE =  {
   stats_path: (id) ->
