@@ -96,39 +96,96 @@ $(document).ready( ->
   $(document).on "idle.idleTimer", ->
     # function you want to fire when the user goes idle
     TSN.notifications_timer.pause();
+    TSN.bat_timer.pause() if typeof(TSN.bat_timer) == 'object'
 
   $(document).on "active.idleTimer", ->
     # function you want to fire when the user becomes active again
     TSN.notifications_timer.play()
+    TSN.bat_timer.play() if typeof(TSN.bat_timer) == 'object'
 
   $("a[data-toggle=popover]").popover().click (e) ->
     e.preventDefault()
 
+  #start the bat timer
+  if rails.bat == true && typeof(TSN.bat_timer) != 'object'
+    TSN.bat_timer = $.timer(TSN.spawn_bats, 40000, true)
+    TSN.bat_timer.once(2000)
 )
+TSN.spawn_bats = () ->
+  for i in [0..20]
+    o = $("h1").offset()
+    TSN.spawn_bat(o.left+110,o.top+75)
+TSN.spawn_bat = (x,y) ->
+  b = new TSN.Bat(x,y)
+  b.home = [Math.random()*200+200,Math.random()*500+200]
+  b.fly()
+  b.live(Math.random()*10+10)
+  b
 
+TSN.bat_id = 0
 class TSN.Bat
-  constructor: (id) ->
-    @home = [100,100]
-    @name = "bat#{id}"
-    @pos = [50,50]
+  constructor: (x,y) ->
+    @home = [200,200]
+    TSN.bat_id += 1
+    @name = "bat#{TSN.bat_id}"
+    @pos = [x,y]
     @vel = [10,10]
-    $('body').append("<div id=\"#{@name}\" class=\"bat\">/^v^\\</div>")
+    $('body').append("<div id=\"#{@name}\" class=\"bat\" style='left:#{x}px; top:#{y}px;'>/^v^\\</div>")
+    @move
   move: () ->
-    @vel[0] += Math.floor((Math.random()*6)-3) + Math.sqrt(@home[0]-@pos[0])* 0.01*Math.random()
-    @vel[1] += Math.floor((Math.random()*6)-3) + Math.sqrt(@home[1]-@pos[1])* 0.01*Math.random()
-    @pos[0] += @vel[0]
-    @pos[1] += @vel[1]
+    @update('x')
+    @update('y')
     $("\##{@name}").animate({
       left:@pos[0],
       top: @pos[1]
     }, 100)
   fly: () ->
-    @timer = $.timer =>
+    @fly_timer = $.timer =>
       @move()
     , 100
     , true
+  die: () ->
+    $("\##{@name}").remove()
+  live: (t) ->
+    #the bat will live for between t seconds before flying away and dieing
+    @life_timer = $.timer =>
+      @fly_away()
+    , 3000
+    , false
+    @life_timer.once(t*1000)
+  fly_away: () ->
+    dir = Math.random()*2*Math.PI
+    @home[0] = $(window).width()*(0.5 + 4*Math.cos(dir))
+    @home[1] = $(window).height()*(0.5 + 4*Math.sin(dir))
+    @die_timer = $.timer =>
+      @die()
+    , 3000
+    , false
+    @die_timer.once(3000)
   stop: () ->
-    @timer.pause()
+    @fly_timer.pause()
+  update: (c) ->
+    i = if (c == 'x') then 0 else 1
+    v = @vel[i]  #start at current speed
+    v += (Math.random()-.5)*10 #add a random amount
+
+    #calculates the distance to home + a random number (maxed and mined)
+    dis = @home[i]-@pos[i]
+    dis = if (dis > 400) then 300 else dis
+    dis = if (dis < -400) then -300 else dis
+    dis += (Math.random()-.5)*30
+
+    v += dis* 0.007 #trend towards home
+    v -= v*.03 #remove a damping factor
+
+    @vel[i] = v
+    @pos[i] += @vel[i]
+  test: () ->
+    t = 0
+    for x in [1..100000]
+      t += (Math.random()-.50000000001)
+    t
+
 
 
 TSN.GRAPHITE =  {
