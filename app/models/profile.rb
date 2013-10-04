@@ -27,7 +27,7 @@ class Profile < ActiveRecord::Base
 
 
   sifter :does_not_have_trophy do |trophy_id|
-    id.not_in(ProfilesTrophy.select(:profile_id).where{profiles_trophies.trophy_id == my{trophy_id}})
+    id.not_in(ProfilesTrophy.select(:profile_id).where{(profiles_trophies.trophy_id == my{trophy_id}) & (profiles_trophies.profile_id != nil)})
   end
 
   #science portal memberships
