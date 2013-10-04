@@ -110,6 +110,18 @@ $(document).ready( ->
   if rails.bat == true && typeof(TSN.bat_timer) != 'object'
     TSN.bat_timer = $.timer(TSN.spawn_bats, 40000, true)
     TSN.bat_timer.once(2000)
+    getMousePosition = (timeoutMilliSeconds) ->
+      # "one" attaches the handler to the event and removes it after it has executed once
+      $(document).one "mousemove", (event) ->
+        window.mousePos = [event.pageX ,event.pageY]
+        # set a timeout so the handler will be attached again after a little while
+        setTimeout (->
+          getMousePosition timeoutMilliSeconds
+        ), timeoutMilliSeconds
+
+    # start storing the mouse position every 100 milliseconds
+    getMousePosition 100
+    window.mousePos = [0,0]
 )
 TSN.spawn_bats = () ->
   for i in [0..20]
@@ -129,6 +141,7 @@ class TSN.Bat
     TSN.bat_id += 1
     @name = "bat#{TSN.bat_id}"
     @pos = [x,y]
+    @alive = true
     @vel = [10,10]
     $('body').append("<div id=\"#{@name}\" class=\"bat\" style='left:#{x}px; top:#{y}px;'>/^v^\\</div>")
     @move
@@ -154,6 +167,7 @@ class TSN.Bat
     , false
     @life_timer.once(t*1000)
   fly_away: () ->
+    @alive = false
     dir = Math.random()*2*Math.PI
     @home[0] = $(window).width()*(0.5 + 4*Math.cos(dir))
     @home[1] = $(window).height()*(0.5 + 4*Math.sin(dir))
@@ -170,12 +184,19 @@ class TSN.Bat
     v += (Math.random()-.5)*10 #add a random amount
 
     #calculates the distance to home + a random number (maxed and mined)
-    dis = @home[i]-@pos[i]
+    edge = if (c == 'x') then ($(window).width()- 100) else ($(window).height() - 300)
+    if @alive & window.mousePos[i] > 100 &  window.mousePos[i] < edge
+      h = window.mousePos[i]
+      home_trend = 0.02
+    else
+      h = @home[i]
+      home_trend = 0.007
+    dis = h-@pos[i]
     dis = if (dis > 400) then 300 else dis
     dis = if (dis < -400) then -300 else dis
     dis += (Math.random()-.5)*30
 
-    v += dis* 0.007 #trend towards home
+    v += dis* home_trend #trend towards home
     v -= v*.03 #remove a damping factor
 
     @vel[i] = v
