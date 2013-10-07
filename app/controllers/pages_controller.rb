@@ -32,7 +32,7 @@ class PagesController < ApplicationController
     if params[:activity]
       @activity = Activity.last(params[:activity].to_i)
     else
-      @activity = Activity.last(10)
+      @activity = []
     end
 
     render :index
