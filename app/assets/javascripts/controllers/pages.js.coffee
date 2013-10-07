@@ -69,32 +69,33 @@ TSN.pages.index = () ->
 
   #activity feed
   activity_items = []
-  for item in $('#activity_list .activity_item')
-    activity_items.push item
-    $(item).remove()
+  for activity_item in $('#activity_list .activity_item')
+    activity_items.push activity_item
+    $(activity_item).remove()
 
   activity_add_item = () ->
     if $('#activity_list .activity_item').length > 0
 
-      item = $('#activity_list .activity_item').get(-1)
-      old_item = $(item)
-      old_item.fadeOut(600,'easeOutQuad', () ->
-        activity_items.push item
-        old_item.remove()
+      activity_item = $('#activity_list .activity_item').get(-1)
+      old_activity_item = $(activity_item)
+      old_activity_item.fadeOut(600,'easeOutQuad', () ->
+        activity_items.push activity_item
+        old_activity_item.remove()
         activity_add_single()
       )
+    else
+      activity_add_single()
   activity_add_single = () ->
     if activity_items.length > 0
       $('#activity_list').prepend(activity_items.shift())
-      new_item = $($('#activity_list .activity_item').get(0))
+      new_activity_item = $($('#activity_list .activity_item').get(0))
       #new_item.hide()
-      new_item.show()
+      new_activity_item.show()
       #new_item.slideDown(600,'easeOutQuad')
-      w = new_item.width()
-      new_item.width(0)
-      new_item.animate({width: w}, 4000,'linear')
+      w = new_activity_item.width()
+      new_activity_item.width(0)
+      new_activity_item.animate({width: w}, 4000,'linear')
   activity_timer = $.timer(activity_add_item,4000, true)
-  activity_add_single()
 
   $('#activity_feed').mouseover(() ->
     activity_timer.pause()
