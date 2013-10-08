@@ -44,7 +44,7 @@
       #activity_feed.span12.well
         %h2 Latest Activity
         #activity_list
-          - @activity.each do |activity|
+          - @activity.reverse_each do |activity|
             = ActivityPresenter.new(activity, self).render_activity
 
   .row-fluid

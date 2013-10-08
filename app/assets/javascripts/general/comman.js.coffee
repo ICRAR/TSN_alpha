@@ -97,11 +97,13 @@ $(document).ready( ->
     # function you want to fire when the user goes idle
     TSN.notifications_timer.pause();
     TSN.bat_timer.pause() if typeof(TSN.bat_timer) == 'object'
+    TSN.activity_timer.pause() if typeof(TSN.activity_timer) == 'object'
 
   $(document).on "active.idleTimer", ->
     # function you want to fire when the user becomes active again
     TSN.notifications_timer.play()
     TSN.bat_timer.play() if typeof(TSN.bat_timer) == 'object'
+    TSN.activity_timer.play() if typeof(TSN.activity_timer) == 'object'
 
   $("a[data-toggle=popover]").popover().click (e) ->
     e.preventDefault()

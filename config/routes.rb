@@ -7,7 +7,11 @@ Tsn::Application.routes.draw do
         )}
 
   resources :contact_forms
-  resources :stats, :only => [:index]
+  resources :stats, :only => [:index] do
+    collection do
+      get 'activities'
+    end
+  end
   get "trophies/show"
 
   root :to => 'pages#index'
