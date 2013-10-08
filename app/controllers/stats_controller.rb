@@ -6,7 +6,11 @@ class StatsController < ApplicationController
     @stats = SiteStat.for_feed
   end
   def activities
-    @activities = @activity = Activity.page(params[:page]).order{id.desc}
+    if params[:page].to_i == 1
+      @activities = @activity = Activity.page(1).per(10).order{id.desc}
+    else
+      @activities = @activity = Activity.page(params[:page].to_i-1).padding(10).per(25).order{id.desc}
+    end
     render layout: false, formats: :js
   end
 end
