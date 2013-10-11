@@ -17,6 +17,11 @@ class Trophy < ActiveRecord::Base
       where{(trophy_sets.set_type =~ "credit_active") | (trophy_sets.set_type =~ "credit_classic")}.
       where("credits IS NOT NULL")
 
+  attr_accessor :profiles_count_store
+  def profiles_count
+    self.profiles_count_store ||= self.profiles.joins(:general_stats_item).where{general_stats_item.power_user == false}.count
+  end
+
   def heading(trophy_ids = nil)
     if credits.nil? || credits == 0
       title.titlecase

@@ -25,8 +25,8 @@
               ="(#{@trophy.show_credits(@trophy_ids)})"
           %p
             = t".won_by"
-            = @trophy.profiles_trophies.size
-            = t(".user").pluralize(@trophy.profiles.size)
+            = @trophy.profiles_count
+            = t(".user").pluralize(@trophy.profiles_count)
             = link_to "click here to see them all.", search_profiles_path(:trophy_id => @trophy.id)
           - if user_signed_in? && current_user.profile.has_trophy(@trophy)
             = render 'trophies/trophys_share', :trophy => @trophy

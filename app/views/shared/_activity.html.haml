@@ -1,0 +1,29 @@
+.activity_item{:id=>"activity_item_#{activity.id}"}
+  - if activity.is_single?
+    = link_to profile_path(activity.profile_id) do
+      = image_tag  activity.avatar_url
+      = activity.profile_name
+
+  -else
+    - if activity.num_profiles.nil?
+      Somebody
+    -else
+      = "#{activity.num_profiles} people"
+
+  - case klass
+  - when "trophy"
+    - case type
+    - when "multi"
+      were awarded the
+    - else
+      was awarded the
+    = link_to activity.item_name, trophy_path(:id => activity.trackable_id)
+  - when "alliance"
+    joined the
+    = link_to activity.item_name, alliance_path(:id => activity.trackable_id)
+    alliance
+  - else
+    did something with a
+    = activity.item_name
+  = distance_of_time_in_words(Time.now, activity.created_at)
+  ago

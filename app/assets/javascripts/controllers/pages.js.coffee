@@ -68,31 +68,57 @@ TSN.pages.index = () ->
   )
 
   #activity feed
-  activity_items = []
-  for item in $('#activity_list .activity_item')
-    activity_items.push item
-    $(item).remove()
+  TSN.activity_items = []
+  TSN.activity_item_page = 1
+  for activity_item in $('#activity_list .activity_item')
+    TSN.activity_items.push activity_item
+    $(activity_item).remove()
 
   activity_add_item = () ->
+    #fill up list
+    while  $('#activity_list .activity_item').length < 4
+      activity_add_single()
+
+    #remove first item
+    old_activity_item = $('#activity_list .activity_item').first()
+    w = old_activity_item.width()
+    old_activity_item.animate({left: -w, marginRight: -w}, 4000,'linear', () ->
+      #TSN.activity_items.push activity_item
+      #we only need to show once
+      old_activity_item.remove()
+    )
+    ###
     if $('#activity_list .activity_item').length > 0
 
-      item = $('#activity_list .activity_item').get(-1)
-      old_item = $(item)
-      old_item.slideUp(600,'easeOutQuad', () ->
-        activity_items.push item
-        old_item.remove()
+      activity_item = $('#activity_list .activity_item').get(-1)
+      old_activity_item = $(activity_item)
+      old_activity_item.fadeOut(600,'easeOutQuad', () ->
+        #TSN.activity_items.push activity_item
+        #we only need to show once
+        old_activity_item.remove()
+        activity_add_single()
       )
-    if activity_items.length > 0
-      $('#activity_list').prepend(activity_items.shift())
-      new_item = $($('#activity_list .activity_item').get(0))
-      new_item.hide()
-      new_item.slideDown(600,'easeOutQuad')
-  activity_timer = $.timer(activity_add_item,4000, true)
+    else
+      activity_add_single()
+    ###
+  activity_add_single = () ->
+    if TSN.activity_items.length > 0
+      $('#activity_list').prepend(TSN.activity_items.shift())
+      new_activity_item = $($('#activity_list .activity_item').get(0))
+      #new_item.hide()
+      new_activity_item.show()
+      #new_item.slideDown(600,'easeOutQuad')
+      w = new_activity_item.width()
+      new_activity_item.width(0)
+      new_activity_item.animate({width: w}, 4000,'linear')
+    else
+      $.getScript("/stats/activities?page=#{TSN.activity_item_page+1}")
+  TSN.activity_timer = $.timer(activity_add_item,4000, true) unless TSN.activity_items.length == 0
 
   $('#activity_feed').mouseover(() ->
-    activity_timer.pause()
+    TSN.activity_timer.pause()
   ).mouseout(() ->
-    activity_timer.play()
+    TSN.activity_timer.play()
   )
 
 TSN.pages.show = () ->

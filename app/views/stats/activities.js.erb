@@ -1,0 +1,4 @@
+<% @activities.each do |activity| %>
+TSN.activity_items.push($('<div/>').html("<%= j ActivityPresenter.new(activity, self).render_activity %>").contents()[0]);
+<% end %>
+TSN.activity_item_page = <%= @activities.next_page.nil? ? 0 : @activities.next_page-1 %>
