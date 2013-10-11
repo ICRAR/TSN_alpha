@@ -75,6 +75,19 @@ TSN.pages.index = () ->
     $(activity_item).remove()
 
   activity_add_item = () ->
+    #fill up list
+    while  $('#activity_list .activity_item').length < 4
+      activity_add_single()
+
+    #remove first item
+    old_activity_item = $('#activity_list .activity_item').first()
+    w = old_activity_item.width()
+    old_activity_item.animate({left: -w, marginRight: -w}, 4000,'linear', () ->
+      #TSN.activity_items.push activity_item
+      #we only need to show once
+      old_activity_item.remove()
+    )
+    ###
     if $('#activity_list .activity_item').length > 0
 
       activity_item = $('#activity_list .activity_item').get(-1)
@@ -87,6 +100,7 @@ TSN.pages.index = () ->
       )
     else
       activity_add_single()
+    ###
   activity_add_single = () ->
     if TSN.activity_items.length > 0
       $('#activity_list').prepend(TSN.activity_items.shift())
