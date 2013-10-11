@@ -246,6 +246,7 @@ class NereusJob
             if local.nil?
               local = NereusStatsItem.new
               local.network_limit = 0
+              local.nereus_id = id.to_i
             end
 
             local.credit = update_row[:credit]
