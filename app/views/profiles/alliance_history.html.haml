@@ -30,7 +30,7 @@
             %h2= "#{@profile.name.titlecase.possessive} current Alliance"
             %dl.dl-horizontal
               %dt Name
-              %dd= link_to @alliance.name.titleize, @alliance
+              %dd= link_to @alliance.name, @alliance
               %dt Total Credit
               %dd= number_with_delimiter(@alliance.credit)
               %dt Rank

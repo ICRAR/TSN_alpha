@@ -34,7 +34,7 @@
                         <tbody>
                             <% @alliances.each do |alliance| %>
                               <tr>
-                                <td><%= link_to alliance.name.titleize, alliance %></td>
+                                <td><%= link_to alliance.name, alliance %></td>
                                 <td><%= alliance.ranking %></td>
                                 <td><%= number_with_delimiter(alliance.credit) %></td>
                                 <td><%= alliance.RAC %></td>

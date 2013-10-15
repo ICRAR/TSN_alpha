@@ -1,6 +1,6 @@
 -content_for(:title_bar) do
   #intro-sml-wrap
-    %h1.fontface= @alliance.name.titleize
+    %h1.fontface= @alliance.name
   -@user_page =  (user_signed_in? and @alliance.members.include?(current_user.profile)) ? 'my_alliance' : 'alliance_leaderboard'
   =render 'layouts/user_nav'
 
@@ -9,7 +9,7 @@
     #alliance-show
       .row-fluid
         .span5.well.well-white
-          %h2= @alliance.name.titleize
+          %h2= @alliance.name
           %dl.dl-horizontal
             %dt Total Credit
             %dd= number_with_delimiter(@alliance.credit)
