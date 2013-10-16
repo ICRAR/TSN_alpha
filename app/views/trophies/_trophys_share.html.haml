@@ -1,6 +1,6 @@
 .trophy_share_links.pull-right
   Share your success!
-  %span.trophy_share_toolbox.addthis_default_style.addthis_32x32_style{:id => "trophy_share_toolbox_#{trophy.id}",
+  %span.trophy_share_toolbox.addthis_default_style.addthis_32x32_style{:id => "trophy_share_toolbox_#{trophy.id}_#{Time.now.to_i}",
     :data => {:trophy_image => trophy.image.url,
               :trophy_url => trophy_url(trophy),
               :trophy_title => trophy.title.titlecase}}
