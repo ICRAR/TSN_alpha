@@ -66,6 +66,7 @@ class BoincRemoteUser < BoincPogsModel
     new_user.encrypted_password = 'password'
     new_user.boinc_id = self.id  unless theSkyNetPassword
     new_user.confirmed_at = Time.at(self.create_time)
+    new_user.joined_at = Time.at(self.create_time)
     if new_user.save
       profile = new_user.profile
       profile.nickname = self.name

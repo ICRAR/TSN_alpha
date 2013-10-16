@@ -42,7 +42,7 @@
                   %dt Credits you've contributed
                   %dd= number_with_delimiter(membership.leave_credit-membership.start_credit)
                 .pull-right
-                  =(current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
+                  =(current_user.profile.alliance_leader && current_user.profile.alliance_leader_id == @alliance.id) ? link_to('Manage', edit_alliance_path(@alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
                 .pull-left#inviteBox
                   =form_tag(invite_alliance_path, :method => "post", :remote => true, :id => 'invite_form') do
                     =text_field_tag(:email,nil,:class => "search-query", :placeholder => "email")

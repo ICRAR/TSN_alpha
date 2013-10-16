@@ -1,6 +1,6 @@
 %h2 Your Alliance
 -if  @profile.alliance
-  %h3.pull-left= link_to(@profile.alliance.name.titleize,@profile.alliance)
+  %h3.pull-left= link_to(@profile.alliance.name.titleize, @profile.alliance)
   .row-fluid
     .span11
       %dl.dl-horizontal
@@ -8,7 +8,7 @@
         %dd= number_with_delimiter(@profile.alliance.credit)
         %dt Rank
         %dd= @profile.alliance.ranking
-        %dd=(current_user.profile.alliance_leader) ? link_to('Manage', edit_alliance_path(@profile.alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
+        %dd=(@profile.alliance_leader_id && @profile.alliance_leader_id == @profile.alliance.id)  ? link_to('Manage', edit_alliance_path(@profile.alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
 -else
   %p="You are not part of an alliance yet click #{link_to 'here', new_alliance_path} to create one or #{link_to 'here', alliances_path} to find an existing alliance to join".html_safe
 %p= link_to "Your alliance history", alliance_history_profile_path(@profile)

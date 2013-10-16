@@ -149,7 +149,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=213 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -454,6 +454,7 @@ CREATE TABLE `users` (
   `invited_by_id` int(11) DEFAULT NULL,
   `invited_by_type` varchar(255) DEFAULT NULL,
   `boinc_id` int(11) DEFAULT NULL,
+  `joined_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_users_on_email` (`email`),
   UNIQUE KEY `index_users_on_reset_password_token` (`reset_password_token`),
@@ -612,3 +613,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130919061425');
 INSERT INTO schema_migrations (version) VALUES ('20131002044653');
 
 INSERT INTO schema_migrations (version) VALUES ('20131007020303');
+
+INSERT INTO schema_migrations (version) VALUES ('20131016070041');

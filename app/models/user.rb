@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   alias_method :devise_valid_password?, :valid_password?
   # Setup accessible (or protected) attributes for your model
   attr_accessible :username, :email, :password, :password_confirmation, :remember_me, :as => [:default, :admin]
-  attr_accessible :admin, :mod, as: :admin
+  attr_accessible :admin, :mod, :joined_at, as: :admin
   # attr_accessible :title, :body
 
   #fix to allow login by either email or username/
@@ -21,6 +21,10 @@ class User < ActiveRecord::Base
 
   has_one :profile, :dependent => :destroy, :inverse_of => :user
   before_create :build_profile
+  before_create :update_joined_at
+  def update_joined_at
+    self.joined_at ||= Time.now
+  end
 
   before_invitation_accepted :check_alliance_invite
 
