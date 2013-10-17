@@ -102,7 +102,7 @@ TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
       )
 
       #adds more detail for the last 7 days to the graph
-      url = "<%= APP_CONFIG['graphite_url']%>render?from=-6days&until=now&target=group("
+      url = "<%= APP_CONFIG['graphite_url']%>render?from=-6days&until=-2hours&target=group("
       url += metrics.join(',')
       url +=")&format=json&jsonp=?"
       $.ajax

@@ -407,56 +407,50 @@ body {
     position: relative;
   }
 }
-body.petes {
-  background-color: black;
 
-  #top-nav.navbar-inverse, #page-nav.navbar-inverse {
-    .navbar-inner {
-      background-image: -moz-linear-gradient(top, #1D0038, #3A0050);
-      background-image: -ms-linear-gradient(top, #1D0038, #3A0050);
-      background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#1D0038), to(#3A0050));
-      background-image: -webkit-linear-gradient(top, #1D0038, #3A0050);
-      background-image: -o-linear-gradient(top, #1D0038, #3A0050);
-      background-image: linear-gradient(top, #1D0038, #3A0050);
+/* liScroll styles */
+
+.tickercontainer { /* the outer div with the black border */
+  //border: 1px solid #000;
+  //background: #fff;
+  //width: 738px;
+  width: 900px;
+  height: 27px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+
+  .mask { /* that serves as a mask. so you get a sort of padding both left and right */
+    position: relative;
+    left: 10px;
+    top: 8px;
+    //width: 718px;
+    width: 880px;
+    overflow: hidden;
+  }
+  ul.newsticker { /* that's your list */
+    position: relative;
+    left: 910px;
+    //font: bold 10px Verdana;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      float: left; /* important: display inline gives incorrect results when you check for elem's width */
+      margin: 0;
+      padding: 0;
+      //background: #fff;
     }
-
-    .navbar .brand {
-      color: #1D0038;
+    a {
+      //white-space: nowrap;
+      //padding: 0;
+      //color: #ff0000;
+      //font: bold 10px Verdana;
+      //margin: 0 50px 0 0;
     }
-
-    .navbar .divider-vertical {
-      background-color: #ffffff;
-      border-right: 1px solid #ff00ff;
-    }
-
-    .navbar .nav > li > a {
-
-      color: #ffffff;
-    }
-
-    .navbar .nav > .active > a,
-    .navbar .nav > .active > a:hover,
-    .navbar .nav > .active > a:focus {
-      color: #ff56ff;
+    span {
+      margin: 0 10px 0 0;
     }
   }
-
-
-  .well{
-    background-color: #ECE8FF !important;
-  }
-  .well-white{
-    background-color: #DEC3EA !important;
-  }
-  .ribbon{
-    //background: #7A72C3;
-  }
-  #content {
-    &.home{
-      background-color: #cfc8ff;
-      background-image: none;
-    }
-  }
-
-
 }

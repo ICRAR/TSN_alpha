@@ -1,4 +1,4 @@
-.activity_item{:id=>"activity_item_#{activity.id}"}
+%li.activity_item{:id=>"activity_item_#{activity.id}"}
   - if activity.is_single?
     = link_to profile_path(activity.profile_id) do
       = image_tag  activity.avatar_url

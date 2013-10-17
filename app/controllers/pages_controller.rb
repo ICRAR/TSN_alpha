@@ -30,7 +30,7 @@ class PagesController < ApplicationController
     @top_profiles = Profile.for_leader_boards_small.order("rank asc").limit(10)
     @top_alliances = Alliance.for_leaderboard_small.order('ranking asc').limit(10)
     if params[:activity]
-      @activity = Activity.last(params[:activity].to_i)
+      @activity = Activity.last(10)
     else
       @activity = []
     end
