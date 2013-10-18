@@ -69,6 +69,7 @@ TSN.pages.index = () ->
   TSN.activity_update = (restart_fn) ->
     test = restart_fn
     unless TSN.activity_pause
+      $("#activity_feed #loading").show()
       TSN.activity_items = []
       $.getScript("/stats/activities?page=#{TSN.activity_item_page+1}", ->
         list = $("#activity_list")
@@ -76,64 +77,19 @@ TSN.pages.index = () ->
         while TSN.activity_items.length > 0
           list.prepend(TSN.activity_items.shift())
         restart_fn()
+        $("#activity_feed #loading").hide()
       )
     else
       restart_fn()
   #activity feed
   $(document).ready( ->
+    $("#activity_feed #loading").hide()
     $("#activity_list").liScroll({travelocity: 0.07}, TSN.activity_update)
     TSN.activity_items = []
     TSN.activity_item_page = 1
     TSN.activity_pause = false
   )
 
-###
-  $(document).ready( ->
-    TSN.activity_items = []
-    TSN.activity_item_page = 1
-    i = 0
-    for activity_item in $('#activity_list .activity_item')
-      i += 1
-      return if i < 5
-      TSN.activity_items.push activity_item
-      $(activity_item).remove()
-    TSN.activity_next_item()
-  )
-  TSN.activity_next_item = () ->
-    #remove first item
-    old_activity_item = $('#activity_list .activity_item').first()
-    w = old_activity_item.width()
-    old_activity_item.animate({left: -w, marginRight: -w}, 4000,'linear', () ->
-      #TSN.activity_items.push activity_item
-      #we only need to show once
-      old_activity_item.remove()
-      #start again
-      TSN.activity_next_item()
-    )
-    #add new item
-    activity_add_single()
-
-  activity_add_single = () ->
-    if  TSN.activity_items.length < 3
-      $.getScript("/stats/activities?page=#{TSN.activity_item_page+1}")
-    if TSN.activity_items.length > 0
-      $('#activity_list').prepend(TSN.activity_items.shift())
-      new_activity_item = $($('#activity_list .activity_item').get(0))
-      #new_item.hide()
-      new_activity_item.show()
-      #new_item.slideDown(600,'easeOutQuad')
-      w = new_activity_item.width()
-      new_activity_item.width(0)
-      new_activity_item.animate({width: w}, 4000,'linear')
-
-  #TSN.activity_timer = $.timer(activity_add_item,4000, true) unless TSN.activity_items.length == 0
-
-  $('#activity_feed').mouseover(() ->
-    TSN.activity_timer.pause()
-  ).mouseout(() ->
-    TSN.activity_timer.play()
-  )
-###
 TSN.pages.show = () ->
   $("#download_pop_up strong").each(() ->
     $(this).text(window.rails.nereus_id) if $(this).text() == "nereus_id"

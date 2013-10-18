@@ -42,10 +42,10 @@
   - if @activity.size > 0
     .row-fluid
       #activity_feed.span12.well
-        %h2 Latest Activity
         %ul#activity_list
           - @activity.reverse_each do |activity|
             = ActivityPresenter.new(activity, self).render_activity
+        #loading.pull-right Loading ...
 
   .row-fluid
     #news.span6.well
