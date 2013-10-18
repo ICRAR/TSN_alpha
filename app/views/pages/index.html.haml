@@ -43,9 +43,13 @@
     .row-fluid
       #activity_feed.span12.well
         %ul#activity_list
+          - i = 0
           - @activity.reverse_each do |activity|
             = ActivityPresenter.new(activity, self).render_activity
-        #loading.pull-right Loading ...
+            - f = @feed[i%@feed.size]
+            %li.stats_item= f.desc
+            - i += 1
+        #loading Loading ...
 
   .row-fluid
     #news.span6.well

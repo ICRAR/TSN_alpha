@@ -399,58 +399,56 @@ body {
   top: 50px;
   left: 100px;
 }
-#activity_list {
-  .activity_item {
-    padding: 0px 15px;
-    border-style:none solid none none;
-    display: inline;
-    position: relative;
-  }
-}
+
 
 /* liScroll styles */
-
-.tickercontainer { /* the outer div with the black border */
-  //border: 1px solid #000;
-  //background: #fff;
-  //width: 738px;
-  width: 900px;
-  height: 27px;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-
-  .mask { /* that serves as a mask. so you get a sort of padding both left and right */
-    position: relative;
-    left: 10px;
-    top: 8px;
-    //width: 718px;
-    width: 880px;
-    overflow: hidden;
+#activity_feed {
+  position: relative;
+  #activity_list {
+    .activity_item, .stats_item {
+      padding: 0px 15px;
+      border-style:none solid none none;
+      display: inline;
+      position: relative;
+    }
   }
-  ul.newsticker { /* that's your list */
-    position: relative;
-    left: 910px;
-    //font: bold 10px Verdana;
-    list-style-type: none;
+  .tickercontainer {
+
+    width: 900px;
+    height: 27px;
     margin: 0;
     padding: 0;
+    overflow: hidden;
 
-    li {
-      float: left; /* important: display inline gives incorrect results when you check for elem's width */
+    .mask { /* that serves as a mask. so you get a sort of padding both left and right */
+      position: relative;
+      left: 10px;
+      top: 8px;
+      //width: 718px;
+      width: 880px;
+      overflow: hidden;
+    }
+    ul.newsticker { /* that's your list */
+      position: relative;
+      left: 910px;
+      //font: bold 10px Verdana;
+      list-style-type: none;
       margin: 0;
       padding: 0;
-      //background: #fff;
+
+      li {
+        float: left; /* important: display inline gives incorrect results when you check for elem's width */
+        margin: 0;
+        padding: 0;
+      }
+      span {
+        margin: 0 10px 0 0;
+      }
     }
-    a {
-      //white-space: nowrap;
-      //padding: 0;
-      //color: #ff0000;
-      //font: bold 10px Verdana;
-      //margin: 0 50px 0 0;
-    }
-    span {
-      margin: 0 10px 0 0;
-    }
+  }
+  #loading {
+    position: absolute;
+    top: 30px;
+    left: 800px;
   }
 }
