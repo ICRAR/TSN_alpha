@@ -24,21 +24,6 @@
         = link_to('Sign up now!!', new_user_session_path, :class => "signupbutton")
 
 -content_for(:content) do
-  #content-wrap-home
-    .row-fluid
-      .span12
-        =link_to stats_path do
-          =render 'layouts/feed'
-    .row-fluid
-      .span6.page_content
-        = @page.content.html_safe if @page
-      .span6
-        #info-skynet.info-about.last
-          %h2= t ".why"
-          %ul#reasons
-            %li.track= t ".track"
-            %li.earn= t ".earn"
-            %li.share= t ".share"
   - if @activity.size > 0
     .row-fluid
       #activity_feed.span12.well
@@ -50,6 +35,22 @@
             %li.stats_item= f.desc
             - i += 1
         #loading Loading ...
+  #content-wrap-home
+    - unless @activity.size > 0
+      .row-fluid
+        .span12
+          =link_to stats_path do
+            =render 'layouts/feed'
+    .row-fluid
+      .span6.page_content
+        = @page.content.html_safe if @page
+      .span6
+        #info-skynet.info-about.last
+          %h2= t ".why"
+          %ul#reasons
+            %li.track= t ".track"
+            %li.earn= t ".earn"
+            %li.share= t ".share"
 
   .row-fluid
     #news.span6.well

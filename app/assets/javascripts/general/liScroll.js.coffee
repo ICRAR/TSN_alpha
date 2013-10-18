@@ -13,7 +13,7 @@
 #
 jQuery.fn.liScroll = (settings, callback_fn) ->
   settings = jQuery.extend(
-    travelocity: 0.07
+    travelocity: 0.075
   , settings)
   test = callback_fn
   @each ->
