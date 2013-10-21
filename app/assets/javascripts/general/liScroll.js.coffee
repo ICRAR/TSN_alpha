@@ -44,9 +44,9 @@ jQuery.fn.liScroll = (settings, callback_fn) ->
     stripWidth = 1
     $strip.find("li").each (i) ->
       stripWidth += jQuery(this, i).outerWidth(true)
-
-    $mask = $strip.wrap("<div class='mask'></div>")
-    $tickercontainer = $strip.parent().wrap("<div class='tickercontainer'></div>")
+    if !$strip.parent().hasClass("mask")
+      $mask = $strip.wrap("<div class='mask'></div>")
+      $tickercontainer = $strip.parent().wrap("<div class='tickercontainer'></div>")
     containerWidth = $strip.parent().parent().width()
     $strip.width stripWidth
     totalTravel = stripWidth + containerWidth

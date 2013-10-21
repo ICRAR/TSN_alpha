@@ -33,12 +33,12 @@ TSN.pages.index = () ->
   ]
   names =  ['SourceFinder Total Credit','SourceFinder Active Users','SourceFinder Total Users','SourceFinder Current TFLOPS (estimate)']
   TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),"-#{TSN.months_from_launch()}months")
-
+  ###
   $('#js-news').ticker(
     titleText: I18n.t("js.stats.latest"),
     controls: false
   )
-
+  ###
 
   #news slider
   news_items = []

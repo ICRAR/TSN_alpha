@@ -29,11 +29,7 @@ class PagesController < ApplicationController
     @feed = SiteStat.for_feed
     @top_profiles = Profile.for_leader_boards_small.order("rank asc").limit(10)
     @top_alliances = Alliance.for_leaderboard_small.order('ranking asc').limit(10)
-    if params[:activity]
-      @activity = Activity.last(10)
-    else
-      @activity = []
-    end
+    @activity = Activity.last(10)
 
     render :index
   end

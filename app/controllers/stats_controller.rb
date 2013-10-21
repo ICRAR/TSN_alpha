@@ -11,6 +11,7 @@ class StatsController < ApplicationController
     else
       @activities = @activity = Activity.page(params[:page].to_i-1).padding(10).per(25).order{id.desc}
     end
+    @feed = SiteStat.for_feed
     @next_page = @activities.next_page.nil? ? 0 : (params[:page].to_i)
     render layout: false, formats: :js
   end

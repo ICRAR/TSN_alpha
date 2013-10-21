@@ -1,4 +1,7 @@
+<% i = 0 %>
 <% @activities.reverse_each do |activity| %>
-TSN.activity_items.push($('<div/>').html("<%= j ActivityPresenter.new(activity, self).render_activity %>").contents()[0]);
+  TSN.activity_items.push($('<div/>').html("<%= j ActivityPresenter.new(activity, self).render_activity %>").contents()[0]);
+  TSN.activity_items.push($('<div/>').html("<li class=\'stats_item\'><%= @feed[i%@feed.size].desc %><\/li>\n").contents()[0]);
+  <% i +=1 %>
 <% end %>
 TSN.activity_item_page = <%= @next_page %>;
