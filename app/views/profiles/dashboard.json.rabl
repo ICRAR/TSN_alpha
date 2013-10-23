@@ -26,10 +26,11 @@ child :alliance do
   attributes :id, :name
   node(:url) {|a| alliance_url(a,:format => :json)}
 end
-child :trophies, :object_root => false do
+child @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first => :most_recent_trophy do
   attributes :id, :title, :credits
-  node(:desc) {|t| t.desc(@trophy_ids)}
-  node(:credits) {|t| t.show_credits(@trophy_ids)}
+  node(:desc) {|t| t.desc[t.id]}
+  node(:credits) {|t| t.credits}
   node(:image_url) {|t| t.image.url}
   node(:url) {|t| trophy_url(t,:format => :json)}
 end
+node(:trophies_url) {|p| trophies_profile_url(p)}
