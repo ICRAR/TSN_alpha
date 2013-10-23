@@ -12,8 +12,14 @@ glue :general_stats_item do |g|
     end
   end
   if g.boinc_stats_item != nil
-    child :boinc_stats_item => :POGS do
+    child :boinc_stats_item => :POGS do |b|
       attributes :boinc_id, :credit, :RAC
+      node(:galaxies_url) {|b| boinc_galaxies_url(b.boinc_id)}
+      child @boinc_galaxy => :latest_galaxy do
+        attributes :id, :name
+        node(:thumbnail_url) {|g| g.thumbnail_url}
+        node(:galaxy_url) {|g|  boinc_galaxy_url(b.boinc_id,g.id)}
+      end
     end
   end
   attributes :credits_to_next_trophy, :rank
@@ -27,7 +33,7 @@ child :alliance do
   node(:url) {|a| alliance_url(a,:format => :json)}
 end
 child @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first => :most_recent_trophy do
-  attributes :id, :title, :credits
+  attributes :id, :title
   node(:desc) {|t| t.desc[t.id]}
   node(:credits) {|t| t.credits}
   node(:image_url) {|t| t.image.url}
