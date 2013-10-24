@@ -13,7 +13,7 @@ CREATE TABLE `activities` (
   PRIMARY KEY (`id`),
   KEY `index_activities_on_profile_id` (`profile_id`),
   KEY `index_activities_on_trackable_id` (`trackable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `alliance_invites` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -149,7 +149,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=213 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=240 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -166,7 +166,7 @@ CREATE TABLE `general_stats_items` (
   KEY `total_credit_index_desc` (`total_credit`),
   KEY `rank_asc` (`rank`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15978 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15979 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `leaders_science_portals` (
   `leader_id` int(11) DEFAULT NULL,
@@ -202,7 +202,7 @@ CREATE TABLE `nereus_stats_items` (
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9238 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9239 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `news` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -291,7 +291,7 @@ CREATE TABLE `profiles` (
   KEY `user_id_index` (`user_id`),
   KEY `alliance_leader_id_index` (`alliance_leader_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15978 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15979 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `profiles_trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -360,7 +360,9 @@ CREATE TABLE `science_portals` (
   `desc` text,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  `slug` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index_science_portals_on_slug` (`slug`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `site_stats` (
@@ -463,7 +465,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `index_users_on_invitation_token` (`invitation_token`),
   KEY `index_users_on_invited_by_id` (`invited_by_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15979 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15980 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `versions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -615,3 +617,5 @@ INSERT INTO schema_migrations (version) VALUES ('20131002044653');
 INSERT INTO schema_migrations (version) VALUES ('20131007020303');
 
 INSERT INTO schema_migrations (version) VALUES ('20131016070041');
+
+INSERT INTO schema_migrations (version) VALUES ('20131024014516');

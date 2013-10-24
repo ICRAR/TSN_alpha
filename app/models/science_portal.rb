@@ -1,5 +1,6 @@
 class SciencePortal < ActiveRecord::Base
-  attr_accessible :name, :public, :desc, :member_ids, :leader_ids, as: :admin
+  attr_accessible :name, :slug, :public, :desc, :member_ids, :leader_ids, as: :admin
+  validates :slug, presence: true, uniqueness: true
   has_and_belongs_to_many :members,
                           class_name: "Profile",
                           association_foreign_key: "member_id",
@@ -35,8 +36,16 @@ class SciencePortal < ActiveRecord::Base
   end
 
   rails_admin do
+    list do
+      field :name
+      field :slug
+      field :public
+      field :created_at
+      field :updated_at
+    end
     include_all_fields
     field :name
+    field :slug
     field :public
     field :members do
       inverse_of :members_science_portals
