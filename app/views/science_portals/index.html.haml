@@ -10,7 +10,9 @@
       %p= t(".desc")
       %ul
         - @projects.each do |project|
-          %li= link_to project.name, science_portal_path(:id => project.name)
+          - project_id = project.slug ? project.slug : project.id
+          %li= link_to project.name, science_portal_path(:id => project_id)
         - if !@private_projects.nil? && !@private_projects.empty?
           - @private_projects.each do |project|
-            %li= link_to "#{project.name} (private)", science_portal_path(:id => project.name)
+            - project_id = project.slug ? project.slug : project.id
+            %li= link_to "#{project.name} (private)", science_portal_path(:id => project_id)
