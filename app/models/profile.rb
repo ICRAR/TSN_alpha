@@ -55,7 +55,8 @@ class Profile < ActiveRecord::Base
   end
 
   def  self.for_show(id)
-    includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).find(id)
+    p = includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).find(id)
+    (p.user.invitation_sent_at.nil? || !p.user.invitation_accepted_at.nil?) ? p : nil
   end
   def  self.for_compare(id1,id2)
     includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).where(:id => [id1,id2])
