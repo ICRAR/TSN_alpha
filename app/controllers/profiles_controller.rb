@@ -35,6 +35,7 @@ class ProfilesController < ApplicationController
   # GET /profiles/1.json
   def show
     @profile = Profile.for_show(params[:id])
+    @trophy  = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
   end
 
   def compare
@@ -56,6 +57,7 @@ class ProfilesController < ApplicationController
         redirect_to profiles_url, notice: 'Sorry could not find your profile'
         return
       end
+      @trophy  = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
       @profile.general_stats_item.nereus_stats_item.update_status  if @profile.general_stats_item.nereus_stats_item != nil
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'

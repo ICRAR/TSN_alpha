@@ -40,9 +40,9 @@
           -if @profile.trophies.empty?
             = @profile.name + " hasn't won any trophies yet."
           -else
-            - trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
-            = link_to (image_tag trophy.image.url), trophy
-            = link_to trophy.title,  trophy
+            - @trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
+            = link_to (image_tag @trophy.image.url), @trophy
+            = link_to @trophy.title,  @trophy
         %p
           = link_to  trophies_profile_path(@profile) do
             = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."

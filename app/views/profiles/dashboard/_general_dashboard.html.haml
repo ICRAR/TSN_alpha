@@ -18,15 +18,14 @@
 #trophy.row-fluid
   .span12
     %h3 Latest Achievement:
-    - trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
-    - if trophy == nil
+    - if @trophy == nil
       You haven't won any trophies yet
     - else
       .media
-      = link_to (image_tag trophy.image.url), trophy, :class => "pull-left"
+      = link_to (image_tag @trophy.image.url), @trophy, :class => "pull-left"
       .media-body
-        %h4.media-heading= link_to trophy.title.titleize,  trophy
-        %p= trophy.desc([trophy.id])
+        %h4.media-heading= link_to @trophy.title.titleize,  @trophy
+        %p= @trophy.desc([@trophy.id])
         %p= link_to "See all your trophies", trophies_profile_path(@profile)
 - credits_to_go  = @profile.general_stats_item.credits_to_next_trophy
 - credits_from_last = @profile.general_stats_item.credits_from_last_trophy
