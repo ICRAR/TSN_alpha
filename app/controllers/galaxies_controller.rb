@@ -4,6 +4,20 @@ class GalaxiesController < ApplicationController
   helper_method :sort_column, :sort_direction
   before_filter :check_boinc_id
 
+  def check_science_user
+    if user_signed_in?
+      science_portal = SciencePortal.where{slug == "galaxy_private"}.first
+      if science_portal.nil?
+        return false
+      else
+        id = current_user.profile.id
+        return science_portal.check_access(id)
+      end
+    else
+      return false
+    end
+  end
+
   def check_boinc_id
     @boinc_id = params['boinc_id']
     unless @boinc_id.nil? || @boinc_id.to_i > 0 || @boinc_id == 'all'
@@ -34,6 +48,8 @@ class GalaxiesController < ApplicationController
   end
   def show
     @galaxy = Galaxy.where(:galaxy_id => params[:id]).first
+    @science_user = check_science_user
+
   end
 
   def send_report

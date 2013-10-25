@@ -1,6 +1,6 @@
 -content_for(:title_bar) do
   #intro-sml-wrap
-    %h1.fontface= @galaxy.name
+    %h1.fontface= "Galaxy Info: #{@galaxy.name}"
   -@user_page =  'dashboard'
   =render 'layouts/user_nav'
 
@@ -10,7 +10,17 @@
       .inner-boundary
         #content-inner
           #galaxy-info.well
-            %h2= "Galaxy Info: #{@galaxy.name}"
+            %h2
+              - if @boinc_id
+                = link_to "All Galaxies", galaxies_path
+                \/
+                = link_to "Your Galaxies", boinc_galaxies_path(@boinc_id)
+                \/
+              -else
+                = link_to "All Galaxies", galaxies_path
+                \/
+              = @galaxy.name
+
             %dl.dl-horizontal
               %dt
                 %abbr{:title => "Right Ascension"} RA
@@ -57,5 +67,14 @@
               =render "galaxies/image", {:link => @galaxy.parameter_image_url('m'), :title => "m", :hover_text => "Effective Stellar Mass"}
               =render "galaxies/image", {:link => @galaxy.parameter_image_url('ldust'), :title => "ldust", :hover_text => "Luminosity absorbed and reradiated by dust"}
               =render "galaxies/image", {:link => @galaxy.parameter_image_url('sfr'), :title => "sfr", :hover_text => "Star Formation Rate"}
+
             - if @boinc_id
               =link_to "Send Report", send_report_boinc_galaxy_path(@boinc_id,@galaxy.id), :class => "btn btn-tsn", :remote => true, :id => "send_galaxy_report"
+            - if @science_user
+              #search-accordion.accordion.well
+                .accordion-group
+                  .accordion-heading
+                    %a.accordion-toggle{:data => {:toggle=> "collapse", :parent => "#search-accordion"},:href=>"#collapseSearch"} Gather Science Data
+                  #collapseSearch.accordion-body.collapse
+                    .accordion-inner
+                      Hello
