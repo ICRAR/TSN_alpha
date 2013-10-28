@@ -12,17 +12,18 @@
       .row-fluid
         -@profiles.each do |profile|
           .span6.well
-            = image_tag profile.avatar_url(128)
+            = link_to image_tag(profile.avatar_url(128)), profile
             %p
+
               %b Name:
-              = profile.name
+              = link_to profile.name, profile
             %p
               %b Country:
               = profile.country
             %p{:class => ('top' if profile.id == top_credit.id)}
               %b Total Credit:
               = number_with_delimiter(profile.general_stats_item.total_credit.to_i) + "cr"
-              =  link_to "Show in leaderboard" , profiles_path(:rank => profile.general_stats_item.rank)
+              =  link_to "Show in leaderboard" , profiles_path(:rank => profile.general_stats_item.rank, :page=>'me')
             -if profile.alliance
               %p
                 %b Proud member of :
