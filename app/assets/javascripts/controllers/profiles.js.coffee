@@ -68,25 +68,52 @@ TSN.profiles.compare = () ->
   name = []
   metrics = []
 
-  name.push("#{name1} POGS Credit") if boinc_id1
-  name.push("#{name2} POGS Credit") if boinc_id2
-  name.push("#{name1} SourceFinder Credit") if nereus_id1
-  name.push("#{name2} SourceFinder Credit") if nereus_id2
+  name.push("#{name1} Total RAC") if boinc_id1
+  name.push("#{name2} Total RAC") if boinc_id2
+  name.push("#{name1} Total Credit") if nereus_id1
+  name.push("#{name2} Total Credit") if nereus_id2
 
-  metrics.push("stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id1)}.credit") if boinc_id1
-  metrics.push("stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id2)}.credit") if boinc_id2
-  metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id1)}.credit") if nereus_id1
-  metrics.push("stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id2)}.credit") if nereus_id2
+  total_credit_name_1
+  total_RAC_name_1
+  if boinc_id1 & nereus_id1
+    total_credit_name_1 = "sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id1)}.credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id1)}.credit)"
+    total_RAC_name_1 = "sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id1)}.daily_credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id1)}.rac)"
+  else if boinc_id1
+    total_credit_name_1 = "stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id1)}.credit"
+    total_RAC_name_1 = "stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id1)}.rac"
+  else if nereus_id1
+    total_credit_name_1 = "stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id1)}.credit"
+    total_RAC_name_1 = "stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id1)}.daily_credit"
+  else
+    total_credit_name_1 = "stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id1)}.credit"
+    total_RAC_name_1 = "stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id1)}.avg_daily_credit"
+
+  total_credit_name_2
+  total_RAC_name_2
+  if boinc_id2 & nereus_id2
+    total_credit_name_2 = "sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id2)}.credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id2)}.credit)"
+    total_RAC_name_2 = "sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id2)}.daily_credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id2)}.rac)"
+  else if boinc_id2
+    total_credit_name_2 = "stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id2)}.credit"
+    total_RAC_name_2 = "stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id2)}.rac"
+  else if nereus_id2
+    total_credit_name_2 = "stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id2)}.credit"
+    total_RAC_name_2 = "stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id2)}.daily_credit"
+  else
+    total_credit_name_2 = "stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id2)}.credit"
+    total_RAC_name_2 = "stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id2)}.avg_daily_credit"
+
+  metrics.push(total_RAC_name_1)
+  metrics.push(total_RAC_name_2)
+  metrics.push(total_credit_name_1)
+  metrics.push(total_credit_name_2)
 
   name.push("#{name1} Rank")
   name.push("#{name2} Rank")
- # name.push("#{name1} Total Credit")
- # name.push("#{name2} Total Credit")
 
   metrics.push("stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id1)}.rank")
   metrics.push("stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id2)}.rank")
-#  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id1}.credit")
-#  metrics.push("stats.gauges.TSN_dev.general.users.#{profile_id2}.credit")
+
 
   TSN.rickshaw_graph(metrics,name,$("#chart_container"),"-#{TSN.months_from_launch()}months")  if name.length != 0
 
