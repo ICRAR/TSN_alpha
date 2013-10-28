@@ -28,7 +28,18 @@ class TrophiesJob
             trophy.award_by_rac()
           end
         end
+
+        #update Time based trophies
+        time_sets = TrophySet.where{set_type == 'time_active'}
+        time_sets.each do |set|
+          set.trophies.each do |trophy|
+            trophy.award_by_time()
+          end
+        end
       }
+
+
+
       @statsd_batch.flush
     end
   end

@@ -49,6 +49,13 @@ class Trophy < ActiveRecord::Base
     (self.hidden == true && (trophy_ids.nil? || !trophy_ids.include?(self.id)))
   end
 
+  def award_by_time(profiles = nil)
+    profiles ||= Profile
+    profiles = profiles.for_trophies
+    .joins{user}
+    .where{DATEDIFF(now.func,user.joined_at) >= my{self.credits}}
+    self.award_to_profiles profiles
+  end
 
   def award_by_credit(profiles = nil)
     profiles ||= Profile
