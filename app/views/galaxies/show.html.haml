@@ -41,6 +41,27 @@
               %dt
               %dd= link_to "More Galaxy details (external link)", @galaxy.more_info_url
               %dd= link_to "Click here to see all the users that worked on this Galaxy.", search_profiles_path(:galaxy_id => @galaxy.id)
+            - if @science_user
+              #search-accordion.accordion.well
+                .accordion-group
+                  .accordion-heading
+                    %a.accordion-toggle{:data => {:toggle=> "collapse", :parent => "#search-accordion"},:href=>"#collapseSearch"} Gather Science Data
+                  #collapseSearch.accordion-body.collapse{:class => (@request_new.errors.empty? ? nil : 'in')}
+                    .accordion-inner
+                      = simple_form_for @request_new do |f|
+                        - @request_new.galaxy_id = @galaxy.id
+                        = f.input :galaxy_id, as: :hidden
+                        .row-fluid
+                          .span12
+                            = f.input :email
+                        .row-fluid
+                          .span6.well.well-white
+                            = f.association :layers, label_method: :name_for_form, as: :check_boxes, include_blank: false
+                          .span6.well.well-white
+                            = f.association :features, label_method: :name_for_form, as: :check_boxes, include_hidden: false
+                        .row-fluid
+                          .span12
+                            = f.button :submit
             %p
               - if @boinc_id
                 The following are images of the galaxy using four combinations of filters where the bright square or rectangular areas are those where you have been credited with the processing.
@@ -70,11 +91,4 @@
 
             - if @boinc_id
               =link_to "Send Report", send_report_boinc_galaxy_path(@boinc_id,@galaxy.id), :class => "btn btn-tsn", :remote => true, :id => "send_galaxy_report"
-            - if @science_user
-              #search-accordion.accordion.well
-                .accordion-group
-                  .accordion-heading
-                    %a.accordion-toggle{:data => {:toggle=> "collapse", :parent => "#search-accordion"},:href=>"#collapseSearch"} Gather Science Data
-                  #collapseSearch.accordion-body.collapse
-                    .accordion-inner
-                      Hello
+

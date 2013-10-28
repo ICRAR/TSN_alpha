@@ -6,13 +6,7 @@ class GalaxiesController < ApplicationController
 
   def check_science_user
     if user_signed_in?
-      science_portal = SciencePortal.where{slug == "galaxy_private"}.first
-      if science_portal.nil?
-        return false
-      else
-        id = current_user.profile.id
-        return science_portal.check_access(id)
-      end
+      current_user.profile.is_science_user?
     else
       return false
     end
@@ -49,7 +43,9 @@ class GalaxiesController < ApplicationController
   def show
     @galaxy = Galaxy.where(:galaxy_id => params[:id]).first
     @science_user = check_science_user
-
+    if @science_user
+      @request_new = Hdf5Request.new()
+    end
   end
 
   def send_report
