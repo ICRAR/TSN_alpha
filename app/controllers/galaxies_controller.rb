@@ -20,6 +20,7 @@ class GalaxiesController < ApplicationController
   end
 
   def index
+    @science_user = check_science_user
     per_page = params[:per_page]
     per_page ||= 10
     page_num = params[:page]
