@@ -90,7 +90,7 @@
                       =link_to member.profile do
                         =image_tag member.profile.avatar_url(24)
                         =member.profile.name
-                        = "*" if member.leave_date != nil
+                        = "(*)" if member.leave_date != nil
                     %td= link_to number_with_delimiter(member.credits), member.profile
                     %td= link_to number_with_delimiter(member.credit_contributed), member.profile
                     -date_joined = Time.at(member.join_date)
