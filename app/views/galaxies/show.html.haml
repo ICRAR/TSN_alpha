@@ -22,6 +22,11 @@
               = @galaxy.name
 
             %dl.dl-horizontal
+              -if @science_user == true
+                %dt ID
+                %dd= @galaxy.id
+                %dt Run Number
+                %dd= @galaxy.run_id
               %dt
                 %abbr{:title => "Right Ascension"} RA
               %dd= @galaxy.ra_cent

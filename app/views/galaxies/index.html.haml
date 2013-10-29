@@ -44,7 +44,7 @@
               %tr
                 %th=sortable 'name', 'Name'
                 - if @science_user ==true
-                  %th ID
+                  %th ID_Run
                 %th=sortable 'galaxy_type', 'Type'
                 %th=sortable 'redshift', 'Redshift'
                 %th
@@ -65,7 +65,7 @@
                       =galaxy.name
                       = image_tag galaxy.thumbnail_url
                   -if @science_user == true
-                    %td= link_to galaxy.id, link
+                    %td= link_to "#{galaxy.id}_#{galaxy.run_id}", link
                   %td= link_to galaxy.galaxy_type, link
                   %td= link_to galaxy.redshift.to_s, link
                   %td= link_to "#{galaxy.dimension_x} x #{galaxy.dimension_y}", link
