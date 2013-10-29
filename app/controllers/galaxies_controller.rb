@@ -4,6 +4,14 @@ class GalaxiesController < ApplicationController
   helper_method :sort_column, :sort_direction
   before_filter :check_boinc_id
 
+  def check_science_user
+    if user_signed_in?
+      current_user.profile.is_science_user?
+    else
+      return false
+    end
+  end
+
   def check_boinc_id
     @boinc_id = params['boinc_id']
     unless @boinc_id.nil? || @boinc_id.to_i > 0 || @boinc_id == 'all'
@@ -12,6 +20,7 @@ class GalaxiesController < ApplicationController
   end
 
   def index
+    @science_user = check_science_user
     per_page = params[:per_page]
     per_page ||= 10
     page_num = params[:page]
@@ -34,6 +43,10 @@ class GalaxiesController < ApplicationController
   end
   def show
     @galaxy = Galaxy.where(:galaxy_id => params[:id]).first
+    @science_user = check_science_user
+    if @science_user
+      @request_new = Hdf5Request.new()
+    end
   end
 
   def send_report

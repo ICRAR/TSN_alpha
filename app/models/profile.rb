@@ -201,6 +201,15 @@ class Profile < ActiveRecord::Base
   end
 
 
+  def is_science_user?
+    science_portal = SciencePortal.where{slug == "galaxy_private"}.first
+    if science_portal.nil?
+      return false
+    else
+      return science_portal.check_access(self.id)
+    end
+  end
+
   mapping do
     indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
   end

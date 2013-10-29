@@ -1,0 +1,38 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= "Your Current HDF5 Requests for #{@request.galaxy.name}"
+  -@user_page =  'science'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %h2
+        = link_to "All Requests", hdf5_requests_path
+        \/
+        = link_to @request.galaxy.name, @request.galaxy
+      %dl.dl-horizontal
+        %dt Galaxy
+        %dd= link_to @request.galaxy.name, @request.galaxy
+        %dt Sent to
+        %dd= @request.email
+        %dt State
+        %dd= @request.current_state
+        %dt Features
+        - @request.features.each do |feature|
+          %dd
+            %abbr{:title => feature.description}= feature.argument_name
+        %dt Layers
+        - @request.layers.each do |layer|
+          %dd
+            %abbr{:title => layer.description}= layer.argument_name
+        %dt Updated At
+        %dd= @request.updated_at
+        %dt Created At
+        %dd= @request.created_at
+        %dt Link to Data
+        %dd
+          - unless @request.link.nil? || @request.link == ''
+            = link_to "Get Data", @request.link
+
+
