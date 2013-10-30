@@ -6,6 +6,6 @@ class Hdf5Layer < PogsModel
   end
 
   def name_for_form
-    "<abbr title=\"#{description}\">#{argument_name}</abbr>".html_safe
+    "<abbr title=\"#{argument_name}\">#{description}</abbr>".html_safe
   end
 end

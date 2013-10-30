@@ -7,6 +7,10 @@
 -content_for(:content) do
   #content-wrap
     .well.well-white
+      %h2
+        = link_to "All Galaxies", galaxies_path
+        \/  Your Current HDF5 Requests
+
       %p Click request for more information
       %table.table.table-striped
         %thead
@@ -29,6 +33,6 @@
               %td= link_to hdf5_request.updated_at, hdf5_request
               %td
                 - unless hdf5_request.link.nil? || hdf5_request.link == ''
-                  = link_to "Get Data", hdf5_request.link
+                  = link_to "Get Data", hdf5_request.link_url
       = paginate @requests
       = page_entries_info @requests, :entry_name => 'HDF5 Requests'

@@ -55,6 +55,7 @@
                     .accordion-inner
                       = simple_form_for @request_new do |f|
                         - @request_new.galaxy_id = @galaxy.id
+                        - @request_new.email = current_user.email
                         = f.input :galaxy_id, as: :hidden
                         .row-fluid
                           .span12

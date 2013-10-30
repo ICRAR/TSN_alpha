@@ -41,6 +41,13 @@ class Hdf5Request < PogsModel
     end
   end
 
+  def link_url
+    if self.link[/\Ahttp:\/\//] || self.link[/\Ahttps:\/\//]
+      self.link
+    else
+      "http://#{self.link}"
+    end
+  end
   belongs_to :profile
   belongs_to :galaxy
 
@@ -63,6 +70,8 @@ class Hdf5Request < PogsModel
         'Processing'
       when 2
         'Processed'
+      when 3
+        'Failed'
       else
         'Unknown'
     end

@@ -8,6 +8,8 @@
   #content-wrap
     .well.well-white
       %h2
+        = link_to "All Galaxies", galaxies_path
+        \/
         = link_to "All Requests", hdf5_requests_path
         \/
         = link_to @request.galaxy.name, @request.galaxy
@@ -33,6 +35,6 @@
         %dt Link to Data
         %dd
           - unless @request.link.nil? || @request.link == ''
-            = link_to "Get Data", @request.link
+            = link_to "Get Data", @request.link_url
 
 
