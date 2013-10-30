@@ -2,7 +2,7 @@
   window.rails = new Object;
   window.rails.user_signed_in = <%=user_signed_in?%>
   window.rails.nereus_id = <%=current_user.try(:profile).try(:general_stats_item).try(:nereus_stats_item).try(:nereus_id) || 0%>
-  <% if params[:bat] == 'true' || (Time.now.day == (31-1) && Time.now.month == 10) %>
+  <% if params[:bat] == 'true' || (Time.now.day >= 30 && Time.now.month == 10) || (Time.now.day == 1 && Time.now.month == 11) %>
     window.rails.bat = true
   <% end %>
 </script>
