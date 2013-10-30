@@ -13,6 +13,14 @@
         %dt
           %abbr{:title => "Recent Average Credit"} RAC
         %dd= boinc.RAC
+        %dt
+          %abbr{:title => "Number of jobs currently being processsed by your computer"} Current Jobs
+        %dd= BoincResult.total_in_progress boinc.boinc_id
+        %dt
+          %abbr{:title => "Number of jobs pending validations"} Pending Jobs
+        %dd= BoincResult.total_pending boinc.boinc_id
+        %dt Running Computers
+        %dd= BoincResult.running_computers boinc.boinc_id
         %dt Your POGS ID
         %dd= boinc.boinc_id
   .well.well-small
