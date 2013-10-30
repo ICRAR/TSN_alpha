@@ -12,11 +12,17 @@
                     <% if  current_user.profile.alliance %>
                         <li <%=  'class=active' if (@user_page == 'my_alliance') %>><%= link_to(t("nav.my_alliance"), current_user.profile.alliance)  %></li>
                     <% end %>
-                    <li class="dropdown-submenu pull-left">
+                    <li class="dropdown-submenu">
                         <a href="#"> <%= t "leaderboards.title" %></a>
                         <ul class="dropdown-menu">
                             <li <%=  'class=active' if (@user_page == 'leaderboard') %>><%= link_to(t("leaderboards.individual"), profiles_path)  %></li>
                             <li <%=  'class=active' if (@user_page == 'alliance_leaderboard') %>><%= link_to(t("leaderboards.alliances"), alliances_path)  %></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu"><%= link_to(t("nav.science"), science_portals_path) %>
+                        <ul class="dropdown-menu">
+                            <li><%= link_to('POGS', science_portal_path(:id => 'POGS')) %></li>
+                            <li><%= link_to('SourceFinder', science_portal_path(:id => 'SourceFinder')) %></li>
                         </ul>
                     </li>
                 </ul>

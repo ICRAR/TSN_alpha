@@ -37,7 +37,7 @@ class GalaxiesController < ApplicationController
     if (@boinc_id == nil) || (@boinc_id == 'all')
       @galaxies = Galaxy.page(page_num).per(per_page).where(search_options).order(sort_column + " " + sort_direction)
     else
-      @galaxies = Galaxy.page(page_num).per(per_page).find_by_user_id(@boinc_id).where(search_options).order(sort_column + " " + sort_direction)
+      @galaxies = Galaxy.page(page_num).per(per_page).find_by_user_id(@boinc_id).where(search_options).order(sort_column("galaxy_id") + " " + sort_direction("desc"))
     end
 
   end
@@ -75,13 +75,13 @@ class GalaxiesController < ApplicationController
 
   private
 
-  def sort_column
-    %w[name galaxy_type redshift (dimension_x*dimension_y) ra_cent dec_cent (pixels_processed/pixel_count)].include?(params[:sort]) ? params[:sort] : "name"
+  def sort_column(default = "name")
+    %w[name galaxy_type redshift (dimension_x*dimension_y) ra_cent dec_cent (pixels_processed/pixel_count)].include?(params[:sort]) ? params[:sort] : default
   end
 
 
-  def sort_direction
-    %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
+  def sort_direction(default = "asc")
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : default
   end
 
 
