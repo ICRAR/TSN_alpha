@@ -26,4 +26,11 @@ module ApplicationHelper
     output.html_safe
   end
 
+  def logo_class
+    out = nil
+    out ||= "arr_logo" if locale == :arr
+    out ||= "bat_logo" if params[:bat] == 'true' || (Time.now.day >= 30 && Time.now.month == 10) || (Time.now.day == 1 && Time.now.month == 11)
+    return out
+  end
+
 end

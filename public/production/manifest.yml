@@ -503,6 +503,8 @@ logo_alpha_white.png: logo_alpha_white-65bfac2610ab8ef014f0e34372c68bcc.png
 logo_alpha_white/index.png: logo_alpha_white-65bfac2610ab8ef014f0e34372c68bcc.png
 logo_beta_purple.png: logo_beta_purple-4a1d22bc072c59a28e36a3bc3732e356.png
 logo_beta_purple/index.png: logo_beta_purple-4a1d22bc072c59a28e36a3bc3732e356.png
+logo_halloween.png: logo_halloween-1fc3e0702a58a9df7e35bb08fac0ea0d.png
+logo_halloween/index.png: logo_halloween-1fc3e0702a58a9df7e35bb08fac0ea0d.png
 logo_pirate.png: logo_pirate-056c5ed724027e45da55b43e0d9dd89c.png
 logo_pirate/index.png: logo_pirate-056c5ed724027e45da55b43e0d9dd89c.png
 logosmall.jpg: logosmall-1f5570d4119d5550676a55fa2d63436b.jpg
@@ -853,8 +855,8 @@ ckeditor/config.js: ckeditor/config-7b4e5a708501bfaab628f81d3161a763.js
 ckeditor/config/index.js: ckeditor/config-7b4e5a708501bfaab628f81d3161a763.js
 non_includes/deployJava.js: non_includes/deployJava-5a3b44b01a6c791a3ff3773b2c769a30.js
 non_includes/deployJava/index.js: non_includes/deployJava-5a3b44b01a6c791a3ff3773b2c769a30.js
-application.css: application-0040646220f26012f19129b6126cca61.css
-application/index.css: application-0040646220f26012f19129b6126cca61.css
+application.css: application-a57a220b1106eefd3c740ca82f52767e.css
+application/index.css: application-a57a220b1106eefd3c740ca82f52767e.css
 blank.gif: blank-2ebbd7cb21c3980daa0bddcc9c7ce5fc.gif
 blank/index.gif: blank-2ebbd7cb21c3980daa0bddcc9c7ce5fc.gif
 fancybox_buttons.png: fancybox_buttons-69dc87ced259c623a57649748117ed5b.png

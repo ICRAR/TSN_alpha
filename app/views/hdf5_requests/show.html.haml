@@ -23,11 +23,11 @@
         %dt Features
         - @request.features.each do |feature|
           %dd
-            %abbr{:title => feature.description}= feature.argument_name
+            %abbr{:title => feature.argument_name}= feature.description
         %dt Layers
         - @request.layers.each do |layer|
           %dd
-            %abbr{:title => layer.description}= layer.argument_name
+            %abbr{:title => layer.argument_name}= layer.description
         %dt Updated At
         %dd= @request.updated_at
         %dt Created At

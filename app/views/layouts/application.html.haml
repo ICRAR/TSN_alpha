@@ -36,7 +36,7 @@
     #wrapper.container
       =bootstrap_flash
       =render 'shared/announcement', :announcement => @announcement if @announcement != nil
-      %h1#header{:class => locale}= link_to "theSkyNet", main_app.root_url
+      %h1#header{:class => logo_class}= link_to "theSkyNet", main_app.root_url
       =render 'layouts/nav_global'
       .clearing
       #main
