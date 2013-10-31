@@ -47,27 +47,34 @@
               %dd= link_to "More Galaxy details (external link)", @galaxy.more_info_url
               %dd= link_to "Click here to see all the users that worked on this Galaxy.", search_profiles_path(:galaxy_id => @galaxy.id)
             - if @science_user
-              #search-accordion.accordion.well
-                .accordion-group
-                  .accordion-heading
-                    %a.accordion-toggle{:data => {:toggle=> "collapse", :parent => "#search-accordion"},:href=>"#collapseSearch"} Gather Science Data
-                  #collapseSearch.accordion-body.collapse{:class => (@request_new.errors.empty? ? nil : 'in')}
-                    .accordion-inner
-                      = simple_form_for @request_new do |f|
-                        - @request_new.galaxy_id = @galaxy.id
-                        - @request_new.email = current_user.email
-                        = f.input :galaxy_id, as: :hidden
-                        .row-fluid
-                          .span12
-                            = f.input :email
-                        .row-fluid
-                          .span6.well.well-white
-                            = f.association :layers, label_method: :name_for_form, as: :check_boxes, include_blank: false
-                          .span6.well.well-white
-                            = f.association :features, label_method: :name_for_form, as: :check_boxes, include_hidden: false
-                        .row-fluid
-                          .span12
-                            = f.button :submit
+              - if [3,4].include?(@galaxy.status_id)
+                #search-accordion.accordion.well
+                  .accordion-group
+                    .accordion-heading
+                      %a.accordion-toggle.btn.btn-tsn{:data => {:toggle=> "collapse", :parent => "#search-accordion"},:href=>"#collapseSearch"} Gather Science Data
+                    #collapseSearch.accordion-body.collapse{:class => (@request_new.errors.empty? ? nil : 'in')}
+                      .accordion-inner
+                        = simple_form_for @request_new do |f|
+                          - @request_new.galaxy_id = @galaxy.id
+                          - @request_new.email = current_user.email
+                          = f.input :galaxy_id, as: :hidden
+                          .row-fluid
+                            .span12
+                              = f.input :email
+                          .row-fluid
+                            .span6.well.well-white
+                              = f.association :layers, label_method: :name_for_form, as: :check_boxes, include_blank: false
+                            .span6.well.well-white
+                              = f.association :features, label_method: :name_for_form, as: :check_boxes, include_hidden: false
+                          .row-fluid
+                            .span12
+                              = f.button :submit
+              - else
+                #search-accordion.accordion.well
+                  .accordion-group
+                    .accordion-heading
+                      %a.accordion-toggle.btn.btn-tsn.disabled{:data => {:toggle=> "collapse", :parent => "#search-accordion"},:href=>"#collapseSearch"} Gather Science Data (This galaxy hasn't completed yet, please check back later)
+
             %p
               - if @boinc_id
                 The following are images of the galaxy using four combinations of filters where the bright square or rectangular areas are those where you have been credited with the processing.

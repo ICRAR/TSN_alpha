@@ -29,6 +29,10 @@ class Hdf5Request < PogsModel
       errors.add(:galaxy_id, 'You must enter a galaxy ID.')
     elsif galaxy.nil?
       errors.add(:galaxy_id, 'You must enter a VALID galaxy ID.')
+    else
+      unless [3,4].include? galaxy.status_id
+        errors.add(:galaxy_id, 'That galaxy is in the incorrect state please select a completed galaxy')
+      end
     end
   end
 
