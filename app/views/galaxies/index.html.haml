@@ -38,6 +38,35 @@
 
                     .control-group
                       = submit_tag "Apply Filter"
+            -if @science_user == true
+              .accordion-group
+                .accordion-heading
+                  %a.accordion-toggle{:data => {:toggle=> "collapse", :parent => "#search-accordion"},:href=>"#collapseRequest"} Gather Science Data
+                  = link_to "Clear All Requests", clear_hdf5_requests_path, :class => "btn btn-tsn"
+
+                #collapseRequest.accordion-body.collapse{:class => (@request_new.errors.empty? ? nil : 'in')}
+                  .accordion-inner
+                    = simple_form_for @request_new do |f|
+                      - @request_new.email = current_user.email
+                      .galaxy_ids
+                        Currently Selected Galaxies:
+                        %ul
+                          - @hdf5_request_galaxies.each do |g|
+                            %li
+                              = "#{g[:name]} id:#{g[:id]}"
+                              = link_to "Remove.", remove_hdf5_requests_path(request.query_parameters.merge(:galaxy_id => g[:id], :return_to => 'galaxy_index')), :class => "btn btn-tsn btn-mini"
+                        .text-error= @request_new.errors.messages[:galaxies].join(', ') if @request_new.errors.messages[:galaxies]
+                      .row-fluid
+                        .span12
+                          = f.input :email
+                      .row-fluid
+                        .span6.well.well-white
+                          = f.association :layers, label_method: :name_for_form, as: :check_boxes, include_blank: false
+                        .span6.well.well-white
+                          = f.association :features, label_method: :name_for_form, as: :check_boxes, include_hidden: false
+                      .row-fluid
+                        .span12
+                          = f.button :submit, "Submit All"
 
           %table#galaxies.table.table-striped
             %thead
@@ -72,7 +101,12 @@
                   %td= link_to galaxy.ra_cent, link
                   %td= link_to galaxy.dec_cent, link
                   %td= link_to "#{galaxy.per_complete}%", link
-                  %td= link_to "More Galaxy details", galaxy.more_info_url
+                  %td
+                    -if @science_user == true
+                      - link_disabled = @hdf5_request_galaxies.any?{|i| i[:id] == galaxy.id} || ![3,4].include?(galaxy.status_id)
+                      - link_class = link_disabled ? "btn btn-tsn btn-mini disabled"  :"btn btn-tsn btn-mini"
+                      = link_to "Add Request", add_hdf5_requests_path(request.query_parameters.merge(:galaxy_id => galaxy.id)), :class => link_class
+                    = link_to "More Galaxy details", galaxy.more_info_url
           - @galaxies.total_count(:galaxy_id,:distinct => true)
           = paginate @galaxies
           = page_entries_info @galaxies, :entry_name => 'Galaxy'

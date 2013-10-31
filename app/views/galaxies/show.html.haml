@@ -52,12 +52,25 @@
                   .accordion-group
                     .accordion-heading
                       %a.accordion-toggle.btn.btn-tsn{:data => {:toggle=> "collapse", :parent => "#search-accordion"},:href=>"#collapseSearch"} Gather Science Data
+                      - unless @hdf5_request_galaxies.any? {|i| i[:id] == @galaxy.id}
+                        = link_to "Add Galaxy To Request", add_hdf5_requests_path(:galaxy_id => @galaxy.id), :class => "btn btn-tsn"
+                      = link_to "Clear Requests", clear_hdf5_requests_path, :class => "btn btn-tsn"
+
                     #collapseSearch.accordion-body.collapse{:class => (@request_new.errors.empty? ? nil : 'in')}
                       .accordion-inner
                         = simple_form_for @request_new do |f|
-                          - @request_new.galaxy_id = @galaxy.id
                           - @request_new.email = current_user.email
-                          = f.input :galaxy_id, as: :hidden
+                          = f.input :galaxy_id, as: :hidden, input_html: { value: @galaxy.id }
+                          .galaxy_ids
+                            Currently Selected Galaxies:
+                            %ul
+                              -unless @hdf5_request_galaxies.any? {|i| i[:id] == @galaxy.id}
+                                %li= "#{@galaxy.name} id:#{@galaxy.id}, "
+                              - @hdf5_request_galaxies.each do |g|
+                                %li
+                                  = "#{g[:name]} id:#{g[:id]}"
+                                  = link_to "Remove.", remove_hdf5_requests_path(:current_galaxy_id => @galaxy.id, :galaxy_id => g[:id]), :class => "btn btn-tsn btn-mini"
+                            .text-error= @request_new.errors.messages[:galaxies].join(', ') if @request_new.errors.messages[:galaxies]
                           .row-fluid
                             .span12
                               = f.input :email
@@ -68,7 +81,7 @@
                               = f.association :features, label_method: :name_for_form, as: :check_boxes, include_hidden: false
                           .row-fluid
                             .span12
-                              = f.button :submit
+                              = f.button :submit, "Submit All"
               - else
                 #search-accordion.accordion.well
                   .accordion-group

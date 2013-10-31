@@ -92,4 +92,9 @@ class ApplicationController < ActionController::Base
     expires_in 1.day, :public => true
     render text: '<script src="//connect.facebook.net/en_US/all.js"></script>'
   end
+
+  def load_galaxy_cart
+    @hdf5_request_galaxies = session[:hdf5_request_galaxies]
+    @hdf5_request_galaxies ||= []
+  end
 end

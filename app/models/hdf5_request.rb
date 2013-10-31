@@ -1,9 +1,26 @@
 class Hdf5Request < PogsModel
   self.table_name = 'hdf5_request'
-  attr_accessible :profile_id, :galaxy_id, :email, :link, :state, :feature_ids, :layer_ids,  as: [:admin, :default]
+  attr_accessible :profile_id, :galaxy_ids, :email, :feature_ids, :layer_ids,  as: [:admin, :default]
   def readonly?
     return false
   end
+
+  belongs_to :profile
+  has_many :galaxy_requests,
+                          class_name: "Hdf5RequestGalaxy",
+                          foreign_key: "hdf5_request_id"
+  has_many :galaxies,
+                          through: :galaxy_requests
+  has_and_belongs_to_many :features,
+                          class_name: "Hdf5Feature",
+                          foreign_key: "hdf5_request_id",
+                          association_foreign_key: "hdf5_feature_id",
+                          join_table: "hdf5_request_feature"
+  has_and_belongs_to_many :layers,
+                          class_name: "Hdf5Layer",
+                          foreign_key: "hdf5_request_id",
+                          association_foreign_key: "hdf5_layer_id",
+                          join_table: "hdf5_request_layer"
 
   before_validation :add_email
   def add_email
@@ -23,16 +40,17 @@ class Hdf5Request < PogsModel
     errors.add(:layers, 'At least one layer must be selected.') if self.layers.empty?
   end
 
-  validate :galaxy_exists?
-  def galaxy_exists?
-    if galaxy_id.nil?
-      errors.add(:galaxy_id, 'You must enter a galaxy ID.')
-    elsif galaxy.nil?
-      errors.add(:galaxy_id, 'You must enter a VALID galaxy ID.')
+  validate :galaxies_exist?
+  def galaxies_exist?
+    if galaxies.empty?
+      errors.add(:galaxies, "You must enter at least one valid galaxy ID")
     else
-      unless [3,4].include? galaxy.status_id
-        errors.add(:galaxy_id, 'That galaxy is in the incorrect state please select a completed galaxy')
-      end
+      galaxies.each {|g| galaxy_exists?(g)}
+    end
+  end
+  def galaxy_exists?(galaxy)
+    unless [3,4].include? galaxy.status_id
+      errors.add(:galaxies, "ID:#{galaxy.id} This galaxy is in the incorrect state please select only completed galaxies")
     end
   end
 
@@ -45,39 +63,21 @@ class Hdf5Request < PogsModel
     end
   end
 
-  def link_url
-    if self.link[/\Ahttp:\/\//] || self.link[/\Ahttps:\/\//]
-      self.link
-    else
-      "http://#{self.link}"
-    end
-  end
-  belongs_to :profile
-  belongs_to :galaxy
 
-  has_and_belongs_to_many :features,
-                          class_name: "Hdf5Feature",
-                          foreign_key: "hdf5_request_id",
-                          association_foreign_key: "hdf5_feature_id",
-                          join_table: "hdf5_request_feature"
-  has_and_belongs_to_many :layers,
-                          class_name: "Hdf5Layer",
-                          foreign_key: "hdf5_request_id",
-                          association_foreign_key: "hdf5_layer_id",
-                          join_table: "hdf5_request_layer"
+
 
   def current_state
-    case self.state
-      when 0
-        'Unprocessed'
-      when 1
-        'Processing'
-      when 2
-        'Processed'
-      when 3
-        'Failed'
-      else
-        'Unknown'
+    states = self.galaxy_requests.map &:state
+    if states.all? {|s| s == 0}
+      'Unprocessed'
+    elsif states.all? {|s| s == 2}
+      'Processed'
+    elsif states.any? {|s| s == 3}
+      'Failed'
+    elsif states.all? {|s| [0,1,2].include? s}
+      'Processing'
+    else
+      'Unknown'
     end
   end
 

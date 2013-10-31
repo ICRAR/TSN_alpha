@@ -1,0 +1,35 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= "New HDF5 Request"
+  -@user_page =  'science'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %h2
+        = link_to "All Galaxies", galaxies_path
+        \/
+        = link_to "All Requests", hdf5_requests_path
+
+      = simple_form_for @request_new do |f|
+        - @request_new.email = current_user.email
+        .galaxy_ids
+          Currently Selected Galaxies:
+          %ul
+            - @hdf5_request_galaxies.each do |g|
+              %li
+                = "#{g[:name]} id:#{g[:id]}"
+                = link_to "Remove.", remove_hdf5_requests_path(:galaxy_id => g[:id]), :class => "btn btn-tsn btn-mini"
+          .text-error= @request_new.errors.messages[:galaxies].join(', ') if @request_new.errors.messages[:galaxies]
+        .row-fluid
+          .span12
+            = f.input :email
+        .row-fluid
+          .span6.well.well-white
+            = f.association :layers, label_method: :name_for_form, as: :check_boxes, include_blank: false
+          .span6.well.well-white
+            = f.association :features, label_method: :name_for_form, as: :check_boxes, include_hidden: false
+        .row-fluid
+          .span12
+            = f.button :submit, "Submit All"

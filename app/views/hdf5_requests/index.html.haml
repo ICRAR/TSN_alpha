@@ -11,28 +11,23 @@
         = link_to "All Galaxies", galaxies_path
         \/  Your Current HDF5 Requests
 
-      %p Click request for more information
+      %p Click request on each for more information
       %table.table.table-striped
         %thead
           %tr
-            %th Galaxy
+            %th ID
             %th State
             %th Created At
             %th Updated At
-            %th Link to Data
+
         %tbody
 
           - @requests.each do |hdf5_request|
             %tr
-              %td
-                = link_to hdf5_request.galaxy do
-                  = image_tag hdf5_request.galaxy.thumbnail_url
-                  = hdf5_request.galaxy.name
+              %td= link_to hdf5_request.id, hdf5_request
               %td= link_to hdf5_request.current_state, hdf5_request
               %td= link_to hdf5_request.created_at, hdf5_request
               %td= link_to hdf5_request.updated_at, hdf5_request
-              %td
-                - unless hdf5_request.link.nil? || hdf5_request.link == ''
-                  = link_to "Get Data", hdf5_request.link_url
+
       = paginate @requests
       = page_entries_info @requests, :entry_name => 'HDF5 Requests'

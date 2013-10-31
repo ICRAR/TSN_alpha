@@ -1,6 +1,6 @@
 -content_for(:title_bar) do
   #intro-sml-wrap
-    %h1.fontface= "Your Current HDF5 Requests for #{@request.galaxy.name}"
+    %h1.fontface= "Your Current HDF5 Requests for request_#{@request.id}"
   -@user_page =  'science'
   =render 'layouts/user_nav'
 
@@ -11,11 +11,10 @@
         = link_to "All Galaxies", galaxies_path
         \/
         = link_to "All Requests", hdf5_requests_path
-        \/
-        = link_to @request.galaxy.name, @request.galaxy
+
       %dl.dl-horizontal
-        %dt Galaxy
-        %dd= link_to @request.galaxy.name, @request.galaxy
+        %dt Request ID
+        %dd= @request.id
         %dt Sent to
         %dd= @request.email
         %dt State
@@ -32,9 +31,30 @@
         %dd= @request.updated_at
         %dt Created At
         %dd= @request.created_at
-        %dt Link to Data
-        %dd
-          - unless @request.link.nil? || @request.link == ''
-            = link_to "Get Data", @request.link_url
 
+      %h3 Galaxies
+      %table.table.table-striped
+        %thead
+          %tr
+            %th Galaxy
+            %th ID
+            %th State
+            %th link
+        %tbody
+          - @galaxy_requests.each do |galaxy_request|
+            - galaxy = galaxy_request.galaxy
+            %tr
+              %td
+                = link_to galaxy do
+                  = galaxy.name
+                  = image_tag galaxy.thumbnail_url
+              %td= link_to galaxy.id, galaxy
+              %td= link_to galaxy_request.current_state, galaxy
+              %td
+                - if galaxy_request.link_valid?
+                  = link_to 'Data File', galaxy_request.link_url
+
+
+      = paginate @galaxy_requests
+      = page_entries_info @galaxy_requests, :entry_name => 'Galaxies'
 

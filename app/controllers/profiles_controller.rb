@@ -139,18 +139,6 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # POST /profiles
-  # POST /profiles.json
-  def create
-    @profile = Profile.new(params[:profile])
-
-    if @profile.save
-      redirect_to @profile, notice: 'Profile was successfully created.'
-    else
-      render :new
-    end
-  end
-
   # PUT /profiles/1
   # PUT /profiles/1.json
   def update

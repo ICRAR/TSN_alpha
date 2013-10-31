@@ -21,6 +21,11 @@ class GalaxiesController < ApplicationController
 
   def index
     @science_user = check_science_user
+    if @science_user
+      load_galaxy_cart
+      @request_new = Hdf5Request.new()
+
+    end
     per_page = params[:per_page]
     per_page ||= 10
     page_num = params[:page]
@@ -45,6 +50,7 @@ class GalaxiesController < ApplicationController
     @galaxy = Galaxy.where(:galaxy_id => params[:id]).first
     @science_user = check_science_user
     if @science_user
+      load_galaxy_cart
       @request_new = Hdf5Request.new()
     end
   end

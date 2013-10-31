@@ -6,7 +6,13 @@ Tsn::Application.routes.draw do
           (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
         )}
 
-  resources :hdf5_requests, :only => [:index, :create, :show]
+  resources :hdf5_requests, :only => [:index, :create, :show, :new] do
+    collection do
+      get 'clear'
+      get 'add'
+      get 'remove'
+    end
+  end
   resources :contact_forms
   resources :stats, :only => [:index] do
     collection do
