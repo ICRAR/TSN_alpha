@@ -28,6 +28,8 @@ class AlliancesController < ApplicationController
   def show
     @per_page = params[:per_page].to_i
     @per_page = 20 if @per_page == 0
+    @page =  params[:page].to_i
+    @page = 1 if @page == 0
     @alliance = Alliance.for_show(params[:id]) || not_found
     @members = AllianceMembers.page(@page).per(@per_page).for_alliance_show(params[:id])
     @total_members  = AllianceMembers.where(:alliance_id =>params[:id]).count

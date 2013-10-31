@@ -87,14 +87,13 @@ class Hdf5Request < PogsModel
     field :profile do
       help 'Required'
     end
-    field :galaxy_id do
+    field :galaxy_ids do
       help 'Required'
     end
     field :email do
       help 'Default email for user will be used if this is left blank.'
     end
-    field :link
-    field :state
+
     field :features do
       help 'At least one must be selected.'
     end
