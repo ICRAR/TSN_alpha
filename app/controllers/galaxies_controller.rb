@@ -33,6 +33,8 @@ class GalaxiesController < ApplicationController
     search_options = []
     search_options << "galaxy.name LIKE \"%#{Mysql2::Client.escape(params[:name])}%\"" if params[:name] != nil  && params[:name] != ''
     search_options << "galaxy.galaxy_type = \"#{Mysql2::Client.escape(params[:galaxy_type])}\"" if params[:galaxy_type] != nil && params[:galaxy_type] != ''
+    search_options << "galaxy.galaxy_id >= \"#{Mysql2::Client.escape(params[:id_from])}\"" if params[:id_from] != nil && params[:id_from] != ''
+    search_options << "galaxy.galaxy_id <= \"#{Mysql2::Client.escape(params[:id_to])}\"" if params[:id_to] != nil && params[:id_to] != ''
     search_options << "galaxy.ra_cent >= \"#{Mysql2::Client.escape(params[:ra_from])}\"" if params[:ra_from] != nil && params[:ra_from] != ''
     search_options << "galaxy.ra_cent <= \"#{Mysql2::Client.escape(params[:ra_to])}\"" if params[:ra_to] != nil && params[:ra_to] != ''
     search_options << "galaxy.dec_cent >= \"#{Mysql2::Client.escape(params[:dec_from])}\"" if params[:dec_from] != nil && params[:dec_from] != ''
@@ -82,7 +84,7 @@ class GalaxiesController < ApplicationController
   private
 
   def sort_column(default = "name")
-    %w[name galaxy_type redshift (dimension_x*dimension_y) ra_cent dec_cent (pixels_processed/pixel_count)].include?(params[:sort]) ? params[:sort] : default
+    %w[name galaxy_type redshift (dimension_x*dimension_y) ra_cent dec_cent (pixels_processed/pixel_count) galaxy_id].include?(params[:sort]) ? params[:sort] : default
   end
 
 

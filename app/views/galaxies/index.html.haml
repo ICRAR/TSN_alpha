@@ -21,6 +21,13 @@
                       = text_field_tag :name, params[:name]
                       = label_tag :galaxy_type, "Type"
                       = select_tag(:galaxy_type, galaxy_types(params[:galaxy_type]))
+                  -if @science_user == true
+                    .control-group
+                      = label_tag :id_from do
+                        Galaxy ID from
+                        = text_field_tag :id_from, params[:id_from]
+                        to
+                        = text_field_tag :id_to, params[:id_to]
 
                     .control-group
                       = label_tag :ra_from do
@@ -73,7 +80,7 @@
               %tr
                 %th=sortable 'name', 'Name'
                 - if @science_user ==true
-                  %th ID_Run
+                  %th= sortable 'galaxy_id', 'ID'
                 %th=sortable 'galaxy_type', 'Type'
                 %th=sortable 'redshift', 'Redshift'
                 %th
