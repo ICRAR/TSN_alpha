@@ -21,9 +21,23 @@ class Profile < ActiveRecord::Base
 
   #validates :nickname, :uniqueness => true
 
-  scope :for_leader_boards, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").where('general_stats_items.rank IS NOT NULL').where(:general_stats_items => {:power_user => false}).includes(:alliance, :user)
-  scope :for_leader_boards_small, joins(:general_stats_item).select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").where('general_stats_items.rank IS NOT NULL').where(:general_stats_items => {:power_user => false})
-  scope :for_trophies, joins(:general_stats_item).select("profiles.*, general_stats_items.last_trophy_credit_value as last_trophy_credit_value, general_stats_items.total_credit as credits, general_stats_items.id as stats_id").where('general_stats_items.total_credit IS NOT NULL')
+  scope :for_leader_boards, joins(:general_stats_item).
+      select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").
+      where('general_stats_items.rank IS NOT NULL').where(:general_stats_items => {:power_user => false}).
+      includes(:alliance, :user)
+  scope :for_leader_boards_small, joins(:general_stats_item).
+      select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").
+      where('general_stats_items.rank IS NOT NULL').
+      where(:general_stats_items => {:power_user => false})
+  scope :for_trophies, joins(:general_stats_item).
+      select("profiles.*, general_stats_items.last_trophy_credit_value as last_trophy_credit_value, general_stats_items.total_credit as credits, general_stats_items.id as stats_id").
+      where('general_stats_items.total_credit IS NOT NULL')
+
+  scope :for_external_stats, joins(:general_stats_item).includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item])
+      select("profiles.*, general_stats_items.rank as rank, general_stats_items.total_credit as credits, general_stats_items.recent_avg_credit as rac").
+      where('general_stats_items.rank IS NOT NULL').
+      where(:general_stats_items => {:power_user => false}).
+      includes(:alliance, :user)
 
 
   sifter :does_not_have_trophy do |trophy_id|

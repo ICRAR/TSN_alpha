@@ -22,6 +22,7 @@
 #    end
 #
 # inspired by http://rifkifauzi.wordpress.com/2010/07/29/8/
+# then copied from https://gist.github.com/kares/1024726
 #
 module Delayed
   module ScheduledJob
