@@ -1,8 +1,8 @@
-- my_meta :title => @trophy.title.titlecase,
-    :description => "I earned '#{@trophy.title.titlecase}' on theSkynet.org for playing my part in discovering our Universe!"
+- my_meta :title => @trophy.title,
+    :description => "I earned '#{@trophy.title}' on theSkynet.org for playing my part in discovering our Universe!"
 -content_for(:title_bar) do
   #intro-sml-wrap
-    %h1.fontface= @trophy.title.titlecase
+    %h1.fontface= @trophy.title
   =  render 'layouts/user_nav'
 
 -content_for(:content) do

@@ -1,6 +1,6 @@
 -content_for(:title_bar) do
   #intro-sml-wrap
-    %h1.fontface= "#{@profile.name.titlecase.possessive} Trophy Cabinet"
+    %h1.fontface= "#{@profile.name.possessive} Trophy Cabinet"
   -@user_page =  (user_signed_in? && @profile == current_user.profile) ? 'my_trophies' : 'leaderboard'
   =render 'layouts/user_nav'
 
@@ -26,7 +26,7 @@
                         .thumbnail
                           %a.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
                           .caption
-                            %h4= link_to "#{trophy.title.titlecase}" ,  trophy
+                            %h4= link_to "#{trophy.title}" ,  trophy
                             %p= "(#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)"
 
 

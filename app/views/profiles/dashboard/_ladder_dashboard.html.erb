@@ -37,7 +37,7 @@
             <% @top_alliances.each do |alliance| %>
                 <tr>
                     <td><%= link_to(alliance.ranking, alliance)%></td>
-                    <td><%=link_to(alliance.name.titleize, alliance)%></td>
+                    <td><%=link_to(alliance.name, alliance)%></td>
                     <td><%= link_to(number_with_delimiter(alliance.credit), alliance)%></td>
                 </tr>
             <% end %>

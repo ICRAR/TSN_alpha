@@ -1,9 +1,9 @@
-- meta :title => "theSkyNet: #{@profile.name.titlecase.possessive} Trophy Cabinet",
-   :description => "All of the trophies that #{@profile.name.titlecase} has been awarded for their great work with theSkyNet"
+- meta :title => "theSkyNet: #{@profile.name.possessive} Trophy Cabinet",
+   :description => "All of the trophies that #{@profile.name} has been awarded for their great work with theSkyNet"
 
 -content_for(:title_bar) do
   #intro-sml-wrap
-    %h1.fontface= "#{@profile.name.titlecase.possessive} Trophy Cabinet"
+    %h1.fontface= "#{@profile.name.possessive} Trophy Cabinet"
   -@user_page =  (user_signed_in? && @profile == current_user.profile) ? 'my_trophies' : 'leaderboard'
   =render 'layouts/user_nav'
 
@@ -22,7 +22,7 @@
             -num = @trophies.size
           -else
             -num = TrophySet.count_trophies @trophies
-          ="#{@profile.name.titlecase} has been awarded #{num} trophies."
+          ="#{@profile.name} has been awarded #{num} trophies."
           -if params[:style] == "credit"
             %p=link_to 'view all of the trophies as grid', params.merge(:style => 'grid')
             %p=link_to 'view all of the trophies as list', params.merge(:style => 'list')
@@ -57,7 +57,7 @@
                         .thumbnail
                           %a.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
                           .caption
-                            %h4= link_to "#{trophy.title.titlecase}" ,  trophy
+                            %h4= link_to "#{trophy.title}" ,  trophy
                             -unless trophy.credits.nil? || trophy.credits == 0
                               %p= "(#{number_with_delimiter(trophy.show_credits(@trophy_ids))} cr)"
         -else

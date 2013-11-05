@@ -48,9 +48,9 @@
             = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
         %p
           = link_to alliance_history_profile_path(@profile) do
-            = "See #{@profile.name.titlecase.possessive} alliance history."
+            = "See #{@profile.name.possessive} alliance history."
         -if user_signed_in?
-          %p= link_to "Compare #{@profile.name.titlecase.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
+          %p= link_to "Compare #{@profile.name.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
 
       .span5
         -if @profile.general_stats_item.nereus_stats_item != nil

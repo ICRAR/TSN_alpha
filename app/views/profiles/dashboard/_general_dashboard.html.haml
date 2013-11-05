@@ -24,7 +24,7 @@
       .media
       = link_to (image_tag @trophy.image.url), @trophy, :class => "pull-left"
       .media-body
-        %h4.media-heading= link_to @trophy.title.titleize,  @trophy
+        %h4.media-heading= link_to @trophy.title,  @trophy
         %p= @trophy.desc([@trophy.id])
         %p= link_to "See all your trophies", trophies_profile_path(@profile)
 - credits_to_go  = @profile.general_stats_item.credits_to_next_trophy

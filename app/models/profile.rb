@@ -112,7 +112,7 @@ class Profile < ActiveRecord::Base
     unless (first_name || second_name || nickname)
       temp_name = user.username if user.username
     end
-    temp_name.titleize
+    temp_name
   end
   def name
     temp_name = ''

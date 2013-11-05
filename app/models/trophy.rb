@@ -24,9 +24,9 @@ class Trophy < ActiveRecord::Base
 
   def heading(trophy_ids = nil)
     if credits.nil? || credits == 0
-      title.titlecase
+      title
     else
-      "#{title.titlecase} (#{number_with_delimiter(self.show_credits(trophy_ids))} cr)"
+      "#{title} (#{number_with_delimiter(self.show_credits(trophy_ids))} cr)"
     end
   end
 
