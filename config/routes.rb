@@ -68,9 +68,11 @@ Tsn::Application.routes.draw do
 
   resources :alliances do
     member do
-       get 'join'
-       get 'redeem_invite'
-       post 'invite'
+      get 'join'
+      get 'redeem_invite'
+      post 'invite'
+      #### all section are marked with ALLIANCE_DUP_CODE ###
+      get 'mark_as_duplicate'
     end
     collection do
       get 'leave'

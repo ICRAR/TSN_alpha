@@ -29,6 +29,16 @@ TSN.alliances.show = () ->
 
   )
 
+  #### all section are marked with ALLIANCE_DUP_CODE ###
+  $('#duplicate_btn').click( ->
+    bootbox.prompt "Enter the ID of the duplicate allaince.", (result) ->
+      unless result is null
+        w = window.location
+        new_url = "#{w.protocol}//#{w.hostname}:#{w.port}#{w.pathname}/mark_as_duplicate?dup_id=#{result}"
+        window.location.href = new_url
+
+    false
+  )
 
 
 TSN.alliances.edit = () -> alliance_tags()

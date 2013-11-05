@@ -17,6 +17,26 @@ class Alliance < ActiveRecord::Base
   has_many :members, :class_name => 'Profile', :inverse_of => :alliance
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :alliance, :dependent => :destroy
 
+
+  ######################################################
+  ####CODE for marking alliances as duplicates##########
+  #### all section are marked with ALLIANCE_DUP_CODE ###
+  belongs_to :duplicate_alliance, :foreign_key => :duplicate_id, :class_name => 'Alliance'
+
+  def mark_duplicate(other_id)
+    other = Alliance.find other_id
+    self.duplicate_id = other_id
+    self.save
+    raise ArgumentError, "other Alliance is already matched"  unless other.duplicate_id.nil?
+    other.duplicate_id = other_id
+    other.save
+  end
+
+  def is_duplicate?
+    !self.duplicate_id.nil?
+  end
+  ######################END#############################
+  ######################################################
   def self.for_show(id)
     where(:id => id).includes(:leader).first
   end

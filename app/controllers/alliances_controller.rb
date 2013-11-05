@@ -4,7 +4,9 @@ class AlliancesController < ApplicationController
   authorize_resource
   helper_method :sort_column, :sort_direction
 
-  before_filter :check_boinc, :except => [:index, :show, :search, :new]
+  #### all section are marked with ALLIANCE_DUP_CODE ###
+  before_filter :check_boinc, :except => [:index, :show, :search, :new, :mark_as_duplicate]
+  #before_filter :check_boinc, :except => [:index, :show, :search, :new]
   def check_boinc
     if params[:id]
       a = Alliance.where{id == my{params[:id]}}.select(:is_boinc).first
@@ -241,6 +243,34 @@ class AlliancesController < ApplicationController
       format.json { render :json => tags_json}
     end
   end
+
+  #### all section are marked with ALLIANCE_DUP_CODE ###
+  def mark_as_duplicate
+    ## simply sends an email to contact form stating.
+    ## only works for signed_in users
+
+    if user_signed_in?
+      @contact_form = ContactForm.new
+      @contact_form.name = current_user.profile.name
+      @contact_form.email = current_user.email
+      @contact_form.profile_id = current_user.profile.id
+      @contact_form.email_db = current_user.email
+      @contact_form.name_db = current_user.profile.name
+
+      @contact_form.message = "Alliance #{params[:id]} as been identified as a duplicate with #{params[:dup_id]}"
+      @contact_form.request = request
+      if @contact_form.valid?
+        @contact_form.delay_send
+        flash[:notice] = "Thank you for reporting. Your request will be check and the alliances marked as duplicates. :)"
+      else
+        flash[:notice] = "Something went wrong"
+      end
+      redirect_to root_url
+    else
+      redirect_to root_url, :notice => "You must be logged in to do that"
+    end
+  end
+  ###########################################
 
   private
 
