@@ -28,7 +28,7 @@ class Alliance < ActiveRecord::Base
     self.duplicate_id = other_id
     self.save
     raise ArgumentError, "other Alliance is already matched"  unless other.duplicate_id.nil?
-    other.duplicate_id = other_id
+    other.duplicate_id = self.id
     other.save
   end
 
