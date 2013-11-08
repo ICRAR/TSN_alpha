@@ -1,21 +1,22 @@
 class PagesController < ApplicationController
  authorize_resource
   def show
+    user_admin = (user_signed_in? && current_user.admin?)
     @page = Page.find_by_slug(params[:slug]) || not_found
     if @page.preview?
       not_found unless (user_signed_in? && current_user.admin?)
     end
     if (@page.parent)
       @title = @page.parent.title
-      @links = @page.parent.sub_pages.for_links
+      @links = @page.parent.sub_pages.for_links(user_admin)
       @content = @page.content.html_safe
     elsif (!@page.science_portal_id.nil?)
       @title = @page.science_portal.name
-      @links = @page.science_portal.pages.for_links
+      @links = @page.science_portal.pages.for_links(user_admin)
       @content = @page.content.html_safe
     else
       @title = @page.title
-      @links = @page.sub_pages.for_links
+      @links = @page.sub_pages.for_links(user_admin)
       @content = @page.content.html_safe
     end
     render :show

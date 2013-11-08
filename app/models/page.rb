@@ -14,7 +14,13 @@ class Page < ActiveRecord::Base
   #optional for science portals
   belongs_to :science_portal
 
-  scope :for_links, where{preview == false}.order(:sort_order)
+  def self.for_links(is_admin = false)
+    if is_admin
+      self.order{sort_order.asc}
+    else
+      self.where{preview == false}.order{sort_order.asc}
+    end
+  end
 
   def to_param
     slug

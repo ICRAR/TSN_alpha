@@ -88,12 +88,14 @@ end
 #Gems required for testing
 group :development, :test do
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  #gem 'factory_girl_rails'
+  gem 'fabrication'
   gem 'faker'
 end
 
 group :test do
   gem 'capybara'
+  gem 'database_cleaner'
 #  gem 'guard-rspec'
   gem 'launchy'
 end

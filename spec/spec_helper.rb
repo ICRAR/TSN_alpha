@@ -3,6 +3,8 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
+require 'capybara/rails'
+require 'capybara/rspec'
 
 
 
@@ -21,7 +23,7 @@ RSpec.configure do |config|
   # config.mock_with :rr
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  #config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -31,7 +33,7 @@ RSpec.configure do |config|
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
   # rspec-rails.
-  config.infer_base_class_for_anonymous_controllers = false
+  config.infer_base_class_for_anonymous_controllers = true
 
   # Run specs in random order to surface order dependencies. If you find an
   # order dependency and want to debug it, you can fix the order by providing
@@ -39,5 +41,31 @@ RSpec.configure do |config|
   #     --seed 1234
 
   #config.order = "random"
-  require "capybara/rspec"
+  config.include Helpers
+
+  config.before(:all) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:all) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:all) do
+    DatabaseCleaner.clean
+  end
+
+  config.include Capybara::DSL
+  Capybara.default_driver = :rack_test
+  config.before(:each, :type => :feature) do
+    default_url_options[:host] = '127.0.0.1'
+    Capybara.app_host = 'http://127.0.0.1'
+  end
+
+
+  config.include Warden::Test::Helpers
+  Warden.test_mode!
+  config.after(:each) do
+    Warden.test_reset!
+  end
 end
