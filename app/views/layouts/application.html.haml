@@ -24,7 +24,7 @@
     = render :partial => 'layouts/js_vars'
     %script{:src => "//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-522683943e4f7e56", :type => "text/javascript"}
 
-  %body{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : '')}
+  %body{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : ''), 'data-no-turbolink' => true}
     #top-nav.navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner
         #language-top.pull-right
