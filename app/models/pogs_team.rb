@@ -36,6 +36,7 @@ class PogsTeam < BoincPogsModel
     unless leader_boinc_item.try(:general_stats_item).nil?
       profile = leader_boinc_item.general_stats_item.profile
       local.leader = profile unless (local.leader_id == profile.id) || !profile.alliance_leader_id.nil?
+      #toDo remove old leader if need be
     end
   end
 

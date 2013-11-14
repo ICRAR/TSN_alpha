@@ -98,9 +98,10 @@ class Alliance < ActiveRecord::Base
 
 
   #because of a double up between BOINC and classic theSkynet Team's and alliances we need away to safely merge two alliances
-  #this function should be called on the pogs alliances the one that will remain
+  #this function should be called on the pogs alliances, the one that will remain
   def merge_pogs_team(second_alliance)
     raise 'second alliance must be a classic alliance' if second_alliance.is_boinc?
+    raise 'first alliance must be a POGS alliance' unless self.is_boinc?
     #merge params
     self.old_id = second_alliance.old_id
     self.tag_list = second_alliance.tag_list
