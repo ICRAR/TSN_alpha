@@ -1,0 +1,9 @@
+%h1 Sub::Test#index
+%p Find me in app/views/sub/test/index.html.erb
+= image_tag 'sub/sub.jpg'
+%ul
+  - @profiles.each do |p|
+    %li= p.name
+%input{"ng-model" => "yourName", placeholder: "Enter a name here", type: "text"}/
+%hr/
+%h1 Hello !

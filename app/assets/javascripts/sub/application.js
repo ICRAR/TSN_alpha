@@ -10,21 +10,7 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-
-//= require jquery
-//= require jquery.turbolinks
-//= require jquery_ujs
-//= require twitter/bootstrap
-//= require jquery.ui.all
-//= require i18n
-//= require i18n/translations
-//= require init.js.coffee
-//= require_tree ./vendor
-//= require_tree ./general
-//= require_tree ./controllers
-//= require turbolinks
-//= require fancybox
-//= require messenger
-//= require messenger-theme-future
-//= require ckeditor/init
 //= require angular
+//= require_tree ./controllers
+
+

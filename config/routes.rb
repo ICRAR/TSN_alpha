@@ -1,4 +1,5 @@
 Tsn::Application.routes.draw do
+
   #redirect all to host name in custom config
   match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
         constraints: lambda{|request| ((request.host != APP_CONFIG['site_host']) &&
@@ -105,6 +106,9 @@ Tsn::Application.routes.draw do
     end
   end
 
+  namespace :sub do
+    resources :test, :only => [:index]
+  end
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

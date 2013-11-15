@@ -9,16 +9,6 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require_tree ./vendor
  *= require_tree ./controllers
- *= require_tree ./vendor
- *= require general.css.scss
- *= require_tree ./general
- *= require bootstrap_and_overrides
- *= require jquery.ui.all
- *= require fancybox
- *= require messenger
- *= require messenger-spinner
- *= require messenger-theme-future
  */
 

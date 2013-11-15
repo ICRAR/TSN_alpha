@@ -1,0 +1,11 @@
+!!!
+%html
+  %head
+    =metamagic :title => "theSkyNet", :description => "Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
+    =favicon_link_tag('favicon.ico')
+    =stylesheet_link_tag    "sub/application", :media => "all"
+    =javascript_include_tag "sub/application"
+    =csrf_meta_tags
+
+  %body{'ng-app' => "theSkyMap"}
+    =yield
