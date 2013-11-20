@@ -36,7 +36,6 @@ class PogsTeam < BoincPogsModel
     unless leader_boinc_item.try(:general_stats_item).nil?
       profile = leader_boinc_item.general_stats_item.profile
       local.leader = profile unless (local.leader_id == profile.id) || !profile.alliance_leader_id.nil?
-      #toDo remove old leader if need be
     end
   end
 
@@ -60,22 +59,37 @@ class PogsTeam < BoincPogsModel
           members.each do |m|
             #if this is joining a team
             if m.joining == 1
-              #create new alliance member
-              member = AllianceMembers.new
-              member.alliance_id = alliance.id
-              member.profile_id = profile.id
-              member.join_date = Time.at(m.timestamp)
-              member.start_credit = m.total_credit
-              #if timestamp is within 1 day and the users local credit is higher than POGS credit use local credit
-              if m.timestamp > 1.day.ago.to_i &&  profile.general_stats_item.total_credit.to_i > m.total_credit
-                member.start_credit = profile.general_stats_item.total_credit
-              end
-              member.start_credit ||= 0
-              member.leave_credit = profile.general_stats_item.total_credit
+              #check that the user is not already a member of that team
+              unless profile.alliance_id == alliance.id
+                #check if that user was recently a member of the same alliance within last day
+                last = profile.alliance_items.last
+                if last != nil && last.alliance_id == alliance.id && (m.timestamp - last.leave_date).abs < 1.day
+                  # then update existing record to re add member to alliance
+                  member = last
+                  member.leave_date = nil
+                  member.leave_credit = profile.general_stats_item.total_credit
+                  member.leave_credit ||= 0
+                  member.save
+                else
+                  #only create new record if the user is not already a member of that alliance
+                  #create new alliance member
+                  member = AllianceMembers.new
+                  member.alliance_id = alliance.id
+                  member.profile_id = profile.id
+                  member.join_date = Time.at(m.timestamp)
+                  member.start_credit = m.total_credit
+                  #if timestamp is within 1 day and the users local credit is higher than POGS credit use local credit
+                  if m.timestamp > 1.day.ago.to_i &&  profile.general_stats_item.total_credit.to_i > m.total_credit
+                    member.start_credit = profile.general_stats_item.total_credit
+                  end
+                  member.start_credit ||= 0
+                  member.leave_credit = profile.general_stats_item.total_credit
 
-              member.leave_credit ||= 0
-              member.leave_date = nil
-              member.save
+                  member.leave_credit ||= 0
+                  member.leave_date = nil
+                  member.save
+                end
+              end
             else
               #or leaving a team
               #update alliance item
@@ -107,7 +121,7 @@ class PogsTeam < BoincPogsModel
                 member.save
 
                 #if this was the users current alliance make sure they leave.
-                if profile.alliance.try(:id) == alliance.id
+                if profile.alliance_id == alliance.id
                   profile.alliance = nil
                   profile.save
                 end
@@ -120,7 +134,7 @@ class PogsTeam < BoincPogsModel
             if profile.alliance.nil?
               profile.alliance = alliance
               profile.save
-            else
+            elsif profile.alliance_id != alliance.id
               profile.leave_alliance
               profile.alliance = alliance
               profile.save

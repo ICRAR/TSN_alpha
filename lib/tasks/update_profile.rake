@@ -83,6 +83,7 @@ namespace :update_profiles do
       file = Rails.root.join('tmp', 'profiles.csv')
       File.open(file, "w") { |file| file.write csv }
     end
+    #scp -i ~/.ssh/icrar_theskynet_public_prod.pem ec2-user@tsn-prod:/home/ec2-user/tsn_test/current/tmp/profiles.csv ./profiles.csv
 
   end
   desc "award trophies from file"
