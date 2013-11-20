@@ -12,7 +12,7 @@
             .well.media
               %a.pull-left{:href=>trophy_path(@trophy)}= image_tag @trophy.image.url, :class=>"media-object"
               .media-body
-                %h4.media-heading= link_to @trophy.heading() ,  @trophy
+                %h4.media-heading= link_to @trophy.title ,  @trophy
                 %p This Trophy has been won by the following people.
           -elsif params[:galaxy_id]
             .well.media
