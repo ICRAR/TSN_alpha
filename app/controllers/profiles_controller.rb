@@ -42,6 +42,7 @@ class ProfilesController < ApplicationController
         where{boinc_stats_items.RAC > 0}.
         select("(boinc_stats_items.RAC - boinc_stats_items.save_value) as rac_change").
         select("boinc_stats_items.credit as boinc_credit").
+        select("boinc_stats_items.RAC as boinc_rac").
         order('rac_change DESC')
   end
 
