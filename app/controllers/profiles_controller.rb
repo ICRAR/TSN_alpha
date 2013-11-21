@@ -31,6 +31,20 @@ class ProfilesController < ApplicationController
     @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).order("-"+sort_column + " " + sort_direction)
   end
 
+  def boinc_challenge
+    per_page = [params[:per_page].to_i,1000].min
+    per_page = 30 if per_page == 0
+    page_num = params[:page]
+    page_padding = 0;
+
+    @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).
+        joins(:general_stats_item =>:boinc_stats_item).
+        where{boinc_stats_items.RAC > 0}.
+        select("(boinc_stats_items.RAC - boinc_stats_items.save_value) as rac_change").
+        select("boinc_stats_items.credit as boinc_credit").
+        order('rac_change DESC')
+  end
+
   # GET /profiles/1
   # GET /profiles/1.json
   def show
