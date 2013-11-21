@@ -41,6 +41,7 @@ Tsn::Application.routes.draw do
   resources :profiles, :only => [:index, :show, :update] do
     collection do
       get 'search'
+      get 'boinc_challenge'
     end
     member do
       get 'trophies'

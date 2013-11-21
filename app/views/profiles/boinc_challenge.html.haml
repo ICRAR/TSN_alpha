@@ -1,0 +1,43 @@
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Special Leaderboard for 24 Hour RAC Challenge
+  - @user_page =  'leaderboard'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    .well.well-white
+      .row-fluid
+        .span7
+          .well.media
+            .media-body
+              %h4.media-heading Special Leaderboard for 24 Hour RAC Challenge
+              %p
+                This leaderboard shows the change in users POGS RAC value over the last 24 hours of the Herschel Birthday Challenge.
+                = link_to 'For more information see this forum post', 'http://pogs.theskynet.org/pogs/forum_thread.php?id=308'
+
+      %table#leaderboard.table.table-striped
+        %thead
+          %tr
+            %th Name
+            %th Country
+            %th Total Credit (POGS)
+            %th RAC (POGS)
+            %th Change in RAC (POGS)
+            %th POGS ID
+            %th Alliance
+        %tbody
+          - @profiles.each do |profile|
+            %tr{ :class => ('selected' if (params[:rank] and profile.rank == params[:rank].to_i))}
+              %td
+                = link_to profile do
+                  = image_tag profile.avatar_url(24)
+                  = profile.name
+              %td= link_to profile.country, profile
+              %td= link_to number_with_delimiter(profile.boinc_credit), profile
+              %td= link_to number_with_delimiter(profile.boinc_rac), profile
+              %td= link_to (profile[:rac_change].nil? ? '-' : profile[:rac_change]), profile
+              %td= link_to profile.boinc_id, profile
+              %td= profile.alliance ? link_to(profile.alliance.name,profile.alliance, :style => "text-decoration: underline") : 'Flying Solo'
+      = paginate @profiles
+      = page_entries_info @profiles, :entry_name => 'Profile'
+      = render 'shared/per_page_selector'
