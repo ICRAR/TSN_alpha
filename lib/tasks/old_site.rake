@@ -172,9 +172,11 @@ def make_user(old_user)
 
   new_user.skip_confirmation!
   new_user.confirmed_at = Time.parse('01/01/2013')
+  new_user.joined_at = new_user.confirmed_at
   if new_user.save
     #populate User field
     new_user.confirmed_at = old_user[:first_day]
+    new_user.joined_at = new_user.confirmed_at
     new_user.encrypted_password = old_user[:password]
     new_user.old_site_password_salt = old_user[:salt]
     new_user.admin = true if old_user[:username] == 'Eckley'  # hack to to auto generate myself as admin

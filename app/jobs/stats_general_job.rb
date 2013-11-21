@@ -50,7 +50,7 @@ class StatsGeneralJob
         SiteStat.set("total_credit",total_credit)
 
         # total new members in the last month
-        new_users_month = User.where{confirmed_at > 1.month.ago}.count
+        new_users_month = User.where{joined_at > 1.month.ago}.count
         SiteStat.set("new_users_month",new_users_month)
 
         #number of new trophies in the last month

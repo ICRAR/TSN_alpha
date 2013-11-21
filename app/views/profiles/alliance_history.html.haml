@@ -22,7 +22,7 @@
             - total_days_in_alliance  = @memberships.map(&:days_in_alliance).inject(0, :+)
             %dd= pluralize(total_days_in_alliance, "day") + " in an alliance"
             %dt and
-            - total_days = ((Time.now - @profile.user.confirmed_at)/86400).round
+            - total_days = ((Time.now - @profile.user.joined_at)/86400).round
             %dd= pluralize(total_days-total_days_in_alliance, "day") + " solo"
 
         -if @alliance
