@@ -23,6 +23,7 @@
             %th Total Credit (POGS)
             %th RAC (POGS)
             %th Change in RAC (POGS)
+            %th POGS ID
             %th Alliance
         %tbody
           - @profiles.each do |profile|
@@ -34,7 +35,8 @@
               %td= link_to profile.country, profile
               %td= link_to number_with_delimiter(profile.boinc_credit), profile
               %td= link_to number_with_delimiter(profile.boinc_rac), profile
-              %td= link_to (profile.rac_change.nil? ? '-':profile.rac_change), profile
+              %td= link_to (profile[:rac_change].nil? ? '-' : profile[:rac_change]), profile
+              %td= link_to profile.boinc_id, profile
               %td= profile.alliance ? link_to(profile.alliance.name,profile.alliance, :style => "text-decoration: underline") : 'Flying Solo'
       = paginate @profiles
       = page_entries_info @profiles, :entry_name => 'Profile'

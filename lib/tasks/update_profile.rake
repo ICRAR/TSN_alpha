@@ -105,9 +105,9 @@ namespace :update_profiles do
   end
   desc "award trophies for galaxy"
   task :trophies_csv => :environment do
-    trophy_id = 124
+    trophy_id = 129
     trophy = Trophy.find trophy_id
-    galaxy_id = 8000
+    galaxy_id = 10000
 
     db_ids = Galaxy.connection.execute("select distinct au.userid
                 from area_user au, area a
