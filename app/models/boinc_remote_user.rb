@@ -36,10 +36,12 @@ class BoincRemoteUser < BoincPogsModel
     if local_user.nil?
       #no local user therefore create one
       self.copy_to_local(self.passwd_hash,false)
-    else
+    elsif local_user.profile.general_stats_item.boinc_stats_item.nil?
       #link users
       local_user.profile.general_stats_item.boinc_stats_item = boinc_item
       local_user.profile.general_stats_item.update_credit
+
+    #if user is already linked do nothing
     end
 
   end
