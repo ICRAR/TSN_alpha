@@ -40,7 +40,7 @@ class ProfilesController < ApplicationController
     @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).
         joins(:general_stats_item =>:boinc_stats_item).
         where{boinc_stats_items.RAC > 0}.
-        select("(boinc_stats_items.RAC - boinc_stats_items.save_value) as rac_change").
+        select("boinc_stats_items.challenge as rac_change").
         select("boinc_stats_items.credit as boinc_credit").
         select("boinc_stats_items.RAC as boinc_rac").
         select("boinc_stats_items.boinc_id as boinc_id").

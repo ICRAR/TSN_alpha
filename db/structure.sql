@@ -82,6 +82,7 @@ CREATE TABLE `boinc_stats_items` (
   `updated_at` datetime NOT NULL,
   `report_count` int(11) DEFAULT NULL,
   `save_value` int(11) DEFAULT NULL,
+  `challenge` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
@@ -151,7 +152,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=301 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -631,3 +632,5 @@ INSERT INTO schema_migrations (version) VALUES ('20131115010933');
 INSERT INTO schema_migrations (version) VALUES ('20131120023823');
 
 INSERT INTO schema_migrations (version) VALUES ('20131121004722');
+
+INSERT INTO schema_migrations (version) VALUES ('20131122045154');
