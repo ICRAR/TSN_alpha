@@ -28,17 +28,112 @@ class AllianceMembers < ActiveRecord::Base
     self[:leave_credit].to_i
   end
 
+  #functions for creating new alliance_member items
+  #regular join alliance function, ie user clicks join alliance
+  def self.join_alliance(profile, alliance)
+    item = AllianceMembers.new
+    item.join_date = Time.now
+    item.start_credit = profile.general_stats_item.total_credit
+    item.start_credit ||= 0
+    item.leave_credit = profile.general_stats_item.total_credit
+    item.leave_credit ||= 0
+    item.leave_date = nil
+
+    profile.alliance_items << item
+    alliance.member_items << item
+
+    item.save
+
+    AllianceMembers.delay.create_notification_join(self.id)
+    item
+  end
+  #regular leave alliance function ie user clicks leave alliance
+  def leave_alliance(profile)
+    self.leave_date = Time.now
+    self.leave_credit = profile.general_stats_item.total_credit
+    self.save
+
+    AllianceMembers.delay.create_notification_leave(self.id)
+  end
+  #synced with BOINC
+  def self.join_alliance_from_boinc_from_start(profile,alliance)
+    member = AllianceMembers.new
+    member.alliance_id = alliance.id
+    member.profile_id = profile.id
+    member.join_date = alliance.created_at
+    member.start_credit = 0
+    member.leave_credit = profile.total_credit
+    member.leave_credit ||= 0
+    member.leave_date = nil
+    member.save
+  end
+  def self.join_alliance_from_boinc(profile,alliance,boinc_membership)
+    m = boinc_membership
+    #check if that user was recently a member of the same alliance within last day or is a current memeber
+    last = profile.alliance_items.last
+    if last != nil && last.alliance_id == alliance.id && (m.timestamp - last.leave_date).abs < 1.day
+      # then update existing record to re add member to alliance
+      member = last
+      member.leave_date = nil
+      member.leave_credit = profile.general_stats_item.total_credit
+      member.leave_credit ||= 0
+      member.save
+    else
+      #only create new record if the user is not already a member of that alliance
+      #create new alliance member
+      member = AllianceMembers.new
+      member.alliance_id = alliance.id
+      member.profile_id = profile.id
+      member.join_date = Time.at(m.timestamp)
+      member.start_credit = m.total_credit
+      #if timestamp is within 1 day and the users local credit is higher than POGS credit use local credit
+      if m.timestamp > 1.day.ago.to_i &&  profile.general_stats_item.total_credit.to_i > m.total_credit
+        member.start_credit = profile.general_stats_item.total_credit
+      end
+      member.start_credit ||= 0
+      member.leave_credit = profile.general_stats_item.total_credit
+
+      member.leave_credit ||= 0
+      member.leave_date = nil
+      member.save
+    end
+    member
+  end
+  def leave_alliance_from_boinc(profile,alliance,boinc_membership)
+    m = boinc_membership
+    member = AllianceMembers.where{(alliance_id == my{alliance.id}) &
+        (profile_id == my{profile.id}) &
+        (leave_date == nil)
+    }.first
+    if member.nil? && m.total_credit.to_i == 0
+      #can't find corresponding join entry
+      #if total credit is 0 ignore, strange boinc condition
+    else
+      if member.nil? && m.total_credit.to_i > 0
+        #Team delta is a new feature to BOINC we must assume this member joined before that time
+        #So create them a new member item starting with 0 credit
+        member = AllianceMembers.new
+        member.alliance_id = alliance.id
+        member.profile_id = profile.id
+        member.join_date = Time.at(m.timestamp)
+        member.start_credit =0
+      end
+
+      member.leave_date = Time.at(m.timestamp)
+      member.leave_credit = m.total_credit
+      #if timestamp is within 1 day and the users local credit is higher than POGS credit use local credit
+      if m.timestamp > 1.day.ago.to_i &&  profile.general_stats_item.total_credit.to_i > m.total_credit
+        member.leave_credit = profile.general_stats_item.total_credit
+      end
+      member.leave_credit ||= 0
+
+      member.save
+    end
+  end
+
   #A user should be notifed whenever a they join or leave an alliance. We will also notify the alliance leader.
   has_many :notifications, foreign_key: :notified_object_id, conditions: {notified_object_type: 'AllianceMembers'}, dependent: :destroy
-  after_commit :create_notification_join, on: :create
-  after_commit :create_notification_leave, on: :update
 
-  def create_notification_join
-    AllianceMembers.delay.create_notification_join(self.id)
-  end
-  def create_notification_leave
-    AllianceMembers.delay.create_notification_leave(self.id) unless leave_date.nil?
-  end
 
   def self.create_notification_join(id)
     am = AllianceMembers.find id

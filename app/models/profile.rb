@@ -134,18 +134,7 @@ class Profile < ActiveRecord::Base
       false
     else
       self.alliance = alliance
-      item = AllianceMembers.new
-      item.join_date = Time.now
-      item.start_credit = self.general_stats_item.total_credit
-      item.start_credit ||= 0
-      item.leave_credit = self.general_stats_item.total_credit
-      item.leave_credit ||= 0
-      item.leave_date = nil
-
-      self.alliance_items << item
-      alliance.member_items << item
-
-      item.save
+      AllianceMembers.join_alliance(self,alliance)
       self.save
     end
   end
@@ -154,9 +143,7 @@ class Profile < ActiveRecord::Base
       false
     else
       item = self.alliance_items.where{(leave_date == nil) & (alliance_id == my{self.alliance.id})}.first
-      item.leave_date = Time.now
-      item.leave_credit = self.general_stats_item.total_credit
-      item.save
+      item.leave_alliance(self)
       self.alliance = nil
       self.save
     end

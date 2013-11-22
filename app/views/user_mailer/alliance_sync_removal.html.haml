@@ -1,0 +1,18 @@
+%p= "Hi #{@profile.name},"
+%p
+  Due to the synchronisation procedure with BOINC you have been moved from the
+  =link_to @old_alliance.name, alliance_url(@old_alliance)
+  alliance to the
+  =link_to @new_alliance.name, alliance_url(@new_alliance)
+  alliance. For more information please check out the
+  = link_to 'Alliance FAQ.', page_url(:slug => 'alliance_faq')
+%p
+  If you wish re-join your old alliance, you can do this from the
+  =link_to @old_alliance.name, alliance_url(@old_alliance)
+  alliance page. If you have any further questions, or if you feel this was an error please don’t hesitate to contact our support team using the form
+  =link_to "here.", new_contact_form_url
+%p
+  Thank you for your continued support.
+  %br
+  = link_to "-TheSkyNet", root_url
+

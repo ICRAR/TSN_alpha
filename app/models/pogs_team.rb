@@ -60,84 +60,37 @@ class PogsTeam < BoincPogsModel
             #if this is joining a team
             if m.joining == 1
               #check that the user is not already a member of that team
-              unless profile.alliance_id == alliance.id
-                #check if that user was recently a member of the same alliance within last day
-                last = profile.alliance_items.last
-                if last != nil && last.alliance_id == alliance.id && (m.timestamp - last.leave_date).abs < 1.day
-                  # then update existing record to re add member to alliance
-                  member = last
-                  member.leave_date = nil
-                  member.leave_credit = profile.general_stats_item.total_credit
-                  member.leave_credit ||= 0
-                  member.save
-                else
-                  #only create new record if the user is not already a member of that alliance
-                  #create new alliance member
-                  member = AllianceMembers.new
-                  member.alliance_id = alliance.id
-                  member.profile_id = profile.id
-                  member.join_date = Time.at(m.timestamp)
-                  member.start_credit = m.total_credit
-                  #if timestamp is within 1 day and the users local credit is higher than POGS credit use local credit
-                  if m.timestamp > 1.day.ago.to_i &&  profile.general_stats_item.total_credit.to_i > m.total_credit
-                    member.start_credit = profile.general_stats_item.total_credit
-                  end
-                  member.start_credit ||= 0
-                  member.leave_credit = profile.general_stats_item.total_credit
-
-                  member.leave_credit ||= 0
-                  member.leave_date = nil
-                  member.save
-                end
-              end
+              AllianceMembers.join_alliance_from_boinc(profile,alliance,m)
             else
               #or leaving a team
               #update alliance item
-              member = AllianceMembers.where{(alliance_id == my{alliance.id}) &
-                (profile_id == my{profile.id}) &
-                (leave_date == nil)
-              }.first
-              if member.nil? && m.total_credit.to_i == 0
-                #can't find corresponding join entry
-                #if total credit is 0 ignore, strange boinc condition
-              else
-                if member.nil? && m.total_credit.to_i > 0
-                  #Team delta is a new feature to BOINC we must assume this member joined before that time
-                  #So create them a new member item starting with 0 credit
-                  member = AllianceMembers.new
-                  member.alliance_id = alliance.id
-                  member.profile_id = profile.id
-                  member.join_date = Time.at(m.timestamp)
-                  member.start_credit =0
-                end
-                member.leave_date = Time.at(m.timestamp)
-                member.leave_credit = m.total_credit
-                #if timestamp is within 1 day and the users local credit is higher than POGS credit use local credit
-                if m.timestamp > 1.day.ago.to_i &&  profile.general_stats_item.total_credit.to_i > m.total_credit
-                  member.leave_credit = profile.general_stats_item.total_credit
-                end
-                member.leave_credit ||= 0
-
-                member.save
-
-                #if this was the users current alliance make sure they leave.
-                if profile.alliance_id == alliance.id
-                  profile.alliance = nil
-                  profile.save
-                end
-              end
-
+              AllianceMembers.leave_alliance_from_boinc(profile,alliance,m)
             end
           end
-          #finnally if the last action was to join an alliance make sure that is reflected in theSkyNet
+          #finnally make sure last action is reflected in theSkyNet
           if members.last.try(:joining) == 1
             if profile.alliance.nil?
               profile.alliance = alliance
               profile.save
             elsif profile.alliance_id != alliance.id
+              #email user notifying them that they have been automatically removed from an alliance
+              if alliance.pogs_team_id.nil? || alliance.pogs_team_id == 0
+                UserMailer.alliance_sync_removal(profile, profile.alliance, alliance)
+              end
+
               profile.leave_alliance
               profile.alliance = alliance
               profile.save
+            end
+            #update notifications
+            AllianceMembers.delay.create_notification_join(profile,alliance_items.last.id)
+          elsif members.last.try(:joining) == 0
+            #if this was the users current alliance make sure they leave.
+            if profile.alliance_id == alliance.id
+              profile.alliance = nil
+              profile.save
+              #update notifications
+              AllianceMembers.delay.create_notification_leave(profile,alliance_items.last.id)
             end
           end
         end
