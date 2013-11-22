@@ -87,6 +87,7 @@ class BoincJob
                 profile.alliance = alliance
                 profile.save
               end
+              AllianceMembers.create_notification_join(profile.alliance_items.last.id)
             end
           end
         end

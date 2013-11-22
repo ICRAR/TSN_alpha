@@ -83,14 +83,14 @@ class PogsTeam < BoincPogsModel
               profile.save
             end
             #update notifications
-            AllianceMembers.delay.create_notification_join(profile,alliance_items.last.id)
+            AllianceMembers.create_notification_join(profile.alliance_items.last.id)
           elsif members.last.try(:joining) == 0
             #if this was the users current alliance make sure they leave.
             if profile.alliance_id == alliance.id
               profile.alliance = nil
               profile.save
               #update notifications
-              AllianceMembers.delay.create_notification_leave(profile,alliance_items.last.id)
+              AllianceMembers.create_notification_leave(profile.alliance_items.last.id)
             end
           end
         end
