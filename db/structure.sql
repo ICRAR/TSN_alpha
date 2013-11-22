@@ -81,6 +81,7 @@ CREATE TABLE `boinc_stats_items` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `report_count` int(11) DEFAULT NULL,
+  `save_value` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
@@ -150,7 +151,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=295 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=301 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -162,6 +163,7 @@ CREATE TABLE `general_stats_items` (
   `updated_at` datetime NOT NULL,
   `last_trophy_credit_value` int(11) NOT NULL DEFAULT '0',
   `power_user` tinyint(1) NOT NULL DEFAULT '0',
+  `start_of_challenge` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `profile_id_index` (`profile_id`),
   KEY `total_credit_index_desc` (`total_credit`),
@@ -244,7 +246,7 @@ CREATE TABLE `notifications` (
   PRIMARY KEY (`id`),
   KEY `index_notifications_on_conversation_id` (`conversation_id`),
   CONSTRAINT `notifications_on_conversation_id` FOREIGN KEY (`conversation_id`) REFERENCES `conversations` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `page_translations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -257,7 +259,7 @@ CREATE TABLE `page_translations` (
   PRIMARY KEY (`id`),
   KEY `index_page_translations_on_page_id` (`page_id`),
   KEY `index_page_translations_on_locale` (`locale`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -270,7 +272,7 @@ CREATE TABLE `pages` (
   `sort_order` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -306,7 +308,7 @@ CREATE TABLE `profiles_trophies` (
   KEY `profile_id_index` (`profile_id`),
   KEY `trophy_id_index` (`trophy_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=890492 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=890493 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `rails_admin_histories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -337,7 +339,7 @@ CREATE TABLE `receipts` (
   KEY `index_receipts_on_notification_id` (`notification_id`),
   KEY `index_receiver_id_is_read` (`receiver_id`,`is_read`),
   CONSTRAINT `receipts_on_notification_id` FOREIGN KEY (`notification_id`) REFERENCES `notifications` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2047 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2048 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) NOT NULL,
@@ -414,6 +416,7 @@ CREATE TABLE `trophies` (
   `updated_at` datetime NOT NULL,
   `hidden` tinyint(1) DEFAULT NULL,
   `trophy_set_id` int(11) DEFAULT NULL,
+  `set_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=latin1;
@@ -622,3 +625,9 @@ INSERT INTO schema_migrations (version) VALUES ('20131016070041');
 INSERT INTO schema_migrations (version) VALUES ('20131024014516');
 
 INSERT INTO schema_migrations (version) VALUES ('20131105031308');
+
+INSERT INTO schema_migrations (version) VALUES ('20131115010933');
+
+INSERT INTO schema_migrations (version) VALUES ('20131120023823');
+
+INSERT INTO schema_migrations (version) VALUES ('20131121004722');

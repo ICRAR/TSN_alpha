@@ -7,6 +7,8 @@
         %a.icon.twitter{:href => "http://twitter.com/#!/_theskynet"}= t "social.twitter_follow"
       %li
         %a.icon.facebook{:href=>"http://www.facebook.com/pages/TheSkyNet/214061585306810"}= t "social.FB_fav"
+      %li
+        = link_to t("social.atom"), news_index_url(format: 'atom'), class: "icon rss"
   #footer-map
     %ul.unstlyed
       %li= link_to t("nav.home"), root_path
