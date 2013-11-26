@@ -5,8 +5,7 @@ class AlliancesController < ApplicationController
   helper_method :sort_column, :sort_direction
 
   #### all section are marked with ALLIANCE_DUP_CODE ###
-  before_filter :check_boinc, :except => [:index, :show, :search, :new, :mark_as_duplicate]
-  #before_filter :check_boinc, :except => [:index, :show, :search, :new]
+  before_filter :check_boinc, :only => [:edit, :update, :destroy]
   def check_boinc
     if params[:id]
       a = Alliance.where{id == my{params[:id]}}.select(:is_boinc).first
@@ -40,7 +39,13 @@ class AlliancesController < ApplicationController
   # GET /alliances/new
   # GET /alliances/new.json
   def new
-    if current_user.profile.alliance
+    if !user_signed_in
+      redirect_to root_url, notice: 'You must be signed in too do that'
+      return
+    elsif current_user.profile.alliance
+      redirect_to my_profile_url, notice: 'Sorry you can not create a new alliance when you are part of an existing alliance'
+      return
+    elsif current_user.profile.leader_id
       redirect_to my_profile_url, notice: 'Sorry you can not create a new alliance when you are part of an existing alliance'
       return
     end
@@ -56,22 +61,35 @@ class AlliancesController < ApplicationController
   # POST /alliances
   # POST /alliances.json
   def create
-    if current_user.profile.alliance
+    if !user_signed_in
+      redirect_to root_url, notice: 'You must be signed in too do that'
+      return
+    elsif current_user.profile.alliance
+      redirect_to my_profile_url, notice: 'Sorry you can not create a new alliance when you are part of an existing alliance'
+      return
+    elsif current_user.profile.leader_id
       redirect_to my_profile_url, notice: 'Sorry you can not create a new alliance when you are part of an existing alliance'
       return
     end
 
     @alliance = Alliance.new(params[:alliance])
-    @alliance.ranking = Alliance.calculate(:maximum,'ranking') + 1
-    @alliance.credit = 0
-    if @alliance.save
-      current_user.profile.join_alliance @alliance
 
-      @alliance.leader = current_user.profile
-
-      redirect_to @alliance, notice: 'Alliance was successfully created.'
-    else
+    if @alliance.is_boinc && !current_user.profile.is_pogs?
+      @alliance.errors[:is_boinc] << "You must be POGS member to create a POGS alliance"
       render :new
+    else
+
+      @alliance.ranking = Alliance.calculate(:maximum,'ranking') + 1
+      @alliance.credit = 0
+      @alliance.leader = current_user.profile
+      if @alliance.save
+        current_user.profile.join_alliance @alliance
+        @alliance.create_pogs_team if @alliance.is_boinc?
+
+        redirect_to @alliance, notice: 'Alliance was successfully created.'
+      else
+        render :new
+      end
     end
 
   end
@@ -100,22 +118,31 @@ class AlliancesController < ApplicationController
   end
 
   def join
-      @alliance = Alliance.find(params[:id])
-      #check that the current user irofile.sn't already part of an alliance
-      if current_user.profile.alliance
-        flash[:notice] = 'Sorry you can only be part of a single alliance'
+    unless user_signed_in?
+      redirect_to root_url, notice: 'Sorry you must be logged in to do that.'
+      return
+    end
+    @alliance = Alliance.find(params[:id])
+    #check that the current user irofile.sn't already part of an alliance
+    if current_user.profile.alliance
+      flash[:notice] = 'Sorry you can only be part of a single alliance'
+    elsif @alliance.invite_only?
+      flash[:alert] = "Sorry the #{@alliance.name} alliance is an invite only alliance. To join you must be invited by an existing member."
+    elsif (@alliance.pogs_team_id > 0 && current_user.profile.general_stats_item.boinc_stats_item.nil?)
+      flash[:alert] = "Sorry the #{@alliance.name} alliance is part of POGS. To join you must be also be a member of the POGS project."
+    else
+      current_user.profile.join_alliance @alliance
+      flash[:notice] = "Welcome to the #{@alliance.name} Alliance"
+    end
 
-      elsif @alliance.invite_only?
-        flash[:alert] = "Sorry the #{@alliance.name} alliance is an invite only alliance. To join you must be invited by an existing member."
-      else
-        current_user.profile.join_alliance @alliance
-        flash[:notice] = "Welcome to the #{@alliance.name} Alliance"
-      end
-
-      redirect_to my_profile_path
+    redirect_to my_profile_path
   end
 
   def leave
+    unless user_signed_in?
+      redirect_to root_url, notice: 'Sorry you must be logged in to do that.'
+      return
+    end
     @alliance = current_user.profile.alliance
 
     #first check that the user has a current alliance membership
@@ -125,9 +152,9 @@ class AlliancesController < ApplicationController
     elsif current_user.profile.alliance_leader
       flash[:notice] = 'Sorry the current leader cannot leave an alliance'
     else
-    #remove user from alliance
-    current_user.profile.leave_alliance
-    flash[:notice] = "You have left the #{@alliance.name} alliance"
+      #remove user from alliance
+      current_user.profile.leave_alliance
+      flash[:notice] = "You have left the #{@alliance.name} alliance"
     end
     redirect_to my_profile_path
   end

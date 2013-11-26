@@ -130,12 +130,15 @@ class Profile < ActiveRecord::Base
 
 
   def join_alliance(alliance)
-    if self.alliance != nil
+    if self.alliance != nil || (alliance.pogs_team_id > 0 && self.general_stats_item.boinc_stats_item.nil?)
       false
     else
       self.alliance = alliance
       AllianceMembers.join_alliance(self,alliance)
       self.save
+      if alliance.pogs_team_id > 0
+        BoincRemoteUser.delay.join_team self.general_stats_item.boinc_stats_item.boinc_id, alliance.pogs_team_id
+      end
     end
   end
   def leave_alliance
@@ -144,8 +147,12 @@ class Profile < ActiveRecord::Base
     else
       item = self.alliance_items.where{(leave_date == nil) & (alliance_id == my{self.alliance.id})}.first
       item.leave_alliance(self)
+      if self.alliance.pogs_team_id > 0
+        BoincRemoteUser.delay.leave_team self.general_stats_item.boinc_stats_item.boinc_id
+      end
       self.alliance = nil
       self.save
+
     end
   end
 
@@ -209,6 +216,10 @@ class Profile < ActiveRecord::Base
     else
       return science_portal.check_access(self.id)
     end
+  end
+
+  def is_pogs?
+    !self.general_stats_item.boinc_stats_item.nil?
   end
 
   mapping do

@@ -44,16 +44,18 @@ class AllianceMembers < ActiveRecord::Base
 
     item.save
 
-    AllianceMembers.delay.create_notification_join(self.id)
+    AllianceMembers.delay.create_notification_join(item.id)
     item
   end
   #regular leave alliance function ie user clicks leave alliance
   def leave_alliance(profile)
+    self.leave_alliance_without_notification(profile)
+    AllianceMembers.delay.create_notification_leave(self.id)
+  end
+  def leave_alliance_without_notification(profile)
     self.leave_date = Time.now
     self.leave_credit = profile.general_stats_item.total_credit
     self.save
-
-    AllianceMembers.delay.create_notification_leave(self.id)
   end
   #synced with BOINC
   def self.join_alliance_from_boinc_from_start(profile,alliance)
