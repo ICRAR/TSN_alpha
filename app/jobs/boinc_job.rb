@@ -55,7 +55,7 @@ class BoincJob
             b.check_local
         end
 
-        PogsTeam.where{nusers > 0}.each {|a| a.copy_to_local}
+        PogsTeam.where{total_credit > 0}.each {|a| a.copy_to_local}
 
 
         #update team members not in team_delta
@@ -82,7 +82,7 @@ class BoincJob
                 profile.alliance = alliance
                 profile.save
               else
-                UserMailer.alliance_sync_removal(profile, profile.alliance, alliance)
+                UserMailer.alliance_sync_removal(profile, profile.alliance, alliance).deliver
                 profile.leave_alliance
                 profile.alliance = alliance
                 profile.save

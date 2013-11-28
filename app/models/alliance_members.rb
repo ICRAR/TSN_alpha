@@ -71,9 +71,13 @@ class AllianceMembers < ActiveRecord::Base
   end
   def self.join_alliance_from_boinc(profile,alliance,boinc_membership)
     m = boinc_membership
+    #only create new record if the user is not already a member of that alliance
     #check if that user was recently a member of the same alliance within last day or is a current memeber
     last = profile.alliance_items.last
-    if last != nil && last.alliance_id == alliance.id && (m.timestamp - last.leave_date).abs < 1.day
+    if last != nil && last.leave_date.nil? && last.alliance_id == alliance.id
+      #do nothing if the user is already a current member of that alliance
+      member = last
+    elsif last != nil && !last.leave_date.nil? && last.alliance_id == alliance.id && (m.timestamp - last.leave_date.to_i).abs < 1.day
       # then update existing record to re add member to alliance
       member = last
       member.leave_date = nil
@@ -101,7 +105,7 @@ class AllianceMembers < ActiveRecord::Base
     end
     member
   end
-  def leave_alliance_from_boinc(profile,alliance,boinc_membership)
+  def self.leave_alliance_from_boinc(profile,alliance,boinc_membership)
     m = boinc_membership
     member = AllianceMembers.where{(alliance_id == my{alliance.id}) &
         (profile_id == my{profile.id}) &

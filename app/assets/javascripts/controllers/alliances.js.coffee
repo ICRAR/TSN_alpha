@@ -42,6 +42,7 @@ TSN.alliances.show = () ->
 
 
 TSN.alliances.edit = () -> alliance_tags()
+TSN.alliances.create = () -> alliance_tags()
 TSN.alliances.new = () -> alliance_tags()
 alliance_tags = () ->
   $("#alliance_tags").tokenInput "/alliances/tags.json",

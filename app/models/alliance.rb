@@ -6,9 +6,13 @@ class Alliance < ActiveRecord::Base
 
   validates :name, uniqueness: true, presence: true
   validates :leader, presence: true
+  validate :desc_not_nil
+  def desc_not_nil
+    errors[:desc] << "desc can not be nil" if desc.nil?
+  end
   validate :boinc_name_uniqueness
   def boinc_name_uniqueness
-    if is_boinc?
+    if is_boinc? && (pogs_team_id.nil? || pogs_team_id == 0)
       errors[:name] << "Alliance name is already taken in POGS" unless PogsTeam.find_by_name(name).nil?
     end
   end
@@ -108,6 +112,10 @@ class Alliance < ActiveRecord::Base
     end
   end
 
+  def boinc_url
+    "#{APP_CONFIG['boinc_url']}team_display.php?teamid=#{self.pogs_team_id}"
+  end
+
   #creates this alliances as a team on POGS
   def create_pogs_team
     raise "Alliance must be valid" unless self.valid?
@@ -149,7 +157,7 @@ class Alliance < ActiveRecord::Base
         item.leave_alliance_without_notification(profile)
         profile.alliance = nil
         profile.save
-        #toDO send email
+        UserMailer.alliance_merger_issue(profile, self).deliver
       else #if they do have a boinc account
         #add them to the POGS Team
         BoincRemoteUser.join_team profile.general_stats_item.boinc_stats_item.boinc_id, self.pogs_team_id

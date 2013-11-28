@@ -1,7 +1,7 @@
-<p>Hi,</p>
+<h2>Hi,</h2>
 <p>You've been invited to join the <%= @alliance_name %> <%= 'Alliance' unless /.*alliance[s]?$/i.match(@alliance_name)%> by <%= @name %></p>
 <p>To redeem your invitation follow this url</p>
 <% url = redeem_invite_alliance_url(@alliance_id,{:email => @email, :token=> @token}) %>
 <p><%= link_to url, url %></p>
 <p>Regards <br />
-    theSkyNet Team</p>
+    <%= link_to "TheSkyNet", root_url %></p>

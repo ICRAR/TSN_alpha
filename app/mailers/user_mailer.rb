@@ -15,4 +15,11 @@ class UserMailer < ActionMailer::Base
     email = profile.user.email
     mail to: email, subject: "You're theSkyNet Alliance has changed"
   end
+  def alliance_merger_issue(profile,alliance)
+    @profile = profile
+    @alliance = alliance
+
+    email = profile.user.email
+    mail to: email, subject: "You're theSkyNet Alliance has changed"
+  end
 end

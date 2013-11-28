@@ -1,11 +1,13 @@
 Tsn::Application.routes.draw do
   #redirect all to host name in custom config
-  match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
-        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host']) &&
+  match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host_no_port']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
+        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host_no_port']) &&
           (request.host !='localhost') &&
           (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
         )}
-
+  if Rails.env.development?
+    mount MailPreview => 'mail_view'
+  end
   resources :hdf5_requests, :only => [:index, :create, :show, :new] do
     collection do
       get 'clear'

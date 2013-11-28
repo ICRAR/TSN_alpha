@@ -59,6 +59,7 @@ gem 'mailboxer'
 gem "messengerjs-rails", "~> 1.3.6"
 gem 'metamagic'
 gem 'talk_like_a_pirate'
+gem 'premailer-rails'
 
 gem 'delayed_job_active_record'
 gem 'daemons'
@@ -83,6 +84,7 @@ group :development do
   gem 'binding_of_caller'
   gem 'railroady'
   gem 'rename'
+  gem "mail_view", "~> 2.0.1"
 end
 
 #Gems required for testing

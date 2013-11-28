@@ -57,11 +57,9 @@ class PogsTeam < BoincPogsModel
           members.each do |m|
             #if this is joining a team
             if m.joining == 1
-              #check that the user is not already a member of that team
               AllianceMembers.join_alliance_from_boinc(profile,alliance,m)
             else
               #or leaving a team
-              #update alliance item
               AllianceMembers.leave_alliance_from_boinc(profile,alliance,m)
             end
           end
@@ -70,18 +68,21 @@ class PogsTeam < BoincPogsModel
             if profile.alliance.nil?
               profile.alliance = alliance
               profile.save
+              #update notifications
+              AllianceMembers.create_notification_join(profile.alliance_items.last.id)
             elsif profile.alliance_id != alliance.id
               #email user notifying them that they have been automatically removed from an alliance
-              if alliance.pogs_team_id.nil? || alliance.pogs_team_id == 0
-                UserMailer.alliance_sync_removal(profile, profile.alliance, alliance)
+              if profile.alliance.pogs_team_id.nil? || profile.alliance.pogs_team_id == 0
+                UserMailer.alliance_sync_removal(profile, profile.alliance, alliance).deliver
               end
 
-              profile.leave_alliance
+              profile.leave_alliance(false)
               profile.alliance = alliance
               profile.save
+              #update notifications
+              AllianceMembers.create_notification_join(profile.alliance_items.last.id)
             end
-            #update notifications
-            AllianceMembers.create_notification_join(profile.alliance_items.last.id)
+
           elsif members.last.try(:joining) == 0
             #if this was the users current alliance make sure they leave.
             if profile.alliance_id == alliance.id
@@ -118,13 +119,17 @@ class PogsTeam < BoincPogsModel
     boinc_user = BoincRemoteUser.find boinc_item.boinc_id
     opts[:account_key] = boinc_user.authenticator
     opts[:name] = name
+    opts[:name_html] = name
     opts[:description] = alliance.desc unless alliance.desc.nil?
+    opts[:description] ||= ''
     opts[:country ] = alliance.country unless alliance.country.nil?
+    opts[:country ] ||= 'None'
     opts[:type] = 1 #boinc team type "None" as feature is not yet implemented in TSN
+    opts[:url] = Rails.application.routes.url_helpers.alliance_url alliance, host: APP_CONFIG['site_host']
 
 
-    response = self.class.get('/create_team.php',query: opts)
-    team_id =    response["create_team_reply"]["teamid"].to_i
+    response = PogsTeam.get('/create_team.php',query: opts)
+    team_id =    response["create_team_reply"]["team_id"].to_i
     alliance.pogs_team_id = team_id
     alliance.pogs_update_time = Time.now
     alliance.invite_only = invite_only

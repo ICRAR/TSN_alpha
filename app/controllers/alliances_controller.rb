@@ -4,19 +4,6 @@ class AlliancesController < ApplicationController
   authorize_resource
   helper_method :sort_column, :sort_direction
 
-  #### all section are marked with ALLIANCE_DUP_CODE ###
-  before_filter :check_boinc, :only => [:edit, :update, :destroy]
-  def check_boinc
-    if params[:id]
-      a = Alliance.where{id == my{params[:id]}}.select(:is_boinc).first
-      if a.is_boinc?
-        redirect_to my_profile_url, alert: "Sorry Boinc alliances must be edited on the boinc site http://pogs.theskynet.org/pogs"
-        return
-      end
-    end
-  end
-
-
   def index
     per_page = [params[:per_page].to_i,1000].min
     per_page ||= 20
@@ -39,13 +26,13 @@ class AlliancesController < ApplicationController
   # GET /alliances/new
   # GET /alliances/new.json
   def new
-    if !user_signed_in
+    if !user_signed_in?
       redirect_to root_url, notice: 'You must be signed in too do that'
       return
     elsif current_user.profile.alliance
       redirect_to my_profile_url, notice: 'Sorry you can not create a new alliance when you are part of an existing alliance'
       return
-    elsif current_user.profile.leader_id
+    elsif current_user.profile.alliance_leader_id
       redirect_to my_profile_url, notice: 'Sorry you can not create a new alliance when you are part of an existing alliance'
       return
     end
@@ -61,13 +48,13 @@ class AlliancesController < ApplicationController
   # POST /alliances
   # POST /alliances.json
   def create
-    if !user_signed_in
+    if !user_signed_in?
       redirect_to root_url, notice: 'You must be signed in too do that'
       return
     elsif current_user.profile.alliance
       redirect_to my_profile_url, notice: 'Sorry you can not create a new alliance when you are part of an existing alliance'
       return
-    elsif current_user.profile.leader_id
+    elsif current_user.profile.alliance_leader_id
       redirect_to my_profile_url, notice: 'Sorry you can not create a new alliance when you are part of an existing alliance'
       return
     end
@@ -98,15 +85,23 @@ class AlliancesController < ApplicationController
   # PUT /alliances/1.json
   def update
     @alliance = Alliance.find(params[:id])
-    if params[:alliance][:leader] != @alliance.leader.id
-      #change leader
-      @alliance.leader = Profile.find(params[:alliance][:leader])
-    end
-
-    if @alliance.update_attributes(params[:alliance].except('leader'))
-      redirect_to @alliance, notice: 'Alliance was successfully updated.'
+    if @alliance.is_boinc
+      if @alliance.update_attributes(params[:alliance].slice(:tag_list))
+        redirect_to @alliance, notice: 'Alliance was successfully updated.'
+      else
+        render :edit
+      end
     else
-      render :edit
+      if params[:alliance][:leader_id] != @alliance.leader.id
+        #change leader
+        @alliance.leader = Profile.find(params[:alliance][:leader_id])
+      end
+
+      if @alliance.update_attributes(params[:alliance].slice(:tag_list,:invite_only, :desc))
+        redirect_to @alliance, notice: 'Alliance was successfully updated.'
+      else
+        render :edit
+      end
     end
   end
 
@@ -149,7 +144,7 @@ class AlliancesController < ApplicationController
     if !@alliance
       flash[:notice] = 'Sorry you must join an alliance before you can leave an alliance'
     #check that user is not the alliance leader
-    elsif current_user.profile.alliance_leader
+    elsif current_user.profile.alliance_leader_id == @alliance.id
       flash[:notice] = 'Sorry the current leader cannot leave an alliance'
     else
       #remove user from alliance
@@ -200,7 +195,7 @@ class AlliancesController < ApplicationController
             UserMailer.delay.alliance_invite(invite)
             #return success
             success = true
-            msg = "Invite for #{Alliance.name} sent to #{email}"
+            msg = "Invite for #{alliance.name} sent to #{email}"
           else
             #error
             success = false

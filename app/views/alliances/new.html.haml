@@ -1,0 +1,27 @@
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface New Alliance
+  -@user_page =  'my_alliance'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    #alliance-show
+      .row-fluid
+        .span12.well.well-white
+          .well
+            %p TheSkyNet alliances represent groups of like-minded members. Credits from all the users are pooled together, making the whole alliance stronger. Alliances can then compete against each other on the alliance leader boards.
+            %p Before we can create your new Alliance we need a few details.
+
+          = simple_form_for(@alliance, :html => {:class => 'form-horizontal' }) do |f|
+            = f.input :name, input_html: {class: 'input-xlarge'}
+            = f.input :desc, input_html: {rows: 5, class: 'input-xlarge'}, hint: "You may use basic html including formatting tags, links, and lists."
+            = f.input :invite_only, :hint => 'If this box is marked, new members will require an invite code to join.'
+            - boinc_hint = 'This will replicate your alliance in theSkyNet: POGS with BOINC.'
+            - boinc_hint << " For more information see "
+            - boinc_hint << link_to("the Alliance FAQ." , page_path(:slug => 'alliance_faq'))
+            = f.input :is_boinc, hint: boinc_hint, label: "Create in POGS"
+            = f.input :tag_list, input_html: {:id => "alliance_tags", :data => {:pre => @alliance.tags.map{|t| {:id => t.id, :name => t.name }}.to_json}}
+            .control-group
+              .controls
+                = f.button :submit
