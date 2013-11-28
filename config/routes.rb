@@ -34,6 +34,9 @@ Tsn::Application.routes.draw do
   get "/pages/:slug" => "pages#show", :as => 'page'
 
   resources :notifications, :only => [:index, :show] do
+    collection do
+      get 'dismiss_all'
+    end
     member do
       get 'dismiss'
     end

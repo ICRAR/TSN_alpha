@@ -85,6 +85,7 @@ group :development do
   gem 'railroady'
   gem 'rename'
   gem "mail_view", "~> 2.0.1"
+  gem 'webrick', '~> 1.3.1'
 end
 
 #Gems required for testing
