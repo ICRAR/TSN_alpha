@@ -126,25 +126,16 @@ class Alliance < ActiveRecord::Base
     self.invite_only = true
     self.save
   end
-
+  def test
+    self.old_id = 10
+    self.save
+    self.reload
+  end
   #because of a double up between BOINC and classic theSkynet Team's and alliances we need away to safely merge two alliances
   #this function should be called on the pogs alliances, the one that will remain
   def merge_pogs_team(second_alliance)
     raise 'second alliance must be a classic alliance' if second_alliance.is_boinc?
     raise 'first alliance must be a POGS alliance' unless self.is_boinc?
-
-    #fix name
-    self.name = second_alliance.name
-
-    #fix created at
-    self.created_at = [self.created_at, second_alliance.created_at].min
-
-    #merge params
-    self.old_id = second_alliance.old_id
-    self.tag_list = second_alliance.tag_list
-
-    #migrate leader if needed
-    self.leader ||= second_alliance.leader
 
     #update_current members on POGS or remove if that's not possible
     profiles = Profile.where{alliance_id == my{second_alliance.id}}
@@ -167,7 +158,7 @@ class Alliance < ActiveRecord::Base
 
     #update_current members
     #move all profiles to the new alliance
-    profiles = Profile.where{alliance_id == my{second_alliance.id}.update_all(:alliance_id => self.id)}
+    profiles = Profile.where{alliance_id == my{second_alliance.id}}.update_all(:alliance_id => self.id)
     #move alliance_members
     AllianceMembers.where{alliance_id == my{second_alliance.id}}.update_all(:alliance_id => self.id)
 
@@ -241,6 +232,26 @@ class Alliance < ActiveRecord::Base
         end
       end
     end
+
+    #fix name
+    self.name = second_alliance.name
+
+    #fix created at
+    self.created_at = [self.created_at, second_alliance.created_at].min
+
+    #merge params
+    self.old_id = second_alliance.old_id
+    self.tag_list = second_alliance.tag_list
+
+    #migrate leader if needed
+    self.leader ||= second_alliance.leader
+
+    #we have to delete the second_alliance before self can be saved due to conflicts with database names
     second_alliance.delete
+
+    self.save
+
+
+
   end
 end
