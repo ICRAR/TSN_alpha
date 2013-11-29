@@ -313,4 +313,16 @@ namespace :update_profiles do
     StatsAlliancesJob.new.perform_without_schedule
 
   end
+  desc "migrate alliances"
+  task :find_alliances => :environment do
+    as = []
+    Alliance.where{is_boinc == false}.each do |a|
+      a2 = Alliance.where{name == "#{a.name} (POGS)"}.first
+      unless a2.nil?
+        if a.leader.nil?
+          a2.mark_duplicate a.id
+        end
+      end
+    end
+  end
 end

@@ -5,7 +5,7 @@ class Alliance < ActiveRecord::Base
   attr_accessible :leader_id, :member_ids, as: :admin
 
   validates :name, uniqueness: true, presence: true
-  validates :leader, presence: true
+  #validates :leader, presence: true
   validate :desc_not_nil
   def desc_not_nil
     errors[:desc] << "desc can not be nil" if desc.nil?
