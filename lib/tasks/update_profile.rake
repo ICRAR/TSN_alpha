@@ -291,8 +291,11 @@ namespace :update_profiles do
   desc "migrate alliances"
   task :migrate_alliances => :environment do
     #load all alliances waiting to merge
+    BoincJob.new.perform_without_schedule
+
     alliances = Alliance.where{(is_boinc == true) & (duplicate_id > 0)}
     alliances.each do |alliance|
+
       #load the second alliance
       second_alliance = Alliance.find alliance.duplicate_id
       #merge allainces
@@ -303,6 +306,11 @@ namespace :update_profiles do
       alliance.invite_only = pogs_team.joinable == 1 ? false : true
       alliance.save
       #save and done
+
     end
+
+    BoincJob.new.perform_without_schedule
+    StatsAlliancesJob.new.perform_without_schedule
+
   end
 end

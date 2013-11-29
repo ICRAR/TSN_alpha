@@ -40,7 +40,8 @@ task :convert_to_utf8 => :environment do
               :alliance_members => AllianceMembers,
               :tags => ActsAsTaggableOn::Tag,
               :taggings => ActsAsTaggableOn::Tagging,
-              :versions => true
+              :versions => true,
+              :users => true
   }.with_indifferent_access
   tables = (conn.tables - big).select { |tbl| tbl !~ VIEWS }
   puts "Converting #{tables.inspect}"
