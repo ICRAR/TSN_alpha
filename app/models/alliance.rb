@@ -19,7 +19,7 @@ class Alliance < ActiveRecord::Base
   validate :boinc_leader
   def boinc_leader
     if is_boinc?
-      errors[:leader] << "Leader must be a member of POGS to create a POGS team" unless leader.is_pogs? || leader.nil?
+      errors[:leader] << "Leader must be a member of POGS to create a POGS team" unless leader.nil? || leader.is_pogs?
     end
   end
 
