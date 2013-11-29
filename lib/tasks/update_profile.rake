@@ -288,4 +288,21 @@ namespace :update_profiles do
       puts '****************'
     end; nil
   end
+  desc "migrate alliances"
+  task :migrate_alliances => :environment do
+    #load all alliances waiting to merge
+    alliances = Alliance.where{(is_boinc == true) & (duplicate_id > 0)}
+    alliances.each do |alliance|
+      #load the second alliance
+      second_alliance = Alliance.find alliance.duplicate_id
+      #merge allainces
+      alliance.merge_pogs_team second_alliance
+      #fix duplicate id and invite_only
+      alliance.duplicate_id = nil
+      pogs_team = PogsTeam.find alliance.pogs_team_id
+      alliance.invite_only = pogs_team.joinable == 1 ? false : true
+      alliance.save
+      #save and done
+    end
+  end
 end
