@@ -309,19 +309,45 @@ namespace :update_profiles do
 
     end
 
+    count = 0
+    Alliance.where{(pogs_team_id > 0) & (name =~ "% (POGS)")}.each do |a|
+      test = Alliance.where{(name == a.name[0..-8])}.first
+      if test.nil?
+        a.name = a.name[0..-8]
+        a.save
+        count = count + 1
+      end
+
+    end; nil
+    count
+
+    Alliance.where{(duplicate_id > 0)}
+
+
+
     BoincJob.new.perform_without_schedule
     StatsAlliancesJob.new.perform_without_schedule
 
   end
-  desc "migrate alliances"
+  desc "find allainces for migrate alliances"
   task :find_alliances => :environment do
-    as = []
-    Alliance.where{is_boinc == false}.each do |a|
-      a2 = Alliance.where{name == "#{a.name} (POGS)"}.first
+    Alliance.where{(is_boinc == true) & (duplicate_id == nil)}.each do |a|
+      a2 = Alliance.where{name == a.name[0..-8]}.first
       unless a2.nil?
-        if a.leader.nil?
+        if a.leader.nil? || a2.leader.nil?
           a2.mark_duplicate a.id
         end
+      end
+    end
+  end
+  desc "fix pogs nil leaders"
+  task :fix_pogs_leaders => :environment do
+    Alliance.where{(is_boinc == true)}.each do |a|
+      if a.leader.nil?
+        pogs_team = PogsTeam.find a.pogs_team_id
+        b = BoincStatsItem.find_by_boinc_id pogs_team.userid
+        p = b.general_stats_item.profile
+        a.leader = p
       end
     end
   end

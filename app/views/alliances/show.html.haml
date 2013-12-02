@@ -64,7 +64,7 @@
                 %small= @alliance.leader.name if @alliance.leader != nil
               .clearfix
               -if @alliance.is_boinc? && @alliance.pogs_team_id > 0
-                %p= link_to 'Find this allaince on POGS', @alliance.boinc_url
+                %p= link_to 'Find this alliance on theSkyNet POGS', @alliance.boinc_url
               -if user_signed_in? && current_user.profile.alliance == nil
                 -if @alliance.is_boinc? && current_user.profile.general_stats_item.boinc_stats_item.nil?
                   This Alliance is part pogs.theskynet.org, before you can join you must also be a member of the POGS project.
