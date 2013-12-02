@@ -166,6 +166,32 @@ class Alliance < ActiveRecord::Base
     #first we grab all the member items
     self.save
     self.reload
+
+    self.fix_overlapping
+
+    #fix name
+    self.name = second_alliance.name
+
+    #fix created at
+    self.created_at = [self.created_at, second_alliance.created_at].min
+
+    #merge params
+    self.old_id = second_alliance.old_id
+    self.tag_list = second_alliance.tag_list
+
+    #migrate leader if needed
+    self.leader ||= second_alliance.leader
+
+    #we have to delete the second_alliance before self can be saved due to conflicts with database names
+    second_alliance.delete
+
+    self.save
+
+
+
+  end
+
+  def fix_overlapping
     members = self.member_items.group_by{|m| m.profile_id}
     #group by profile id's
     members.each do |profile_id,memberships|
@@ -232,26 +258,6 @@ class Alliance < ActiveRecord::Base
         end
       end
     end
-
-    #fix name
-    self.name = second_alliance.name
-
-    #fix created at
-    self.created_at = [self.created_at, second_alliance.created_at].min
-
-    #merge params
-    self.old_id = second_alliance.old_id
-    self.tag_list = second_alliance.tag_list
-
-    #migrate leader if needed
-    self.leader ||= second_alliance.leader
-
-    #we have to delete the second_alliance before self can be saved due to conflicts with database names
-    second_alliance.delete
-
-    self.save
-
-
-
   end
+
 end
