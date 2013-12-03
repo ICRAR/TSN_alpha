@@ -51,7 +51,7 @@ task :convert_to_utf8 => :environment do
     a = ['CHARACTER SET utf8 COLLATE utf8_unicode_ci']
     b = []
     model = mapping[tbl] || tbl.to_s.classify.constantize || nil
-    unless model.nil?
+    unless model.nil?  || tbl == :users
       model.columns.each do |col|
         type = col.sql_type
 

@@ -313,7 +313,9 @@ namespace :update_profiles do
     Alliance.where{(pogs_team_id > 0) & (name =~ "% (POGS)")}.each do |a|
       test = Alliance.where{(name == a.name[0..-8])}.first
       if test.nil?
-        a.name = a.name[0..-8]
+        pogs_team = PogsTeam.find a.pogs_team_id
+        a.invite_only = pogs_team.joinable == 1 ? false : true
+        a.name = pogs_team.name[0..-8]
         a.save
         count = count + 1
       end
