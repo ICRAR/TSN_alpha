@@ -33,7 +33,7 @@
             = link_to(@profile.alliance.name,@profile.alliance)
         %p
           %b Member Since:
-          = @profile.user.confirmed_at.try(:strftime, '%B %d, %Y')
+          = @profile.user.joined_at.try(:strftime, '%B %d, %Y')
 
         %p
           %b Latest Achievement:

@@ -1,0 +1,22 @@
+%h2= "Hi #{@profile.name},"
+%p
+  Your alliance has been merged into the new theSkyNet POGS system. Which is great news for your alliance, has they now have full access to all of the features of BOINC.
+  However as you are not currently a member of theSkyNet POGS, as we could not migrate you to the new system.
+%p
+  To stay as a member of
+  =link_to @alliance.name, alliance_url(@alliance)
+  you must first join theSkyNet pogs by filling in the form on your
+  =link_to "dashboard", my_profile_url
+  =". Then you will be able to rejoin your alliance by visiting"
+  =link_to @alliance.name, alliance_url(@alliance)
+  = ". For more information please check out the"
+  = link_to 'Alliance FAQ.', page_url(:slug => 'alliance_faq')
+
+%p
+  If you have any further questions, or if you feel this was an error please don’t hesitate to contact our support team using the form
+  =link_to "here.", new_contact_form_url
+%p
+  Thank you for your continued support.
+  %br
+  = link_to "-TheSkyNet", root_url
+

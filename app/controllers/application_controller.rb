@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   def check_announcement
     if user_signed_in?
       check_time = current_user.profile.announcement_time
-      check_time ||= current_user.confirmed_at
+      check_time ||= current_user.joined_at
       @announcement = News.announcement(check_time)
 
       ::NewRelic::Agent.add_custom_parameters(:profile_id => current_user.profile.id)

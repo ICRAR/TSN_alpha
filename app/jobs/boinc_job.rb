@@ -34,9 +34,9 @@ class BoincJob
             id = remote.id
             statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.credit",remote.total_credit)
             statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.rac",remote.expavg_credit)
-            statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.jobs", BoincResult.total_in_progress(id))
-            statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.pending_jobs", BoincResult.total_pending(id))
-            statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.connected_copmuters", BoincResult.running_computers(id))
+            #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.jobs", BoincResult.total_in_progress(id))
+            #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.pending_jobs", BoincResult.total_pending(id))
+            #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.connected_copmuters", BoincResult.running_computers(id))
 
             local.save
           end
@@ -55,7 +55,7 @@ class BoincJob
             b.check_local
         end
 
-        PogsTeam.where{nusers > 0}.each {|a| a.copy_to_local}
+        PogsTeam.where{total_credit > 0}.each {|a| a.copy_to_local}
 
 
         #update team members not in team_delta
@@ -77,24 +77,17 @@ class BoincJob
             team_id = ids_team_hash[profile.boinc_id]
             alliance = alliances_by_teamid[team_id]
             unless alliance.nil?
-              member = AllianceMembers.new
-              member.alliance_id = alliance.id
-              member.profile_id = profile.id
-              member.join_date = alliance.created_at
-              member.start_credit = 0
-              member.leave_credit = profile.total_credit
-              member.leave_credit ||= 0
-              member.leave_date = nil
-              member.save
-
+              AllianceMembers.join_alliance_from_boinc_from_start(profile,alliance)
               if profile.alliance.nil?
                 profile.alliance = alliance
                 profile.save
               else
+                UserMailer.alliance_sync_removal(profile, profile.alliance, alliance).deliver
                 profile.leave_alliance
                 profile.alliance = alliance
                 profile.save
               end
+              AllianceMembers.create_notification_join(profile.alliance_items.last.id)
             end
           end
         end

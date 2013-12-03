@@ -8,7 +8,7 @@
   #compare
     #content-wrap
       - top_credit = @profiles.max_by {|p| p.general_stats_item.total_credit.to_i}
-      - first_member = @profiles.min_by {|p| p.user.confirmed_at}
+      - first_member = @profiles.min_by {|p| p.user.joined_at}
       .row-fluid
         -@profiles.each do |profile|
           .span6.well
@@ -30,7 +30,7 @@
                 = link_to(profile.alliance.name,profile.alliance)
             %p{:class => ('top' if profile.id == first_member.id)}
               %b Member Since:
-              = profile.user.confirmed_at
+              = profile.user.joined_at
             %p
               %b Latest Achievement:
               -if profile.trophies.empty?

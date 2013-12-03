@@ -5,6 +5,9 @@ class BoincRemoteUser < BoincPogsModel
   scope :does_not_have_team_delta, where{id.not_in(PogsTeamMember.select(:userid).group(:userid))}
   scope :teamid_no_team_delta, does_not_have_team_delta.where{teamid != 0}
 
+
+
+
   def email_addr
     self[:email_addr].tr(" ", "_")
   end
@@ -94,6 +97,29 @@ class BoincRemoteUser < BoincPogsModel
     end
 
     return new_user
+  end
+
+  ###FUNCTIONS FOR WEBRPC Calls to boinc server
+  require 'httparty'
+  include HTTParty
+  format :xml
+  base_uri APP_CONFIG['boinc_url']
+  def self.join_team(boinc_id,team_id)
+    remote_user = BoincRemoteUser.find boinc_id
+    remote_user.web_rpc_update  teamid: team_id
+  end
+  def self.leave_team(boinc_id)
+    remote_user = BoincRemoteUser.find boinc_id
+    remote_user.web_rpc_update  teamid: 0
+  end
+  def web_rpc_update(updates)
+    updates.select!{|k,v| [:teamid].include? k}
+    updates.merge!({account_key: self.authenticator})
+    self.class.get('/am_set_info.php',query: updates)
+  end
+  def rpc_test(updates)
+    updates.merge!({account_key: self.authenticator})
+    self.class.get('/am_get_info.php',query: updates)
   end
 
 end

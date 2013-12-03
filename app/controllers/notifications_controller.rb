@@ -25,10 +25,17 @@ class NotificationsController < ApplicationController
   def show
     @notification =  @profile.mailbox.notifications.find params[:id]
   end
+  def dismiss_all
+    @notifications =  @profile.mailbox.notifications.unread
+    @notifications.each do |note|
+      note.mark_as_read @profile
+    end
+
+    render :index
+  end
   def dismiss
     @notification =  @profile.mailbox.notifications.find params[:id]
     @notification.mark_as_read @profile
-    flash[:notice] = "Success"
     render :show
   end
 end
