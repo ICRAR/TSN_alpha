@@ -43,7 +43,7 @@ en:
     hint: "You can login with either your theSkyNet username, your theSkyNet email or your POGS email."
     sign_up:
       header: "Help us discover the universe."
-      msg: "Fill in the following form to create your account on theSkyNet. Please note that fields containing an asterisk (*) are required for this registration."
+      msg: "Fill in the following form to create your account on theSkyNet."
   contact_forms:
     title: "Contact Us"
     controller:

@@ -10,6 +10,8 @@ class StatsAlliancesJob
                           INNER JOIN general_stats_items ON general_stats_items.profile_id = alliance_members.profile_id
                           SET alliance_members.leave_credit = general_stats_items.total_credit
                           WHERE alliance_members.leave_date IS NULL")
+        AllianceMembers.where{leave_credit < start_credit}.update_all("leave_credit = start_credit")
+
       }
 
       bench.report('update credit alliance') {
