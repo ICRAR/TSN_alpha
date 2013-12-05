@@ -86,6 +86,7 @@ group :development do
   gem 'rename'
   gem "mail_view", "~> 2.0.1"
   gem 'webrick', '~> 1.3.1'
+  gem 'thin'
 end
 
 #Gems required for testing

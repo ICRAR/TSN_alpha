@@ -178,11 +178,11 @@ class Profile < ActiveRecord::Base
   def avatar_url(size=48)
     default_url = "retro"
     gravatar_id = Digest::MD5.hexdigest(self.user.email.downcase)
-    "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
+    "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
   end
 
   def avatar_edit_url
-    "http://en.gravatar.com/emails/"
+    "https://en.gravatar.com/emails/"
   end
 
 

@@ -28,6 +28,16 @@ class User < ActiveRecord::Base
 
   before_invitation_accepted :check_alliance_invite
 
+  #hooks in with devise confirmation and runs after the user has been succsefully confirmed
+  #not this will also be called after the user successfully changes their email
+  def after_confirmation
+    super
+    #check that this is not a change of email
+    unless self.class.reconfirmable && unconfirmed_email.present?
+      #send welcome message
+    end
+  end
+
 
   def check_alliance_invite
     invite = AllianceInvite.valid_token?(self.email, self.invitation_token)
@@ -114,7 +124,5 @@ class User < ActiveRecord::Base
       end
     end
   end
-
-
 
 end

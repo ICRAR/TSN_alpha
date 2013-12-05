@@ -22,4 +22,11 @@ class UserMailer < ActionMailer::Base
     email = profile.user.email
     mail to: email, subject: "You're theSkyNet Alliance has changed"
   end
+  def welcome_msg(user_id)
+    user = User.find user_id
+    @profile = user.profile
+    email = user.email
+    mail to: email, subject: 'Welcome to theSkyNet'
+
+  end
 end

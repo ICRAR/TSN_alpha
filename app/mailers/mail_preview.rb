@@ -20,5 +20,9 @@ if Rails.env.development?
       user = User.last
       Devise::Mailer.confirmation_instructions(user, token: "token")
     end
+    def welcome
+      user = User.last
+      UserMailer.welcome_msg(user.id)
+    end
   end
 end
