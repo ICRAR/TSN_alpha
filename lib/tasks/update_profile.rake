@@ -379,6 +379,7 @@ namespace :update_profiles do
   desc "fix pogs nil leaders"
   task :trophy_thing => :environment do
     us = []
+    ids = CSV.read("../../tmp/herschel2.csv").map {|i| i.first.to_i}
     CSV.foreach("../../tmp/herschel.csv", {col_sep: ';', encoding: 'iso-8859-1'}) do |r|
       row = {}
       name_value = r.first

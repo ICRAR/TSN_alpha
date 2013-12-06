@@ -30,11 +30,12 @@ class User < ActiveRecord::Base
 
   #hooks in with devise confirmation and runs after the user has been succsefully confirmed
   #not this will also be called after the user successfully changes their email
-  def after_confirmation
+  def confirm!
     super
     #check that this is not a change of email
     unless self.class.reconfirmable && unconfirmed_email.present?
       #send welcome message
+      UserMailer.delay.welcome_msg(self.id)
     end
   end
 

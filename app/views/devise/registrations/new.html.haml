@@ -11,8 +11,8 @@
         = devise_error_messages!
         = f.input :username, :autofocus => true, as: :string
         = f.input :email, :autofocus => true, as: :string
-        = f.input :password, :autofocus => true, as: :string
-        = f.input :password_confirmation, :autofocus => true, as: :string
+        = f.input :password, :autofocus => true, as: :password
+        = f.input :password_confirmation, :autofocus => true, as: :password
         .controls
           = f.button :submit, t("nav.sign_up")
       = render "devise/shared/links"
