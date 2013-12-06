@@ -12,7 +12,7 @@ class Alliance < ActiveRecord::Base
   end
   validate :boinc_name_uniqueness
   def boinc_name_uniqueness
-    if is_boinc? && (pogs_tgather more stats on user sign in dataeam_id.nil? || pogs_team_id == 0)
+    if is_boinc? && (pogs_team_id.nil? || pogs_team_id == 0)
       errors[:name] << "Alliance name is already taken in POGS" unless PogsTeam.find_by_name(name).nil?
     end
   end
