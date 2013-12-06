@@ -77,6 +77,42 @@ class StatsGeneralJob
         galaxies_queued = GalaxyRegister.where{create_time == nil}.count
         SiteStat.set("galaxies_queued",galaxies_queued)
 
+        #number of user signed in the last:
+        users_1_day = User.where{current_sign_in_at > 1.day.ago}.count
+        users_1_week = User.where{current_sign_in_at > 1.week.ago}.count
+        users_1_month = User.where{current_sign_in_at > 1.month.ago}.count
+        users_1_year = User.where{current_sign_in_at > 1.year.ago}.count
+        SiteStat.set("users_1_day",users_1_day)
+        SiteStat.set("users_1_week",users_1_week)
+        SiteStat.set("users_1_month",users_1_month)
+        SiteStat.set("users_1_year",users_1_year)
+
+        #users with sign_in_count
+        total_sign_in_count = User.sum(:sign_in_count)
+        avg_sign_in_count = (User.sum(:sign_in_count) / User.where{sign_in_count > 0}.count).to_i
+        SiteStat.set("total_sign_in_count",total_sign_in_count)
+        SiteStat.set("avg_sign_in_count",avg_sign_in_count)
+
+        #num of users who have signed in x times:
+        users_more_than_0 =  User.where{sign_in_count > 0}.count
+        users_more_than_1 =  User.where{sign_in_count > 1}.count
+        users_more_than_10 =  User.where{sign_in_count > 10}.count
+        users_more_than_50 =  User.where{sign_in_count > 50}.count
+        users_more_than_100 =  User.where{sign_in_count > 100}.count
+        users_more_than_200 =  User.where{sign_in_count > 200}.count
+        users_more_than_500 =  User.where{sign_in_count > 500}.count
+        SiteStat.set("users_more_than_0",users_more_than_0)
+        SiteStat.set("users_more_than_1",users_more_than_1)
+        SiteStat.set("users_more_than_10",users_more_than_10)
+        SiteStat.set("users_more_than_50",users_more_than_50)
+        SiteStat.set("users_more_than_100",users_more_than_100)
+        SiteStat.set("users_more_than_200",users_more_than_200)
+        SiteStat.set("users_more_than_500",users_more_than_500)
+
+
+
+
+
 
       }
     end
