@@ -12,7 +12,7 @@ class Alliance < ActiveRecord::Base
   end
   validate :boinc_name_uniqueness
   def boinc_name_uniqueness
-    if is_boinc? && (pogs_team_id.nil? || pogs_team_id == 0)
+    if is_boinc? && (pogs_tgather more stats on user sign in dataeam_id.nil? || pogs_team_id == 0)
       errors[:name] << "Alliance name is already taken in POGS" unless PogsTeam.find_by_name(name).nil?
     end
   end
@@ -33,6 +33,12 @@ class Alliance < ActiveRecord::Base
   has_many :member_items, :class_name => 'AllianceMembers', :dependent => :destroy
   has_many :members, :class_name => 'Profile', :inverse_of => :alliance
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :alliance, :dependent => :destroy
+
+  before_destroy :remove_current_members
+  def remove_current_members
+    Profile.where{alliance_id == my{self.id}}.update_all(:alliance_id => nil)
+    Profile.where{alliance_leader_id == my{self.id}}.update_all(:alliance_leader_id => nil)
+  end
 
 
   ######################################################
