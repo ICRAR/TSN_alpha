@@ -1,0 +1,16 @@
+.row-fluid
+  .span12.box{class: ('active' if current_day >= day)}
+    - if current_day >= day
+      .row-fluid
+        .span7.offset5
+          %p= msg
+      .row-fluid
+        .span12
+          = image_tag(image)
+    - else
+      .row-fluid
+        .span12
+          = image_tag("http://placehold.it/#{w}x#{h}&text=Coming%20Soon")
+    .row-fluid
+      .span12.no-height
+        %h3= day

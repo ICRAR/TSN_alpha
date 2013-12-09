@@ -57,7 +57,7 @@ class StatsGeneralJob
         new_trophies_month = ProfilesTrophy.where{created_at > 1.month.ago}.count
         SiteStat.set("new_trophies_month",new_trophies_month)
 
-        #number of new alliance members in the last month
+        #number of new alliance mhttp://eterna.cmu.edu/game/puzzle/13375/embers in the last month
         new_alliance_members_month = AllianceMembers.where{join_date > 1.month.ago}.count
         SiteStat.set("new_alliance_members_month",new_alliance_members_month)
 

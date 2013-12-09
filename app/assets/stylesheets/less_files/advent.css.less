@@ -1,0 +1,40 @@
+body.advent {
+  color: white;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+
+  h2 {
+    .pull-right;
+    position: relative;
+    top: 100px
+  }
+
+  .box {
+    border: 1px dashed white;
+    margin: 10px 0px;
+    padding: 15px;
+    p {
+      .pull-right;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1em;
+    }
+    img {
+      .pull-right;
+    }
+
+    h3 {
+      position: relative;
+      top: -75px;
+      font-size: 100px;
+      font-weight: bolder;
+
+    }
+
+    &.active {
+      #gradient > .vertical(#EE1C25, #B22222);
+    }
+
+  }
+}

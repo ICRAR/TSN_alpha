@@ -15,6 +15,11 @@ Tsn::Application.routes.draw do
       get 'remove'
     end
   end
+
+  resource :misc, :only => [], controller: 'misc' do
+    get 'advent'
+  end
+
   resources :contact_forms
   resources :stats, :only => [:index] do
     collection do

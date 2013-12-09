@@ -1,0 +1,54 @@
+!!!
+%html
+  %head
+    =metamagic :title => "theSkyNet Advent", :description => "Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
+    =favicon_link_tag('favicon.ico')
+    =stylesheet_link_tag    "application", :media => "all"
+    =javascript_include_tag "application"
+    %script{:type=>"text/javascript"}
+      I18n.defaultLocale = "#{I18n.default_locale}";
+      I18n.locale = "#{I18n.locale}";
+      I18n.fallbacks = true;
+    =csrf_meta_tags
+    =analytics_init :local => Rails.env.development?
+    = render :partial => 'layouts/js_vars'
+    :javascript
+      $(document).ready(function(){
+        $(document).snowfall({round: true, minSize: 1, maxSize:5, flakeCount : 250});
+      });
+  %body.advent{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : ''), 'data-no-turbolink' => true}
+    #top-nav.navbar.navbar-inverse.navbar-fixed-top
+      .navbar-inner
+        #language-top.pull-right
+          %span.navbar-text= render 'layouts/langauge_select'
+        .pull-right
+          =render 'devise/menu/devise_top_bar'
+
+
+    #wrapper.container
+      =bootstrap_flash
+      =render 'shared/announcement', :announcement => @announcement if @announcement != nil
+      %h1#header{:class => logo_class}= link_to "theSkyNet", main_app.root_url
+      %h2 12 DAYS OF CHRISTMAS
+      .clearing
+      #main
+        .row-fluid
+          .span4
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 1 , msg: 'One (not yet self aware) Distributed Computing site, theSkyNet!', image: 'advent/advent1.png', h: 160, w: 150}
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 6 , msg: 'test', image: 'http://placehold.it/150x200', h: 150, w: 150}
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 10, msg: 'test', image: 'http://placehold.it/150x250', h: 200, w: 150}
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 3 , msg: 'test', image: 'http://placehold.it/150x250', h: 250, w: 150}
+
+          .span4
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 9 , msg: 'test', image: 'http://placehold.it/150x350', h: 130, w: 150}
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 11, msg: 'test', image: 'http://placehold.it/150x300', h: 190, w: 150}
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 4 , msg: 'test', image: 'http://placehold.it/150x160', h: 300, w: 150}
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 12, msg: 'test', image: 'http://placehold.it/150x350', h: 250, w: 150}
+
+          .span4
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 8 , msg: 'test', image: 'http://placehold.it/150x160', h: 120, w: 150}
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 5 , msg: 'test', image: 'http://placehold.it/150x100', h: 130, w: 150}
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 2 , msg: 'test', image: 'http://placehold.it/150x150', h: 180, w: 150}
+            = render partial: 'advent_day', locals: {current_day: @current_day, day: 7 , msg: 'test', image: 'http://placehold.it/150x150', h: 240, w: 150}
+
+
