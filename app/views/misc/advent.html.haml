@@ -15,6 +15,7 @@
     :javascript
       $(document).ready(function(){
         $(document).snowfall({round: true, minSize: 1, maxSize:5, flakeCount : 250});
+        $("#day#{@current_day}").pulsate();
       });
   %body.advent{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : ''), 'data-no-turbolink' => true}
     #top-nav.navbar.navbar-inverse.navbar-fixed-top
@@ -33,22 +34,37 @@
       .clearing
       #main
         .row-fluid
+          .span12
+            .alert.alert-block.alert-info
+              - if user_signed_in?
+                %p
+                  %strong= "Hello #{current_user.profile.name},"
+                %p This year i've put together a whole bunch of fun facts about the project. Each day I will be revealing a new one. You'll have to sign in to see all the cool facts though.
+              - else
+                %p
+                  %strong Hello there Human and welcome to my home page,
+                %p This year i've put together a whole bunch of fun facts about the project. Each day I will be revealing a new one. You'll have to sign in to see all the cool facts though.
+              %p
+                Merry Christmas
+                %br
+                theSkyNet
+        .row-fluid
           .span4
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 1 , msg: 'One (not yet self aware) Distributed Computing site, theSkyNet!', image: 'advent/advent1.png', h: 160, w: 150}
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 6 , msg: 'test', image: 'http://placehold.it/150x200', h: 150, w: 150}
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 10, msg: 'test', image: 'http://placehold.it/150x250', h: 200, w: 150}
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 3 , msg: 'test', image: 'http://placehold.it/150x250', h: 250, w: 150}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 1 , msg: 'One (not yet self aware) Distributed Computing site, theSkyNet!', image: 'advent/advent1.png', h: 160, w: 150, large: 'http://placehold.it/600x640.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 6 , msg: 'Six amazing team members', image: 'http://placehold.it/150x200', h: 150, w: 150, large: 'http://placehold.it/600x600.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 10, msg: 'Ten thousand, five hundred and ninety-eight galaxies processed', image: 'http://placehold.it/150x250', h: 200, w: 150, large: 'http://placehold.it/600x800.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 3 , msg: 'Three hundred and thirty-seven thousand, seven hundred and seventy-six trophies awarded', image: 'http://placehold.it/150x250', h: 250, w: 150, large: 'http://placehold.it/600x1000.png'}
 
           .span4
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 9 , msg: 'test', image: 'http://placehold.it/150x350', h: 130, w: 150}
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 11, msg: 'test', image: 'http://placehold.it/150x300', h: 190, w: 150}
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 4 , msg: 'test', image: 'http://placehold.it/150x160', h: 300, w: 150}
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 12, msg: 'test', image: 'http://placehold.it/150x350', h: 250, w: 150}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 9 , msg: 'Ninety-four countries contribute to theSkyNet POGS', image: 'http://placehold.it/150x350', h: 130, w: 150, large: 'http://placehold.it/600x520.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 11, msg: "Eleven weeks of processing on the Pawsey Centre's top 500 supercomputer - the RTC at iVEC - at a cost of over $?? million.", image: 'http://placehold.it/150x300', h: 190, w: 150, large: 'http://placehold.it/600x760.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 4 , msg: 'Four thousand, seven hundred and ninety Forum posts', image: 'http://placehold.it/150x160', h: 300, w: 150, large: 'http://placehold.it/600x1200.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 12, msg: 'Eleven thousand, two hundred and one wise women and men helping discover our Universe.', image: 'http://placehold.it/150x350', h: 250, w: 150, large: 'http://placehold.it/600x1000.png'}
 
           .span4
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 8 , msg: 'test', image: 'http://placehold.it/150x160', h: 120, w: 150}
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 5 , msg: 'test', image: 'http://placehold.it/150x100', h: 130, w: 150}
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 2 , msg: 'test', image: 'http://placehold.it/150x150', h: 180, w: 150}
-            = render partial: 'advent_day', locals: {current_day: @current_day, day: 7 , msg: 'test', image: 'http://placehold.it/150x150', h: 240, w: 150}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 8 , msg: 'Eight hundred and fifteen Alliances', image: 'http://placehold.it/150x160', h: 120, w: 150, large: 'http://placehold.it/600x480.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 5 , msg: 'Five hundred and fifty-eight thousand, three hundred and fifty visits to the site', image: 'http://placehold.it/150x100', h: 130, w: 150, large: 'http://placehold.it/600x520.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 2 , msg: 'Two astronomy projects', image: 'http://placehold.it/150x150', h: 180, w: 150, large: 'http://placehold.it/600x720.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 7 , msg: 'Seven-ty one million, five hundred and thirty nine thousand, two hundred seconds since theSkyNet went live!', image: 'http://placehold.it/150x150', h: 240, w: 150, large: 'http://placehold.it/600x960.png'}
 
 
