@@ -34,4 +34,14 @@ class MiscController < ApplicationController
 
     render :advent, layout: false
   end
+
+  def advent_subscribe
+    if user_signed_in?
+      flash[:notice] = "Success you are now subscribed to receive notices for theSkyNet Christmas countdown."
+      redirect_to advent_misc_path
+    else
+      flash[:notice] = "Sorry you need to be logged in to do that."
+      redirect_to root_url
+    end
+  end
 end
