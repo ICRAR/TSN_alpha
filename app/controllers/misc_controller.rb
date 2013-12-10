@@ -21,7 +21,7 @@ class MiscController < ApplicationController
     if params["update_last_day"]
       if user_signed_in?
         new_day = params["update_last_day"].to_i
-        if new_day > 0 && new_day <= @current_day
+        if new_day >= 0 && new_day <= @current_day
           current_user.profile.advent_last_day = new_day
           current_user.profile.save
           @last_day = new_day
