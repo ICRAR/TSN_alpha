@@ -40,10 +40,10 @@
               - if user_signed_in?
                 %p
                   %strong= "Hello #{current_user.profile.name},"
-                %p This year i've put together a whole bunch of fun facts about the project. Each day I will be revealing a new one.
+                %p To celebrate the holiday season my humans have put together twelve days of amazing numbers about me. Check back to open a new window every day until Christmas, and watch out for some goodies along the way!
                 -if current_user.profile.advent_notify == true
                   %p
-                    Your currently signed up to receive notifications and I will email you when the next box opens up. If you would like to stop receiving notifications just
+                    You are currently signed up to receive notifications and I will email you when the next box opens up. If you would like to stop receiving notifications just
                     = link_to 'click here.', advent_subscribe_misc_path(add: false)
 
                 - else
@@ -54,12 +54,19 @@
 
               - else
                 %p
-                  %strong Hello there Human and welcome to my home page,
-                %p This year i've put together a whole bunch of fun facts about the project. Each day I will be revealing a new one. You'll have to sign in to see all the cool facts though.
+                  %strong Hello Human,
+                %p To celebrate the holiday season my humans have put together twelve days of amazing numbers about me. You'll need to be logged in to see them though!
+                %p
+                  Don't have an account? What are you waiting for?
+                  = link_to 'Sign Up ', new_user_registration_path
+                  now to start helping me discover our Universe, or
+                  = link_to 'read more ', page_path(slug: 'about')
+                  about me and the amazing astronomy I'm doing.
+                %p Once you're logged in, check back to open a new window every day until Christmas, and watch out for some goodies along the way!
                 = link_to 'Sign Up', new_user_registration_path, class: 'btn btn-warning pull-right'
 
               %p
-                Merry Christmas
+                Wishing you all a safe and happy holidays.
                 %br
                 theSkyNet
 
