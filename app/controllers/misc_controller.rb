@@ -1,6 +1,6 @@
 class MiscController < ApplicationController
   def advent
-    if params["day"]
+    if params["day"] && user_signed_in? && current_user.is_admin?
       @current_day = params["day"].to_i
     else
       start_day = Time.parse('14th, December 2013')
@@ -37,11 +37,17 @@ class MiscController < ApplicationController
 
   def advent_subscribe
     if user_signed_in?
-      flash[:notice] = "Success you are now subscribed to receive notices for theSkyNet Christmas countdown."
-      redirect_to advent_misc_path
+      if params[:add] == 'true'
+        current_user.profile.advent_notify = true
+        current_user.profile.save
+        redirect_to advent_misc_path, notice: "Success you are now subscribed to receive notices for theSkyNet Christmas countdown."
+      else
+        current_user.profile.advent_notify = false
+        current_user.profile.save
+        redirect_to advent_misc_path, notice: "Success you are now unsubscribed from receiving notices for theSkyNet Christmas countdown."
+      end
     else
-      flash[:notice] = "Sorry you need to be logged in to do that."
-      redirect_to root_url
+      redirect_to root_url, notice: "Sorry you need to be logged in to do that."
     end
   end
 end

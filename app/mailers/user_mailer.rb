@@ -29,4 +29,9 @@ class UserMailer < ActionMailer::Base
     mail to: email, subject: 'Welcome to theSkyNet'
 
   end
+  def advent_notify(user)
+    @profile = user.profile
+    email = user.email
+    mail to: email, subject: 'Next Christmas Box Unlocked'
+  end
 end

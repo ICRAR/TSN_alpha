@@ -10,17 +10,21 @@
             - if local_assigns[:large].nil?
               = image_tag(image)
             -else
-              %a.fancybox{:href=> large.html_safe,:rel=>"advent"}= image_tag(image, :class=>"media-object")
+              %a.fancybox{:id => "#fancybox_#{day}", :href=> large.html_safe,:rel=>"advent", :title => msg}= image_tag(image, :class=>"media-object")
 
       -else
         .row-fluid
           .span12
             = link_to params.merge({:update_last_day => day}) do
               = image_tag("http://placehold.it/#{w}x#{h}&text=Open%20Now")
+              -#= image_tag("http://ima.gs/transparent/none/000000/Open%20now-#{w}x#{h}.png")
+
     - else
       .row-fluid
         .span12
           = image_tag("http://placehold.it/#{w}x#{h}&text=Coming%20Soon")
+          -#= image_tag("http://ima.gs/transparent/none/000000/Open%20now-#{w}x#{h}.png")
     .row-fluid
       .span4.no-height
-        %h3= day
+        %h3{class: ('current' if current_day == day)}= day
+
