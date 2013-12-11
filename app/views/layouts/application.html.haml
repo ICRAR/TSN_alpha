@@ -21,7 +21,10 @@
         font-weight: normal;
         font-style: normal;
       }
-    =analytics_init :local => Rails.env.development?
+    - track_options = {}
+    - track_options[:local] = Rails.env.development?
+    - track_options[:page] = flash[:page] unless flash[:page].nil?
+    = analytics_init track_options
     = render :partial => 'layouts/js_vars'
     %script{:src => "//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-522683943e4f7e56", :type => "text/javascript"}
 

@@ -10,7 +10,12 @@
       I18n.locale = "#{I18n.locale}";
       I18n.fallbacks = true;
     =csrf_meta_tags
-    =analytics_init :local => Rails.env.development?
+
+    - track_options = {}
+    - track_options[:local] = Rails.env.development?
+    - track_options[:page] = flash[:page] unless flash[:page].nil?
+    = analytics_init track_options
+
     = render :partial => 'layouts/js_vars'
     :javascript
       $(document).ready(function(){
