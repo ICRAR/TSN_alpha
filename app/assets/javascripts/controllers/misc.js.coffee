@@ -7,17 +7,23 @@ TSN.misc = new Object;
 
 TSN.misc.advent = () ->
   shrink = (item) ->
-    item.transition({
-      scale: 1.2,
+    item.css({ transformOrigin: '0px 0px' }).transition({
+      #scale: 1.2,
       rotate: '20deg'
     },2000,() ->
       grow(item)
     )
   grow = (item) ->
-    item.transition({
-      scale: 0.8,
-      rotate: '-20deg'
+    item.css({ transformOrigin: '0px 0px' }).transition({
+      #scale: 0.8,
+      rotate: '-10deg'
     },2000,() ->
       shrink(item)
     )
-  shrink($('h3.current'))
+  start = (item) ->
+    item.css({
+      transformOrigin: '0px 0px',
+      left: '10px'
+    })
+    shrink(item)
+  start($('h3.current'))
