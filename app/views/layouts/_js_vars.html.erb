@@ -5,4 +5,8 @@
   <% if params[:bat] == 'true' || (Time.now.day >= 30 && Time.now.month == 10) || (Time.now.day == 1 && Time.now.month == 11) %>
     window.rails.bat = true
   <% end %>
+
+  <% if logo_class == 'snow_logo' %>
+    window.rails.snow = true
+  <% end %>
 </script>

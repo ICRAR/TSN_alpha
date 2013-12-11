@@ -17,11 +17,7 @@
     = analytics_init track_options
 
     = render :partial => 'layouts/js_vars'
-    :javascript
-      $(document).ready(function(){
-        $(document).snowfall({round: true, minSize: 1, maxSize:5, flakeCount : 250});
-        //$("#day#{@current_day}").pulsate();
-      });
+
   %body.advent{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : ''), 'data-no-turbolink' => true}
     #top-nav.navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner

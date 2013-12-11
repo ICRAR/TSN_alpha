@@ -1,5 +1,6 @@
 class MiscController < ApplicationController
   def advent
+    params[:snow] == 'true'
     if params["day"] && user_signed_in? && current_user.is_admin?
       @current_day = params["day"].to_i
     else

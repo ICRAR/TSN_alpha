@@ -125,6 +125,10 @@ $(document).ready( ->
     # start storing the mouse position every 100 milliseconds
     getMousePosition 100
     window.mousePos = [0,0]
+
+  #snow at christmas
+  if rails.snow == true
+    $(document).snowfall({round: true, minSize: 1, maxSize:5, flakeCount : 250});
 )
 TSN.spawn_bats = () ->
   for i in [0..20]
