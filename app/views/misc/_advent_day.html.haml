@@ -1,5 +1,5 @@
 .row-fluid
-  .span12.box{class: ('active' if current_day >= day), id: "day#{day}"}
+  .span12.box{class: ("active #{active_colour}" if current_day >= day), id: "day#{day}"}
     - if current_day >= day
       -if last_day >= day
         .row-fluid
@@ -10,19 +10,19 @@
             - if local_assigns[:large].nil?
               = image_tag(image)
             -else
-              %a.fancybox{:id => "#fancybox_#{day}", :href=> large.html_safe,:rel=>"advent", :title => msg}= image_tag(image, :class=>"media-object")
+              %a.fancybox{:id => "#fancybox_#{day}", :href=> asset_path(large).html_safe,:rel=>"advent", :title => msg}= image_tag(image, :class=>"media-object")
 
       -else
         .row-fluid
           .span12
             = link_to params.merge({:update_last_day => day}) do
-              = image_tag("http://placehold.it/#{w}x#{h}&text=Open%20Now")
+              = image_tag("http://placehold.it/#{w}x#{h+40}&text=Open%20Now")
               -#= image_tag("http://ima.gs/transparent/none/000000/Open%20now-#{w}x#{h}.png")
 
     - else
       .row-fluid
         .span12
-          = image_tag("http://placehold.it/#{w}x#{h}&text=Coming%20Soon")
+          = image_tag("http://placehold.it/#{w}x#{h+40}&text=Coming%20Soon")
           -#= image_tag("http://ima.gs/transparent/none/000000/Open%20now-#{w}x#{h}.png")
     .row-fluid
       .span4.no-height
