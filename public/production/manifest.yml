@@ -565,6 +565,8 @@ logo_pirate.png: logo_pirate-056c5ed724027e45da55b43e0d9dd89c.png
 logo_pirate/index.png: logo_pirate-056c5ed724027e45da55b43e0d9dd89c.png
 logo_snow.png: logo_snow-f230d0321045212ef4a319dcffa5bb84.png
 logo_snow/index.png: logo_snow-f230d0321045212ef4a319dcffa5bb84.png
+logo_snow_advent.png: logo_snow_advent-9df2b7e8bc83aaf9acab67940b837afd.png
+logo_snow_advent/index.png: logo_snow_advent-9df2b7e8bc83aaf9acab67940b837afd.png
 logosmall.jpg: logosmall-1f5570d4119d5550676a55fa2d63436b.jpg
 logosmall/index.jpg: logosmall-1f5570d4119d5550676a55fa2d63436b.jpg
 logosmall.jpg.LCK: logosmall.jpg-9950989e21859e7402ff6aa4d5ab9019.LCK
@@ -915,8 +917,8 @@ ckeditor/config.js: ckeditor/config-7b4e5a708501bfaab628f81d3161a763.js
 ckeditor/config/index.js: ckeditor/config-7b4e5a708501bfaab628f81d3161a763.js
 non_includes/deployJava.js: non_includes/deployJava-5a3b44b01a6c791a3ff3773b2c769a30.js
 non_includes/deployJava/index.js: non_includes/deployJava-5a3b44b01a6c791a3ff3773b2c769a30.js
-application.css: application-4a12d500b9ee3da40899efba5a358f1f.css
-application/index.css: application-4a12d500b9ee3da40899efba5a358f1f.css
+application.css: application-223ff41d2505c1f0f330ae28ddd03c9b.css
+application/index.css: application-223ff41d2505c1f0f330ae28ddd03c9b.css
 mail.css: mail-127c2c7648fe265e5a78c32e517676e6.css
 mail/index.css: mail-127c2c7648fe265e5a78c32e517676e6.css
 blank.gif: blank-2ebbd7cb21c3980daa0bddcc9c7ce5fc.gif
