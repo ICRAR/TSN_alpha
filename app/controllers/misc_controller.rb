@@ -41,11 +41,11 @@ class MiscController < ApplicationController
       if params[:add] == 'true'
         current_user.profile.advent_notify = true
         current_user.profile.save
-        redirect_to advent_misc_path, notice: "Success you are now subscribed to receive notices for theSkyNet Christmas countdown."
+        redirect_to advent_misc_path, notice: "Success, you are now subscribed to receive notices for theSkyNet Christmas countdown."
       else
         current_user.profile.advent_notify = false
         current_user.profile.save
-        redirect_to advent_misc_path, notice: "Success you are now unsubscribed from receiving notices for theSkyNet Christmas countdown."
+        redirect_to advent_misc_path, notice: "Success, you are now unsubscribed from receiving notices for theSkyNet Christmas countdown."
       end
     else
       redirect_to root_url, notice: "Sorry you need to be logged in to do that."
