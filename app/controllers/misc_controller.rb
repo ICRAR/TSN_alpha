@@ -6,7 +6,7 @@ class MiscController < ApplicationController
     else
       start_day = Time.parse('13th, December 2013')
       now = Time.now
-      @current_day = ((now - start_day)/1.day).to_i
+      @current_day = ((now - start_day)/1.day).ceil
     end
 
     if params["last"]
