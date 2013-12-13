@@ -4,7 +4,7 @@ class MiscController < ApplicationController
     if params["day"]
       @current_day = params["day"].to_i
     else
-      start_day = Time.parse('14th, December 2013')
+      start_day = Time.parse('13th, December 2013')
       now = Time.now
       @current_day = ((now - start_day)/1.day).to_i
     end

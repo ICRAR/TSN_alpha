@@ -30,6 +30,9 @@ class UserMailer < ActionMailer::Base
 
   end
   def advent_notify(user)
+    start_day = Time.parse('13th, December 2013')
+    now = Time.now
+    @day = ((now - start_day)/1.day).to_i
     @profile = user.profile
     email = user.email
     mail to: email, subject: 'Next Christmas Box Unlocked'
