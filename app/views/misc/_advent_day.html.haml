@@ -1,5 +1,6 @@
 .row-fluid
-  .span12.box{class: ("active #{active_colour}" if current_day >= day), id: "day#{day}"}
+  - box_color = current_day == day ? 'yell' : active_colour
+  .span12.box{class: ("active #{box_color}" if current_day >= day), id: "day#{day}"}
     - if current_day >= day
       -if last_day >= day
         .row-fluid

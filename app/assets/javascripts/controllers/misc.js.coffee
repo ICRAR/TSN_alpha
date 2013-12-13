@@ -26,4 +26,4 @@ TSN.misc.advent = () ->
       left: '10px'
     })
     shrink(item)
-  start($('h3.current'))
+  #start($('h3.current'))

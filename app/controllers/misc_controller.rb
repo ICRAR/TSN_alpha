@@ -1,7 +1,7 @@
 class MiscController < ApplicationController
   def advent
     params[:snow] = 'true'
-    if params["day"] && user_signed_in? && current_user.is_admin?
+    if params["day"]
       @current_day = params["day"].to_i
     else
       start_day = Time.parse('14th, December 2013')
@@ -9,7 +9,7 @@ class MiscController < ApplicationController
       @current_day = ((now - start_day)/1.day).to_i
     end
 
-    if params["last"] && user_signed_in? && current_user.is_admin?
+    if params["last"]
       @last_day = params["last"].to_i
     elsif user_signed_in?
       @last_day = current_user.profile.advent_last_day
