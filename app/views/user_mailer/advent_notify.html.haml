@@ -1,6 +1,8 @@
 %h2= "Hi #{@profile.name},"
 %p
-  We've just unlocked the next box on our 12 days of Christmas page, click
+  We've just unlocked box (
+  = @day.en.numwords
+  ) on our 12 days of Christmas page, click
   =link_to "here ", advent_misc_url
   to check it out.
 - if @day == 3
