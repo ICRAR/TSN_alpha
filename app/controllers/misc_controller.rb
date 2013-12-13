@@ -23,6 +23,10 @@ class MiscController < ApplicationController
       if user_signed_in?
         new_day = params["update_last_day"].to_i
         if new_day >= 0 && new_day <= @current_day
+          if @current_day == 3
+            t = Trophy.find 137
+            t.award_to_profiles current_user.profile
+          end
           current_user.profile.advent_last_day = new_day
           current_user.profile.save
           @last_day = new_day
