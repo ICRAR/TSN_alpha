@@ -129,6 +129,11 @@ $(document).ready( ->
   #snow at christmas
   if rails.snow == true
     $(document).snowfall({round: true, minSize: 1, maxSize:5, flakeCount : 250});
+
+  #start fireworks
+  if rails.fireworks == true
+    Fireworks.run()
+  true
 )
 TSN.spawn_bats = () ->
   for i in [0..20]
