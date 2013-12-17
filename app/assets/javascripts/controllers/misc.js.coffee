@@ -27,3 +27,12 @@ TSN.misc.advent = () ->
     })
     shrink(item)
   #start($('h3.current'))
+
+  $('#bg_image_link').click( ->
+    text = $("#bg_image_pop_up").html()
+    bootbox.dialog text, [
+      label: "Close"
+    ]
+
+    false
+  )

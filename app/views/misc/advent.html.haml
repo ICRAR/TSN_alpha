@@ -75,7 +75,7 @@
           .span4
             = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 1 , active_colour: 'pink', msg: 'One (not yet self aware) distributed computing site, theSkyNet!',                                                            image:  '12_days/1-small.png', h: 121, w: 150, large: '12_days/1.png'}
             = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 6 , active_colour: 'purp', msg: 'Six amazing team members.',                                                                                                   image:  '12_days/6-small.png', h: 177, w: 150, large: '12_days/6.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 10, active_colour: 'blue', msg: 'Ten thousand, six hundred plus galaxies processed.',                                                             image: '12_days/10-small.png', h: 150, w: 150, large: '12_days/10.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 10, active_colour: 'blue', msg: 'Ten thousand, six hundred plus galaxies processed.', bg_image: true,                                                             image: '12_days/10-small.png', h: 150, w: 150, large: '12_days/10.png'}
             = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 3 , active_colour: 'pink', msg: 'Three hundred and forty-seven thousand, five hundred and fifty-three trophies awarded.',                                    image:  '12_days/3-small.png', h: 100, w: 150, large: '12_days/3.png'}
 
           .span4
@@ -93,4 +93,21 @@
             = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 7 , active_colour: 'purp', msg: "#{time_word} seconds since theSkyNet went live!",                image:  '12_days/7-small.png', h: 142, w: 150, large: '12_days/7.png'}
     .footer
       =image_tag '12_days/footer.png'
+    #bg_image_pop_up{style:"display:none;"}
+      %p To say thank you for all your amazing contributions over the last year I have prepared theses amazing backgrounds made with the very images processed by theSkyNet POGS.
+      %p Just choose your size and image type:
+      .row-fluid
+        .span6
+          - bg_dim = [[800,600],[1024,768],[1280,720],[1280,800],[1280,960],[1280,1024],[1440,900],[1600,1200],[1680,1050],[1920,1080],[1920,1200],[2560,1440]]
+          %ul
+            - bg_dim.each do |d|
+              %li= link_to "#{d[0]}x#{d[1]} JPG", "http://tsn.production.public.s3.amazonaws.com/pogs/galaxy_background/#{d[0]}-#{d[1]}.jpg"
+        .span6
+          %ul
+            - bg_dim.each do |d|
+              %li= link_to "#{d[0]}x#{d[1]} PNG", "http://tsn.production.public.s3.amazonaws.com/pogs/galaxy_background/#{d[0]}-#{d[1]}.png"
+      %p
+        Merry Christmas
+        %br
+        theSkyNet
 

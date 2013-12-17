@@ -1,6 +1,6 @@
 class MiscController < ApplicationController
   def advent
-    params[:snow] = 'true'
+    params[:snow] ||= 'true'
     if params["day"]
       @current_day = params["day"].to_i
     else
