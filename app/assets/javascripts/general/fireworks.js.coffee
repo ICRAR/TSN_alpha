@@ -1,5 +1,9 @@
 this.Fireworks = new Object();
 Fireworks.run = () ->
+  window.requestAnimFrame = (->
+    window.requestAnimationFrame or window.webkitRequestAnimationFrame or window.mozRequestAnimationFrame or (callback) ->
+      window.setTimeout callback, 1000 / 60
+  )()
   Fireworks.canvas = document.getElementById("canvasBG_fireworks")
   Fireworks.context = Fireworks.canvas.getContext("2d")
 
@@ -204,4 +208,9 @@ Fireworks.run = () ->
 
   #start
   setInterval Fireworks.launch, 800
-  setInterval Fireworks.loop, 1000 / 50
+  #setInterval Fireworks.loop, 1000 / 50
+  (animloop = ->
+    requestAnimFrame animloop
+    Fireworks.loop()
+  )()
+
