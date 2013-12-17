@@ -37,4 +37,10 @@ class UserMailer < ActionMailer::Base
     email = user.email
     mail to: email, subject: 'Next Christmas Box Unlocked'
   end
+
+  def contact_support(name,email,message)
+    @name = name
+    @message = message
+    mail to: email, subject: 'Thank you for contact theSkyNet support team.'
+  end
 end

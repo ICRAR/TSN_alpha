@@ -24,5 +24,8 @@ if Rails.env.development?
       user = User.last
       UserMailer.welcome_msg(user.id)
     end
+    def contact_support
+      UserMailer.contact_support('Name', "test@test.com", "hello world")
+    end
   end
 end
