@@ -17,3 +17,5 @@
       %li= link_to t("nav.contact"), new_contact_form_path
 .row-fluid
   #language-footer.span4.offset1= render 'layouts/langauge_select'
+  #serverTime.span5.offset2
+    = "Current Server Time: #{Time.now}"
