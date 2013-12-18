@@ -74,12 +74,13 @@ class SpecialDay < ActiveRecord::Base
   end
 
   def features_array
-    CSV.parse(self.features).first
+    fa = CSV.parse(self.features).first || []
   end
 
   rails_admin do
     list do
       field :name
+      field :url_code
       field :features
       field :locale
       field :logo
@@ -89,10 +90,10 @@ class SpecialDay < ActiveRecord::Base
     field :name
     field :logo
     field :annual do
-      help 'Tick for events that reoccure annually, then enter start and end days and months. Only use, Start Date and End Date for once off events'
+      help 'Tick for events that recur annually, then enter start and end days and months. Only use, Start Date and End Date for once off events'
     end
     field :features do
-      help 'List of features separated by commas ie "bats, snow"'
+      help 'List of features separated by commas ie "bats, snow" Available features are: bats, snow, fireworks and fireworks_link'
     end
   end
 end

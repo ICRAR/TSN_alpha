@@ -40,12 +40,27 @@
           %span.navbar-text= render 'layouts/langauge_select'
         .pull-right
           =render 'devise/menu/devise_top_bar'
+
     -if @special_days.contains_feature('fireworks')
       %canvas#canvasBG_fireworks Error, canvas is not supported
     #wrapper.container
       =bootstrap_flash
+      -if @special_days.contains_feature('fireworks')
+        .alert.alert-info
+          %button{type: "button", class: "close", data: {dismiss: "alert"}} &times;
+          %h4 Happy Holidays:
+          = link_to "Stop the fireworks", params.merge(fireworks: false), class: 'btn btn-danger'
+      -if @special_days.contains_feature('fireworks_link') && !@special_days.contains_feature('fireworks')
+        .alert.alert-info
+          %button{type: "button", class: "close", data: {dismiss: "alert"}} &times;
+          %h4 Happy Holidays:
+          My humans have prepared an exciting fireworks show for you, However it is best viewed in a modern web browser like
+          = link_to "Chrome.", "http://www.google.com/chrome‎"
+          To view the show just click the fire button.
+          %br
+          = link_to "Fire!", params.merge(fireworks: true), class: 'btn btn-danger'
       =render 'shared/announcement', :announcement => @announcement if @announcement != nil
-      %h1#header{:class => logo_class}= link_to "theSkyNet", main_app.root_url, :style => logo_class_style
+      %h1#header= link_to "theSkyNet", main_app.root_url, :style => logo_class_style
       =render 'layouts/nav_global'
       .clearing
       #main

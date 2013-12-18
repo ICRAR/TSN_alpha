@@ -30,11 +30,11 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_locale
   def set_locale
-    unless @special_days.nil? || @special_days.first.nil? || @special_days.first.locale.nil?
+    unless @special_days.nil? || @special_days.first.nil? || @special_days.first.locale.nil? || @special_days.first.locale == ''
       I18n.locale = @special_days.first.locale
-    else
-      I18n.locale = params[:locale] || I18n.default_locale
     end
+    I18n.locale = params[:locale] if params[:locale]
+    I18n.locale ||= I18n.default_locale
   end
   def default_url_options(options={})
     #logger.debug "default_url_options is passed options: #{options.inspect}\n"
