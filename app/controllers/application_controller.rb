@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_locale
   def set_locale
-    unless @special_days.first.nil? || @special_days.first.locale.nil?
+    unless @special_days.nil? || @special_days.first.nil? || @special_days.first.locale.nil?
       I18n.locale = @special_days.first.locale
     else
       I18n.locale = params[:locale] || I18n.default_locale
