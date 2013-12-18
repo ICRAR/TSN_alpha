@@ -9,6 +9,7 @@
       I18n.defaultLocale = "#{I18n.default_locale}";
       I18n.locale = "#{I18n.locale}";
       I18n.fallbacks = true;
+
     =csrf_meta_tags
 
     - track_options = {}
@@ -17,7 +18,8 @@
     = analytics_init track_options
 
     = render :partial => 'layouts/js_vars'
-
+    %script{:type=>"text/javascript"}
+      window.rails.snow = true
   %body.advent{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : ''), 'data-no-turbolink' => true}
     #top-nav.navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner
