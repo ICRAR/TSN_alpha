@@ -6,10 +6,10 @@
     window.rails.bat = true
   <% end %>
 
-  <% if logo_class == 'snow_logo' %>
+  <% if @special_days.contains_feature('snow') %>
     window.rails.snow = true
   <% end %>
-  <% if params[:fireworks] == 'true' %>
+  <% if @special_days.contains_feature('fireworks') %>
   window.rails.fireworks = true
   <% end %>
 </script>

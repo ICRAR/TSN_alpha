@@ -40,12 +40,12 @@
           %span.navbar-text= render 'layouts/langauge_select'
         .pull-right
           =render 'devise/menu/devise_top_bar'
-    -if params[:fireworks] == 'true'
+    -if @special_days.contains_feature('fireworks')
       %canvas#canvasBG_fireworks Error, canvas is not supported
     #wrapper.container
       =bootstrap_flash
       =render 'shared/announcement', :announcement => @announcement if @announcement != nil
-      %h1#header{:class => logo_class}= link_to "theSkyNet", main_app.root_url
+      %h1#header{:class => logo_class}= link_to "theSkyNet", main_app.root_url, :style => logo_class_style
       =render 'layouts/nav_global'
       .clearing
       #main
