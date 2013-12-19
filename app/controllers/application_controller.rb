@@ -31,8 +31,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_locale
   def set_locale
     I18n.locale = I18n.default_locale
-    unless @special_days.nil? || @special_days.first.nil? || @special_days.first.locale.nil? || @special_days.first.locale == ''
-      I18n.locale = @special_days.first.locale
+    unless @special_days.nil? || @special_days.first_locale.nil?
+      I18n.locale = @special_days.first_locale
     end
     I18n.locale = params[:locale] if params[:locale]
 
@@ -43,6 +43,7 @@ class ApplicationController < ActionController::Base
     options = {}
     options[:locale] = I18n.locale
     options[:format] = :json if params[:format] == "json"
+    options = options.merge @special_days.active_url_code(params) unless @special_days.nil?
     options
   end
 

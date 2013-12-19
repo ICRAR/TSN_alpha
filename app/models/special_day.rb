@@ -48,6 +48,7 @@ class SpecialDay < ActiveRecord::Base
   attr_accessible :logo, as: [:admin]
   has_attached_file :logo
 
+  #reutrns the current active days from a hash of parmas and the current time
   def self.active_days(params)
     t = Time.now
     possible_url_codes = params.select { |key, value| value == 'true' }.keys
@@ -59,11 +60,30 @@ class SpecialDay < ActiveRecord::Base
                (url_code.in possible_url_codes)}
   end
 
+  #is run on a collection of days and
+  # returns true if anyone of them contain the requested feature
   def self.contains_feature(f)
     scoped.each do |day|
       return true if day.features_array.include? f
     end
     return false
+  end
+  #is run on a collection of days and
+  # returns a hash of active url codes
+  def self.active_url_code(params)
+    possible_url_codes = params.select { |key, value| value == 'true' }
+    current_url_codes = scoped.map{|d| d.url_code}
+    possible_url_codes.select {|key, value| current_url_codes.include? key}.symbolize_keys
+  end
+
+  #is run on a collection of days and
+  # returns the first locale found or nil otherwise
+  def self.first_locale
+    scoped.collect(&:locale).reject{|a| a== ''}.first
+  end
+
+  def self.test
+    all.collect(&:locale).reject{|a| a== ''}.first
   end
 
   def self.is_active(name)
