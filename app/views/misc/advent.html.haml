@@ -9,6 +9,7 @@
       I18n.defaultLocale = "#{I18n.default_locale}";
       I18n.locale = "#{I18n.locale}";
       I18n.fallbacks = true;
+
     =csrf_meta_tags
 
     - track_options = {}
@@ -17,7 +18,8 @@
     = analytics_init track_options
 
     = render :partial => 'layouts/js_vars'
-
+    %script{:type=>"text/javascript"}
+      window.rails.snow = true
   %body.advent{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : ''), 'data-no-turbolink' => true}
     #top-nav.navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner
@@ -30,7 +32,7 @@
     #wrapper.container
       =bootstrap_flash
       =render 'shared/announcement', :announcement => @announcement if @announcement != nil
-      %h1#header{:class => logo_class}= link_to "theSkyNet", main_app.root_url
+      %h1#header= link_to "theSkyNet", main_app.root_url
       %h2 12 DAYS OF CHRISTMAS
       .clearing
       #main
@@ -73,22 +75,41 @@
 
         .row-fluid
           .span4
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 1 , active_colour: 'pink', msg: 'One (not yet self aware) Distributed Computing site, theSkyNet!',                                                            image:  '12_days/1-small.png', h: 121, w: 150, large: '12_days/1.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 6 , active_colour: 'purp', msg: 'Six amazing team members',                                                                                                   image:  '12_days/6-small.png', h: 177, w: 150, large: '12_days/6.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 10, active_colour: 'blue', msg: 'Ten thousand, five hundred and ninety-eight galaxies processed',                                                             image: '12_days/10-small.png', h: 150, w: 150, large: '12_days/10.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 3 , active_colour: 'pink', msg: 'Three hundred and thirty-seven thousand, seven hundred and seventy-six trophies awarded',                                    image:  '12_days/3-small.png', h: 100, w: 150, large: '12_days/3.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 1 , active_colour: 'pink', msg: 'One (not yet self aware) distributed computing site, theSkyNet!',                                                            image:  '12_days/1-small.png', h: 121, w: 150, large: '12_days/1.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 6 , active_colour: 'purp', msg: 'Six amazing team members.',                                                                                                   image:  '12_days/6-small.png', h: 177, w: 150, large: '12_days/6.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 10, active_colour: 'blue', msg: 'Ten thousand, six hundred plus galaxies processed.', bg_image: true,                                                             image: '12_days/10-small.png', h: 150, w: 150, large: '12_days/10.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 3 , active_colour: 'pink', msg: 'Three hundred and forty-seven thousand, five hundred and fifty-three trophies awarded.',                                    image:  '12_days/3-small.png', h: 100, w: 150, large: '12_days/3.png'}
 
           .span4
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 9 , active_colour: 'blue', msg: 'Ninety-four countries contribute to theSkyNet POGS',                                                                         image:  '12_days/9-small.png', h: 247, w: 150, large: '12_days/9.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 11, active_colour: 'purp', msg: "Eleven weeks of processing on the Pawsey Centre's top 500 supercomputer - the RTC at iVEC - at a cost of over $?? million.", image: '12_days/11-small.png', h: 140, w: 150, large: '12_days/11.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 4 , active_colour: 'pink', msg: 'Four thousand, seven hundred and ninety Forum posts',                                                                        image:  '12_days/4-small.png', h: 87 , w: 150, large: '12_days/4.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 12, active_colour: 'blue', msg: 'Eleven thousand, two hundred and one wise women and men helping discover our Universe.',                                     image: '12_days/12-small.png', h: 225, w: 150, large: '12_days/12.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 9 , active_colour: 'blue', msg: 'Ninety-four countries contribute to theSkyNet POGS. ',                                                                         image:  '12_days/9-small.png', h: 247, w: 150, large: '12_days/9.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 11, active_colour: 'purp', msg: "TheSkyNet's 2+ years of processing equals eleven weeks on the Pawsey Centre's top 500 supercomputer - the RTC at iVEC - which would cost of over ?? million. ", image: '12_days/11-small.png', h: 140, w: 150, large: '12_days/11.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 4 , active_colour: 'pink', msg: 'Four thousand, eight hundred and forty-five forum posts.',                                                                        image:  '12_days/4-small.png', h: 87 , w: 150, large: '12_days/4.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 12, active_colour: 'blue', msg: 'Eleven thousand, four hundred and nineteen wise women and men helping discover our Universe!',                                     image: '12_days/12-small.png', h: 225, w: 150, large: '12_days/12.png'}
 
           .span4
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 8 , active_colour: 'purp', msg: 'Eight hundred and fifteen Alliances',                                                                                        image:  '12_days/8-small.png', h: 150, w: 150, large: '12_days/8.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 5 , active_colour: 'pink', msg: 'Five hundred and fifty-eight thousand, three hundred and fifty visits to the site',                                          image:  '12_days/5-small.png', h: 100, w: 150, large: '12_days/5.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 2 , active_colour: 'blue', msg: 'Two astronomy projects',                                                                                                     image:  '12_days/2-small.png', h: 200, w: 150, large: '12_days/2.png'}
-            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 7 , active_colour: 'purp', msg: 'Seven-ty one million, five hundred and thirty nine thousand, two hundred seconds since theSkyNet went live!',                image:  '12_days/7-small.png', h: 142, w: 150, large: '12_days/7.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 8 , active_colour: 'purp', msg: 'Eight hundred and thirty six alliances.',                                                                                        image:  '12_days/8-small.png', h: 150, w: 150, large: '12_days/8.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 5 , active_colour: 'pink', msg: 'Five hundred and sixty-four thousand and eighty-eight visits to the theSkyNet.org.',                                          image:  '12_days/5-small.png', h: 100, w: 150, large: '12_days/5.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 2 , active_colour: 'blue', msg: 'Two astronomy projects.',                                                                                                     image:  '12_days/2-small.png', h: 200, w: 150, large: '12_days/2.png'}
+            - time_word = (Time.now - Time.parse('13th Sept, 2011')).to_i.en.numwords
+            - time_word[0] = time_word[0].capitalize
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 7 , active_colour: 'purp', msg: "#{time_word} seconds since theSkyNet went live!",                image:  '12_days/7-small.png', h: 142, w: 150, large: '12_days/7.png'}
     .footer
       =image_tag '12_days/footer.png'
+    #bg_image_pop_up{style:"display:none;"}
+      %p To say thank you for all your amazing contributions over the last year I have prepared theses amazing backgrounds made with the very images processed by theSkyNet POGS.
+      %p Just choose your size and image type:
+      .row-fluid
+        .span6
+          - bg_dim = [[800,600],[1024,768],[1280,720],[1280,800],[1280,960],[1280,1024],[1440,900],[1600,1200],[1680,1050],[1920,1080],[1920,1200],[2560,1440]]
+          %ul
+            - bg_dim.each do |d|
+              %li= link_to "#{d[0]}x#{d[1]} JPG", "http://tsn.production.public.s3.amazonaws.com/pogs/galaxy_background/#{d[0]}-#{d[1]}.jpg"
+        .span6
+          %ul
+            - bg_dim.each do |d|
+              %li= link_to "#{d[0]}x#{d[1]} PNG", "http://tsn.production.public.s3.amazonaws.com/pogs/galaxy_background/#{d[0]}-#{d[1]}.png"
+      %p
+        Merry Christmas
+        %br
+        theSkyNet
 

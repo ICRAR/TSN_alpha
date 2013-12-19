@@ -26,13 +26,11 @@ module ApplicationHelper
     output.html_safe
   end
 
-  def logo_class
-    out = nil
-    out ||= "arr_logo" if locale == :arr
-    out ||= "bat_logo" if params[:bat] == 'true' || (Time.now.day >= 30 && Time.now.month == 10) || (Time.now.day == 1 && Time.now.month == 11)
-    out ||= "snow_logo" if params[:snow] == 'true' || ((Time.now > Time.parse('24th dec, 2013')) && (Time.now < Time.parse('27th dec, 2013')))
-    out ||= "new_years_2013_logo" if params[:new_years_2013] == 'true' || ((Time.now > Time.parse('31th dec, 2013')) && (Time.now < Time.parse('2nd jan, 2014')))
-    return out
+  def logo_class_style
+    sd = @special_days.first
+    if !sd.nil? && @special_days.first.logo?
+      "background:url('#{sd.logo.url}') 0 0 no-repeat;"
+    end
   end
 
 end

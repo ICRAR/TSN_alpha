@@ -2,11 +2,14 @@
   window.rails = new Object;
   window.rails.user_signed_in = <%=user_signed_in?%>
   window.rails.nereus_id = <%=current_user.try(:profile).try(:general_stats_item).try(:nereus_stats_item).try(:nereus_id) || 0%>
-  <% if params[:bat] == 'true' || (Time.now.day >= 30 && Time.now.month == 10) || (Time.now.day == 1 && Time.now.month == 11) %>
+
+  <% if @special_days.contains_feature('bats') %>
     window.rails.bat = true
   <% end %>
-
-  <% if logo_class == 'snow_logo' %>
+  <% if @special_days.contains_feature('snow') %>
     window.rails.snow = true
+  <% end %>
+  <% if @special_days.contains_feature('fireworks') %>
+  window.rails.fireworks = true
   <% end %>
 </script>

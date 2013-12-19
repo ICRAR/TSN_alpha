@@ -3,6 +3,11 @@ class ApplicationController < ActionController::Base
   helper :json_api
   require 'act_as_taggable_on'
 
+  ## TheSkyNet utilises special event days
+  before_filter :special_days, :except => [:check_auth,:ping,:send_report,:send_cert, :facebook_channel]
+  def special_days
+    @special_days = SpecialDay.active_days(params)
+  end
   before_filter :check_announcement, :except => [:check_auth,:ping,:send_report,:send_cert, :facebook_channel]
   def check_announcement
     if user_signed_in?
@@ -25,13 +30,20 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_locale
   def set_locale
-    I18n.locale = params[:locale] || I18n.default_locale
+    I18n.locale = I18n.default_locale
+    unless @special_days.nil? || @special_days.first_locale.nil?
+      I18n.locale = @special_days.first_locale
+    end
+    I18n.locale = params[:locale] if params[:locale]
+
+
   end
   def default_url_options(options={})
     #logger.debug "default_url_options is passed options: #{options.inspect}\n"
     options = {}
     options[:locale] = I18n.locale
     options[:format] = :json if params[:format] == "json"
+    options = options.merge @special_days.active_url_code(params) unless @special_days.nil?
     options
   end
 

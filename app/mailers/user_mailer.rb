@@ -30,8 +30,17 @@ class UserMailer < ActionMailer::Base
 
   end
   def advent_notify(user)
+    start_day = Time.parse('13th, December 2013')
+    now = Time.now
+    @day = ((now - start_day)/1.day).ceil
     @profile = user.profile
     email = user.email
     mail to: email, subject: 'Next Christmas Box Unlocked'
+  end
+
+  def contact_support(name,email,message)
+    @name = name
+    @message = message
+    mail to: email, subject: 'Thank you for contact theSkyNet support team.'
   end
 end

@@ -1,16 +1,21 @@
 .row-fluid
-  .span12.box{class: ("active #{active_colour}" if current_day >= day), id: "day#{day}"}
+  - box_color = current_day == day ? 'yell' : active_colour
+  .span12.box{class: ("active #{box_color}" if current_day >= day), id: "day#{day}"}
     - if current_day >= day
       -if last_day >= day
         .row-fluid
           .span7.offset5
-            %p= msg
+            %p
+              = msg
+              - if local_assigns[:bg_image] == true
+                = link_to "Click here to download an awesome background image", "#", id: "bg_image_link"
         .row-fluid
           .span12
             - if local_assigns[:large].nil?
               = image_tag(image)
             -else
               %a.fancybox{:id => "#fancybox_#{day}", :href=> asset_path(large).html_safe,:rel=>"advent", :title => msg}= image_tag(image, :class=>"media-object")
+
 
       -else
         .row-fluid

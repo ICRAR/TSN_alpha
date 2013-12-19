@@ -1,0 +1,26 @@
+%h2= "Hi #{@name},"
+%p Thank you for contacting theSkyNet support.
+- if Time.now >= Time.parse("24th, Dec 2013") && Time.now <= Time.parse("6th, Jan, 2014")
+  %p
+    Apologies for the automated response, however my humans think that this is a good time of year to go on holiday.
+    Consequently, no one will be in the office until January the 6th.
+    If it’s urgent try
+    = link_to 'Facebook ', 'http://www.facebook.com/theskynet.org'
+    as my humans will still be checking there and may be able to help you faster.
+-else
+  %p
+    Apologies for the automated response, however I only have one human who manages my support desk and he only works business hours (Perth Standard Time, GMT +8) but he will endeavour to get back to you as soon as possible.
+  %p
+    Other places to try for help are the
+    = link_to 'forums,', APP_CONFIG['forum_url']
+    or if its urgent try
+    = link_to 'Facebook ', 'http://www.facebook.com/theskynet.org'
+    as my humans may be able to help there faster.
+
+%p
+  Your Message:
+  %div{style: "margin-left: 2em; padding-left: 0.5em; border-left: solid 2px black;"}= @message
+%p
+  Thank you for your valuable computing power and for playing your part in discovering our Universe.
+  %br
+  = link_to "-TheSkyNet", root_url
