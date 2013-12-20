@@ -32,7 +32,7 @@
     #wrapper.container
       =bootstrap_flash
       =render 'shared/announcement', :announcement => @announcement if @announcement != nil
-      %h1#header= link_to "theSkyNet", main_app.root_url
+      %h1#header.snow_logo= link_to "theSkyNet", main_app.root_url
       %h2 12 DAYS OF CHRISTMAS
       .clearing
       #main
