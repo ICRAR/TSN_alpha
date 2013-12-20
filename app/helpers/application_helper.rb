@@ -27,9 +27,8 @@ module ApplicationHelper
   end
 
   def logo_class_style
-    sd = @special_days.first
-    if !sd.nil? && @special_days.first.logo?
-      "background:url('#{sd.logo.url}') 0 0 no-repeat;"
+    unless @special_days.nil? || @special_days.first_logo.nil?
+      "background:url('#{@special_days.first_logo}') 0 0 no-repeat;"
     end
   end
 

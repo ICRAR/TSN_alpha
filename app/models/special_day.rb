@@ -81,6 +81,11 @@ class SpecialDay < ActiveRecord::Base
   def self.first_locale
     scoped.collect(&:locale).reject{|a| a== ''}.first
   end
+  #is run on a collection of days and
+  # returns the first logo found or nil otherwise
+  def self.first_logo
+    scoped.reject{|d| !d.logo?}.first.try :logo
+  end
 
   def self.test
     all.collect(&:locale).reject{|a| a== ''}.first
