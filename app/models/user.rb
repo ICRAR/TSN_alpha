@@ -7,6 +7,17 @@ class User < ActiveRecord::Base
          :authentication_keys => [:login]
   alias_method :devise_valid_password?, :valid_password?
   # Setup accessible (or protected) attributes for your model
+
+  #my_name is used as a honeypot field to try and catch spamers
+  attr_accessor :my_name
+  attr_accessible :my_name, :as => [:default, :admin]
+  validate :my_name_honey_pot
+  def  my_name_honey_pot
+    unless my_name.nil? || my_name == ''
+      errors[:base] << "Sorry humans only for sign up. Please do not fill in the my name field"
+    end
+  end
+
   attr_accessible :username, :email, :password, :password_confirmation, :remember_me, :as => [:default, :admin]
   attr_accessible :admin, :mod, :joined_at, as: :admin
   # attr_accessible :title, :body

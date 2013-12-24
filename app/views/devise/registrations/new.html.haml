@@ -13,6 +13,8 @@
         = f.input :email, :autofocus => true, as: :string
         = f.input :password, :autofocus => true, as: :password
         = f.input :password_confirmation, :autofocus => true, as: :password
+        #my_name_input{style: "visibility: hidden"}
+          = f.input :my_name, as: :string, hint: "If you are a human please do not fill in this field"
         .controls
           = f.button :submit, t("nav.sign_up")
       = render "devise/shared/links"
