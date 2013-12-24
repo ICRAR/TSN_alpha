@@ -79,13 +79,13 @@
                     %br
                     =link_to "Join #{@alliance.name}", join_alliance_path, :class => "btn btn-success"
               - #### all section are marked with ALLIANCE_DUP_CODE ###
-              -if user_signed_in?
-                - if @alliance.is_duplicate?
-                  %p
-                    This alliance has been marked as a duplicate alliance with
-                    = link_to @alliance.duplicate_alliance.name, @alliance.duplicate_alliance
-                - else
-                  = link_to "Mark as a Duplicate Alliance", "#", class: "btn btn-tsn", id: "duplicate_btn"
+              -#if user_signed_in?
+              -#  - if @alliance.is_duplicate?
+              -#   %p
+              -#     This alliance has been marked as a duplicate alliance with
+              -#     = link_to @alliance.duplicate_alliance.name, @alliance.duplicate_alliance
+              -# - else
+              -#   = link_to "Mark as a Duplicate Alliance", "#", class: "btn btn-tsn", id: "duplicate_btn"
 
 
       .row-fluid
