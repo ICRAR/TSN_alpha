@@ -10,22 +10,22 @@
     Merry Christmas and Happy Holidays
     %br
     = link_to "-TheSkyNet", root_url
-  -else
-    %p
-      We've just unlocked box
-      = "#{@day.en.numwords} "
-      on our 12 days of Christmas page, click
-      =link_to "here ", advent_misc_url
-      to check it out.
-    - if @day == 3
-      Make sure to open the box today to receive an exclusive surprise in your trophy cabinet.
-    - if @day == 10
-      Today we have an extra special background for you to download, so make sure to go and take a look.
+-else
+  %p
+    We've just unlocked box
+    = "#{@day.en.numwords} "
+    on our 12 days of Christmas page, click
+    =link_to "here ", advent_misc_url
+    to check it out.
+  - if @day == 3
+    Make sure to open the box today to receive an exclusive surprise in your trophy cabinet.
+  - if @day == 10
+    Today we have an extra special background for you to download, so make sure to go and take a look.
 
-    %p
-      Thank you for your valuable computing power and for playing your part in discovering our Universe.
-      %br
-      = link_to "-TheSkyNet", root_url
+  %p
+    Thank you for your valuable computing power and for playing your part in discovering our Universe.
+    %br
+    = link_to "-TheSkyNet", root_url
 
 - if @day == 5
   %p
