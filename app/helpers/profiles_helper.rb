@@ -24,4 +24,14 @@ module ProfilesHelper
     out << "<p>(Please note that it may take a couple of hours for the total credit value to update)</p>"
     "<dl class=\"dl-horizontal\">#{out.join("\n")}</dl>".html_safe
   end
+  def boinc_computers(boinc_hosts)
+
+    out = []
+    out << "<ul>"
+    boinc_hosts.each do |host|
+      out << "<li>#{host.domain_name}</li>"
+    end
+    out << "</ul>"
+    out.join("\n").html_safe
+  end
 end

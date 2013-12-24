@@ -36,7 +36,7 @@ class BoincJob
             statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.rac",remote.expavg_credit)
             #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.jobs", BoincResult.total_in_progress(id))
             #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.pending_jobs", BoincResult.total_pending(id))
-            #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.connected_copmuters", BoincResult.running_computers(id))
+            #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.connected_copmuters_count", BoincResult.running_computers(id))
 
             local.save
           end
