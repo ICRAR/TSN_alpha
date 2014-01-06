@@ -11,7 +11,7 @@ class PogsTeam < BoincPogsModel
       local.is_boinc = true
       local.invite_only = (self.joinable == 0)
       local.pogs_team_id = self.id
-      check_local = Alliance.where{name == self.name}.first #check to see if an alliance already exists with the same name
+      check_local = Alliance.where{name == my{self.name}}.first #check to see if an alliance already exists with the same name
       if check_local.nil?
         local.name = self.name
       else
