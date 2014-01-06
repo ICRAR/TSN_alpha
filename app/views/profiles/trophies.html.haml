@@ -18,7 +18,7 @@
               =submit_tag('Click here to generate your Founding member Certificate.', :class => "btn btn-tsn")
       .well.well-white
         %p
-          -if params[:style] == "credit"
+          -if params[:style] == "credit" || params[:style] == "priority"
             -num = @trophies.size
           -else
             -num = TrophySet.count_trophies @trophies
@@ -44,31 +44,60 @@
                 %p=trophy.desc(@trophy_ids).html_safe
                 - if user_signed_in? && @profile.id == current_user.profile.id
                   = render 'trophies/trophys_share', :trophy => trophy
+      -elsif params[:style] == 'grid'
+        -@trophies.each do |set|
+          .well.well-white
+            %h3=  set.name
+            -set.profile_trophies.each_slice(4) do |trophy_row|
+              .row_fluid
+                %ul.thumbnails
+                  -trophy_row.each do |trophy|
+                    %li.span2
+                      .thumbnail
+                        %a.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
+                        .caption
+                          %h4= link_to "#{trophy.title}" ,  trophy
+                          -unless trophy.credits.nil? || trophy.credits == 0
+                            %p= "(#{format_credit(trophy,@trophy_ids)})"
+      -elsif params[:style] == "priority"
+        - rows = sort_trophies_by_priority @trophies
+        #trophy-cabinet.well-white.well
+          - rows.each do |trophy_row|
+            .row-fluid.trophy_row.large
+              .span2
+                - trophy_row[:far_left].each_slice(2) do |mini_row|
+                  .row-fluid.trophy_row.small
+                    - mini_row.each do |trophy|
+                      .span6
+                        = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :small}
+              .span2
+                - trophy_row[:left].each do |trophy|
+                  .row-fluid.trophy_row.medium
+                    .span12
+                      = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :medium}
+              .span4
+                = render 'trophies/trophy_thumbnail', {:trophy => trophy_row[:center][0], :size => :large}
+              .span2
+                - trophy_row[:right].each do |trophy|
+                  .row-fluid.trophy_row.medium
+                    .span12
+                      = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :medium}
+              .span2
+                - trophy_row[:far_right].each_slice(2) do |mini_row|
+                  .row-fluid.trophy_row.small
+                    - mini_row.each do |trophy|
+                      .span6
+                        = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :small}
+
       -else
-        -if params[:style] == 'grid'
-          -@trophies.each do |set|
-            .well.well-white
-              %h3=  set.name
-              -set.profile_trophies.each_slice(4) do |trophy_row|
-                .row_fluid
-                  %ul.thumbnails
-                    -trophy_row.each do |trophy|
-                      %li.span2
-                        .thumbnail
-                          %a.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
-                          .caption
-                            %h4= link_to "#{trophy.title}" ,  trophy
-                            -unless trophy.credits.nil? || trophy.credits == 0
-                              %p= "(#{format_credit(trophy,@trophy_ids)})"
-        -else
-          -@trophies.each do |set|
-            .well-white.well
-              %h3=  set.name
-              -set.profile_trophies.each do |trophy|
-                .media
-                  %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
-                  .media-body
-                    %h4.media-heading= link_to format_heading(trophy,@trophy_ids),  trophy
-                    %p=trophy.desc(@trophy_ids).html_safe
-                    - if user_signed_in? && @profile.id == current_user.profile.id
-                      = render 'trophies/trophys_share', :trophy => trophy
+        -@trophies.each do |set|
+          .well-white.well
+            %h3=  set.name
+            -set.profile_trophies.each do |trophy|
+              .media
+                %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
+                .media-body
+                  %h4.media-heading= link_to format_heading(trophy,@trophy_ids),  trophy
+                  %p=trophy.desc(@trophy_ids).html_safe
+                  - if user_signed_in? && @profile.id == current_user.profile.id
+                    = render 'trophies/trophys_share', :trophy => trophy
