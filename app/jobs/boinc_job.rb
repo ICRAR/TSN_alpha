@@ -36,7 +36,7 @@ class BoincJob
             statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.rac",remote.expavg_credit)
             #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.jobs", BoincResult.total_in_progress(id))
             #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.pending_jobs", BoincResult.total_pending(id))
-            #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.connected_copmuters", BoincResult.running_computers(id))
+            #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.connected_copmuters_count", BoincResult.running_computers(id))
 
             local.save
           end
@@ -54,9 +54,15 @@ class BoincJob
         BoincRemoteUser.where{id >= my{BoincStatsItem.next_id}}.each do |b|
             b.check_local
         end
-
-        PogsTeam.where{total_credit > 0}.each {|a| a.copy_to_local}
-
+        begin
+          PogsTeam.where{total_credit > 0}.each {|a| a.copy_to_local}
+        rescue ArgumentError => e
+          msg =  "Error in BOINC Job whilst updating teams\n\n"
+          msg +=  e.to_s
+          msg += "\n\n"
+          msg += e.backtrace.join("\n")
+          AdminMailer.debug(msg, "Error in BOINC Job").deliver
+        end
 
         #update team members not in team_delta
         ids = BoincRemoteUser.teamid_no_team_delta.where{total_credit > 0}.select([:id, :teamid])

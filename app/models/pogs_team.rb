@@ -11,7 +11,7 @@ class PogsTeam < BoincPogsModel
       local.is_boinc = true
       local.invite_only = (self.joinable == 0)
       local.pogs_team_id = self.id
-      check_local = Alliance.where{name == self.name}.first #check to see if an alliance already exists with the same name
+      check_local = Alliance.where{name == my{self.name}}.first #check to see if an alliance already exists with the same name
       if check_local.nil?
         local.name = self.name
       else
@@ -44,6 +44,7 @@ class PogsTeam < BoincPogsModel
   def update_memberships
     #load local alliance
     alliance = Alliance.where{pogs_team_id == my{self.id}}.first
+    raise ArgumentError.new("alliance error, alliance not found with pogs_team_id == #{self.id}") if alliance.nil?
     pogs_members = PogsTeamMember.where{(teamid == my{self.id}) & (timestamp > my{alliance.pogs_update_time})}
     #group memberships
     all_memberships = pogs_members.group_by {|m| m.userid}

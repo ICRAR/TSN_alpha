@@ -20,7 +20,14 @@
           %abbr{:title => "Number of jobs pending validations"} Pending Jobs
         %dd= BoincResult.total_pending boinc.boinc_id
         %dt Running Computers
-        %dd= BoincResult.running_computers boinc.boinc_id
+        %dd
+          - boinc_hosts = BoincHost.running_computers boinc.boinc_id
+          %a#boinc_hosts{:href => "#", :data => {:toggle => "popover",
+            :placement => "bottom",
+            :content => boinc_computers(boinc_hosts),
+            :html => 'true',
+            :no => {:turbolink => true}},
+            :title => "Your Computers that have recently contributed to POGS: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#boinc_hosts&quot;).popover(&quot;hide&quot;);\">&times;</button>"}= boinc_hosts.size
         %dt Your POGS ID
         %dd= boinc.boinc_id
   .well.well-small

@@ -199,15 +199,6 @@ class Profile < ActiveRecord::Base
     ProfilesTrophy.where{(profile_id == my{self.id}) & (trophy_id == my{trophy.id})}.count > 0
   end
 
-  #search methods
-  include Tire::Model::Search
-  #include Tire::Model::Callbacks
-  after_save do
-    begin
-      update_index
-    rescue Errno::ECONNREFUSED
-    end
-  end
 
 
   def is_science_user?
@@ -223,10 +214,20 @@ class Profile < ActiveRecord::Base
     !self.general_stats_item.boinc_stats_item.nil?
   end
 
+
+  #search methods
+  include Tire::Model::Search
+  #include Tire::Model::Callbacks
+  after_save do
+    begin
+      update_index
+    rescue Errno::ECONNREFUSED
+    end
+  end
+
   mapping do
     indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
   end
-
 
   def self.search(query,page = 1,per_page = 10)
     tire.search(
