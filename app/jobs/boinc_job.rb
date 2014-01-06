@@ -54,9 +54,15 @@ class BoincJob
         BoincRemoteUser.where{id >= my{BoincStatsItem.next_id}}.each do |b|
             b.check_local
         end
-
-        PogsTeam.where{total_credit > 0}.each {|a| a.copy_to_local}
-
+        begin
+          PogsTeam.where{total_credit > 0}.each {|a| a.copy_to_local}
+        rescue ArgumentError => e
+          msg =  "Error in BOINC Job whilst updating teams\n\n"
+          msg +=  e.to_s
+          msg += "\n\n"
+          msg += e.backtrace.join("\n")
+          AdminMailer.debug(msg, "Error in BOINC Job").deliver
+        end
 
         #update team members not in team_delta
         ids = BoincRemoteUser.teamid_no_team_delta.where{total_credit > 0}.select([:id, :teamid])

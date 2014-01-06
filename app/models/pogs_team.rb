@@ -44,6 +44,7 @@ class PogsTeam < BoincPogsModel
   def update_memberships
     #load local alliance
     alliance = Alliance.where{pogs_team_id == my{self.id}}.first
+    raise ArgumentError.new("alliance error, alliance not found with pogs_team_id == #{self.id}") if alliance.nil?
     pogs_members = PogsTeamMember.where{(teamid == my{self.id}) & (timestamp > my{alliance.pogs_update_time})}
     #group memberships
     all_memberships = pogs_members.group_by {|m| m.userid}
