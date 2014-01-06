@@ -41,7 +41,7 @@
               %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
               .media-body
                 %h4.media-heading= link_to format_heading(trophy,@trophy_ids) ,  trophy
-                %p=trophy.desc(@trophy_ids)
+                %p=trophy.desc(@trophy_ids).html_safe
                 - if user_signed_in? && @profile.id == current_user.profile.id
                   = render 'trophies/trophys_share', :trophy => trophy
       -else
@@ -69,6 +69,6 @@
                   %a.pull-left.fancybox{:href=>trophy.image.url,:rel=>"trophies"}= image_tag trophy.image.url, :class=>"media-object"
                   .media-body
                     %h4.media-heading= link_to format_heading(trophy,@trophy_ids),  trophy
-                    %p=trophy.desc(@trophy_ids)
+                    %p=trophy.desc(@trophy_ids).html_safe
                     - if user_signed_in? && @profile.id == current_user.profile.id
                       = render 'trophies/trophys_share', :trophy => trophy
