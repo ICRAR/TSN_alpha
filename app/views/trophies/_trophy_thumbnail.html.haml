@@ -1,0 +1,8 @@
+.trophy_thumbnail{:class => size}
+  - if size == :medium || size == :large
+    .caption
+      %h4= link_to "#{trophy.title}" ,  trophy
+      -unless trophy.credits.nil? || trophy.credits == 0
+        %p= "(#{format_credit(trophy,@trophy_ids)})"
+  %a{:href=>trophy.image.url}= image_tag trophy.image.url, :class=>"media-object"
+
