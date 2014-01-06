@@ -165,7 +165,9 @@ class Trophy < ActiveRecord::Base
 
   rails_admin do
     field :credits
-    field :desc
+    field :desc do
+      ckeditor true
+    end
     field :title
     field :image
     field :hidden
