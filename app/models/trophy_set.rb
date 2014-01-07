@@ -1,5 +1,5 @@
 class TrophySet < ActiveRecord::Base
-  attr_accessible :name, :set_type, :main, as: :admin
+  attr_accessible :name, :set_type, :priority, :main, as: :admin
   attr_accessor :profile_trophies
   has_many :trophies
 

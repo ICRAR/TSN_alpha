@@ -1,7 +1,7 @@
 class Trophy < ActiveRecord::Base
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::NumberHelper
-  attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, as: [:default, :admin]
+  attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, :priority, as: [:default, :admin]
   has_attached_file :image
   has_many :profiles_trophies, :dependent => :destroy, :autosave => true
   has_many :profiles, :through => :profiles_trophies
@@ -17,7 +17,7 @@ class Trophy < ActiveRecord::Base
       where{(trophy_sets.set_type =~ "credit_active") | (trophy_sets.set_type =~ "credit_classic")}.
       where("credits IS NOT NULL")
 
-  attr_accessor :profiles_count_store
+  attr_accessor :profiles_count_store, :last_priority, :next_priority
 
   before_save :update_set_type
   def update_set_type
@@ -165,6 +165,7 @@ class Trophy < ActiveRecord::Base
 
   rails_admin do
     field :credits
+    field :priority
     field :desc do
       ckeditor true
     end
