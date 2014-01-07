@@ -1,7 +1,7 @@
 class Trophy < ActiveRecord::Base
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::NumberHelper
-  attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, as: [:default, :admin]
+  attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, :priority, as: [:default, :admin]
   has_attached_file :image
   has_many :profiles_trophies, :dependent => :destroy, :autosave => true
   has_many :profiles, :through => :profiles_trophies
@@ -165,6 +165,7 @@ class Trophy < ActiveRecord::Base
 
   rails_admin do
     field :credits
+    field :priority
     field :desc do
       ckeditor true
     end

@@ -195,6 +195,10 @@ class Profile < ActiveRecord::Base
     sets
   end
 
+  def trophies_by_priority
+    self.trophies.select('trophies.*').select{coalesce(profiles_trophies.priority,trophies.priority,trophy_sets.priority).as(trophy_priority)}.joins(:trophy_set).order('trophy_priority desc')
+  end
+
   def has_trophy(trophy)
     ProfilesTrophy.where{(profile_id == my{self.id}) & (trophy_id == my{trophy.id})}.count > 0
   end

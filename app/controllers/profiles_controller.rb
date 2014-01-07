@@ -132,7 +132,7 @@ class ProfilesController < ApplicationController
     if params[:style] == "credit"
       @trophies = @profile.trophies.order{credits.desc}
     elsif params[:style] == "priority"
-      @trophies = @profile.trophies.order{credits.desc}
+      @trophies = @profile.trophies_by_priority
     else
       @trophies = @profile.trophies_by_set
     end
