@@ -94,7 +94,12 @@ Tsn::Application.routes.draw do
   end
   get "/alliance" => "alliances#show", :as => 'my_alliance'
 
-  resources :trophies, :only => [:show]
+  resources :trophies, :only => [:show] do
+    member do
+      get 'promote'
+      get 'demote'
+    end
+  end
 
   get "/check_auth" => "application#check_auth"
   post "/check_auth" => "application#check_auth"

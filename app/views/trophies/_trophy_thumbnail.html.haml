@@ -4,5 +4,10 @@
       %h4= link_to "#{trophy.title}" ,  trophy
       -unless trophy.credits.nil? || trophy.credits == 0
         %p= "(#{format_credit(trophy,@trophy_ids)})"
+  - if trophy.last_priority > 0
+    = link_to "+", promote_trophy_path(id: trophy.id, value: trophy.last_priority+1)
+  - if trophy.next_priority > 0
+    = link_to "-", demote_trophy_path(id: trophy.id, value: trophy.next_priority-1)
+
   %a{:href=>trophy_path(trophy)}= image_tag trophy.image.url, :class=>"media-object", :title => trophy.trophy_priority
 

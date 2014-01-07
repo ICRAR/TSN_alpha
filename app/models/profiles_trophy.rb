@@ -9,4 +9,10 @@ class ProfilesTrophy < ActiveRecord::Base
   def create_notification
     trophy.create_notification(profile)
   end
+  def promote_to(value)
+    self.priority = value
+  end
+  def demote_to(value)
+    self.priority = value
+  end
 end
