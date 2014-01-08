@@ -18,10 +18,11 @@
               =submit_tag('Click here to generate your Founding member Certificate.', :class => "btn btn-tsn")
       .well.well-white
         %p
-          -if params[:style] == "credit" || params[:style] == "priority"
-            -num = @trophies.size
-          -else
+          -if @by_sets
             -num = TrophySet.count_trophies @trophies
+          -else
+            -num = @trophies.size
+
           ="#{@profile.name} has been awarded #{num} trophies."
           -if params[:style] == "credit"
             %p=link_to 'view all of the trophies as grid', params.merge(:style => 'grid')
@@ -60,35 +61,52 @@
                           -unless trophy.credits.nil? || trophy.credits == 0
                             %p= "(#{format_credit(trophy,@trophy_ids)})"
       -elsif params[:style] == "priority"
-        - rows = sort_trophies_by_priority @trophies
-        #trophy-cabinet.well-white.well
-          - rows.each do |trophy_row|
-            .row-fluid.trophy_row.large
-              .span2
-                - trophy_row[:far_left].each_slice(2) do |mini_row|
-                  .row-fluid.trophy_row.small
-                    - mini_row.each do |trophy|
-                      .span6
-                        = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :small}
-              .span2
-                - trophy_row[:left].each do |trophy|
-                  .row-fluid.trophy_row.medium
-                    .span12
-                      = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :medium}
-              .span4
-                = render 'trophies/trophy_thumbnail', {:trophy => trophy_row[:center][0], :size => :large}
-              .span2
-                - trophy_row[:right].each do |trophy|
-                  .row-fluid.trophy_row.medium
-                    .span12
-                      = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :medium}
-              .span2
-                - trophy_row[:far_right].each_slice(2) do |mini_row|
-                  .row-fluid.trophy_row.small
-                    - mini_row.each do |trophy|
-                      .span6
-                        = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :small}
+        -if params[:by_set]
+          - if params[:carousel]
+            .well-white.well
+              #trophy-cabinet.carousel.slide
+                .carousel-inner
+                  - first = true
+                  - @trophies.each do |set|
+                    - rows = sort_trophies_by_priority set.profile_trophies
+                    .item{class: ("active" if first)}
+                      %h3= set.name
+                      - rows.each do |trophy_row|
+                        = render 'trophy_shelf', trophy_row: trophy_row
+                    - first = false
+                %a.left{"data-slide" => "prev", href: "#trophy-cabinet"} ‹
+                %a.right{"data-slide" => "next", href: "#trophy-cabinet"} ›
+                - (0..@trophies.size-1).each do |i|
+                  %a{class: ("active" if i == 0),"data-slide-to" => i, "data-target" => "#trophy-cabinet" , href: "#trophy-cabinet"}= i
 
+          -else
+            #trophy-cabinet
+              - @trophies.each do |set|
+                - rows = sort_trophies_by_priority set.profile_trophies
+                .well-white.well
+                  %h3= set.name
+                  - rows.each do |trophy_row|
+                    = render 'trophy_shelf', trophy_row: trophy_row
+        -else
+          - rows = sort_trophies_by_priority @trophies
+          - if params[:carousel]
+            .well-white.well
+              #trophy-cabinet.carousel.slide
+                .carousel-inner
+                  - first = true
+                  - rows.each do |trophy_row|
+                    .item{class: ("active" if first)}
+                      = render 'trophy_shelf', trophy_row: trophy_row
+                    - first = false
+                %a.left{"data-slide" => "prev", href: "#trophy-cabinet"} ‹
+                %a.right{"data-slide" => "next", href: "#trophy-cabinet"} ›
+                - (0..rows.size-1).each do |i|
+                  %a{class: ("active" if i == 0),"data-slide-to" => i, "data-target" => "#trophy-cabinet" , href: "#trophy-cabinet"}= i
+
+          - else
+            #trophy-cabinet.well-white.well
+              - rows.each do |trophy_row|
+                = render 'trophy_shelf', trophy_row: trophy_row
       -else
         -@trophies.each do |set|
           .well-white.well

@@ -129,22 +129,41 @@ class ProfilesController < ApplicationController
       @trophy_ids = nil
     end
     @profile = Profile.find(params[:id])
+    @by_sets = false
     if params[:style] == "credit"
       @trophies = @profile.trophies.order{credits.desc}
     elsif params[:style] == "priority"
-      @trophies = @profile.trophies_by_priority
-      last_priority = 0
-      @trophies.each do |trophy|
-        trophy.last_priority = last_priority
-        last_priority = trophy.trophy_priority
-      end
-      next_priority = 0
-      @trophies.reverse_each do |trophy|
-        trophy.next_priority = next_priority
-        next_priority = trophy.trophy_priority
+      if params[:by_set]
+        @by_sets = true
+        @trophies = @profile.trophies_by_priority_set
+        @trophies.each do |set|
+          last_priority = 0
+          set.profile_trophies.each do |trophy|
+            trophy.last_priority = last_priority
+            last_priority = trophy.trophy_priority
+          end
+          next_priority = 0
+          set.profile_trophies.reverse_each do |trophy|
+            trophy.next_priority = next_priority
+            next_priority = trophy.trophy_priority
+          end
+        end
+      else
+        @trophies = @profile.trophies_by_priority
+        last_priority = 0
+        @trophies.each do |trophy|
+          trophy.last_priority = last_priority
+          last_priority = trophy.trophy_priority
+        end
+        next_priority = 0
+        @trophies.reverse_each do |trophy|
+          trophy.next_priority = next_priority
+          next_priority = trophy.trophy_priority
+        end
       end
     else
       @trophies = @profile.trophies_by_set
+      @by_sets = true
     end
 
 

@@ -196,7 +196,25 @@ class Profile < ActiveRecord::Base
   end
 
   def trophies_by_priority
-    self.trophies.select('trophies.*').select{coalesce(profiles_trophies.priority,trophies.priority,trophy_sets.priority,0).as(trophy_priority)}.joins(:trophy_set).order('trophy_priority desc')
+    self.trophies.
+        select('trophies.*').
+        select{coalesce(profiles_trophies.priority,trophies.priority,trophy_sets.priority,0).as(trophy_priority)}.
+        joins(:trophy_set).
+        order('trophy_priority desc')
+  end
+
+  def trophies_by_priority_set
+    sets = trophy_sets.order("trophy_sets.main DESC").uniq
+    all_trophies = trophies.
+        select('trophies.*').
+        select{coalesce(profiles_trophies.priority,trophies.priority,trophy_sets.priority,0).as(trophy_priority)}.
+        joins(:trophy_set).
+        order('trophy_priority desc').
+        group_by{|t| t.trophy_set_id}
+    sets.each do |set|
+      set.profile_trophies = all_trophies[set.id]
+    end
+    sets
   end
 
   def has_trophy(trophy)

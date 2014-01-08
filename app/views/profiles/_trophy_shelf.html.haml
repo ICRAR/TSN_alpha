@@ -1,0 +1,25 @@
+.row-fluid.trophy_row.large
+  .span2
+    - trophy_row[:far_left].each_slice(2) do |mini_row|
+      .row-fluid.trophy_row.small
+        - mini_row.each do |trophy|
+          .span6
+            = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :small}
+  .span2
+    - trophy_row[:left].each do |trophy|
+      .row-fluid.trophy_row.medium
+        .span12
+          = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :medium}
+  .span4
+    = render 'trophies/trophy_thumbnail', {:trophy => trophy_row[:center][0], :size => :large}
+  .span2
+    - trophy_row[:right].each do |trophy|
+      .row-fluid.trophy_row.medium
+        .span12
+          = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :medium}
+  .span2
+    - trophy_row[:far_right].each_slice(2) do |mini_row|
+      .row-fluid.trophy_row.small
+        - mini_row.each do |trophy|
+          .span6
+            = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :small}
