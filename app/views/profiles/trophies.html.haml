@@ -63,8 +63,16 @@
       -elsif params[:style] == "priority"
         -if params[:by_set]
           - if params[:carousel]
-            .well-white.well
-              #trophy-cabinet.carousel.slide
+            #trophy-cabinet.well-white.well
+              #trophy-carousel.carousel.slide
+                .carousel-indicators
+                  - i=0
+                  - @trophies.each do |set|
+                    .carousel-nav{class: ("active" if i == 0)}
+                      = ' | ' unless i == 0
+                      %a{"data-slide-to" => i, "data-target" => "#trophy-carousel" , href: "#trophy-cabinet"}= set.name
+                    - i = 1+i
+                %hr
                 .carousel-inner
                   - first = true
                   - @trophies.each do |set|
@@ -74,10 +82,7 @@
                       - rows.each do |trophy_row|
                         = render 'trophy_shelf', trophy_row: trophy_row
                     - first = false
-                %a.left{"data-slide" => "prev", href: "#trophy-cabinet"} ‹
-                %a.right{"data-slide" => "next", href: "#trophy-cabinet"} ›
-                - (0..@trophies.size-1).each do |i|
-                  %a{class: ("active" if i == 0),"data-slide-to" => i, "data-target" => "#trophy-cabinet" , href: "#trophy-cabinet"}= i
+
 
           -else
             #trophy-cabinet

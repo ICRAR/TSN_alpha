@@ -1,4 +1,20 @@
 #trophy-cabinet {
+  .carousel-indicators {
+    position: relative;
+    top: 0px;
+    right: 0px;
+    z-index: inherit;
+    margin: 0;
+    list-style: none;
+    .carousel-nav {
+      display: inline;
+      &.active {
+        a {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
   .trophy_row {
     position: relative;
     text-align: center;
