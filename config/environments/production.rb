@@ -89,5 +89,7 @@ Tsn::Application.configure do
   #google analytics
   GA.tracker = APP_CONFIG['GA_tracker_id']
 
+  #forcing ssl
+  config.middleware.use Rack::SslEnforcer, only: ['/users','/admin']
 
 end
