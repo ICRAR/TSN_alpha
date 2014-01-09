@@ -78,6 +78,10 @@ $(document).ready( ->
   setup_announcement()
   custom_alert_box()
   placeholder_check()
+
+  #fix for bootstrap modal's getting stuck behind the background
+  $('.modal').appendTo("body")
+
   #using bootstrap-progressbar
   $('.progress .bar').progressbar(
     display_text: 1
