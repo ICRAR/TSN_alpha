@@ -17,7 +17,7 @@ feature "Pages" do
       expect(page).to have_content "404"
     end
 
-    scenario "with no parent and with children" do
+    scenario "with no parent and with siblings" do
       parent_page = Fabricate(:page, slug: 'parent').reload
       ch1_page = Fabricate(:page, parent_id: parent_page.id, sort_order:3).reload
       ch2_page = Fabricate(:page, parent_id: parent_page.id, sort_order:1).reload
@@ -40,8 +40,10 @@ feature "Pages" do
       expect(page).to have_css('a', :text => ch3_page.title)
 
       #in correct order
-      ch3_page.title.should appear_before(ch1_page.title)
-      ch2_page.title.should appear_before(ch3_page.title)
+      within "#page-nav" do
+        ch3_page.title.should appear_before(ch1_page.title)
+        ch2_page.title.should appear_before(ch3_page.title)
+      end
 
       #check that the other pages are not displayed
       expect(page).not_to have_css('a', :text => second_ch_page.title)
@@ -71,8 +73,10 @@ feature "Pages" do
       expect(page).to have_css('a', :text => ch3_page.title)
 
       #in correct order
-      ch3_page.title.should appear_before(ch1_page.title)
-      ch2_page.title.should appear_before(ch3_page.title)
+      within "#page-nav" do
+        ch3_page.title.should appear_before(ch1_page.title)
+        ch2_page.title.should appear_before(ch3_page.title)
+      end
 
       #with the current page marked as active
       expect(page).to have_css('li.active', :text => ch1_page.title)
@@ -82,6 +86,17 @@ feature "Pages" do
       expect(page).to have_html(ch2_page.content)
       #with the new page marked as active
       expect(page).to have_css('li.active', :text => ch2_page.title)
+    end
+    scenario "with translation" do
+      test_page = Fabricate(:with_french).reload
+      visit page_path(test_page, locale: 'en')
+      I18n.locale = :en
+      expect(page).to have_css('h1', :text => test_page.title)
+      visit page_path(test_page, locale: 'fr')
+      I18n.locale = :en
+      expect(page).not_to have_css('h1', :text => test_page.title)
+      I18n.locale = :fr
+      expect(page).to have_css('h1', :text => test_page.title)
     end
   end
   describe "preview Pages as Admin" do

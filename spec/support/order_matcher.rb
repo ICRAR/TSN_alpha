@@ -2,7 +2,7 @@ require 'rspec/expectations'
 RSpec::Matchers.define :appear_before do |expected|
   match do |actual|
     begin
-      page.body.index(actual) < page.body.index(expected)
+      page.text.index(actual) < page.text.index(expected)
     rescue ArgumentError
       raise "Could not locate later content on page: #{expected}"
     rescue NoMethodError

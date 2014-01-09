@@ -7,7 +7,7 @@ class Page < ActiveRecord::Base
   attr_accessible :page_translations_attributes, :as => :admin, :allow_destroy => true
 
   attr_accessible :slug, :parent_id, :sub_page_ids, :science_portal_id, :preview, :sort_order, as: :admin
-  validates_presence_of :slug
+  validates :slug, uniqueness: true, presence: true
   has_many :sub_pages, :class_name => "Page", :foreign_key => "parent_id", :inverse_of => :parent
   belongs_to :parent, :class_name => "Page", :inverse_of => :sub_pages
 

@@ -53,7 +53,7 @@ gem 'tire'
 gem 'acts-as-taggable-on'
 gem 'rmagick'
 gem 'voruby'
-gem 'globalize3'
+gem 'globalize', '~> 3.0.4'
 gem 'i18n-js'
 gem 'sanitize'
 gem 'mailboxer'
@@ -103,6 +103,7 @@ group :test do
   gem 'database_cleaner'
 #  gem 'guard-rspec'
   gem 'launchy'
+  gem 'zeus'
 end
 
 
