@@ -1,0 +1,30 @@
+- my_meta :title => "Manage your Alliance",
+    :description => ""
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @alliance.name
+  -@user_page =  'my_alliance'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    #alliance-show
+      .row-fluid
+        .span12.well.well-white
+          .well
+            %p Here you can edit some details of your allaince.
+            - if @alliance.is_boinc
+              %p
+                Alliance that are synced with boinc, have limited details that can be managed here. More changes can be made through
+                = link_to " POGS.", APP_CONFIG['boinc_url']
+
+          = simple_form_for(@alliance, :html => {:class => 'form-horizontal' }) do |f|
+            - unless @alliance.is_boinc
+              = f.input :desc, input_html: {rows: 5, class: 'input-xlarge'}, hint: "You may use basic html including formatting tags, links, and lists."
+              = f.input :leader_id, collection: @alliance.members, group_method: :id, group_label_method: :name
+              = f.input :invite_only, :hint => 'If this box is marked, new members will require an invite code to join.'
+
+            = f.input :tag_list, input_html: {:id => "alliance_tags", :data => {:pre => @alliance.tags.map{|t| {:id => t.id, :name => t.name }}.to_json}}
+            .control-group
+              .controls
+                = f.button :submit

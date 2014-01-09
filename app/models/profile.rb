@@ -129,36 +129,31 @@ class Profile < ActiveRecord::Base
   end
 
 
-  def join_alliance(alliance)
-    if self.alliance != nil
+  def join_alliance(alliance, update_pogs = true)
+    if self.alliance != nil || (alliance.pogs_team_id > 0 && self.general_stats_item.boinc_stats_item.nil?)
       false
     else
       self.alliance = alliance
-      item = AllianceMembers.new
-      item.join_date = Time.now
-      item.start_credit = self.general_stats_item.total_credit
-      item.start_credit ||= 0
-      item.leave_credit = self.general_stats_item.total_credit
-      item.leave_credit ||= 0
-      item.leave_date = nil
-
-      self.alliance_items << item
-      alliance.member_items << item
-
-      item.save
+      AllianceMembers.join_alliance(self,alliance)
       self.save
+      if alliance.pogs_team_id > 0 && update_pogs
+        BoincRemoteUser.delay.join_team self.general_stats_item.boinc_stats_item.boinc_id, alliance.pogs_team_id
+      end
     end
   end
-  def leave_alliance
+
+  def leave_alliance(update_pogs = true)
     if self.alliance == nil
       false
     else
       item = self.alliance_items.where{(leave_date == nil) & (alliance_id == my{self.alliance.id})}.first
-      item.leave_date = Time.now
-      item.leave_credit = self.general_stats_item.total_credit
-      item.save
+      item.leave_alliance(self)
+      if self.alliance.pogs_team_id > 0 && update_pogs
+        BoincRemoteUser.delay.leave_team self.general_stats_item.boinc_stats_item.boinc_id
+      end
       self.alliance = nil
       self.save
+
     end
   end
 
@@ -183,11 +178,11 @@ class Profile < ActiveRecord::Base
   def avatar_url(size=48)
     default_url = "retro"
     gravatar_id = Digest::MD5.hexdigest(self.user.email.downcase)
-    "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
+    "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
   end
 
   def avatar_edit_url
-    "http://en.gravatar.com/emails/"
+    "https://en.gravatar.com/emails/"
   end
 
 
@@ -200,19 +195,32 @@ class Profile < ActiveRecord::Base
     sets
   end
 
+  def trophies_by_priority
+    self.trophies.
+        select('trophies.*').
+        select{coalesce(profiles_trophies.priority,trophies.priority,trophy_sets.priority,0).as(trophy_priority)}.
+        joins(:trophy_set).
+        order('trophy_priority desc')
+  end
+
+  def trophies_by_priority_set
+    sets = trophy_sets.order("trophy_sets.main DESC").uniq
+    all_trophies = trophies.
+        select('trophies.*').
+        select{coalesce(profiles_trophies.priority,trophies.priority,trophy_sets.priority,0).as(trophy_priority)}.
+        joins(:trophy_set).
+        order('trophy_priority desc').
+        group_by{|t| t.trophy_set_id}
+    sets.each do |set|
+      set.profile_trophies = all_trophies[set.id]
+    end
+    sets
+  end
+
   def has_trophy(trophy)
     ProfilesTrophy.where{(profile_id == my{self.id}) & (trophy_id == my{trophy.id})}.count > 0
   end
 
-  #search methods
-  include Tire::Model::Search
-  #include Tire::Model::Callbacks
-  after_save do
-    begin
-      update_index
-    rescue Errno::ECONNREFUSED
-    end
-  end
 
 
   def is_science_user?
@@ -224,10 +232,24 @@ class Profile < ActiveRecord::Base
     end
   end
 
+  def is_pogs?
+    !self.general_stats_item.boinc_stats_item.nil?
+  end
+
+
+  #search methods
+  include Tire::Model::Search
+  #include Tire::Model::Callbacks
+  after_save do
+    begin
+      update_index
+    rescue Errno::ECONNREFUSED
+    end
+  end
+
   mapping do
     indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
   end
-
 
   def self.search(query,page = 1,per_page = 10)
     tire.search(
@@ -248,4 +270,5 @@ class Profile < ActiveRecord::Base
       end
     end
   end
+
 end

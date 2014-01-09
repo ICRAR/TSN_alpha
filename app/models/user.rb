@@ -7,6 +7,17 @@ class User < ActiveRecord::Base
          :authentication_keys => [:login]
   alias_method :devise_valid_password?, :valid_password?
   # Setup accessible (or protected) attributes for your model
+
+  #my_name is used as a honeypot field to try and catch spamers
+  attr_accessor :my_name
+  attr_accessible :my_name, :as => [:default, :admin]
+  validate :my_name_honey_pot
+  def  my_name_honey_pot
+    unless my_name.nil? || my_name == ''
+      errors[:base] << "Sorry humans only for sign up. Please do not fill in the my name field"
+    end
+  end
+
   attr_accessible :username, :email, :password, :password_confirmation, :remember_me, :as => [:default, :admin]
   attr_accessible :admin, :mod, :joined_at, as: :admin
   # attr_accessible :title, :body
@@ -28,6 +39,17 @@ class User < ActiveRecord::Base
 
   before_invitation_accepted :check_alliance_invite
 
+  #hooks in with devise confirmation and runs after the user has been succsefully confirmed
+  #not this will also be called after the user successfully changes their email
+  def confirm!
+    super
+    #check that this is not a change of email
+    unless self.class.reconfirmable && unconfirmed_email.present?
+      #send welcome message
+      UserMailer.delay.welcome_msg(self.id)
+    end
+  end
+
 
   def check_alliance_invite
     invite = AllianceInvite.valid_token?(self.email, self.invitation_token)
@@ -47,6 +69,7 @@ class User < ActiveRecord::Base
     self.profile.general_stats_item.bonus_credits.destroy
     self.profile.general_stats_item.destroy
     self.profile.profiles_trophies.delete_all
+    Profile.tire.index.remove self.profile
     self.profile.delete
     self.delete
   end
@@ -114,7 +137,5 @@ class User < ActiveRecord::Base
       end
     end
   end
-
-
 
 end

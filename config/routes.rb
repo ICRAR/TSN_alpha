@@ -1,11 +1,13 @@
 Tsn::Application.routes.draw do
   #redirect all to host name in custom config
-  match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
-        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host']) &&
+  match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host_no_port']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
+        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host_no_port']) &&
           (request.host !='localhost') &&
           (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
         )}
-
+  if Rails.env.development?
+    mount MailPreview => 'mail_view'
+  end
   resources :hdf5_requests, :only => [:index, :create, :show, :new] do
     collection do
       get 'clear'
@@ -13,6 +15,12 @@ Tsn::Application.routes.draw do
       get 'remove'
     end
   end
+
+  resource :misc, :only => [], controller: 'misc' do
+    get 'advent'
+    get 'advent_subscribe'
+  end
+
   resources :contact_forms
   resources :stats, :only => [:index] do
     collection do
@@ -32,6 +40,9 @@ Tsn::Application.routes.draw do
   get "/pages/:slug" => "pages#show", :as => 'page'
 
   resources :notifications, :only => [:index, :show] do
+    collection do
+      get 'dismiss_all'
+    end
     member do
       get 'dismiss'
     end
@@ -41,6 +52,7 @@ Tsn::Application.routes.draw do
   resources :profiles, :only => [:index, :show, :update] do
     collection do
       get 'search'
+      get 'boinc_challenge'
     end
     member do
       get 'trophies'
@@ -82,7 +94,12 @@ Tsn::Application.routes.draw do
   end
   get "/alliance" => "alliances#show", :as => 'my_alliance'
 
-  resources :trophies, :only => [:show]
+  resources :trophies, :only => [:show] do
+    member do
+      get 'promote'
+      get 'demote'
+    end
+  end
 
   get "/check_auth" => "application#check_auth"
   post "/check_auth" => "application#check_auth"

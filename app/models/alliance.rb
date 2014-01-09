@@ -4,7 +4,24 @@ class Alliance < ActiveRecord::Base
   attr_accessible :name,:tags,:desc,:country, :old_id, :tag_list, :invite_only, :is_boinc,  :as => [:default, :admin]
   attr_accessible :leader_id, :member_ids, as: :admin
 
-  validates :name, uniqueness: true
+  validates :name, uniqueness: true, presence: true
+  #validates :leader, presence: true
+  validate :desc_not_nil
+  def desc_not_nil
+    errors[:desc] << "desc can not be nil" if desc.nil?
+  end
+  validate :boinc_name_uniqueness
+  def boinc_name_uniqueness
+    if is_boinc? && (pogs_team_id.nil? || pogs_team_id == 0)
+      errors[:name] << "Alliance name is already taken in POGS" unless PogsTeam.find_by_name(name).nil?
+    end
+  end
+  validate :boinc_leader
+  def boinc_leader
+    if is_boinc?
+      errors[:leader] << "Leader must be a member of POGS to create a POGS team" unless leader.nil? || leader.is_pogs?
+    end
+  end
 
   scope :temp_credit, joins(:member_items).select("alliances.*, sum(alliance_members.leave_credit-IFNULL(alliance_members.start_credit,0)) as temp_credit").group('alliances.id')
   scope :temp_rac, joins(:members => [:general_stats_item]).select("alliances.*, sum(general_stats_items.recent_avg_credit) as temp_rac, count(general_stats_items.id) as total_members").group('alliances.id')
@@ -16,6 +33,12 @@ class Alliance < ActiveRecord::Base
   has_many :member_items, :class_name => 'AllianceMembers', :dependent => :destroy
   has_many :members, :class_name => 'Profile', :inverse_of => :alliance
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :alliance, :dependent => :destroy
+
+  before_destroy :remove_current_members
+  def remove_current_members
+    Profile.where{alliance_id == my{self.id}}.update_all(:alliance_id => nil)
+    Profile.where{alliance_leader_id == my{self.id}}.update_all(:alliance_leader_id => nil)
+  end
 
 
   ######################################################
@@ -63,7 +86,7 @@ class Alliance < ActiveRecord::Base
   end
 
   def joinable?
-    (!is_boinc?) && (!invite_only?)
+    (!invite_only?)
   end
 
   include Tire::Model::Search
@@ -95,22 +118,86 @@ class Alliance < ActiveRecord::Base
     end
   end
 
+  def boinc_url
+    "#{APP_CONFIG['boinc_url']}team_display.php?teamid=#{self.pogs_team_id}"
+  end
 
-
+  #creates this alliances as a team on POGS
+  def create_pogs_team
+    raise "Alliance must be valid" unless self.valid?
+    raise "Alliance must be saved before creating POGS team" if self.new_record?
+    raise "Alliance isn't marked as a POGS team" unless self.is_boinc?
+    raise "POGS team has already been created" if self.pogs_team_id > 0
+    PogsTeam.delay.create_new(self.id, self.invite_only)
+    self.invite_only = true
+    self.save
+  end
+  def test
+    self.old_id = 10
+    self.save
+    self.reload
+  end
   #because of a double up between BOINC and classic theSkynet Team's and alliances we need away to safely merge two alliances
-  #this function should be called on the pogs alliances the one that will remain
+  #this function should be called on the pogs alliances, the one that will remain
   def merge_pogs_team(second_alliance)
     raise 'second alliance must be a classic alliance' if second_alliance.is_boinc?
+    raise 'first alliance must be a POGS alliance' unless self.is_boinc?
+
+    #update_current members on POGS or remove if that's not possible
+    profiles = Profile.where{alliance_id == my{second_alliance.id}}
+    #add new members to POGS team on the BOINC server
+    profiles.each do |profile|
+      #if they don't have a boinc account
+      if profile.general_stats_item.boinc_stats_item.nil?
+        #remove them from the alliance
+        item = profile.alliance_items.where{(leave_date == nil) & (alliance_id == my{profile.alliance.id})}.first        #send email
+        item.leave_alliance_without_notification(profile)
+        profile.alliance = nil
+        profile.save
+        UserMailer.alliance_merger_issue(profile, self).deliver
+      else #if they do have a boinc account
+        #add them to the POGS Team
+        BoincRemoteUser.join_team profile.general_stats_item.boinc_stats_item.boinc_id, self.pogs_team_id
+      end
+    end
+
+
+    #update_current members
+    #move all profiles to the new alliance
+    profiles = Profile.where{alliance_id == my{second_alliance.id}}.update_all(:alliance_id => self.id)
+    #move alliance_members
+    AllianceMembers.where{alliance_id == my{second_alliance.id}}.update_all(:alliance_id => self.id)
+
+    #handle duplicate users
+    #first we grab all the member items
+    self.save
+    self.reload
+
+    self.fix_overlapping
+
+    #fix name
+    self.name = second_alliance.name
+
+    #fix created at
+    self.created_at = [self.created_at, second_alliance.created_at].min
+
     #merge params
     self.old_id = second_alliance.old_id
     self.tag_list = second_alliance.tag_list
-    #merge users
-    #move alliance_members
-    AllianceMembers.where{alliance_id == my{second_alliance.id}}.update_all(:alliance_id => self.id)
-    #update_current members
-    Profile.where{alliance_id == my{second_alliance.id}}.update_all(:alliance_id => self.id)
-    #handle duplicate users
-    #first we grab all the member items
+
+    #migrate leader if needed
+    self.leader ||= second_alliance.leader
+
+    #we have to delete the second_alliance before self can be saved due to conflicts with database names
+    second_alliance.delete
+
+    self.save
+
+
+
+  end
+
+  def fix_overlapping
     members = self.member_items.group_by{|m| m.profile_id}
     #group by profile id's
     members.each do |profile_id,memberships|
@@ -128,8 +215,8 @@ class Alliance < ActiveRecord::Base
           overlaping << m
           leave_date = m.leave_date.nil? ? Time.now : m.leave_date
         else
-          #check if this one matches the overlap ie join_date is less than leave_date
-          if m.join_date < leave_date
+          #check if this one matches the overlap ie join_date is less than leave_date with a slight fuzziness of 2 hours
+          if m.join_date < (leave_date + 2.hours)
             #there is a match
             #add to overlapping
             overlaping << m
@@ -177,6 +264,6 @@ class Alliance < ActiveRecord::Base
         end
       end
     end
-    second_alliance.delete
   end
+
 end

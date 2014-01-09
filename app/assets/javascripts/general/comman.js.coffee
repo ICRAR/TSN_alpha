@@ -78,6 +78,10 @@ $(document).ready( ->
   setup_announcement()
   custom_alert_box()
   placeholder_check()
+
+  #fix for bootstrap modal's getting stuck behind the background
+  $('.modal').appendTo("body")
+
   #using bootstrap-progressbar
   $('.progress .bar').progressbar(
     display_text: 1
@@ -125,6 +129,15 @@ $(document).ready( ->
     # start storing the mouse position every 100 milliseconds
     getMousePosition 100
     window.mousePos = [0,0]
+
+  #snow at christmas
+  if rails.snow == true
+    $(document).snowfall({round: true, minSize: 1, maxSize:5, flakeCount : 250});
+
+  #start fireworks
+  if rails.fireworks == true
+    Fireworks.run()
+  true
 )
 TSN.spawn_bats = () ->
   for i in [0..20]

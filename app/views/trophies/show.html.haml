@@ -22,7 +22,7 @@
           %p
             = @trophy.desc(@trophy_ids).html_safe
             -unless @trophy.credits.nil? || @trophy.credits == 0
-              ="(#{@trophy.show_credits(@trophy_ids)})"
+              ="(awarded for #{format_credit(@trophy,@trophy_ids)})"
           %p
             = t".won_by"
             = @trophy.profiles_count

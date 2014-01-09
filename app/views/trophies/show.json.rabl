@@ -1,5 +1,5 @@
 object @trophy
-attributes :id
+attributes :id, :set_type
 node(:credits) {|t| t.show_credits(@trophy_ids)}
 node(:title) {|t| t.title}
 node(:description) {|t| t.desc(@trophy_ids).html_safe}

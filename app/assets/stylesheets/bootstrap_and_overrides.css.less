@@ -36,7 +36,12 @@
 // Example:
 // @linkColor: #ff0000;
 
-
+.no-height {
+  margin: 0px;
+  padding: 0px;
+  min-height: 0px !important;
+  height: 0px;
+}
 
 a:link {
   text-decoration: none;
@@ -402,6 +407,10 @@ body {
     color: white;
 
   }
+  #serverTime {
+    color:white;
+    font-size: 80%;
+  }
 }
 .telescopebg {
   background:image-url('telescopebg.jpg') top right no-repeat;
@@ -491,5 +500,17 @@ body {
 #header {
   &.arr_logo a:link {background:image-url('logo_pirate.png') 0 0 no-repeat;}
   &.bat_logo a:link {background:image-url('logo_halloween.png') 0 0 no-repeat;}
+  &.snow_logo a:link {background:image-url('logo_snow.png') 0 0 no-repeat;}
+  &.new_years_2013_logo a:link {background:image-url('logo_new_years_2013.png') 0 0 no-repeat;}
 
 }
+
+form .alliance_tag_list ul{
+  top: -2.5em;
+  position: relative;
+}
+
+
+@import './less_files/advent.css.less';
+@import './less_files/new_years_spec.css.less';
+@import './less_files/trophies.css.less';

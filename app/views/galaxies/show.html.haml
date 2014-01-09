@@ -1,3 +1,5 @@
+- my_meta :title => "Galaxy Info: #{@galaxy.name}",
+    :description => @boinc_id == nil ? "Details about the POGS galaxy" : "This page highlights your contributions to the galaxy #{@galaxy.name}."
 -content_for(:title_bar) do
   #intro-sml-wrap
     %h1.fontface= "Galaxy Info: #{@galaxy.name}"

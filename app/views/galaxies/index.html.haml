@@ -1,3 +1,5 @@
+- my_meta :title => @boinc_id == nil ? "All POGS Galaxies" : "Your POGS Galaxies",
+    :description => "See all the galaxies processed by theSkyNet POGS"
 -content_for(:title_bar) do
   #intro-sml-wrap
     %h1.fontface= @boinc_id == nil ? "All Galaxies" : "Your Galaxies"
@@ -21,13 +23,13 @@
                       = text_field_tag :name, params[:name]
                       = label_tag :galaxy_type, "Type"
                       = select_tag(:galaxy_type, galaxy_types(params[:galaxy_type]))
-                  -if @science_user == true
-                    .control-group
-                      = label_tag :id_from do
-                        Galaxy ID from
-                        = text_field_tag :id_from, params[:id_from]
-                        to
-                        = text_field_tag :id_to, params[:id_to]
+                    -if @science_user == true
+                      .control-group
+                        = label_tag :id_from do
+                          Galaxy ID from
+                          = text_field_tag :id_from, params[:id_from]
+                          to
+                          = text_field_tag :id_to, params[:id_to]
 
                     .control-group
                       = label_tag :ra_from do

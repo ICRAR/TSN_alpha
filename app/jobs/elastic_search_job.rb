@@ -5,9 +5,13 @@ class ElasticSearchJob
   def perform
     begin
       Profile.search("test",1,10)
-    rescue Errno::ECONNREFUSED
+    rescue => e
       call = "sudo service elasticsearch restart "
-      AdminMailer.debug("Elastic Search has been restarted", "ES Restart").deliver
+      msg =  "Elastic Search has been restarted\n\n"
+      msg +=  e.to_s
+      msg += "\n\n"
+      msg += e.backtrace.join("\n")
+      AdminMailer.debug(msg, "ES Restart").deliver
       system "/bin/bash -l -c '" + call + "'"
     end
   end

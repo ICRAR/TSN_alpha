@@ -21,6 +21,10 @@ class ContactForm < MailForm::Base
     ContactForm.delay.delay_send(self.mail_form_attributes)
   end
   def self.delay_send(params)
+    #send email to person
+    UserMailer.contact_support(params["name"],params["email"],params["message"]).deliver
+
+    #send email to help desk
     contact = ContactForm.new(params)
     contact.deliver
   end

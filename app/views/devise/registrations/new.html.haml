@@ -9,10 +9,12 @@
       %p= t "users.sign_up.msg"
       = simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name),:html => {:class => 'form-horizontal' }) do |f|
         = devise_error_messages!
-        = f.input :username, :autofocus => true
-        = f.input :email, :autofocus => true
-        = f.input :password, :autofocus => true
-        = f.input :password_confirmation, :autofocus => true
+        = f.input :username, :autofocus => true, as: :string
+        = f.input :email, :autofocus => true, as: :string
+        = f.input :password, :autofocus => true, as: :password
+        = f.input :password_confirmation, :autofocus => true, as: :password
+        #my_name_input{style: "visibility: hidden"}
+          = f.input :my_name, as: :string, hint: "If you are a human please do not fill in this field"
         .controls
           = f.button :submit, t("nav.sign_up")
       = render "devise/shared/links"

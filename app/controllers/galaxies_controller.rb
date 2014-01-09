@@ -49,7 +49,7 @@ class GalaxiesController < ApplicationController
 
   end
   def show
-    @galaxy = Galaxy.where(:galaxy_id => params[:id]).first
+    @galaxy = Galaxy.where(:galaxy_id => params[:id]).first || not_found
     @science_user = check_science_user
     if @science_user
       load_galaxy_cart

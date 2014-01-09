@@ -14,6 +14,9 @@ Notifications.load_one = (id,load_fnc) ->
 Notifications.dismiss = (id,load_fnc) ->
   $.get("/notifications/#{id}/dismiss.json", load_fnc)
 
+Notifications.dismiss_all = (load_fnc) ->
+  $.get("/notifications/dismiss_all.json", load_fnc)
+
 Notifications.display = (note) ->
   Messenger().post
     message: note['subject']
@@ -48,6 +51,13 @@ Notifications.display = (note) ->
           this.hide()
           Notifications.dismiss(note['id'], (data) ->
             note = data['result']['notification']
+          )
+      dismiss_all:
+        label: "Dimsiss All"
+        action: ->
+          Messenger().hideAll()
+          Notifications.dismiss_all((data) ->
+            #do nothing
           )
     id: note["id"]
     hideAfter: 10000

@@ -1,0 +1,68 @@
+#trophy-cabinet {
+  .carousel-indicators {
+    position: relative;
+    top: 0px;
+    right: 0px;
+    z-index: inherit;
+    margin: 0;
+    list-style: none;
+    .carousel-nav {
+      display: inline;
+      &.active {
+        a {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  .trophy_row {
+    position: relative;
+    text-align: center;
+    border-bottom: 2px black solid;
+    &.small {
+      height: 80px;
+    }
+    &.medium {
+      height: 180px;
+    }
+    &.large {
+      height: 400px;
+    }
+    .trophy_thumbnail {
+      position: absolute;
+      bottom:5px;
+      &.large {
+        margin-left: 10px;
+        img {
+          margin-left: 10px;
+          width: 200px;
+          max-height: 300px;
+        }
+      }
+      &.medium {
+        img {
+          width: 100px;
+          max-height: 100px;
+        }
+      }
+      &.small {
+        img {
+          width: 40px;
+          max-height: 40px;
+        }
+      }
+
+    }
+  }
+
+
+}
+.trophy-modal {
+  h3 {
+    font-family: Helvetica, Helvetica Neue, Arial, sans-serif;
+    color: #3a3a3a;
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: bold;
+  }
+}

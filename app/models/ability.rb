@@ -36,6 +36,7 @@ class Ability
    can :run, NereusStatsItem
    can :read, :all
    can :search, :all
+   can :promote, Trophy
    can :trophies, Profile
    cannot :join, Alliance
    cannot :leave, Alliance

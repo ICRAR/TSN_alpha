@@ -1,13 +1,13 @@
 class Trophy < ActiveRecord::Base
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::NumberHelper
-  attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, as: [:default, :admin]
+  attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, :priority, as: [:default, :admin]
   has_attached_file :image
   has_many :profiles_trophies, :dependent => :destroy, :autosave => true
   has_many :profiles, :through => :profiles_trophies
   belongs_to :trophy_set
   validates_presence_of  :desc, :title, :image, :trophy_set
-  has_many :notifications, foreign_key: :notified_object_id, conditions: {notified_object_type: 'Trophyp.clas'}, dependent: :destroy
+  has_many :notifications, foreign_key: :notified_object_id, conditions: {notified_object_type: 'Trophy.class'}, dependent: :destroy
 
 
   scope :all_credit_active, joins(:trophy_set).
@@ -17,18 +17,17 @@ class Trophy < ActiveRecord::Base
       where{(trophy_sets.set_type =~ "credit_active") | (trophy_sets.set_type =~ "credit_classic")}.
       where("credits IS NOT NULL")
 
-  attr_accessor :profiles_count_store
+  attr_accessor :profiles_count_store, :last_priority, :next_priority
+
+  before_save :update_set_type
+  def update_set_type
+    self.set_type = self.trophy_set.set_type
+  end
+
   def profiles_count
     self.profiles_count_store ||= self.profiles.joins(:general_stats_item).where{general_stats_item.power_user == false}.count
   end
 
-  def heading(trophy_ids = nil)
-    if credits.nil? || credits == 0
-      title
-    else
-      "#{title} (#{number_with_delimiter(self.show_credits(trophy_ids))} cr)"
-    end
-  end
 
   def desc(trophy_ids = nil)
 
@@ -39,12 +38,9 @@ class Trophy < ActiveRecord::Base
     end
   end
   def show_credits(trophy_ids = nil)
-    if self.hidden?(trophy_ids) == true
-      "-"
-    else
-      self.credits
-    end
+    (self.hidden?(trophy_ids) == true) ? "-" : self.credits
   end
+
   def hidden?(trophy_ids = nil)
     (self.hidden == true && (trophy_ids.nil? || !trophy_ids.include?(self.id)))
   end
@@ -169,7 +165,10 @@ class Trophy < ActiveRecord::Base
 
   rails_admin do
     field :credits
-    field :desc
+    field :priority
+    field :desc do
+      ckeditor true
+    end
     field :title
     field :image
     field :hidden
