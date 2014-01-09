@@ -16,6 +16,7 @@ gem 'devise-async'
 gem 'cancan'
 
 gem 'rails_admin'
+gem 'rack-ssl-enforcer'
 
 # Gems used only for assets and not required
 # in production environments by default.
