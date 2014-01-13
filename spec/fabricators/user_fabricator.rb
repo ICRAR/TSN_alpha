@@ -1,5 +1,5 @@
 Fabricator(:user) do
-  username Fabricate.sequence(:name) { |i| "Name #{i}" }
+  username { Fabricate.sequence(:user_name) { |i| "Name #{i}" } }
   email { |attrs| "#{attrs[:username].parameterize}@exmaple.com"}
   password 'password'
   password_confirmation 'password'
