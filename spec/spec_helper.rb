@@ -28,7 +28,7 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transation, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
@@ -43,24 +43,26 @@ RSpec.configure do |config|
   #config.order = "random"
   config.include Helpers
 
-  config.before(:all) do
-    DatabaseCleaner.strategy = :transaction
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
   end
 
-  config.before(:all) do
+  config.before(:each) do
     DatabaseCleaner.start
   end
 
-  config.after(:all) do
+  config.after(:each) do
     DatabaseCleaner.clean
   end
 
   config.include Capybara::DSL
-  Capybara.default_driver = :rack_test
-  config.before(:each, :type => :feature) do
-    default_url_options[:host] = '127.0.0.1'
-    Capybara.app_host = 'http://127.0.0.1'
-  end
+  Capybara.javascript_driver = :webkit
+  Capybara.default_driver = :webkit
+  #Capybara.default_driver = :rack_test
+  #config.before(:each, :type => :feature) do
+  #  default_url_options[:host] = '127.0.0.1'
+  #  Capybara.app_host = 'http://127.0.0.1'
+  #end
 
 
   config.include Warden::Test::Helpers

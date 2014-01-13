@@ -100,13 +100,13 @@ $(document).ready( ->
   $( document ).idleTimer( 120000 );
   $(document).on "idle.idleTimer", ->
     # function you want to fire when the user goes idle
-    TSN.notifications_timer.pause();
+    TSN.notifications_timer.pause() if typeof(TSN.notifications_timer) == 'object'
     TSN.bat_timer.pause() if typeof(TSN.bat_timer) == 'object'
     TSN.activity_pause = true
 
   $(document).on "active.idleTimer", ->
     # function you want to fire when the user becomes active again
-    TSN.notifications_timer.play()
+    TSN.notifications_timer.play()  if typeof(TSN.notifications_timer) == 'object'
     TSN.bat_timer.play() if typeof(TSN.bat_timer) == 'object'
     TSN.activity_pause = false
 

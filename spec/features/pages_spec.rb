@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature "Pages" do
-  describe "Viewing on website"  do
+  describe "Viewing on website", :js => true  do
     scenario "with no parent or children" do
       new_page = Fabricate(:page, slug: 'Test Page').reload
       visit page_path(new_page)
@@ -52,6 +52,7 @@ feature "Pages" do
 
       #click on a link will go to that page
       click_link ch2_page.title
+
       expect(page).to have_html(ch2_page.content)
     end
 
@@ -105,7 +106,7 @@ feature "Pages" do
     given(:ch2_page_private)    {Fabricate(:page, parent_id: parent_page.id, preview: true).reload}
 
     scenario "can't view a preview page as a guest"  do
-      Fabricate(:page, slug: '404')
+      Fabricate(:page, slug: '404').reload
       visit page_path(ch2_page_private)
       expect(page).to have_content "404"
       expect(page).not_to have_html(ch2_page_private.content)
@@ -138,5 +139,81 @@ feature "Pages" do
       expect(page).to have_html(ch2_page_private.content)
     end
   end
+
+  describe "Create Page as Admin", :js => true do
+    scenario "create page and view" do
+      as_user Fabricate(:admin)
+      slug = "test_page1"
+      title = "Test Page Title"
+      content = Faker::Lorem.paragraph(5)
+      visit rails_admin.new_path(model_name: 'page')
+      fill_in('Slug', with: slug)
+      click_on('Add a new Page translation')
+      fill_in('Locale', with: "en")
+      fill_in('Title', with: title)
+      fill_in_ckeditor('#cke_1_contents', content)
+
+      click_button("Save")
+
+      visit page_path(slug: slug )
+      expect(page).to have_html(content)
+
+    end
+  end
+
+  describe "Index Page" do
+    scenario "no index page set" do
+      visit root_path
+      page.should have_content("hello world")
+    end
+    scenario "index page set" do
+      index_page = Fabricate(:page, slug: 'index').reload
+      visit root_path
+      page.should have_html(index_page.content)
+    end
+    scenario "main content" do
+      visit root_path
+
+      #check that the main content is displayed
+      page.should have_content("Play your part and help discover our Universe!")
+      page.should have_content("Why should I join?")
+      page.should have_content("Current Server Time:")
+    end
+    scenario "Global stats graphs", :js => true, :driver => :selenium do
+      visit root_path
+
+      #check that the main graphs are displayed
+      page.should have_selector('#tab-global.active')
+      within('#tab-global.active') do
+        page.should have_selector('#chart')
+      end
+      click_link 'POGS Stats'
+
+      page.should have_selector('#tab-boinc.active')
+      within('#tab-boinc.active') do
+        page.should have_selector('#chart')
+      end
+      click_link 'SourceFinder Stats'
+
+      page.should have_selector('#tab-nereus.active')
+      within('#tab-nereus.active') do
+        page.should have_selector('#chart')
+      end
+    end
+    scenario "leaderboards" do
+      visit root_path
+      page.should have_content("leaderboards")
+      #Todo add 11 users and check that top 10 appear
+      #Todo same for alliances
+    end
+    scenario "TFLOPS indicator", :js => true do
+      SiteStat.set('global_TFLOPS', 12.88)
+
+      visit root_path
+      page.should have_content("12.88")
+      page.should have_content("TFLOPS")
+    end
+  end
+
 
 end

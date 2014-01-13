@@ -25,6 +25,10 @@ class PagesController < ApplicationController
   def index
     $statsd.increment 'index.view'
     @page =  Page.find_by_slug('index')
+    if @page.nil?
+      @page = Page.new()
+      @page.content = "hello world"
+    end
     @news = News.published.order{published_time.desc}.limit(5)
     @TFLOPSStat = SiteStat.get('global_TFLOPS')
     @feed = SiteStat.for_feed
