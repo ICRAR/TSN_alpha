@@ -67,6 +67,11 @@ class Trophy < ActiveRecord::Base
     self.award_to_profiles profiles
   end
 
+  def award_by_galaxy_count(profiles = nil)
+    profiles ||= Profile
+    boinc_ids = 0
+  end
+
   def award_by_rac(profiles = nil)
     profiles ||= Profile
     profiles = profiles.for_trophies

@@ -5,6 +5,7 @@ include VORuby
 class Galaxy < PogsModel
   self.table_name = 'galaxy'
 
+  has_many :areas, class_name: "GalaxyArea"
 
   def self.num_current
     where{status_id == 0}.count
@@ -19,10 +20,9 @@ class Galaxy < PogsModel
     joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
             INNER JOIN area_user ON area.area_id = area_user.area_id")
     .where("area_user.userid = ?",user_id )
-    .order("`area_user`.`areauser_id` DESC")
+    .order("`area_user`.`areauser_id` DESCarea_user.userid.as(boinc_id)")
     .limit(1).first
   end
-
 
   #returns an active relations object containing the profiles of all people who worked on this galaxy
   def profiles
