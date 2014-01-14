@@ -18,12 +18,12 @@
       %p= @project.desc.html_safe
     .row-fluid
       - if !@leaders.empty?
-        .span6.well.well-white
+        #leaders.span6.well.well-white
           %h2= t ".leaders"
           - @leaders.each do |profile|
             =render "profiles/profile_card", {:profile => profile}
       - if !@links.empty?
-        .span6.well.well-white
+        #links.span6.well.well-white
           %h2= t ".links"
           %ul
             - @links.each do |link|
