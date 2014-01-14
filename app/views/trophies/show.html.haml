@@ -24,11 +24,13 @@
             -unless @trophy.credits.nil? || @trophy.credits == 0
               -case @trophy.set_type
               -when 'leader_board_position_active'
-                ="(awarded for being in the top #{number_with_delimiter @trophy.show_credits(@trophy_ids)} people)"
+                ="(Awarded for being in the top #{number_with_delimiter @trophy.show_credits(@trophy_ids)} people)"
+              -when 'time_active'
+                ="(Awarded for being a member for at least #{number_with_delimiter @trophy.show_credits(@trophy_ids)} days)"
               -when "RAC_active"
-                ="(awarded for reaching an RAC of #{number_with_delimiter @trophy.show_credits(@trophy_ids)} or higher)"
+                ="(Awarded for reaching an RAC of #{number_with_delimiter @trophy.show_credits(@trophy_ids)} or higher)"
               -else
-                ="(awarded for achieving #{number_with_delimiter @trophy.show_credits(@trophy_ids)} credits)"
+                ="(Awarded for achieving #{number_with_delimiter @trophy.show_credits(@trophy_ids)} credits)"
 
           %p
             = t".won_by"

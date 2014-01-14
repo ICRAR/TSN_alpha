@@ -5,6 +5,8 @@ module TrophiesHelper
         trophy_dec = "Rank"
       when "RAC_active"
         trophy_dec = "RAC"
+      when "time_active"
+        trophy_dec = "Days"
       else
         trophy_dec = "cr"
     end
