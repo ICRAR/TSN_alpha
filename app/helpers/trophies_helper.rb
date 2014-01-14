@@ -1,6 +1,8 @@
 module TrophiesHelper
   def format_credit(trophy,trophy_ids)
     case trophy.set_type
+      when 'leader_board_position_active'
+        trophy_dec = "Rank"
       when "RAC_active"
         trophy_dec = "RAC"
       else

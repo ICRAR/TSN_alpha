@@ -22,7 +22,14 @@
           %p
             = @trophy.desc(@trophy_ids).html_safe
             -unless @trophy.credits.nil? || @trophy.credits == 0
-              ="(awarded for #{format_credit(@trophy,@trophy_ids)})"
+              -case @trophy.set_type
+              -when 'leader_board_position_active'
+                ="(awarded for being in the top #{number_with_delimiter @trophy.show_credits(@trophy_ids)} people)"
+              -when "RAC_active"
+                ="(awarded for reaching an RAC of #{number_with_delimiter @trophy.show_credits(@trophy_ids)} or higher)"
+              -else
+                ="(awarded for achieving #{number_with_delimiter @trophy.show_credits(@trophy_ids)} credits)"
+
           %p
             = t".won_by"
             = @trophy.profiles_count

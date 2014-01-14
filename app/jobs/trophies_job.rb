@@ -36,6 +36,16 @@ class TrophiesJob
             trophy.award_by_time()
           end
         end
+
+        #update leaderboard based trophies
+        leader_board_sets = TrophySet.where{set_type == 'leader_board_position_active'}
+        leader_board_sets.each do |set|
+          set.trophies.each do |trophy|
+            trophy.award_by_leader_board()
+          end
+        end
+
+
       }
 
 

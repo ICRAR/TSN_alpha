@@ -60,6 +60,13 @@ class Trophy < ActiveRecord::Base
     self.award_to_profiles profiles
   end
 
+  def award_by_leader_board(profiles = nil)
+    profiles ||= Profile
+    profiles = profiles.for_trophies
+      .where{general_stats_items.rank <= my{self.credits}}
+    self.award_to_profiles profiles
+  end
+
   def award_by_rac(profiles = nil)
     profiles ||= Profile
     profiles = profiles.for_trophies
