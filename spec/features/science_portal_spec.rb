@@ -250,9 +250,13 @@ feature "SciencePortal" do
     scenario "edit desc", :js => true do
       sp = Fabricate(:science_portal).reload
       as_user Fabricate(:admin)
-      visit rails_admin.index_path(model_name: 'science_portal')
-      page.should have_content sp.name
-      click_link
+      visit rails_admin.edit_path(model_name: 'science_portal', id: sp.id)
+
+      fill_in_ckeditor('#cke_1_contents', "new description")
+      click_button("Save")
+
+      visit science_portal_path(sp)
+      expect(page).to have_content("new description")
     end
   end
 end

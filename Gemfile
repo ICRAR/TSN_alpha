@@ -106,7 +106,7 @@ group :test do
   gem 'database_cleaner'
 #  gem 'guard-rspec'
   gem 'launchy'
-  gem 'zeus'
+  gem 'zeus', '~>0.13.4.pre2'
 end
 
 
