@@ -12,5 +12,11 @@ module Helpers
       page.execute_script js_update
     end
   end
-
+  def habtm_select(selector, selection)
+    within(selector) do
+      find(:css, '.ra-multiselect-search').set selection
+      select(selection)
+      click_link('Add')
+    end
+  end
 end

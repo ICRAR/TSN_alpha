@@ -3,7 +3,7 @@ class SciencePortalsController < ApplicationController
   def index
     @projects = SciencePortal.where{public == true}
     if user_signed_in?
-      @private_projects = current_user.profile.members_science_portals
+      @private_projects = current_user.profile.science_portals_all
     end
   end
 

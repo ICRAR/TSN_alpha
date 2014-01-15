@@ -141,7 +141,7 @@ feature "Pages" do
   end
 
   describe "Create Page as Admin", :js => true do
-    scenario "create page and view" do
+    scenario "create basic page" do
       as_user Fabricate(:admin)
       slug = "test_page1"
       title = "Test Page Title"

@@ -56,6 +56,9 @@ class Profile < ActiveRecord::Base
                           association_foreign_key: "science_portal_id",
                           join_table: "leaders_science_portals"
 
+  def science_portals_all
+    members_science_portals + leaders_science_portals
+  end
   #sets up simple messaging
   acts_as_messageable
   #Returning the email address of the model if an email should be sent for this object (Message or Notification).

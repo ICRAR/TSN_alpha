@@ -102,6 +102,7 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'capybara-webkit'
+  gem 'capybara-screenshot'
   gem 'database_cleaner'
 #  gem 'guard-rspec'
   gem 'launchy'
