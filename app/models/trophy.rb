@@ -88,7 +88,7 @@ class Trophy < ActiveRecord::Base
       inserts.push("(#{self.id}, #{p.id}, '#{Time.now}', '#{Time.now}')")
 
     end
-    create_notification(update_profiles)
+
     if inserts != []
       sql = "INSERT INTO profiles_trophies (trophy_id , profile_id, created_at, updated_at) VALUES #{inserts.join(", ")}"
       db_conn = ActiveRecord::Base.connection
@@ -96,6 +96,7 @@ class Trophy < ActiveRecord::Base
 
       #puts sql
     end
+    create_notification(update_profiles)
   end
 
   def create_notification(profiles)
