@@ -107,6 +107,7 @@ group :test do
 #  gem 'guard-rspec'
   gem 'launchy'
   gem 'zeus', '~>0.13.4.pre2'
+  gem 'simplecov', :require => false
 end
 
 
