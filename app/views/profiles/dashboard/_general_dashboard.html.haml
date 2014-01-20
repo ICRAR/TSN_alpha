@@ -22,7 +22,7 @@
       You haven't won any trophies yet
     - else
       .media
-      = link_to (image_tag @trophy.image.url), @trophy, :class => "pull-left"
+      = link_to (image_tag @trophy.image.url(:base)), @trophy, :class => "pull-left"
       .media-body
         %h4.media-heading= link_to @trophy.title,  @trophy
         %p= @trophy.desc([@trophy.id]).html_safe

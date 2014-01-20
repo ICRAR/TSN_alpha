@@ -4,7 +4,7 @@
       .row-fluid.trophy_row.small
         - mini_row.each do |trophy|
           .span6
-            = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :small}
+            = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :tiny}
   .span2
     - trophy_row[:left].each do |trophy|
       .row-fluid.trophy_row.medium
@@ -22,4 +22,4 @@
       .row-fluid.trophy_row.small
         - mini_row.each do |trophy|
           .span6
-            = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :small}
+            = render 'trophies/trophy_thumbnail', {:trophy => trophy, :size => :tiny}

@@ -2,7 +2,12 @@ class Trophy < ActiveRecord::Base
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::NumberHelper
   attr_accessible :credits, :desc, :title, :image, :hidden, :trophy_set_id, :priority, as: [:default, :admin]
-  has_attached_file :image
+  has_attached_file :image, styles: {
+      tiny: '40x',
+      medium: '100x',
+      large: '200x',
+      base: '160x'
+  }
   has_many :profiles_trophies, :dependent => :destroy, :autosave => true
   has_many :profiles, :through => :profiles_trophies
   belongs_to :trophy_set

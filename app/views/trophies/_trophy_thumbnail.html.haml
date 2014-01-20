@@ -10,7 +10,7 @@
     - if trophy.next_priority > 0
       = link_to "-", demote_trophy_path(id: trophy.id, value: trophy.next_priority-1)
 
-  %a{:href=>"#trophyPopUp#{trophy.id}", "data-toggle" => "modal"}= image_tag trophy.image.url, :class=>"media-object", :title => trophy.title
+  %a{:href=>"#trophyPopUp#{trophy.id}", "data-toggle" => "modal"}= image_tag trophy.image.url(size.to_sym), :class=>"media-object", :title => trophy.title
 
 
 
@@ -24,7 +24,7 @@
         %h3.text-error= t "trophies.show.warning"
         %p.text-error
           %strong= t "trophies.show.denied"
-    %p= image_tag trophy.image.url
+    %p= image_tag trophy.image.url(:base)
     %p
       = trophy.desc(@trophy_ids).html_safe
       -unless trophy.credits.nil? || trophy.credits == 0

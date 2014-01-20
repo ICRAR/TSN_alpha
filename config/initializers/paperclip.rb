@@ -1,4 +1,4 @@
-if Rails.env == 'production' or Rails.env == 'development'
+if Rails.env == 'production'
   Paperclip::Attachment.default_options.merge!(
       :storage => :s3,
       :s3_credentials => {
@@ -11,6 +11,12 @@ if Rails.env == 'production' or Rails.env == 'development'
       #:path => '/:class/:attachment/:id_partition/:style/:filename',
       :s3_headers => { 'Expires' => 1.day.from_now.httpdate },
       :path => '/:class/:attachment/:id_partition/_:timestamp.:style.:extension'
+  )
+elsif Rails.env == 'development'
+  Paperclip::Attachment.default_options.merge!(
+      :storage => :filesystem,
+      :url => 'paperclip/:class/:attachment/:id_partition/_:timestamp.:style.:extension',
+      :path => ":rails_root/public/assets_dev/:url"
   )
 end
 
