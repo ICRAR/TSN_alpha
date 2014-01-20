@@ -3,8 +3,8 @@ class PogsTeam < BoincPogsModel
   self.inheritance_column = :_type_disabled
   self.table_name = 'team'
 
-  def copy_to_local
-    local = Alliance.where{pogs_team_id == my{self.id}}.first
+  def copy_to_local(local = nil,boinc_stats_item_hash = nil)
+    local ||= Alliance.where{pogs_team_id == my{self.id}}.first
     #create local alliance if it doesn't exist
     if local.nil?
       local = Alliance.new
@@ -29,7 +29,7 @@ class PogsTeam < BoincPogsModel
     local.desc = self.description
     local.invite_only = (self.joinable == 0)
     local.save
-    self.update_memberships
+    self.update_memberships local, boinc_stats_item_hash
 
     #update team leader
     #find team leader
@@ -41,9 +41,9 @@ class PogsTeam < BoincPogsModel
     end
   end
 
-  def update_memberships
+  def update_memberships(alliance = nil,boinc_stats_item_hash = nil)
     #load local alliance
-    alliance = Alliance.where{pogs_team_id == my{self.id}}.first
+    alliance ||= Alliance.where{pogs_team_id == my{self.id}}.first
     raise ArgumentError.new("alliance error, alliance not found with pogs_team_id == #{self.id}") if alliance.nil?
     pogs_members = PogsTeamMember.where{(teamid == my{self.id}) & (timestamp > my{alliance.pogs_update_time})}
     #group memberships
@@ -52,7 +52,8 @@ class PogsTeam < BoincPogsModel
     #update per user
     all_memberships.each do |pogs_id,members|
       #find local user
-      boinc_item = BoincStatsItem.where{boinc_id == my{pogs_id}}.first
+      boinc_item = boinc_stats_item_hash[pogs_id] unless boinc_stats_item_hash.nil?
+      boinc_item ||= BoincStatsItem.where{boinc_id == my{pogs_id}}.first
       if !boinc_item.nil? && !boinc_item.general_stats_item.nil?
         profile = boinc_item.general_stats_item.profile
         last = nil

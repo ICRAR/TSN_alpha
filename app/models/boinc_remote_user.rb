@@ -19,9 +19,9 @@ class BoincRemoteUser < BoincPogsModel
   end
 
   #looks for a local versions of the user, if it can't find one it will create it
-  def check_local
+  def check_local(boinc_item = nil)
     #check for boinc item, if not create
-    boinc_item = BoincStatsItem.where(:boinc_id => self.id).first
+    boinc_item ||= BoincStatsItem.where(:boinc_id => self.id).first
     if boinc_item.nil?
       #create new item
       boinc_item = BoincStatsItem.new

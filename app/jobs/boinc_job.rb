@@ -51,11 +51,16 @@ class BoincJob
 
       }
       bench.report('users and alliances') {
+
+        boinc_local_items = BoincStatsItem.all
+        boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
         BoincRemoteUser.where{id >= my{BoincStatsItem.next_id}}.each do |b|
-            b.check_local
+            b.check_local boinc_hash[b.id]
         end
         begin
-          PogsTeam.where{total_credit > 0}.each {|a| a.copy_to_local}
+          alliance_local_items = Alliance.where{pogs_team_id > 0}
+          alliance_hash = Hash[*alliance_local_items.map{|a| [a.pogs_team_id, a]}.flatten]
+          PogsTeam.where{total_credit > 0}.each {|t| t.copy_to_local(alliance_hash[t.id],boinc_hash)}
         rescue ArgumentError => e
           msg =  "Error in BOINC Job whilst updating teams\n\n"
           msg +=  e.to_s
@@ -99,6 +104,7 @@ class BoincJob
         end
       }
     end
+    puts bench_time.to_yaml
     statsd_batch.gauge("boinc.stat.update_time",bench_time[0].total)
     statsd_batch.flush
   end
