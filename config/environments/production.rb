@@ -88,6 +88,8 @@ Tsn::Application.configure do
 
   #google analytics
   GA.tracker = APP_CONFIG['GA_tracker_id']
+  #enables advanced google analytics tracking features
+  GA.script_source = "('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js'"
 
   #forcing ssl
   config.middleware.use Rack::SslEnforcer, only: ['/users','/admin']
