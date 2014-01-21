@@ -5,6 +5,6 @@
 require ::File.expand_path('../config/environment',  __FILE__)
 run Tsn::Application
 
-if Rails.env.profile?
+if Rails.env.profile? && false
   use Rack::RubyProf, :path => './tmp/profile'
 end
