@@ -7,7 +7,7 @@ feature "Profiles" do
         Fabricate(:user_with_credit, credit: (1000-i*10), rank: i)
       end
       visit profiles_path
-      screenshot_and_open_image
+      #screenshot_and_open_image
     end
   end
 end

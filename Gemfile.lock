@@ -310,6 +310,7 @@ GEM
       rspec-expectations (~> 2.13.0)
       rspec-mocks (~> 2.13.0)
     ruby-hmac (0.4.0)
+    ruby-prof (0.14.2)
     ruby-units (1.4.3)
     rubyzip (0.9.9)
     safe_yaml (0.9.1)
@@ -460,6 +461,7 @@ DEPENDENCIES
   rename
   rmagick
   rspec-rails
+  ruby-prof
   sanitize
   sass-rails (~> 3.2.3)
   selenium-webdriver

@@ -87,7 +87,14 @@ group :development do
   gem 'rename'
   gem "mail_view", "~> 2.0.1"
   gem 'webrick', '~> 1.3.1'
+end
+
+group :profile, :development do
   gem 'thin'
+end
+
+group :profile do
+  gem 'ruby-prof'
 end
 
 #Gems required for testing
@@ -110,6 +117,7 @@ group :test do
   gem 'launchy'
   gem 'zeus', '~>0.13.4.pre2'
   gem 'simplecov', :require => false
+
 end
 
 
