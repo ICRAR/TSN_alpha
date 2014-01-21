@@ -75,7 +75,7 @@ gem 'rabl'
 # Also add either `oj` or `yajl-ruby` as the JSON parser
 gem 'oj'
 
-gem 'debugger'
+
 gem 'turnout'
 
 group :development do
@@ -96,6 +96,8 @@ group :development, :test do
   #gem 'factory_girl_rails'
   gem 'fabrication'
   gem 'faker'
+  gem 'debugger', "~> 1.6.2"
+  gem 'debugger-xml', "~> 0.3.3"
 end
 
 group :test do
