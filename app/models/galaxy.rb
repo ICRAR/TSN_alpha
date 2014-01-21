@@ -20,7 +20,7 @@ class Galaxy < PogsModel
     joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
             INNER JOIN area_user ON area.area_id = area_user.area_id")
     .where("area_user.userid = ?",user_id )
-    .order("`area_user`.`areauser_id` DESCarea_user.userid.as(boinc_id)")
+    .order("`area_user`.`areauser_id` DESC")
     .limit(1).first
   end
 
