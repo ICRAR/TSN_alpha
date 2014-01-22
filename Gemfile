@@ -59,7 +59,9 @@ gem 'mailboxer'
 gem "messengerjs-rails", "~> 1.3.6"
 gem 'metamagic'
 gem 'talk_like_a_pirate'
-gem 'angularjs-rails'
+
+gem 'ember-rails'
+gem 'ember-source', '1.3.0' # or the version you need
 
 gem 'delayed_job_active_record'
 gem 'daemons'
@@ -84,6 +86,9 @@ group :development do
   gem 'binding_of_caller'
   gem 'railroady'
   gem 'rename'
+  gem "mail_view", "~> 2.0.1"
+  gem 'webrick', '~> 1.3.1'
+  gem 'thin'
 end
 
 #Gems required for testing
@@ -128,3 +133,5 @@ gem 'google-analytics-rails'
 
 #not loaded when running rails used to make generating cron jobs easy
 gem 'whenever', :require => false
+
+gem 'faye'
