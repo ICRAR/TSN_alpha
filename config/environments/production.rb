@@ -88,5 +88,5 @@ Tsn::Application.configure do
   #google analytics
   GA.tracker = APP_CONFIG['GA_tracker_id']
 
-
+  config.ember.variant = :production
 end
