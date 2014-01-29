@@ -78,6 +78,8 @@ Tsn::Application.routes.draw do
   post "/nereus/send_cert" => "nereus#send_cert", :as => 'send_cert_nereus'
   get "/nereus/send_cert" => "nereus#send_cert", :as => 'send_cert_nereus'
 
+  resource :comments, :only => [:new, :create]
+
   resources :alliances do
     member do
       get 'join'

@@ -61,6 +61,7 @@ gem "messengerjs-rails", "~> 1.3.6"
 gem 'metamagic'
 gem 'talk_like_a_pirate'
 gem 'premailer-rails'
+gem 'closure_tree'
 
 gem 'delayed_job_active_record'
 gem 'daemons'

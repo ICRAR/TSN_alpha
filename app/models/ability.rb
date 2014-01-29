@@ -46,6 +46,7 @@ class Ability
    can :alliance_history, Profile
 
   if user.id #user is not a quest user
+    can :create, Comment
     can :new, NereusStatsItem
     can :create, Alliance
     can :manage, Alliance, :id => user.profile.alliance_leader_id

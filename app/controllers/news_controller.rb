@@ -5,6 +5,8 @@ class NewsController < ApplicationController
     if @news_item.nil?
       redirect_to root_url, notice: "Sorry we couldn't find that item"
     else
+      @comment = Comment.new(:commentable => @news_item)
+      @comment.profile = current_user.profile
       render :show
     end
   end

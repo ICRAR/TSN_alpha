@@ -1,0 +1,19 @@
+<% if @comment.parent_id.present? %>
+  var form = $("#new_comment_inline_<%= @comment.parent_id %>");
+  var insert_after = $("#comment_body_<%= @comment.parent_id %>");
+  <% if @comment.errors.present? %>
+    form.replaceWith("<%= escape_javascript render("form") %>");
+  <% else %>
+    form.replaceWith(" ");
+    var new_comment = $("<%= escape_javascript render("comments/comment", comments_hash: @comment) %>").hide();
+    insert_after.after(new_comment);
+    new_comment.show("slow");
+  <% end %>
+<% else %>
+  var form = $("#new_comment_inline_");
+  <% if @comment.errors.present? %>
+    form.replaceWith("<%= escape_javascript render("form") %>");
+  <% else %>
+    form.replaceWith("<%= escape_javascript render("comments/comment", comments_hash: @comment) %>");
+  <% end %>
+<% end %>

@@ -1,0 +1,23 @@
+- if comments_hash.class == Comment
+  - comment = comments_hash
+  - child_hash = {}
+- else
+  -comment = comments_hash[0]
+  -child_hash = comments_hash[1]
+.well.well-white.media{id: "comment_#{comment.id}"}
+  .pull-left
+    = image_tag comment.profile.avatar_url(64), class: 'media-object'
+  .media-body
+    .comment-body.well{id: "comment_body_#{comment.id}"}
+      .media-heading
+        = link_to comment.profile.name, comment.profile
+        = distance_of_time_in_words(Time.now, comment.created_at)
+        ago.
+      %p= comment.content
+      - if can?(:create, Comment)
+        .new_comment_link
+          = link_to 'Reply', new_comments_path(:parent_id => comment.id, :commentable_id => comment.commentable_id, :commentable_type => comment.commentable_type), :remote => true, :class => "btn"
+      - else
+        You must log in to comment
+    - child_hash.reverse_each do |new_comments_hash|
+      = render('comments/comment', {comments_hash: new_comments_hash})

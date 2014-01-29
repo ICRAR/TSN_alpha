@@ -1,0 +1,5 @@
+//$("#comment_<%= params[:parent_id] %>").next(".nested_comments").find("#comment_content")[0].focus();
+var new_comment_form = $("<%= escape_javascript render("form") %>").hide();
+$("#comment_body_<%= params[:parent_id]%> .new_comment_link").replaceWith(new_comment_form);
+new_comment_form.show("slow");
+new_comment_form.find("#comment_content")[0].focus();
