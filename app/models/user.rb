@@ -68,13 +68,12 @@ class User < ActiveRecord::Base
   def my_destroy
     self.profile.general_stats_item.bonus_credits.destroy
     self.profile.general_stats_item.destroy
-    self.profile.profiles_trophies.delete_all
+    ProfilesTrophy.where{profile_id == my{self.profile.id}}.delete_all
     begin
       Profile.tire.index.remove self.profile
     rescue Errno::ECONNREFUSED
 
     end
-
     self.profile.delete
     self.delete
   end
