@@ -69,7 +69,12 @@ class User < ActiveRecord::Base
     self.profile.general_stats_item.bonus_credits.destroy
     self.profile.general_stats_item.destroy
     self.profile.profiles_trophies.delete_all
-    Profile.tire.index.remove self.profile
+    begin
+      Profile.tire.index.remove self.profile
+    rescue Errno::ECONNREFUSED
+
+    end
+
     self.profile.delete
     self.delete
   end

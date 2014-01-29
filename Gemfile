@@ -53,7 +53,7 @@ gem 'tire'
 gem 'acts-as-taggable-on'
 gem 'rmagick'
 gem 'voruby'
-gem 'globalize3'
+gem 'globalize', '~> 3.0.4'
 gem 'i18n-js'
 gem 'sanitize'
 gem 'mailboxer'
@@ -75,7 +75,7 @@ gem 'rabl'
 # Also add either `oj` or `yajl-ruby` as the JSON parser
 gem 'oj'
 
-gem 'debugger'
+
 gem 'turnout'
 
 group :development do
@@ -88,20 +88,37 @@ group :development do
   gem 'rename'
   gem "mail_view", "~> 2.0.1"
   gem 'webrick', '~> 1.3.1'
+end
+
+group :profile, :development do
   gem 'thin'
+end
+
+group :profile do
+  gem 'ruby-prof'
 end
 
 #Gems required for testing
 group :development, :test do
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  #gem 'factory_girl_rails'
+  gem 'fabrication'
   gem 'faker'
+  gem 'debugger', "~> 1.6.2"
+  gem 'debugger-xml', "~> 0.3.3"
 end
 
 group :test do
   gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'capybara-webkit'
+  gem 'capybara-screenshot'
+  gem 'database_cleaner'
 #  gem 'guard-rspec'
   gem 'launchy'
+  gem 'zeus', '~>0.13.4.pre2'
+  gem 'simplecov', :require => false
+
 end
 
 

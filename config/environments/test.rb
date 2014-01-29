@@ -41,4 +41,8 @@ Tsn::Application.configure do
 
   #config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
   config.assets.prefix = "/assets_dev"
+  config.i18n.fallbacks = true
+
+  #speed up devise in testing
+  config.stretches = Rails.env.test? ? 1 : 10
 end
