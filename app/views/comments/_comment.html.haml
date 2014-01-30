@@ -13,7 +13,7 @@
         = link_to comment.profile.name, comment.profile
         = distance_of_time_in_words(Time.now, comment.created_at)
         ago.
-      %p= comment.content
+      %p= markdown(comment.content)
       - if can?(:create, Comment)
         .new_comment_link
           = link_to 'Reply', new_comments_path(:parent_id => comment.id, :commentable_id => comment.commentable_id, :commentable_type => comment.commentable_type), :remote => true, :class => "btn"
