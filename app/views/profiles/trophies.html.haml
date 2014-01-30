@@ -39,7 +39,7 @@
         -@trophies.each do |trophy|
           .well-white.well
             .media
-              %a.pull-left.fancybox{:href=>trophy.image.url(:base),:rel=>"trophies"}= image_tag trophy.image.url(:base), :class=>"media-object"
+              %a.pull-left.fancybox{:href=>trophy.image.url(:original),:rel=>"trophies"}= image_tag trophy.image.url(:medium), :class=>"media-object"
               .media-body
                 %h4.media-heading= link_to format_heading(trophy,@trophy_ids) ,  trophy
                 %p=trophy.desc(@trophy_ids).html_safe
@@ -55,7 +55,7 @@
                   -trophy_row.each do |trophy|
                     %li.span2
                       .thumbnail
-                        %a.fancybox{:href=>trophy.image.url(:base),:rel=>"trophies"}= image_tag trophy.image.url(:base), :class=>"media-object"
+                        %a.fancybox{:href=>trophy.image.url(:original),:rel=>"trophies"}= image_tag trophy.image.url(:medium), :class=>"media-object"
                         .caption
                           %h4= link_to "#{trophy.title}" ,  trophy
                           -unless trophy.credits.nil? || trophy.credits == 0
@@ -118,7 +118,7 @@
             %h3=  set.name
             -set.profile_trophies.each do |trophy|
               .media
-                %a.pull-left.fancybox{:href=>trophy.image.url(:base),:rel=>"trophies"}= image_tag trophy.image.url(:base), :class=>"media-object"
+                %a.pull-left.fancybox{:href=>trophy.image.url(:original),:rel=>"trophies"}= image_tag trophy.image.url(:medium), :class=>"media-object"
                 .media-body
                   %h4.media-heading= link_to format_heading(trophy,@trophy_ids),  trophy
                   %p=trophy.desc(@trophy_ids).html_safe
