@@ -2,7 +2,7 @@
   %h4 New Comment
 
   = simple_form_for(@comment, remote: true) do |f|
-    = f.input :content, input_html: {rows: 5, class: 'input-xlarge'}, hint: "You may use basic html including formatting tags, links, and lists."
+    = f.input :content, input_html: {rows: 5, class: 'input-xlarge'}, hint: "You may use <a href=\"https://help.github.com/articles/github-flavored-markdown\">GitHub Flavored Markdown</a> for formatting.".html_safe
     = f.hidden_field :commentable_id
     = f.hidden_field :commentable_type
     = f.hidden_field :parent_id
