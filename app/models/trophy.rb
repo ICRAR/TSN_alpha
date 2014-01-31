@@ -104,9 +104,9 @@ class Trophy < ActiveRecord::Base
       db_conn = ActiveRecord::Base.connection
       db_conn.execute sql
 
-      #puts sql
+      create_notification(update_profiles)
     end
-    create_notification(update_profiles)
+
   end
 
   def create_notification(profiles)
