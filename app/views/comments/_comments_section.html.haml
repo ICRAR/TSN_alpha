@@ -1,6 +1,7 @@
 .comments
   %h3 Comments:
-  = render "comments/form"
+  - unless @comment.nil?
+    = render "comments/form", remote: true
   - all_comments = commentable.comments.for_show_commentable.hash_tree
   - all_comments.reverse_each do |comments_hash|
     = render('comments/comment', {comments_hash: comments_hash})

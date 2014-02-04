@@ -11,4 +11,16 @@ class Comment < ActiveRecord::Base
 
   scope :for_show_commentable, includes(:profile => [:user])
   scope :for_show_profile, includes(:commentable)
+
+  def commentable_name
+    c = commentable
+    if c.respond_to? :name
+      out = c.name
+    elsif c.respond_to? :title
+      out = c.title
+    else
+      out = ''
+    end
+    out
+  end
 end

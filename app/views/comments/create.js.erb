@@ -2,7 +2,7 @@
   var form = $("#new_comment_inline_<%= @comment.parent_id %>");
   var insert_after = $("#comment_body_<%= @comment.parent_id %>");
   <% if @comment.errors.present? %>
-    form.replaceWith("<%= escape_javascript render("form") %>");
+    form.replaceWith("<%= escape_javascript render("form", remote: true) %>");
   <% else %>
     form.replaceWith(" ");
     var new_comment = $("<%= escape_javascript render("comments/comment", comments_hash: @comment) %>").hide();
@@ -12,7 +12,7 @@
 <% else %>
   var form = $("#new_comment_inline_");
   <% if @comment.errors.present? %>
-    form.replaceWith("<%= escape_javascript render("form") %>");
+    form.replaceWith("<%= escape_javascript render("form", remote: true) %>");
   <% else %>
     form.replaceWith("<%= escape_javascript render("comments/comment", comments_hash: @comment) %>");
   <% end %>

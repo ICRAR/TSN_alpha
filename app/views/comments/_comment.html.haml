@@ -10,7 +10,10 @@
   .media-body
     .comment-body.well{id: "comment_body_#{comment.id}"}
       .media-heading
-        = link_to comment.profile.name, comment.profile
+        = link_to  comment.profile do
+          = comment.profile.name
+          - if comment.profile.user.admin?
+            (Staff)
         = distance_of_time_in_words(Time.now, comment.created_at)
         ago.
       %p= markdown(comment.content)
