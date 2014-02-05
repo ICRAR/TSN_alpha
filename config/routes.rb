@@ -122,6 +122,10 @@ Tsn::Application.routes.draw do
     end
   end
 
+  resources :challenges, :only => [:index, :show] do
+    resources :challengers, :only => [:show]
+  end
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

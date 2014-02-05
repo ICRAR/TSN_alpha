@@ -45,6 +45,7 @@ class Ability
    cannot :read, User
    can :alliance_history, Profile
 
+
   if user.id #user is not a quest user
     can :new, NereusStatsItem
     can :create, Alliance

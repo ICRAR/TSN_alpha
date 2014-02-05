@@ -1,0 +1,36 @@
+- my_meta :title => "theSkyNet Challenges",
+    :description => "short term challenges run by users of theSkyNet to compete for trophies"
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Challenges
+  - @user_page =  'challenges'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %table#challenges.table.table-striped
+        %thead
+          %tr
+            %th= sortable "name", "name"
+            %th= sortable "start_date", "Start Date"
+            %th= sortable "end_date", "End Date"
+            %th Challengers
+            %th Manager
+
+        %tbody
+          - @challenges.each do |challenge|
+            %tr
+              - link = challenge_path(challenge)
+              %td
+                %a{href: link}= challenge.name
+              %td
+                %a{href: link}= challenge.start_date.strftime '%B %d, %Y'
+              %td
+                %a{href: link}= challenge.end_date.strftime '%B %d, %Y'
+              %td
+                %a{href: link}= challenge.challengers.size
+
+              %td= link_to(challenge.manager.name, challenge.manager, :style => "text-decoration: underline")
+      = paginate @challenges
+      = page_entries_info @challenges, :entry_name => 'Challenges'
+      = render 'shared/per_page_selector'
