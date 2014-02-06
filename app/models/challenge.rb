@@ -14,7 +14,7 @@ class Challenge < ActiveRecord::Base
 
   validates_presence_of :name, :desc, :start_date, :end_date, :challenger_type, :challenge_system, :project, :manager_id
   validates_uniqueness_of :name
-  validate :start_in_future
+  validate :start_in_future, :on => :create
   def start_in_future
     errors.add(:start_date, "Start date must be in the future") if start_date.nil? || start_date < Time.now
   end
@@ -85,7 +85,8 @@ class Challenge < ActiveRecord::Base
 
       self.update_stats
       Challenge.delay({run_at: 30.minutes.from_now}).update_stats(self.id)
-
+      self.started = true
+      self.finished = false
       self.save
       #send out notifications
 
