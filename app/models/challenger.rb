@@ -7,7 +7,7 @@ class Challenger < ActiveRecord::Base
 
   scope :joins_alliance, joins('INNER JOIN alliances a ON a.id = challengers.entity_id').where{entity_type == 'Alliance'}
   scope :joins_profile, joins('INNER JOIN profiles p ON p.id = challengers.entity_id').where{entity_type == 'Profile'}
-  scope :joins_profile_with_gsi, joins_profile.joins('INNER JOIN general_stats_item g ON g.profile_id = p.id')
+  scope :joins_profile_with_gsi, joins_profile.joins('INNER JOIN general_stats_items g ON g.profile_id = p.id')
 
   validates_presence_of :challenge, :entity_type, :entity_id
 
