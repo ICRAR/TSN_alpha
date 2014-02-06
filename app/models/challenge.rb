@@ -6,7 +6,7 @@ class Challenge < ActiveRecord::Base
     ['Profile', 'Alliance']
   end
   def challenge_system_enum
-    ['Credit']
+    ['Credit', 'RAC']
   end
   def project_enum
     ['All']
@@ -81,12 +81,8 @@ class Challenge < ActiveRecord::Base
       self.started = true
       self.finished = false
       #update stats then schedule next update
-      case [challenger_type, challenge_system]
-        when ["Alliance", "Credit"] then
-          self.start_alliance_credit
-        when ["Profile", "Credit"] then
-          self.start_profile_credit
-      end
+      self.call_method "start#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
+
       self.update_stats
       Challenge.delay({run_at: 30.minutes.from_now}).update_stats(self.id)
 
@@ -119,12 +115,7 @@ class Challenge < ActiveRecord::Base
   def update_stats
     return false unless self.running?
     #update save value
-    case [challenger_type, challenge_system]
-      when ["Alliance", "Credit"] then
-        update_save_alliance_credit
-      when ["Profile", "Credit"] then
-        update_save_profile_credit
-    end
+    self.call_method "update_#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
     #update score
     challengers.update_all('challengers.score = challengers.save_value - challengers.start')
     #update scores metrics
@@ -140,6 +131,8 @@ class Challenge < ActiveRecord::Base
 
   end
 
+
+  #functions must take the form of [update | start]_[challenger_type]_[challenge_system]
   def update_save_alliance_credit
     #update scores
     challengers.joins_alliance.update_all('challengers.save_value = a.credit')
@@ -156,5 +149,22 @@ class Challenge < ActiveRecord::Base
   def start_profile_credit
     #update scores
     challengers.joins_profile_with_gsi.update_all('challengers.start = g.total_credit')
+  end
+  def update_save_alliance_rac
+    #update scores
+    challengers.joins_alliance.update_all('challengers.save_value = a.RAC')
+  end
+  def start_alliance_rac
+    #update scores
+    challengers.joins_alliance.update_all('challengers.start = a.RAC')
+  end
+
+  def update_save_profile_rac
+    #update scores
+    challengers.joins_profile_with_gsi.update_all('challengers.save_value = g.recent_avg_credit')
+  end
+  def start_profile_rac
+    #update scores
+    challengers.joins_profile_with_gsi.update_all('challengers.start = g.recent_avg_credit')
   end
 end
