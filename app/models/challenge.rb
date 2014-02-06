@@ -81,7 +81,7 @@ class Challenge < ActiveRecord::Base
       self.started = true
       self.finished = false
       #update stats then schedule next update
-      self.send "start#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
+      self.send "start_#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
 
       self.update_stats
       Challenge.delay({run_at: 30.minutes.from_now}).update_stats(self.id)
