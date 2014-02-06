@@ -1,0 +1,20 @@
+- my_meta :title => "theSkyNet Challenges",
+    :description => "short term challenges run by users of theSkyNet to compete for trophies"
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface
+      = link_to 'Challenges', challenges_path
+      = ' \ '
+      = @challenge.name
+  - @user_page =  'challenges'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    = render :partial => 'shared/under_construction'
+    .row-fluid
+      = render 'challenge_details', challenge: @challenge
+    .well.well-white
+      = render :partial => 'challengers_table'
+
+      = paginate @challengers
+      = page_entries_info @challengers, :entry_name => 'Challengers'

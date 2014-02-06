@@ -25,6 +25,7 @@
                 </ul>
             </li>
             <li <%=  'class=active' if (@user_page == 'science') %>><%= link_to(t("nav.science"),science_portals_path)  %></li>
+            <!--<li <%=  'class=active' if (@user_page == 'challenges') %>><%= link_to(t("nav.challenges"), challenges_path)  %></li>-->
             <li><%= link_to(t("nav.forum"), APP_CONFIG['forum_url'])  %></li>
             <li><%= link_to t("nav.faq"), {:controller => "/pages", :action => "show", :slug => "member%20faq"} %></li>
         </ul>
