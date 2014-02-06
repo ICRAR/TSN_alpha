@@ -110,7 +110,7 @@ class Challenge < ActiveRecord::Base
     c.update_stats
 
     #reschedule update to run again in another 30 mins unless end time is within 30mins
-    Challenge.delay({run_at: 30.minutes.from_now}).update_stats(c.id) unless Time.now > (c.end_time - 30.minutes)
+    Challenge.delay({run_at: 30.minutes.from_now}).update_stats(c.id) unless Time.now > (c.end_date - 30.minutes)
   end
 
   def update_stats
