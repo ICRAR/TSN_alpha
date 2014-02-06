@@ -115,7 +115,7 @@ class Challenge < ActiveRecord::Base
   def update_stats
     return false unless self.running?
     #update save value
-    self.send "update_#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
+    self.send "update_save_#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
     #update score
     challengers.update_all('challengers.score = challengers.save_value - challengers.start')
     #update scores metrics
