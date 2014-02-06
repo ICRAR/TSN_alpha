@@ -81,7 +81,7 @@ class Challenge < ActiveRecord::Base
       self.started = true
       self.finished = false
       #update stats then schedule next update
-      self.call_method "start#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
+      self.send "start#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
 
       self.update_stats
       Challenge.delay({run_at: 30.minutes.from_now}).update_stats(self.id)
@@ -115,7 +115,7 @@ class Challenge < ActiveRecord::Base
   def update_stats
     return false unless self.running?
     #update save value
-    self.call_method "update_#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
+    self.send "update_#{self.challenger_type}_#{self.challenge_system}".downcase.to_sym
     #update score
     challengers.update_all('challengers.score = challengers.save_value - challengers.start')
     #update scores metrics
