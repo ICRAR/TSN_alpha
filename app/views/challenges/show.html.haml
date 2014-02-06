@@ -10,32 +10,11 @@
   = render 'layouts/user_nav'
 - content_for(:content) do
   #content-wrap
+    = render :partial => 'shared/under_construction'
     .row-fluid
-      .span5.well.well-white
-        %h2= @challenge.name
-        %dl.dl-horizontal
-          %dt Start Time
-          %dd= @challenge.start_date
-          %dt End Time
-          %dd= @challenge.end_date
+      = render 'challenge_details', challenge: @challenge
     .well.well-white
-      %table#challengers.table.table-striped
-        %thead
-          %tr
-            %th Name
-            %th Rank
-            %th Score
-
-        %tbody
-          - @challengers.each do |challenger|
-            %tr
-              - link = challenge_challenger_path(challenger)
-              %td
-                %a{href: link}= challenger.name
-              %td
-                %a{href: link}= challenger.rank
-              %td
-                %a{href: link}= challenger.score
+      = render :partial => 'challengers_table'
 
       = paginate @challengers
       = page_entries_info @challengers, :entry_name => 'Challengers'

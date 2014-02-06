@@ -23,9 +23,68 @@ Rickshaw.Graph.JSONP.Static = Rickshaw.Class.create(
         jsonpCallback: this.callback
       )
   )
+TSN.rickshaw_graph_challenge = (div,show_all) ->
+  div.addClass('rickshaw')
+  div.css('position', 'relative')
+  div.append('<div id="y_axis"></div>')
+  div.append('<div id="legend"></div>')
+  div.append('<div id="chart"></div>')
+  div.append('<div id="slider"></div>')
+  graph_data = []
+  colors = new Rickshaw.Color.Palette( { scheme: 'colorwheel' } ).scheme if !colors
+  i = 0
+  for metric in div.data('metrics')
+    metric_data = {
+      color: colors[i % colors.length]
+      name: metric.name
+      data: metric.data
+    }
+    i++
+    graph_data.push metric_data
 
+  rick_graph = new Rickshaw.Graph (
+    element: div.find("#chart")[0]
+    renderer: 'line'
+    width: 600
+    height: 200
+    series: graph_data
+  )
 
-TSN.rickshaw_graph = (metrics,names,div,time,colors = '') ->
+  detail = new Rickshaw.Graph.HoverDetail({ graph: rick_graph })
+  x_axis = new Rickshaw.Graph.Axis.Time( { graph: rick_graph } )
+  x_axis.graph.update()
+  y_axis = new Rickshaw.Graph.Axis.Y (
+    graph: rick_graph,
+    orientation: 'left',
+    tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+    element: div.find('#y_axis')[0]
+
+  )
+  y_axis.graph.update()
+  legend = new Rickshaw.Graph.Legend(
+    graph: rick_graph,
+    element: div.find('#legend')[0]
+  )
+  shelving = new Rickshaw.Graph.Behavior.Series.Toggle(
+    graph: rick_graph,
+    legend: legend
+  )
+  highlighter = new Rickshaw.Graph.Behavior.Series.Highlight(
+    graph: rick_graph,
+    legend: legend
+  )
+  ticksTreatment = 'glow'
+  order = new Rickshaw.Graph.Behavior.Series.Order(
+    graph: rick_graph,
+    legend: legend
+  )
+  div.find("#legend span:first").click() if show_all == false
+  slider = new Rickshaw.Graph.RangeSlider(
+    graph: rick_graph,
+    element: div.find('#slider')[0]
+  )
+
+TSN.rickshaw_graph_graphite = (metrics,names,div,time,colors = '') ->
   url = "<%= APP_CONFIG['graphite_url']%>render?from=#{time}&until=-6days&target=group("
   url += metrics.join(',')
   url +=")&format=json&jsonp=?"

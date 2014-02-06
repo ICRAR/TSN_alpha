@@ -12,6 +12,7 @@
   = render 'layouts/user_nav'
 - content_for(:content) do
   #content-wrap
+    = render :partial => 'shared/under_construction'
     .row-fluid
       .span5.well.well-white
         %h2= link_to @challenger.name, @challenger.entity
@@ -20,5 +21,7 @@
           %dd= @challenger.score
           %dt Rank
           %dd= @challenger.rank
+      = render 'challenges/challenge_details', challenge: @challenger.challenge
     .well.well-white
-      =@challenger.score_metric.to_json
+      -graph_data = [@challenger.score_metric_json,@challenger.rank_metric_json]
+      #graph{data: {metrics: graph_data.to_json}}

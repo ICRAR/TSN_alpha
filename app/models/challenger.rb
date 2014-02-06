@@ -18,11 +18,19 @@ class Challenger < ActiveRecord::Base
   end
 
   def score_metric
-    self.metrics.where{metric_key == 0}.order{datetime.desc}
+    self.metrics.where{metric_key == 0}.order{datetime.asc}
+  end
+
+  def score_metric_json(name = "Score")
+    {name: name, data: metric_json(score_metric)}
+  end
+
+  def rank_metric_json(name = "Rank")
+    {name: name, data: metric_json(rank_metric)}
   end
 
   def rank_metric
-    self.metrics.where{metric_key == 1}.order{datetime.desc}
+    self.metrics.where{metric_key == 1}.order{datetime.asc}
   end
 
   def name
@@ -37,5 +45,13 @@ class Challenger < ActiveRecord::Base
     out
   end
 
+  private
 
+  def metric_json(metrics)
+    out = []
+    metrics.each do |point|
+      out << {x: point.datetime.to_i, y: point.value}
+    end
+    out
+  end
 end

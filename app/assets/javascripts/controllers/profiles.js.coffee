@@ -54,7 +54,7 @@ profile_show_graphs = (all) ->
   metrics.push(total_RAC_name)
   metrics.push(total_credit_name)
 
-  TSN.rickshaw_graph(metrics,name,$("#chart_container"),"-#{TSN.months_from_launch()}months")  if name.length != 0
+  TSN.rickshaw_graph_graphite(metrics,name,$("#chart_container"),"-#{TSN.months_from_launch()}months")  if name.length != 0
 
 TSN.profiles.compare = () ->
   profile_id1 = $("#chart_container").data("profile-id1")
@@ -115,7 +115,7 @@ TSN.profiles.compare = () ->
   metrics.push("stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id2)}.rank")
 
 
-  TSN.rickshaw_graph(metrics,name,$("#chart_container"),"-#{TSN.months_from_launch()}months")  if name.length != 0
+  TSN.rickshaw_graph_graphite(metrics,name,$("#chart_container"),"-#{TSN.months_from_launch()}months")  if name.length != 0
 
 TSN.profiles.trophies = () ->
   $.each($(".trophy_share_toolbox"), ->
