@@ -105,7 +105,7 @@ class Challenge < ActiveRecord::Base
     end
   end
 
-  def self.update_stats(id)
+  def self.update_stats(challenge_id)
     c = Challenge.find challenge_id
     c.update_stats
 
