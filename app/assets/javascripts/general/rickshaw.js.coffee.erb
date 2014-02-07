@@ -48,6 +48,7 @@ TSN.rickshaw_graph_challenge = (div,show_all) ->
     width: 600
     height: 200
     series: graph_data
+    interpolation: 'linear'
   )
 
   detail = new Rickshaw.Graph.HoverDetail({ graph: rick_graph })
@@ -126,6 +127,7 @@ TSN.rickshaw_graph_graphite = (metrics,names,div,time,colors = '') ->
     width: 600,
     height: 200
     dataURL: url
+    interpolation: 'linear'
     onData: (metrics) ->
 
       i = 0

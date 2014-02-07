@@ -21,7 +21,7 @@ Tsn::Application.routes.draw do
     get 'advent_subscribe'
   end
 
-  resources :contact_forms
+  resources :contact_forms, :only => [:new, :create]
   resources :stats, :only => [:index] do
     collection do
       get 'activities'
