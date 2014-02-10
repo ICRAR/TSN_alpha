@@ -141,20 +141,4 @@ ul#nav li.on a {background: url(image_path('subnavon.png')) bottom center no-rep
 #content-inner-account, #content-inner-account-padding {padding:20px;}
 #content-inner-account.no-padding {padding:0px;}
 
-/*** Rickshaw graph styles****/
-#chart {
-  position: relative;
-  left: 40px;
-  z-index:1;
-}
-#y_axis {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 40px;
-}
-#legend {
-  z-index:2;
-  top:50px;
-  float:right
-}
+

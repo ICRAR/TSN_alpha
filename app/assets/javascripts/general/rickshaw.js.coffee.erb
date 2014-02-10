@@ -27,9 +27,9 @@ TSN.rickshaw_graph_challenge = (div,show_all) ->
   div.addClass('rickshaw')
   div.css('position', 'relative')
   div.append('<div id="y_axis"></div>')
-  div.append('<div id="legend"></div>')
   div.append('<div id="chart"></div>')
   div.append('<div id="slider"></div>')
+  div.append('<div id="legend"></div>')
   graph_data = []
   colors = new Rickshaw.Color.Palette( { scheme: 'colorwheel' } ).scheme if !colors
   i = 0
@@ -45,7 +45,7 @@ TSN.rickshaw_graph_challenge = (div,show_all) ->
   rick_graph = new Rickshaw.Graph (
     element: div.find("#chart")[0]
     renderer: 'line'
-    width: 600
+    width: 750
     height: 200
     series: graph_data
     interpolation: 'linear'
@@ -92,9 +92,9 @@ TSN.rickshaw_graph_graphite = (metrics,names,div,time,colors = '') ->
   div.addClass('rickshaw')
   div.css('position', 'relative')
   div.append('<div id="y_axis"></div>')
-  div.append('<div id="legend"></div>')
   div.append('<div id="chart"></div>')
   div.append('<div id="slider"></div>')
+  div.append('<div id="legend"></div>')
   remote_data = []
 
   #returns true of graph should be non decreasing
@@ -124,7 +124,7 @@ TSN.rickshaw_graph_graphite = (metrics,names,div,time,colors = '') ->
     callback: "rickshaw_callback_#{div.attr('id')}"
     element: div.find("#chart")[0]
     renderer: 'line'
-    width: 600,
+    width: 750,
     height: 200
     dataURL: url
     interpolation: 'linear'
