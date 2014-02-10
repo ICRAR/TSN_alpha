@@ -43,6 +43,19 @@ class Challenge < ActiveRecord::Base
     !invite_only? && ((running? && join_while_running?) || !started)
   end
 
+  def status
+    case
+      when !started?
+        'Upcoming'
+      when running?
+        'Running'
+      when finished?
+        'Finished'
+      else
+        'Unknown'
+    end
+  end
+
   def join(entity)
     #double check entity is allowed to join
     return false unless self.joinable?
@@ -110,7 +123,15 @@ class Challenge < ActiveRecord::Base
     c.update_stats
 
     #reschedule update to run again in another 30 mins unless end time is within 30mins
-    Challenge.delay({run_at: 30.minutes.from_now}).update_stats(c.id) unless Time.now > (c.end_date - 30.minutes)
+    next_update = 1.hour.from_now
+    if c.end_date > 30.minutes.from_now
+      c.next_update_time = next_update
+      c.save
+      Challenge.delay({run_at: next_update}).update_stats(c.id)
+    else
+      c.next_update_time = end_date
+      c.save
+    end
   end
 
   def update_stats

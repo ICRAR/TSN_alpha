@@ -13,10 +13,11 @@
       %table#challenges.table.table-striped
         %thead
           %tr
-            %th= sortable "name", "name"
+            %th= sortable "name", "Name"
             %th= sortable "start_date", "Start Date"
             %th= sortable "end_date", "End Date"
-            %th Challengers
+            %th Number of Challengers
+            %th Status
             %th Manager
 
         %tbody
@@ -31,6 +32,8 @@
                 %a{href: link}= challenge.end_date.strftime '%B %d, %Y'
               %td
                 %a{href: link}= challenge.challengers.size
+              %td
+                %a{href: link}= challenge.status
 
               %td= link_to(challenge.manager.name, challenge.manager, :style => "text-decoration: underline")
       = paginate @challenges

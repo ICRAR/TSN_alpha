@@ -5,3 +5,35 @@
     %dd= challenge.start_date
     %dt End Time
     %dd= challenge.end_date
+    %dt Current Status
+    %dd= challenge.status
+    %dt Challengers (#)
+    %dd= challenge.challengers.size
+    %dt Challenge Type
+    %dd= "#{challenge.challenge_system} #{challenge.challenger_type}"
+
+.span7.well.well-white
+  %h2 About this challenge:
+  %blockquote.pull-right
+    - desc = Sanitize.clean(challenge.desc, Sanitize::Config::BASIC).html_safe
+    %p= desc
+    - if challenge.manager != nil
+      %small= link_to challenge.manager.name, challenge.manager
+  .clearfix
+  - if challenge.running?
+    - random_secs = rand(0..180).seconds #random number of seconds added to prevent server overload at update time
+    - refresh_time = challenge.next_update_time + 2.minutes + random_secs
+    - end_time = challenge.end_date + 2.minutes + random_secs
+    - refresh_page = (refresh_time > 1.minutes.from_now).to_s
+    .row-fluid
+      .span6
+        %h3 Time until next update:
+        .countdown_timer{data: {countdown_to: refresh_time, refresh: refresh_page} }
+      .span6
+        %h3 Time remaining:
+        .countdown_timer{data: {countdown_to: end_time, refresh: 'false'} }
+  -elsif !challenge.started?
+    %h3 This challenge will start in:
+    - refresh_time = challenge.start_date + 2.minutes + rand(0..180).seconds
+    - refresh_page = (refresh_time > 1.minutes.from_now).to_s
+    .countdown_timer{data: {countdown_to: refresh_time, refresh: refresh_page} }

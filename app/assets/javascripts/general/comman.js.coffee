@@ -79,6 +79,24 @@ $(document).ready( ->
   custom_alert_box()
   placeholder_check()
 
+  #init anycountdown timeers
+  $('.countdown_timer').each ->
+    div = $(this)
+    div.countdown {
+      date: div.data('countdownTo')
+      render: (data) ->
+        el = $(this.el)
+        el.empty()
+        el.append("<div>" + this.leadingZeros(data.years, 4) + " <span>years</span></div>") if data.years > 0
+        el.append("<div>" + this.leadingZeros(data.days, 3) + " <span>days</span></div>") if data.years > 0 || data.days > 0
+        el.append("<div>" + this.leadingZeros(data.hours, 2) + " <span>hrs</span></div>")
+        el.append("<div>" + this.leadingZeros(data.min, 2) + " <span>min</span></div>")
+        el.append("<div>" + this.leadingZeros(data.sec, 2) + " <span>sec</span></div>")
+      onEnd: () ->
+        if $(this.el).data('refresh') == true
+          location.reload(true)
+    }
+
   #fix for bootstrap modal's getting stuck behind the background
   $('.modal').appendTo("body")
 
