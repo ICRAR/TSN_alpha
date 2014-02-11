@@ -54,6 +54,12 @@ class BoincRemoteUser < BoincPogsModel
   def copy_to_local(password, theSkyNetPassword = true)
     name = self.name
     i = nil
+    begin
+      name_check = name
+      name_check.force_encoding("UTF-8").encode("cp1252")
+    rescue Encoding::UndefinedConversionError
+      name = 'unknown_name'
+    end
     while !User.where{username == name}.first.nil? do
       name =  self.name + '_pogs' + i.to_s
       i ||= 0
