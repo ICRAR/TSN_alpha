@@ -28,12 +28,12 @@
     .row-fluid
       .span6
         %h3 Time until next update:
-        .countdown_timer{data: {countdown_to: refresh_time, refresh: refresh_page} }
+        .countdown_timer{data: {countdown_to: time_to_js(refresh_time), refresh: refresh_page} }
       .span6
         %h3 Time remaining:
-        .countdown_timer{data: {countdown_to: end_time, refresh: 'false'} }
+        .countdown_timer{data: {countdown_to: time_to_js(end_time), refresh: 'false'} }
   -elsif !challenge.started?
     %h3 This challenge will start in:
     - refresh_time = challenge.start_date + 2.minutes + rand(0..180).seconds
     - refresh_page = (refresh_time > 1.minutes.from_now).to_s
-    .countdown_timer{data: {countdown_to: refresh_time, refresh: refresh_page} }
+    .countdown_timer{data: {countdown_to: time_to_js(refresh_time), refresh: refresh_page} }

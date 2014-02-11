@@ -32,4 +32,9 @@ module ApplicationHelper
     end
   end
 
+  #not all javascript engines support rails time formats so to increase compatibility to convert them to a ms time format instead
+  def time_to_js(time)
+    time.utc.to_i * 1000
+  end
+
 end
