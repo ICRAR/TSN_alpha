@@ -60,8 +60,9 @@ class BoincRemoteUser < BoincPogsModel
     rescue Encoding::UndefinedConversionError
       name = 'unknown_name'
     end
+    base_name = name
     while !User.where{username == name}.first.nil? do
-      name =  self.name + '_pogs' + i.to_s
+      name =  base_name + '_pogs' + i.to_s
       i ||= 0
       i += 1
     end
