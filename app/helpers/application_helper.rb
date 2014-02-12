@@ -54,4 +54,40 @@ module ApplicationHelper
     end
   end
 
+
+  def form_date_range_tag(name, default_from = '', default_to = '')
+    from_id = "#{name}_from"
+    from_alt_id = "#{name}_from_alt"
+    to_id = "#{name}_to"
+    to_alt_id = "#{name}_to_alt"
+    data_attr = {
+        from_id: "##{from_id}",
+        from_alt_id: "##{from_alt_id}",
+        to_id: "##{to_id}",
+        to_alt_id: "##{to_alt_id}"
+    }
+    content_tag(:div, {class: 'date_range_form', data: data_attr}) do
+      label_tag from_alt_id.to_sym do
+        (
+        "#{name.titleize} from " +
+        hidden_field_tag(from_id.to_sym, default_from) +
+        text_field_tag(from_alt_id.to_sym, format_time_for_date_range(default_from), readonly: true, class: 'read_only_override')+
+        " to " +
+        hidden_field_tag(to_id.to_sym, default_to) +
+        text_field_tag(to_alt_id.to_sym, format_time_for_date_range(default_to), readonly: true, class: 'read_only_override')
+        ).html_safe
+      end
+    end
+  end
+
+  def format_time_for_date_range(str)
+    if str.nil? || str == ''
+      ''
+    else
+      t = Time.parse(str)
+      t.strftime("%A, #{t.day.ordinalize} of %B, %Y")
+    end
+  end
+
+
 end

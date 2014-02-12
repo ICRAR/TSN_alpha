@@ -116,4 +116,5 @@ class ApplicationController < ActionController::Base
   def user_is_admin?
     user_signed_in? && current_user.is_admin?
   end
+  helper_method :user_is_admin?
 end
