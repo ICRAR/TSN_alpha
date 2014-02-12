@@ -37,4 +37,21 @@ module ApplicationHelper
     time.utc.to_i * 1000
   end
 
+
+  #renders a simple breadcrumb from a hash containing {name => link}
+  #tag if the tag type to be used for the links default is
+  def format_breadcrumbs(links)
+    links_html = []
+    links.each do |name,link|
+      if link == ''
+        links_html << h(name)
+      else
+        links_html << link_to(name,link)
+      end
+    end
+    content_tag(:div, {class: 'breadcrumbs'}) do
+      links_html.join(" /\ ").html_safe
+    end
+  end
+
 end

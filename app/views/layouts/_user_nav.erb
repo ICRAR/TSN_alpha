@@ -2,7 +2,6 @@
     <div class="navbar-inner">
         <ul class="nav">
             <% if user_signed_in? %>
-                <li <%=  'class=active' if (@user_page == 'dashboard') %>>
                 <li class="dropdown <%=  'active' if (@user_page == 'dashboard' || @user_page == 'my_trophies' || @user_page == 'my_alliance') %>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <%= t "nav.dashboard" %>
@@ -35,6 +34,18 @@
             </li>
             <li <%=  'class=active' if (@user_page == 'science') %>><%= link_to(t("nav.science"),science_portals_path)  %></li>
             <!--<li <%=  'class=active' if (@user_page == 'challenges') %>><%= link_to(t("nav.challenges"), challenges_path)  %></li>-->
+
+            <% if user_signed_in? and current_user.is_admin?%>
+              <li class="dropdown <%=  'active' if (@user_page == 'challenges') %>">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      <%= t "nav.challenges" %>
+                      <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                      <li <%=  'class=active' if (@user_page == 'challenges') %>><%= link_to(t("nav.challenges"), challenges_path)  %></li>
+                  </ul>
+              </li>
+            <% end %>
             <li><%= link_to(t("nav.forum"), APP_CONFIG['forum_url'])  %></li>
             <li><%= link_to t("nav.faq"), {:controller => "/pages", :action => "show", :slug => "member%20faq"} %></li>
         </ul>

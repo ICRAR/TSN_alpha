@@ -2,17 +2,14 @@
     :description => "short term challenges run by users of theSkyNet to compete for trophies"
 - content_for(:title_bar) do
   #intro-sml-wrap
-    %h1.fontface
-      = link_to 'Challenges', challenges_path
-      = ' \ '
-      = link_to @challenger.challenge.name, @challenger.challenge
-      = ' \ '
-      = @challenger.name
+    %h1.fontface= @challenger.name
   - @user_page =  'challenges'
   = render 'layouts/user_nav'
 - content_for(:content) do
   #content-wrap
     = render :partial => 'shared/under_construction'
+    .well.well-small
+      %h3= format_breadcrumbs({'Challenges' => challenges_path, @challenger.challenge.name => challenge_path(@challenger.challenge), @challenger.name => ''})
     .row-fluid
       = render 'challenges/challenge_details', challenge: @challenger.challenge
     .row-fluid
