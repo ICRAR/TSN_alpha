@@ -2,6 +2,15 @@ class Challenge < ActiveRecord::Base
   attr_accessible :name, :desc, :end_date, :start_date, :invite_only, :challenge_system, :challenger_type, :project, :manager_id, :started, :finished, :join_while_running,  as: [:admin]
   has_many :challengers
   belongs_to :manager, class_name: 'Profile'
+  def self.not_hidden(admin = false)
+    if admin
+      self.scoped
+    else
+      where{hidden == false}
+    end
+  end
+
+
   def challenger_type_enum
     ['Profile', 'Alliance']
   end

@@ -7,7 +7,7 @@ class ChallengesController < ApplicationController
     per_page = [params[:per_page].to_i,1000].min
     per_page ||= 20
 
-    @challenges = Challenge.page(params[:page]).per(per_page).order("`" + sort_column + "`" " " + sort_direction).includes(:manager)
+    @challenges = Challenge.not_hidden(user_is_admin?).page(params[:page]).per(per_page).order("`" + sort_column + "`" " " + sort_direction).includes(:manager)
   end
 
   def show
@@ -15,7 +15,7 @@ class ChallengesController < ApplicationController
     @per_page = 20 if @per_page == 0
     @page =  params[:page].to_i
     @page = 1 if @page == 0
-    @challenge = Challenge.find(params[:id])
+    @challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])
     @challengers = Challenger.page(@page).per(@per_page).includes(:entity).where{challenge_id == my{@challenge.id}}.order{rank.asc}
   end
 

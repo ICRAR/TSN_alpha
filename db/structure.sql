@@ -144,6 +144,7 @@ CREATE TABLE `challenges` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `next_update_time` datetime DEFAULT NULL,
+  `hidden` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `index_challenges_on_start_date` (`start_date`),
   KEY `index_challenges_on_end_date` (`end_date`)
@@ -227,7 +228,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=240 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=244 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -768,3 +769,5 @@ INSERT INTO schema_migrations (version) VALUES ('20140204035930');
 INSERT INTO schema_migrations (version) VALUES ('20140204063822');
 
 INSERT INTO schema_migrations (version) VALUES ('20140207070234');
+
+INSERT INTO schema_migrations (version) VALUES ('20140212024154');
