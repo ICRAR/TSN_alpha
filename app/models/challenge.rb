@@ -251,9 +251,10 @@ Finally the score value is set in the update action using the following formula:
       update_handicap
 
       self.update_stats
-      Challenge.delay({run_at: 30.minutes.from_now}).update_stats(self.id)
+      Challenge.delay({run_at: 1.hour.from_now}).update_stats(self.id)
       self.started = true
       self.finished = false
+      self.next_update_time = 1.hour.from_now
       self.save
       #send out notifications
 
@@ -278,7 +279,7 @@ Finally the score value is set in the update action using the following formula:
 
     #reschedule update to run again in another 30 mins unless end time is within 30mins
     next_update = 1.hour.from_now
-    if c.end_date > 30.minutes.from_now
+    if c.end_date > next_update
       c.next_update_time = next_update
       c.save
       Challenge.delay({run_at: next_update}).update_stats(c.id)
