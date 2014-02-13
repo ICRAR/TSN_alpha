@@ -92,13 +92,13 @@ Finally the score value is set in the update action using the following formula:
                     handicap_types: {none: true},
                     join_option: :joins_alliance_active_members,
                     start_query: '',
-                    update_query: 'challengers.save_value = GREATEST(IFNULL(count(am.id),0),IFNULL(challengers.save_value,0))'
+                    update_query: 'challengers.save_value = GREATEST(IFNULL(count_table.count,0),IFNULL(challengers.save_value,0))'
                 },
                 new_members: {
                     handicap_types: {none: true},
                     join_option: :joins_alliance_all_members,
-                    start_query: 'challengers.start = count(am.id)',
-                    update_query: 'challengers.save_value = count(am.id)'
+                    start_query: 'challengers.start = count_table.count',
+                    update_query: 'challengers.save_value = count_table.count'
                 }
             }
         }
@@ -124,8 +124,8 @@ Finally the score value is set in the update action using the following formula:
                 },
 
                 num_members: {
-                    join_option: :joins_alliance_all_members,
-                    handicap_query: 'challengers.handicap = 100 / GREATEST(IFNULL(count(am.id),0),1)'
+                    join_option: :joins_alliance_active_members,
+                    handicap_query: 'challengers.handicap = 100 / GREATEST(IFNULL(count_table.count,0),1)'
                 }
             }
         }

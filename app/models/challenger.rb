@@ -8,13 +8,19 @@ class Challenger < ActiveRecord::Base
   scope :joins_alliance, joins('INNER JOIN alliances a ON a.id = challengers.entity_id').where{entity_type == 'Alliance'}
   scope :joins_profile, joins('INNER JOIN profiles p ON p.id = challengers.entity_id').where{entity_type == 'Profile'}
   scope :joins_profile_with_gsi, joins_profile.joins('INNER JOIN general_stats_items g ON g.profile_id = p.id')
-  scope :joins_alliance_all_members, joins_alliance.
-                                        joins('INNER JOIN alliance_members am ON am.alliance_id = a.id').
-                                        group(:id).
-                                        where('am.leave_date IS NULL')
-  scope :joins_alliance_active_members, joins_alliance_all_members.
-                                        joins(' INNER JOIN general_stats_items gsi ON gsi.profile_id = am.profile_id').
-                                        where('gsi.recent_avg_credit > 0')
+  def self.joins_alliance_all_members
+    sub_query = AllianceMembers.where{leave_date == nil}.select{alliance_id.as('alliance_id')}.
+        select{count(id).as('count')}.group(:alliance_id).to_sql
+    self.joins("INNER JOIN #{sub_query} count_table ON count_table.alliance_id = challengers.entity_id")
+  end
+  def self.joins_alliance_active_members
+    sub_query = AllianceMembers.where{leave_date == nil}.select{alliance_id.as('alliance_id')}.
+        select{count(id).as('count')}.group(:alliance_id).
+        joins('INNER JOIN general_stats_items gsi ON gsi.profile_id = alliance_members.profile_id').
+        where('gsi.recent_avg_credit > 0').to_sql
+    self.joins("INNER JOIN (#{sub_query}) count_table ON count_table.alliance_id = challengers.entity_id")
+  end
+
 
   validates_presence_of :challenge, :entity_type, :entity_id
 
