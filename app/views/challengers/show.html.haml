@@ -20,6 +20,8 @@
           %dd= @challenger.score
           %dt Rank
           %dd= @challenger.rank
+          %dt Handicap
+          %dd= @challenger.handicap
 
     .well.well-white
       -graph_data = [@challenger.score_metric_json,@challenger.rank_metric_json]
