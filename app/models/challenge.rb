@@ -138,7 +138,7 @@ class Challenge < ActiveRecord::Base
       c.save
       Challenge.delay({run_at: next_update}).update_stats(c.id)
     else
-      c.next_update_time = end_date
+      c.next_update_time = c.end_date
       c.save
     end
   end
