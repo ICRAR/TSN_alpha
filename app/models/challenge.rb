@@ -18,7 +18,7 @@ class Challenge < ActiveRecord::Base
     ['None','RAC', 'Num_Members']
   end
   def challenge_system_enum
-    ['Credit', 'RAC', 'Peak_RAC' 'Peak_Active_Members', 'New_Members']
+    ['Credit', 'RAC', 'Peak_RAC', 'Peak_Active_Members', 'New_Members']
   end
   def project_enum
     ['All']
@@ -113,19 +113,19 @@ Finally the score value is set in the update action using the following formula:
             profile: {
                 rac: {
                     join_option: :joins_profile_with_gsi,
-                    handicap_query: 'challengers.handicap = 1 / GREATEST(IFNULL(g.recent_avg_credit,1)'
+                    handicap_query: 'challengers.handicap = 1 / GREATEST(IFNULL(g.recent_avg_credit,0),1)'
                 }
             },
             alliance: {
 
                 rac: {
                     join_option: :joins_alliance,
-                    handicap_query: 'challengers.handicap = 1 / GREATEST(IFNULL(a.RAC,1)'
+                    handicap_query: 'challengers.handicap = 1 / GREATEST(IFNULL(a.RAC,0),1)'
                 },
 
                 num_members: {
                     join_option: :joins_alliance_all_members,
-                    handicap_query: 'challengers.handicap = 1 / GREATEST(IFNULL(count(am.id),1)'
+                    handicap_query: 'challengers.handicap = 1 / GREATEST(IFNULL(count(am.id),0),1)'
                 }
             }
         }
