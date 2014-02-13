@@ -121,6 +121,7 @@ CREATE TABLE `challengers` (
   `joined_at` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `handicap` float NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `index_challengers_on_challenge_id_and_rank` (`challenge_id`,`rank`),
   KEY `index_challengers_on_entity_type_and_entity_id` (`entity_type`,`entity_id`)
@@ -145,6 +146,7 @@ CREATE TABLE `challenges` (
   `updated_at` datetime NOT NULL,
   `next_update_time` datetime DEFAULT NULL,
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
+  `handicap_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_challenges_on_start_date` (`start_date`),
   KEY `index_challenges_on_end_date` (`end_date`)
@@ -771,3 +773,5 @@ INSERT INTO schema_migrations (version) VALUES ('20140204063822');
 INSERT INTO schema_migrations (version) VALUES ('20140207070234');
 
 INSERT INTO schema_migrations (version) VALUES ('20140212024154');
+
+INSERT INTO schema_migrations (version) VALUES ('20140213041029');
