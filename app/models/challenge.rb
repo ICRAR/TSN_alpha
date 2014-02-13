@@ -312,7 +312,7 @@ Finally the score value is set in the update action using the following formula:
   #function to set handicap values
   def update_handicap
     if handicap_type == 'None'
-      challengers.update_all('challengers.handicap = 0')
+      challengers.update_all('challengers.handicap = 1.0')
     else
       handicap_options_hash
       challengers.send(handicap_options_hash[:join_option]).update_all(handicap_options_hash[:handicap_query])
