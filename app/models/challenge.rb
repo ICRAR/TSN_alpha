@@ -1,5 +1,5 @@
 class Challenge < ActiveRecord::Base
-  attr_accessible :name, :desc, :end_date, :handicap_type, :start_date, :invite_only, :challenge_system, :challenger_type, :project, :manager_id, :started, :finished, :join_while_running,  as: [:admin]
+  attr_accessible :name, :desc, :end_date, :handicap_type, :start_date, :invite_only, :challenge_system, :challenger_type, :project, :manager_id, :started, :finished, :join_while_running, :hidden, as: [:admin]
   has_many :challengers
   belongs_to :manager, class_name: 'Profile'
   def self.not_hidden(admin = false)
@@ -113,19 +113,19 @@ Finally the score value is set in the update action using the following formula:
             profile: {
                 rac: {
                     join_option: :joins_profile_with_gsi,
-                    handicap_query: 'challengers.handicap = 1 / GREATEST(IFNULL(g.recent_avg_credit,0),1)'
+                    handicap_query: 'challengers.handicap = 1000 / GREATEST(IFNULL(g.recent_avg_credit,0),1)'
                 }
             },
             alliance: {
 
                 rac: {
                     join_option: :joins_alliance,
-                    handicap_query: 'challengers.handicap = 1 / GREATEST(IFNULL(a.RAC,0),1)'
+                    handicap_query: 'challengers.handicap = 100000 / GREATEST(IFNULL(a.RAC,0),1)'
                 },
 
                 num_members: {
                     join_option: :joins_alliance_all_members,
-                    handicap_query: 'challengers.handicap = 1 / GREATEST(IFNULL(count(am.id),0),1)'
+                    handicap_query: 'challengers.handicap = 100 / GREATEST(IFNULL(count(am.id),0),1)'
                 }
             }
         }
