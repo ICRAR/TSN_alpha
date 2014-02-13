@@ -11,7 +11,7 @@ class Challenger < ActiveRecord::Base
   def self.joins_alliance_all_members
     sub_query = AllianceMembers.where{leave_date == nil}.select{alliance_id.as('alliance_id')}.
         select{count(id).as('count')}.group(:alliance_id).to_sql
-    self.joins("INNER JOIN #{sub_query} count_table ON count_table.alliance_id = challengers.entity_id")
+    self.joins("INNER JOIN (#{sub_query}) count_table ON count_table.alliance_id = challengers.entity_id")
   end
   def self.joins_alliance_active_members
     sub_query = AllianceMembers.where{leave_date == nil}.select{alliance_id.as('alliance_id')}.
