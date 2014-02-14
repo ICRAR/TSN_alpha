@@ -37,6 +37,23 @@ module ApplicationHelper
     time.utc.to_i * 1000
   end
 
+  def markdown(content)
+    @redcarpet_renderer ||= Redcarpet::Render::HTML.new(:filter_html => true,
+                                                        :hard_wrap => true)
+    @markdown ||= Redcarpet::Markdown.new(@redcarpet_renderer,
+                                          no_intra_emphasis: true,
+                                          tables: true,
+                                          strikethrough: true,
+                                          superscript: true,
+                                          underline: true,
+                                          quote: true,
+                                          autolink: true,
+                                          space_after_headers: true,
+                                          fenced_code_blocks: true,
+                                          disable_indented_code_blocks: true)
+    @markdown.render(content).html_safe
+  end
+
 
   #renders a simple breadcrumb from a hash containing {name => link}
   #tag if the tag type to be used for the links default is

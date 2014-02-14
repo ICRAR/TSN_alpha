@@ -17,7 +17,7 @@
 .span7.well.well-white
   %h2 About this challenge:
   %blockquote.pull-right
-    - desc = Sanitize.clean(challenge.desc, Sanitize::Config::BASIC).html_safe
+    - desc = markdown(challenge.desc)
     %p= desc
     - if challenge.manager != nil
       %small= link_to challenge.manager.name, challenge.manager
