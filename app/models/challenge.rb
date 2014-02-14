@@ -109,8 +109,8 @@ Finally the score value is set in the update action using the following formula:
                 change_in_rank: {
                     handicap_types: {none: true},
                     join_option: :joins_alliance,
-                    start_query: 'challengers.start = IFNULL(a.ranking,0)',
-                    update_query: 'challengers.save_value = IFNULL(a.ranking,0)'
+                    start_query: 'challengers.start = IFNULL(a.ranking,0) * -1',
+                    update_query: 'challengers.save_value = IFNULL(a.ranking,0) * -1'
                 }
             }
         }
