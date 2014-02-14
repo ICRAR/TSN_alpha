@@ -18,7 +18,7 @@ class Challenge < ActiveRecord::Base
     ['None','RAC', 'Num_Members']
   end
   def challenge_system_enum
-    ['Credit', 'RAC', 'Peak_RAC', 'Peak_Active_Members', 'New_Members']
+    ['Credit', 'RAC', 'Peak_RAC', 'Peak_Active_Members', 'New_Members', 'Change_in_rank']
   end
   def project_enum
     ['All']
@@ -67,6 +67,12 @@ Finally the score value is set in the update action using the following formula:
                     join_option: :joins_profile_with_gsi,
                     start_query: '',
                     update_query: 'challengers.save_value = GREATEST(IFNULL(g.recent_avg_credit,0),IFNULL(challengers.save_value,0))'
+                },
+                change_in_rank: {
+                    handicap_types: {none: true},
+                    join_option: :joins_profile_with_gsi,
+                    start_query: 'challengers.start = IFNULL(g.rank,0)',
+                    update_query: 'challengers.save_value = IFNULL(g.rank,0)'
                 }
             },
             alliance: {
@@ -99,6 +105,12 @@ Finally the score value is set in the update action using the following formula:
                     join_option: :joins_alliance_all_members,
                     start_query: 'challengers.start = count_table.count',
                     update_query: 'challengers.save_value = count_table.count'
+                },
+                change_in_rank: {
+                    handicap_types: {none: true},
+                    join_option: :joins_alliance,
+                    start_query: 'challengers.start = IFNULL(a.ranking,0)',
+                    update_query: 'challengers.save_value = IFNULL(a.ranking,0)'
                 }
             }
         }
