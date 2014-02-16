@@ -57,7 +57,7 @@ class BoincRemoteUser < BoincPogsModel
     begin
       name_check = name
       name_check.force_encoding("UTF-8").encode("cp1252")
-    rescue Encoding::UndefinedConversionError
+    rescue Encoding
       name = 'unknown_name'
     end
     base_name = name
