@@ -1,5 +1,8 @@
 class CommentsController < ApplicationController
   authorize_resource
+  def index
+    @comments = Comment.for_show_index.page(params[:page]).per(20)
+  end
   def new
     @comment = Comment.new(:parent_id => params[:parent_id],
                            :commentable_id => params[:commentable_id],
@@ -33,7 +36,7 @@ class CommentsController < ApplicationController
 
   def destroy
     @comment = Comment.find(params[:id])
-    #@comment.destroy
+    @comment.destroy
     flash[:notice] = "Deleted comment."
     respond_to do |format|
       format.html { redirect_to @comment.commentable }

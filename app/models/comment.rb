@@ -9,8 +9,19 @@ class Comment < ActiveRecord::Base
   belongs_to :commentable, polymorphic: true, counter_cache: true
   belongs_to :profile
 
+  def self.index_types
+    ['news']
+  end
+
   scope :for_show_commentable, includes(:profile => [:user])
-  scope :for_show_profile, includes(:commentable)
+  scope :for_show_index, includes(:commentable).where{commentable_type.in Comment.index_types}.
+    order{created_at.desc}
+  def  self.for_show_profile(find_profile_id)
+      scoped.for_show_index.where{profile_id == my{find_profile_id}}
+  end
+
+
+
 
   def commentable_name
     c = commentable
