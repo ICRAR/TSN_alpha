@@ -46,7 +46,6 @@ class Ability
    can :alliance_history, Profile
 
   if user.id #user is not a quest user
-    can :create, Comment
     can :new, NereusStatsItem
     can :create, Alliance
     can :manage, Alliance, :id => user.profile.alliance_leader_id
@@ -56,6 +55,10 @@ class Ability
     can :leave, Alliance
     can :dismiss, News
     can :send_cert, NereusStatsItem
+    can :create, Comment
+    can [:update, :destroy], Comment do |comment|
+      comment.created_at >= 60.minutes.ago && comment.profile_id == user.profile.id
+    end
   end
    #admin users can do everything :)
    if user.is_admin?
