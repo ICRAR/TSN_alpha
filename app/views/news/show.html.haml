@@ -17,4 +17,5 @@
             #news_display.media-body
               .long= @news_item.long.html_safe
               .published_date= "Published on " + @news_item.published_time.to_s
-          = render :partial => "comments/comments_section", :locals => {commentable: @news_item}
+          =# render :partial => "comments/comments_section", :locals => {commentable: @news_item}
+          =  render :partial => "shared/disqus", :locals => { title: @news_item.id }
