@@ -56,6 +56,7 @@ class Ability
     can :dismiss, News
     can :send_cert, NereusStatsItem
     can :create, Comment
+    can :report, Comment
     can [:update, :destroy], Comment do |comment|
       comment.created_at >= 60.minutes.ago && comment.profile_id == user.profile.id
     end

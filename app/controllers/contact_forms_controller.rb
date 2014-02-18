@@ -1,5 +1,6 @@
 class ContactFormsController < ApplicationController
   #authorize_resource
+  include ERB::Util
   def new
     @contact_form = ContactForm.new
     if user_signed_in?
@@ -21,6 +22,7 @@ class ContactFormsController < ApplicationController
       else
         @contact_form = ContactForm.new(params[:contact_form])
       end
+      @contact_form.message = ERB::Util.html_escape(@contact_form.message)
       @contact_form.request = request
       if @contact_form.valid? && !@contact_form.spam?
         @contact_form.delay_send
