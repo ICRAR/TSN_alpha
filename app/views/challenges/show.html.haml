@@ -18,3 +18,5 @@
 
       = paginate @challengers
       = page_entries_info @challengers, :entry_name => 'Challengers'
+    .well.well-white
+      =render :partial => "comments/comments_section", :locals => {commentable: @challenge}

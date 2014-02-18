@@ -2,7 +2,8 @@ module ApplicationHelper
   include GraphiteUrlModule
   def my_meta(hsh = {})
     title = "theSkyNet: #{hsh[:title]}"
-    desc =  hsh[:description] + "\n Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
+    desc =  hsh[:description] || ''
+    desc << "\n Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
     meta :title => title,
          :description => desc
     meta [:content => title, :itemprop => "name"]
@@ -36,24 +37,6 @@ module ApplicationHelper
   def time_to_js(time)
     time.utc.to_i * 1000
   end
-
-  def markdown(content)
-    @redcarpet_renderer ||= Redcarpet::Render::HTML.new(:filter_html => true,
-                                                        :hard_wrap => true)
-    @markdown ||= Redcarpet::Markdown.new(@redcarpet_renderer,
-                                          no_intra_emphasis: true,
-                                          tables: true,
-                                          strikethrough: true,
-                                          superscript: true,
-                                          underline: true,
-                                          quote: true,
-                                          autolink: true,
-                                          space_after_headers: true,
-                                          fenced_code_blocks: true,
-                                          disable_indented_code_blocks: true)
-    @markdown.render(content).html_safe
-  end
-
 
   #renders a simple breadcrumb from a hash containing {name => link}
   #tag if the tag type to be used for the links default is

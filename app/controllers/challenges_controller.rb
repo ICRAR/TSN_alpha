@@ -27,6 +27,11 @@ class ChallengesController < ApplicationController
     @page = 1 if @page == 0
     @challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])
     @challengers = Challenger.page(@page).per(@per_page).includes(:entity).where{challenge_id == my{@challenge.id}}.order{rank.asc}
+
+    if user_signed_in?
+      @comment = Comment.new(:commentable => @challenge)
+      @comment.profile = current_user.profile
+    end
   end
 
   private

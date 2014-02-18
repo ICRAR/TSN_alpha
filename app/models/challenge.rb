@@ -10,6 +10,8 @@ class Challenge < ActiveRecord::Base
     end
   end
 
+  has_many :comments, as: :commentable
+  attr_readonly :comments_count
 
   def challenger_type_enum
     ['Profile', 'Alliance']

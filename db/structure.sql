@@ -147,6 +147,7 @@ CREATE TABLE `challenges` (
   `next_update_time` datetime DEFAULT NULL,
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `handicap_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comments_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_challenges_on_start_date` (`start_date`),
   KEY `index_challenges_on_end_date` (`end_date`)
@@ -775,3 +776,5 @@ INSERT INTO schema_migrations (version) VALUES ('20140207070234');
 INSERT INTO schema_migrations (version) VALUES ('20140212024154');
 
 INSERT INTO schema_migrations (version) VALUES ('20140213041029');
+
+INSERT INTO schema_migrations (version) VALUES ('20140218052156');

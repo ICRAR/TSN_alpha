@@ -10,7 +10,7 @@ class Comment < ActiveRecord::Base
   belongs_to :profile
 
   def self.index_types
-    ['news']
+    ['news', 'challenge']
   end
 
   scope :for_show_commentable, includes(:profile => [:user])

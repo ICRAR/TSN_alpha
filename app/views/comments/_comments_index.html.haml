@@ -11,15 +11,11 @@
         = link_to comment.commentable_name, comment.commentable
         = distance_of_time_in_words(Time.now, comment.created_at)
         ago.
-        - if can?(:update, comment)
-          = link_to 'Edit', edit_comment_path(comment), :remote => true, :class => "btn btn-small"
-        - if can?(:destroy, comment)
-          = link_to 'Delete', comment_path(comment), :confirm => 'Are you sure you want to delete this post? This will also delete any child posts.', :method => :delete, :remote => true, :class => "btn btn-small"
         - if can?(:report, comment)
           = link_to 'Report', "#", class: "btn btn-small report-btn", data: {comment_id: comment.id}
       %p.small= markdown(comment.content)
   - else
-    .media{id: "comment_#{comment.id}"}
+    .media
       .pull-left
         = image_tag comment.profile.avatar_url(64), class: 'media-object'
       .media-body
@@ -35,10 +31,6 @@
             ago.
 
           %p= markdown(comment.content)
-          - if can?(:update, comment)
-            = link_to 'Edit', edit_comment_path(comment), :remote => true, :class => "btn"
-          - if can?(:destroy, comment)
-            = link_to 'Delete', comment_path(comment), :confirm => 'Are you sure you want to delete this post? This will also delete any child posts.', :method => :delete, :remote => true, :class => "btn"
           - if can?(:report, comment)
             = link_to 'Report', "#", class: "btn report-btn", data: {comment_id: comment.id}
 
