@@ -9,6 +9,10 @@ class CommentsController < ApplicationController
                            :commentable_type => params[:commentable_type]
                           )
     @comment.profile = current_user.profile
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
   def create
     @comment = Comment.new(params[:comment])
@@ -28,6 +32,7 @@ class CommentsController < ApplicationController
 
   def edit
     @comment = Comment.find(params[:id])
+    authorize! :update, @comment
     respond_to do |format|
       format.html
       format.js
@@ -36,6 +41,7 @@ class CommentsController < ApplicationController
 
   def destroy
     @comment = Comment.find(params[:id])
+    authorize! :destroy, @comment
     @comment.destroy
     flash[:notice] = "Deleted comment."
     respond_to do |format|
@@ -46,13 +52,14 @@ class CommentsController < ApplicationController
 
   def update
     @comment = Comment.find(params[:id])
+    authorize! :update, @comment
     @comment.update_attributes(params[:comment])
     respond_to do |format|
       format.html do
         if @comment.errors.present?
           render :edit
         else
-          redirect_to(episode_path(@comment.episode, :view => "comments"))
+          redirect_to @comment.commentable
         end
       end
       format.js
