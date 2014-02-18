@@ -9,6 +9,7 @@ class Profile < ActiveRecord::Base
   has_many :profiles_trophies
   has_many :trophies, :through => :profiles_trophies
   has_many :trophy_sets, :through => :trophies
+  has_many :comments
   before_destroy :remove_trophies
   def remove_trophies
     self.profiles_trophies.delete_all

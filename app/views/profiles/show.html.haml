@@ -9,50 +9,52 @@
 -content_for(:content) do
   #content-wrap
     .row-fluid
-      .span7.well.well-white#general
-        = image_tag @profile.avatar_url(128)
-        %p
-          %b Name:
-          = @profile.name
-        %p
-          %b Country:
-          = @profile.country_name
-        %p
-          %b Total Credit:
-          = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"
-          |
-          =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank, :page=>'me')
-          |
-          %a#credit_explain{:href => "#", :data => {:toggle => "popover",
-                        :placement => "bottom",
-                        :content => credit_location(@profile),
-                        :html => 'true',
-                        :no => {:turbolink => true}},
-                       :title => "theSkyNet credit is an amalgamation from several sources: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#credit_explain&quot;).popover(&quot;hide&quot;);\">&times;</button>"} Explain
-        -if @profile.alliance
-          %p
-            %b Proud member of :
-            = link_to(@profile.alliance.name,@profile.alliance)
-        %p
-          %b Member Since:
-          = @profile.user.joined_at.try(:strftime, '%B %d, %Y')
+      .span7
+        .row-fluid
+          .span12.well.well-white#general
+            = image_tag @profile.avatar_url(128)
+            %p
+              %b Name:
+              = @profile.name
+            %p
+              %b Country:
+              = @profile.country_name
+            %p
+              %b Total Credit:
+              = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"
+              |
+              =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank, :page=>'me')
+              |
+              %a#credit_explain{:href => "#", :data => {:toggle => "popover",
+                            :placement => "bottom",
+                            :content => credit_location(@profile),
+                            :html => 'true',
+                            :no => {:turbolink => true}},
+                           :title => "theSkyNet credit is an amalgamation from several sources: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#credit_explain&quot;).popover(&quot;hide&quot;);\">&times;</button>"} Explain
+            -if @profile.alliance
+              %p
+                %b Proud member of :
+                = link_to(@profile.alliance.name,@profile.alliance)
+            %p
+              %b Member Since:
+              = @profile.user.joined_at.try(:strftime, '%B %d, %Y')
 
-        %p
-          %b Latest Achievement:
-          -if @profile.trophies.empty?
-            = @profile.name + " hasn't won any trophies yet."
-          -else
-            - @trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
-            = link_to (image_tag @trophy.image.url(:base)), @trophy
-            = link_to @trophy.title,  @trophy
-        %p
-          = link_to  trophies_profile_path(@profile) do
-            = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
-        %p
-          = link_to alliance_history_profile_path(@profile) do
-            = "See #{@profile.name.possessive} alliance history."
-        -if user_signed_in?
-          %p= link_to "Compare #{@profile.name.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
+            %p
+              %b Latest Achievement:
+              -if @profile.trophies.empty?
+                = @profile.name + " hasn't won any trophies yet."
+              -else
+                - @trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
+                = link_to (image_tag @trophy.image.url(:base)), @trophy
+                = link_to @trophy.title,  @trophy
+            %p
+              = link_to  trophies_profile_path(@profile) do
+                = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
+            %p
+              = link_to alliance_history_profile_path(@profile) do
+                = "See #{@profile.name.possessive} alliance history."
+            -if user_signed_in?
+              %p= link_to "Compare #{@profile.name.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
 
       .span5
         -if @profile.general_stats_item.nereus_stats_item != nil
@@ -95,3 +97,10 @@
         -data[:boinc_id] = boinc_id if boinc_id
         -data[:profile_id] = @profile.id
         #chart_container{:data => data}
+    .row-fluid
+      .span12.well.well-white#comments
+        %h2 Recent Comments
+        - comments = @profile.comments.for_show_index.page(params[:page]).per(10)
+        = render 'comments/comments_index', comments: comments, small:true
+        = paginate comments
+        = page_entries_info comments, :entry_name => 'Comment'

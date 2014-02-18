@@ -26,6 +26,7 @@ class ContactForm < MailForm::Base
 
     #send email to help desk
     contact = ContactForm.new(params)
+    contact.message = contact.message.html_safe
     contact.deliver
   end
 end

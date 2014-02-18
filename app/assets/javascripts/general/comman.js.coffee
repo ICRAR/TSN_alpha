@@ -95,6 +95,18 @@ placeholder_check = () ->
         $(element).attr('placeholder') + ': ' + label.html()
       )
 
+report_comment = () ->
+  $('.report-btn').click( ->
+    comment_id = $(this).data('commentId')
+    bootbox.prompt "Please enter a reason for reporting this comment.", (result) ->
+      unless result is null
+        w = window.location
+        new_url = "#{w.protocol}//#{w.hostname}:#{w.port}/comments/#{comment_id}/report?reason=#{encodeURIComponent(result)}"
+        window.location.href = new_url
+
+    false
+  )
+
 $(document).ready( ->
   setup_announcement()
   custom_alert_box()
@@ -117,6 +129,7 @@ $(document).ready( ->
         if $(this.el).data('refresh') == true
           location.reload(true)
     }
+  report_comment()
 
   #fix for bootstrap modal's getting stuck behind the background
   $('.modal').appendTo("body")

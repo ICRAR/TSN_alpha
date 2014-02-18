@@ -1,0 +1,14 @@
+.well.well-white{id: (@comment.new_record? ? "new_comment_inline_#{@comment.parent_id}" : "comment_body_#{@comment.id}")}
+  - if @comment.new_record?
+    %h4 New Comment
+  -else
+    %h4 Update Comment
+
+  = simple_form_for(@comment, remote: remote) do |f|
+    = f.input :content, input_html: {rows: 5, class: 'input-xlarge'}, hint: "You may use <a href=\"https://help.github.com/articles/github-flavored-markdown\">GitHub Flavored Markdown</a> for formatting.".html_safe
+    = f.hidden_field :commentable_id
+    = f.hidden_field :commentable_type
+    = f.hidden_field :parent_id
+    .control-group
+      .controls
+        = f.button :submit

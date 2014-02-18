@@ -1,0 +1,12 @@
+- my_meta :title => "Recent Comments"
+= content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= "Recent Comments"
+
+
+-content_for(:content) do
+  #content-wrap
+    .well.well-white
+      = render 'comments_index', comments: @comments
+      = paginate @comments
+      = page_entries_info @comments, :entry_name => 'Comment'

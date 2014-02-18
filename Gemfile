@@ -61,8 +61,9 @@ gem "messengerjs-rails", "~> 1.3.6"
 gem 'metamagic'
 gem 'talk_like_a_pirate'
 gem 'premailer-rails'
-gem 'composite_primary_keys'
+gem 'closure_tree'
 gem 'redcarpet'
+gem 'composite_primary_keys'
 
 gem 'delayed_job_active_record'
 gem 'daemons'
