@@ -34,6 +34,9 @@ class Alliance < ActiveRecord::Base
   has_many :members, :class_name => 'Profile', :inverse_of => :alliance
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :alliance, :dependent => :destroy
 
+  #challengers
+  has_many :challengers, as: :entity
+
   before_destroy :remove_current_members
   def remove_current_members
     Profile.where{alliance_id == my{self.id}}.update_all(:alliance_id => nil)

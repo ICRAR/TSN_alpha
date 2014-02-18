@@ -59,6 +59,10 @@ class Profile < ActiveRecord::Base
   def science_portals_all
     members_science_portals + leaders_science_portals
   end
+  #challengers
+  has_many :challengers, as: :entity
+
+
   #sets up simple messaging
   acts_as_messageable
   #Returning the email address of the model if an email should be sent for this object (Message or Notification).

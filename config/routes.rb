@@ -21,7 +21,7 @@ Tsn::Application.routes.draw do
     get 'advent_subscribe'
   end
 
-  resources :contact_forms
+  resources :contact_forms, :only => [:new, :create]
   resources :stats, :only => [:index] do
     collection do
       get 'activities'
@@ -118,6 +118,14 @@ Tsn::Application.routes.draw do
       member do
         get 'send_report'
         get '/image/:colour' => "galaxies#image", :as => "image"
+      end
+    end
+  end
+
+  resources :challenges, :only => [:index, :show] do
+    resources :challengers, :only => [:show] do
+      collection do
+        get 'compare'
       end
     end
   end

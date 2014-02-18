@@ -1,0 +1,21 @@
+= form_tag compare_challenge_challengers_path(challenge_id: @challenge.id), method: :get do
+  %table#challengers.table.table-striped
+    %thead
+      %tr
+        %th Name
+        %th Rank
+        %th Score
+        %th= submit_tag 'Compare'
+
+    %tbody
+      - @challengers.each do |challenger|
+        %tr
+          - link = challenge_challenger_path(challenge_id: challenger.challenge_id, id: challenger.id)
+          %td
+            %a{href: link}= challenger.name
+          %td
+            %a{href: link}= challenger.rank
+          %td
+            %a{href: link}= challenger.score
+          %td
+            = check_box_tag 'ids[]', challenger.id

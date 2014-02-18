@@ -89,9 +89,9 @@ class Trophy < ActiveRecord::Base
     inserts = []
     update_profiles = nil
     if profiles.class == Profile
-      update_profiles = Profile.where{(id == my{profiles.id}) & (sift :does_not_have_trophy, my{self.id})}
+      update_profiles = Profile.where{(id == my{profiles.id}) & (sift :does_not_have_trophy, my{self.id})}.all
     elsif profiles.class == ActiveRecord::Relation
-      update_profiles = profiles.where{sift :does_not_have_trophy, my{self.id}}
+      update_profiles = profiles.where{sift :does_not_have_trophy, my{self.id}}.all
     end
     return if update_profiles.empty?
     update_profiles.each do |p|
@@ -104,9 +104,9 @@ class Trophy < ActiveRecord::Base
       db_conn = ActiveRecord::Base.connection
       db_conn.execute sql
 
-      #puts sql
+      create_notification(update_profiles)
     end
-    create_notification(update_profiles)
+
   end
 
   def create_notification(profiles)

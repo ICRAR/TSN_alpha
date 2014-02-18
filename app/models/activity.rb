@@ -11,7 +11,7 @@ class Activity < ActiveRecord::Base
     if profiles.class == Profile
       return unless Activity.scale(action,trackable.class.name,'single' )
       profiles.activities.create!(:action => action, :trackable => trackable)
-    elsif profiles.class == ActiveRecord::Relation
+    elsif profiles.class == ActiveRecord::Relation || profiles.class == Array
       if profiles.size < 4
         profiles.each do |profile|
           return unless Activity.scale(action,trackable.class.name,'single' )

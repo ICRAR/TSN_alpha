@@ -36,6 +36,8 @@
 // Example:
 // @linkColor: #ff0000;
 
+blockquote p {margin-bottom: 10px;}
+
 .no-height {
   margin: 0px;
   padding: 0px;
@@ -332,18 +334,27 @@ body {
     z-index: 4;
   }
   #slider {
+    margin-left: 40px;
     margin-top: 15px;
   }
   #chart {
+    position: relative;
+    left: 40px;
     z-index: 4;
-    width: 600px;
+    width: 750px;
+  }
+  #y_axis {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
   }
   #legend.rickshaw_legend {
     background-color: white;
     border: 1px solid black;
     border-radius: 4px;
     color: black;
-
+    margin-top: 20px;
     .action {
       border: 1px solid black;
       border-radius: 2px;
@@ -510,7 +521,44 @@ form .alliance_tag_list ul{
   position: relative;
 }
 
+.countdown_timer {
+  div {
+    display: inline-block;
+    margin: 0 5px 1em;
+    font-size: 30px;
+    font-weight: 100;
+    line-height: 1;
+    text-align: right;
 
+    /* IE7 inline-block hack */
+    *display: inline;
+    *zoom: 1;
+
+    span {
+      display: block;
+      border-top: 1px solid #cecece;
+      padding-top: 3px;
+      font-size: 12px;
+      font-weight: normal;
+      text-transform: uppercase;
+      text-align: left;
+    }
+  }
+  div:first-child {
+    margin-left: 0;
+  }
+
+  div:last-child {
+    margin-right: 0;
+  }
+}
+
+form {
+  input.read_only_override{
+    background-color: white;
+    cursor: text;
+  }
+}
 @import './less_files/advent.css.less';
 @import './less_files/new_years_spec.css.less';
 @import './less_files/trophies.css.less';

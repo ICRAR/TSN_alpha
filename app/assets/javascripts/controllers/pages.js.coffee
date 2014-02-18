@@ -13,7 +13,7 @@ TSN.pages.index = () ->
     'sumSeries(scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)','scale(stats.gauges.TSN_dev.nereus.stats.total_daily_credit%2C0.000005))'
   ]
   names_global =  ['Total Credit','Active Users','Total Users','Current TFLOPS']
-  TSN.rickshaw_graph(metrics_global,names_global,$("#global_graphs"),"-#{TSN.months_from_launch()}months")
+  TSN.rickshaw_graph_graphite(metrics_global,names_global,$("#global_graphs"),"-#{TSN.months_from_launch()}months")
 
 
   metrics_boinc = [
@@ -23,7 +23,7 @@ TSN.pages.index = () ->
     'scale(stats.gauges.TSN_dev.boinc.stat.total_rac%2C0.000005)'
   ]
   names_boinc =  ['POGS Total Credit','POGS Active Users','POGS Total Users','POGS Current TFLOPS']
-  TSN.rickshaw_graph(metrics_boinc,names_boinc,$("#boinc_graphs"),"-#{TSN.months_from_launch()}months")
+  TSN.rickshaw_graph_graphite(metrics_boinc,names_boinc,$("#boinc_graphs"),"-#{TSN.months_from_launch()}months")
 
   metrics = [
     'stats.gauges.TSN_dev.nereus.stats.total_credit'
@@ -32,7 +32,7 @@ TSN.pages.index = () ->
     'scale(stats.gauges.TSN_dev.nereus.stats.total_daily_credit%2C0.000005)'
   ]
   names =  ['SourceFinder Total Credit','SourceFinder Active Users','SourceFinder Total Users','SourceFinder Current TFLOPS (estimate)']
-  TSN.rickshaw_graph(metrics,names,$("#nereus_graphs"),"-#{TSN.months_from_launch()}months")
+  TSN.rickshaw_graph_graphite(metrics,names,$("#nereus_graphs"),"-#{TSN.months_from_launch()}months")
   ###
   $('#js-news').ticker(
     titleText: I18n.t("js.stats.latest"),

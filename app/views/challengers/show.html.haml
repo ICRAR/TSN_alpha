@@ -1,0 +1,28 @@
+- my_meta :title => "theSkyNet Challenges",
+    :description => "short term challenges run by users of theSkyNet to compete for trophies"
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @challenger.name
+  - @user_page =  'challenges'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    = render :partial => 'shared/under_construction'
+    .well.well-small
+      %h3= format_breadcrumbs({'Challenges' => challenges_path, @challenger.challenge.name => challenge_path(@challenger.challenge), @challenger.name => ''})
+    .row-fluid
+      = render 'challenges/challenge_details', challenge: @challenger.challenge
+    .row-fluid
+      .span5.well.well-white
+        %h2= link_to @challenger.name, @challenger.entity
+        %dl.dl-horizontal
+          %dt Score
+          %dd= @challenger.score
+          %dt Rank
+          %dd= @challenger.rank
+          %dt Handicap
+          %dd= @challenger.handicap
+
+    .well.well-white
+      -graph_data = [@challenger.score_metric_json,@challenger.rank_metric_json]
+      #graph{data: {metrics: graph_data.to_json}}

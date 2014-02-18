@@ -96,9 +96,6 @@ class ApplicationController < ActionController::Base
     render json:{:status => 'ok'}
   end
 
-  def not_found
-    raise ActiveRecord::RecordNotFound
-  end
 
   def facebook_channel
     expires_in 1.day, :public => true
@@ -109,4 +106,15 @@ class ApplicationController < ActionController::Base
     @hdf5_request_galaxies = session[:hdf5_request_galaxies]
     @hdf5_request_galaxies ||= []
   end
+
+  private
+
+  def not_found
+    raise ActiveRecord::RecordNotFound
+  end
+
+  def user_is_admin?
+    user_signed_in? && current_user.is_admin?
+  end
+  helper_method :user_is_admin?
 end

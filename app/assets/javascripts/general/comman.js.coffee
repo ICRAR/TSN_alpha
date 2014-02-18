@@ -40,6 +40,27 @@ custom_alert_box = ->
         $.rails.handleLink(link);
 #**************************************
 
+date_range_picker = ->
+  $('.date_range_form').each ->
+    main = $(this)
+    $(main.data('fromAltId')).datepicker(
+      altField: main.data('fromId')
+      dateFormat: "DD, d MM, yy"
+      altFormat: "yy-mm-d"
+      changeMonth: true
+      onClose: (selectedDate) ->
+        $(main.data('toAltId')).datepicker "option", "minDate", selectedDate
+    ).keyup (e) ->
+      $.datepicker._clearDate this  if e.keyCode is 8 or e.keyCode is 46
+    $(main.data('toAltId')).datepicker(
+      altField: main.data('toId')
+      dateFormat: "DD, d MM, yy"
+      altFormat: "yy-mm-d"
+      changeMonth: true
+      onClose: (selectedDate) ->
+        $(main.data('fromAltId')).datepicker "option", "maxDate", selectedDate
+    ).keyup (e) ->
+      $.datepicker._clearDate this  if e.keyCode is 8 or e.keyCode is 46
 
 setup_announcement = ->
   $(".announcement").each( ->
@@ -78,6 +99,24 @@ $(document).ready( ->
   setup_announcement()
   custom_alert_box()
   placeholder_check()
+  date_range_picker()
+  #init anycountdown timeers
+  $('.countdown_timer').each ->
+    div = $(this)
+    div.countdown {
+      date: div.data('countdownTo')
+      render: (data) ->
+        el = $(this.el)
+        el.empty()
+        el.append("<div>" + this.leadingZeros(data.years, 4) + " <span>years</span></div>") if data.years > 0
+        el.append("<div>" + this.leadingZeros(data.days, 3) + " <span>days</span></div>") if data.years > 0 || data.days > 0
+        el.append("<div>" + this.leadingZeros(data.hours, 2) + " <span>hrs</span></div>")
+        el.append("<div>" + this.leadingZeros(data.min, 2) + " <span>min</span></div>")
+        el.append("<div>" + this.leadingZeros(data.sec, 2) + " <span>sec</span></div>")
+      onEnd: () ->
+        if $(this.el).data('refresh') == true
+          location.reload(true)
+    }
 
   #fix for bootstrap modal's getting stuck behind the background
   $('.modal').appendTo("body")
