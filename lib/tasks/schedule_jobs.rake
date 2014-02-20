@@ -5,6 +5,8 @@ namespace :schedule_jobs do
     #TestJob.schedule
     puts 'starting Boinc Update'
     BoincJob.schedule Time.now
+    puts 'starting Boinc Copy Update'
+    BoincCopyJob.schedule Time.now
     puts 'starting Trophy Update'
     TrophiesJob.schedule Time.now
     puts 'starting Nereus Update'
@@ -21,6 +23,8 @@ namespace :schedule_jobs do
     #TestJob.unschedule
     puts 'stopping Boinc Update'
     BoincJob.unschedule
+    puts 'stopping Boinc Copy Update'
+    BoincCopyJob.unschedule
     puts 'stopping Trophy Update'
     TrophiesJob.unschedule
     puts 'stopping Nereus Update'
