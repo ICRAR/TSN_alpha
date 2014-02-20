@@ -70,7 +70,7 @@ class BoincJob
         end
 
         #update team members not in team_delta
-        ids = BoincRemoteUser.teamid_no_team_delta.where{total_credit > 0}.select([:id, :teamid])
+        ids = BoincRemoteUser.where{(total_credit > 0) & (teamid > 0)}.select([:id, :teamid])
         ids_array = ids.map {|i| i.id}
         team_hash = ids.map {|i| i.teamid}
         ids_team_hash = Hash[*ids.map{|i| [i.id, i.teamid]}.flatten]
