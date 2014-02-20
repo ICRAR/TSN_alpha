@@ -45,6 +45,7 @@ class PogsTeam < BoincPogsModel
     #load local alliance
     alliance ||= Alliance.where{pogs_team_id == my{self.id}}.first
     raise ArgumentError.new("alliance error, alliance not found with pogs_team_id == #{self.id}") if alliance.nil?
+    max_update_time = PogsTeamMember.where{(teamid == my{self.id})}.maximum(:timestamp)
     pogs_members = PogsTeamMember.where{(teamid == my{self.id}) & (timestamp > my{alliance.pogs_update_time})}
     #group memberships
     all_memberships = pogs_members.group_by {|m| m.userid}
@@ -101,7 +102,7 @@ class PogsTeam < BoincPogsModel
         end
       end
     end
-    alliance.pogs_update_time = Time.now.to_i
+    alliance.pogs_update_time = max_update_time
     alliance.save
   end
 
