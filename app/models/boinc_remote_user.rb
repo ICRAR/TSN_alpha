@@ -36,7 +36,7 @@ class BoincRemoteUser < BoincPogsModel
     #else look for corresponding user.
     email_encoded = self.email_addr
     begin
-      email_check = email_encoded
+      email_check = email_encoded.dup
       email_check.force_encoding("UTF-8").encode("cp1252")
     rescue ##ToDO MAKE ME BETTER PLEASE####
       email_encoded = URI.encode(email_encoded)
@@ -64,7 +64,7 @@ class BoincRemoteUser < BoincPogsModel
     name = self.name
     i = nil
     begin
-      name_check = name
+      name_check = name.dup
       name_check.force_encoding("UTF-8").encode("cp1252")
     rescue ##ToDO MAKE ME BETTER PLEASE####
       name = 'unknown_name'
