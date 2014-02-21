@@ -36,10 +36,10 @@ class BoincRemoteUser < BoincPogsModel
     #else look for corresponding user.
     email_encoded = self.email_addr
     begin
-      email_check = email
+      email_check = email_encoded
       email_check.force_encoding("UTF-8").encode("cp1252")
     rescue ##ToDO MAKE ME BETTER PLEASE####
-      email_encoded = URI.encode(email)
+      email_encoded = URI.encode(email_encoded)
     end
 
     local_user = User.where{email == my{email_encoded}}.first
