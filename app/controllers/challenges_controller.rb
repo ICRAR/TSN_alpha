@@ -32,6 +32,55 @@ class ChallengesController < ApplicationController
       @comment = Comment.new(:commentable => @challenge)
       @comment.profile = current_user.profile
     end
+
+    render :show
+  end
+
+  def join
+    redirect_to root_url, :notice => "You must be logged in to do that" unless user_signed_in?
+    challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])
+    error_msg = ''
+    if challenge.joinable?
+      profile = current_user.profile
+      case challenge.challenger_type.downcase
+        when 'alliance'
+          #check if current user is a alliance leader
+          error_msg = 'You must be the leader of an Alliance to join this challenge.' if profile.alliance_leader_id.nil? || profile.alliance_leader_id == 0
+          #check if their alliance is already in the challenge
+          error_msg = 'Your alliance is already participating in this challenge.' if challenge.challengers.where{entity_id == my{profile.alliance_leader_id}}.exists?
+        when 'profile'
+          #check if current user is already in the challenge
+          error_msg = 'You are already participating in this challenge.' if challenge.challengers.where{entity_id == my{profile.id}}.exists?
+      end
+    else
+      error_msg = 'This challenge can not be joined at the moment'
+    end
+
+    #now if error msg is still == '' then this user is allowed to join
+    if error_msg == ''
+      case challenge.challenger_type.downcase
+        when 'alliance'
+          new_challenger = challenge.join profile.alliance_leader
+        when 'profile'
+          new_challenger = challenge.join profile
+      end
+      if new_challenger == false
+        error_msg = 'This challenge can not be joined at the moment'
+      else
+        if new_challenger.class == Challenger
+          error_msg = "Oh no something went wrong: #{new_challenger.errors.messages}" unless new_challenger.errors.messages == {}
+        else
+          error_msg = "Oh no something went wrong"
+        end
+      end
+    end
+    #if there has been an error ie error_msg != '' then flash error
+    if error_msg == ''
+      redirect_to challenge_path(challenge), notice: 'Congratulations you are now signed up for this challenge.'
+    else
+      redirect_to challenge_path(challenge), alert: error_msg
+    end
+
   end
 
   private

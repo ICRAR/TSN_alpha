@@ -129,6 +129,9 @@ Tsn::Application.routes.draw do
   end
 
   resources :challenges, :only => [:index, :show] do
+    member do
+      get 'join'
+    end
     resources :challengers, :only => [:show] do
       collection do
         get 'compare'

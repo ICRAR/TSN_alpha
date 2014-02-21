@@ -13,8 +13,8 @@
     %dd= "#{challenge.challenge_system} #{challenge.challenger_type}"
     %dt Handicap Type
     %dd= challenge.handicap_type
-  - if user_signed_in? && display_join_button?(challenge, current_user.profile)
-    Join
+  - if user_signed_in?
+    = display_join_button(challenge, current_user.profile)
 
 .span7.well.well-white
   %h2 About this challenge:
