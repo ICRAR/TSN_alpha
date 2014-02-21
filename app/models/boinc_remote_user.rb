@@ -34,7 +34,16 @@ class BoincRemoteUser < BoincPogsModel
     return true unless boinc_item.general_stats_item_id.nil?
 
     #else look for corresponding user.
-    local_user = User.where{email == my{self.email_addr}}.first
+    email_encoded = self.email_addr
+    begin
+      email_check = email
+      email_check.force_encoding("UTF-8").encode("cp1252")
+    rescue ##ToDO MAKE ME BETTER PLEASE####
+      email_encoded = URI.encode(email)
+    end
+
+    local_user = User.where{email == my{email_encoded}}.first
+
 
     if local_user.nil?
       #no local user therefore create one
@@ -43,7 +52,7 @@ class BoincRemoteUser < BoincPogsModel
       #link users
       local_user.profile.general_stats_item.boinc_stats_item = boinc_item
       local_user.profile.general_stats_item.update_credit
-
+                                                    self.email_addr
     #if user is already linked do nothing
     end
 
