@@ -63,6 +63,15 @@ class BoincRemoteUser < BoincPogsModel
   def copy_to_local(password, theSkyNetPassword = true)
     name = self.name
     i = nil
+
+    email_encoded = self.email_addr
+    begin
+      email_check = email_encoded.dup
+      email_check.force_encoding("UTF-8").encode("cp1252")
+    rescue ##ToDO MAKE ME BETTER PLEASE####
+      email_encoded = URI.encode(email_encoded)
+    end
+
     begin
       name_check = name.dup
       name_check.force_encoding("UTF-8").encode("cp1252")
@@ -77,7 +86,7 @@ class BoincRemoteUser < BoincPogsModel
     end
 
     new_user = User.new(
-        :email => self.email_addr,
+        :email => self.email_encoded,
         :username => name,
         :password => 'password',
         :password_confirmation => 'password',
