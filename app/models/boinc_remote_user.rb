@@ -86,7 +86,7 @@ class BoincRemoteUser < BoincPogsModel
     end
 
     new_user = User.new(
-        :email => self.email_encoded,
+        :email => email_encoded,
         :username => name,
         :password => 'password',
         :password_confirmation => 'password',
