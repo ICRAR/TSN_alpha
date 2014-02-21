@@ -139,7 +139,7 @@ Finally the score value is set in the update action using the following formula:
 
                 num_members: {
                     join_option: :joins_alliance_active_members,
-                    handicap_query: 'challengers.handicap = 100 / GREATEST(IFNULL(count_table.count,0),1)'
+                    handicap_query: 'challengers.handicap = 100 / GREATEST(IFupdate_queryNULL(count_table.count,0),1)'
                 }
             }
         }
@@ -228,11 +228,29 @@ Finally the score value is set in the update action using the following formula:
 
     #fix for join whilst running
 
-    if new_challenger.valid?
-      return new_challenger.save
-    else
-      return false
+    if new_challenger.save
+      if self.running?
+        #fix for join whilst running
+        challenger_relation = challengers.where{id == new_challenger.id}
+        #set the start value, save_value, set rank to max value
+        update_query = options_hash[:start_query] == '' ? 'challengers.start = 0' : options_hash[:start_query]
+        update_query << ', '
+        update_query << options_hash[:update_query]
+        update_query << ", challengers.rank = #{challengers.count}"
+        challenger_relation.send(options_hash[:join_option]).update_all(update_query)
+
+        #set the handicap value
+        if handicap_type == 'None'
+          challenger_relation.update_all('challengers.handicap = 1.0')
+        else
+          challenger_relation.send(handicap_options_hash[:join_option]).update_all(handicap_options_hash[:handicap_query])
+        end
+        #set the score value
+        challenger_relation.update_all('challengers.score = (challengers.save_value - challengers.start) * challengers.handicap')
+
+      end
     end
+    return new_challenger
 
 
   end
@@ -328,7 +346,6 @@ Finally the score value is set in the update action using the following formula:
     if handicap_type == 'None'
       challengers.update_all('challengers.handicap = 1.0')
     else
-      handicap_options_hash
       challengers.send(handicap_options_hash[:join_option]).update_all(handicap_options_hash[:handicap_query])
     end
   end

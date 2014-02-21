@@ -1,4 +1,5 @@
 module ChallengersHelper
+  include ChallengesHelper
   def score_data(challengers)
     data = []
     challengers.each do |c|

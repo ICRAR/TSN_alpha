@@ -27,7 +27,11 @@ class Challenger < ActiveRecord::Base
   validate :valid_entity
   def valid_entity
     errors.add(:entity, "Entity must be the same type as challenge.challenger_type") unless challenge.challenger_type == self.entity_type
-    errors.add(:entity, "Entity has already joined this challenge") unless Challenger.where{(challenge_id == my{self.challenge_id}) & (entity_id == my{self.entity_id})}.first.nil?
+    if self.id.nil?
+      errors.add(:entity, "Entity has already joined this challenge") unless Challenger.where{(challenge_id == my{self.challenge_id}) & (entity_id == my{self.entity_id})}.first.nil?
+    else
+      errors.add(:entity, "Entity has already joined this challenge") unless Challenger.where{(challenge_id == my{self.challenge_id}) & (entity_id == my{self.entity_id}) & (id != my{self.id})}.first.nil?
+    end
   end
 
   def unscaled_score
