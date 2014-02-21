@@ -34,7 +34,16 @@ class BoincRemoteUser < BoincPogsModel
     return true unless boinc_item.general_stats_item_id.nil?
 
     #else look for corresponding user.
-    local_user = User.where{email == my{self.email_addr}}.first
+    email_encoded = self.email_addr
+    begin
+      email_check = email_encoded.dup
+      email_check.force_encoding("UTF-8").encode("cp1252")
+    rescue ##ToDO MAKE ME BETTER PLEASE####
+      email_encoded = URI.encode(email_encoded)
+    end
+
+    local_user = User.where{email == my{email_encoded}}.first
+
 
     if local_user.nil?
       #no local user therefore create one
@@ -43,7 +52,7 @@ class BoincRemoteUser < BoincPogsModel
       #link users
       local_user.profile.general_stats_item.boinc_stats_item = boinc_item
       local_user.profile.general_stats_item.update_credit
-
+                                                    self.email_addr
     #if user is already linked do nothing
     end
 
@@ -54,8 +63,17 @@ class BoincRemoteUser < BoincPogsModel
   def copy_to_local(password, theSkyNetPassword = true)
     name = self.name
     i = nil
+
+    email_encoded = self.email_addr
     begin
-      name_check = name
+      email_check = email_encoded.dup
+      email_check.force_encoding("UTF-8").encode("cp1252")
+    rescue ##ToDO MAKE ME BETTER PLEASE####
+      email_encoded = URI.encode(email_encoded)
+    end
+
+    begin
+      name_check = name.dup
       name_check.force_encoding("UTF-8").encode("cp1252")
     rescue ##ToDO MAKE ME BETTER PLEASE####
       name = 'unknown_name'
@@ -68,7 +86,7 @@ class BoincRemoteUser < BoincPogsModel
     end
 
     new_user = User.new(
-        :email => self.email_addr,
+        :email => email_encoded,
         :username => name,
         :password => 'password',
         :password_confirmation => 'password',

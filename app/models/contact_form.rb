@@ -4,7 +4,7 @@ class ContactForm < MailForm::Base
   attributes :profile_id
   attributes :email_db
   attributes :name_db
-  attributes :message
+  attributes :message, :validate => true
   attributes :nickname,   :captcha => true
 
   def headers
