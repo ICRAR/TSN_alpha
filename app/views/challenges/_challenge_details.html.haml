@@ -13,6 +13,10 @@
     %dd= "#{challenge.challenge_system} #{challenge.challenger_type}"
     %dt Handicap Type
     %dd= challenge.handicap_type
+    %dt Allows late entrants
+    %dd= challenge.join_while_running? ? "Yes" : "No"
+    %dt Invite Only
+    %dd= challenge.invite_only? ? "Yes" : "No"
   - if user_signed_in?
     = display_join_button(challenge, current_user.profile)
 

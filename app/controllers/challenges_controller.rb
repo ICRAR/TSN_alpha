@@ -3,6 +3,21 @@ class ChallengesController < ApplicationController
   # GET /alliances.json
   authorize_resource
   helper_method :sort_column, :sort_direction
+  def create
+    redirect_to root_url, :notice => "You must be logged in to do that" unless user_signed_in? && user_is_admin?
+    @challenge = Challenge.new(params[:challenge])
+    if @challenge.save
+      redirect_to @challenge
+    else
+      render :new
+    end
+  end
+
+  def new
+    redirect_to root_url, :notice => "You must be logged in to do that" unless user_signed_in? && user_is_admin?
+    @challenge = Challenge.new()
+  end
+
   def index
     per_page = [params[:per_page].to_i,1000].min
     per_page ||= 20

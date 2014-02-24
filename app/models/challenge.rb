@@ -1,5 +1,5 @@
 class Challenge < ActiveRecord::Base
-  attr_accessible :name, :desc, :end_date, :handicap_type, :start_date, :invite_only, :challenge_system, :challenger_type, :project, :manager_id, :started, :finished, :join_while_running, :hidden, as: [:admin]
+  attr_accessible :name, :desc, :end_date, :handicap_type, :start_date, :invite_only, :challenge_system, :challenger_type, :project, :manager_id, :started, :finished, :join_while_running, :hidden, as: [:admin, :default]
   has_many :challengers
   belongs_to :manager, class_name: 'Profile'
   def self.not_hidden(admin = false)
