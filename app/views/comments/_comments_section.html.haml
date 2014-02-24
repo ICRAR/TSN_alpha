@@ -1,6 +1,11 @@
 .comments
   %h3 Comments:
-  - unless @comment.nil?
+  - if @comment.nil?
+    %p
+      You must be
+      = link_to 'logged in ', new_user_session_path
+      to comment.
+  - else
     = render "comments/form", remote: true
   - all_comments = commentable.comments.for_show_commentable.hash_tree
   - all_comments.reverse_each do |comments_hash|
