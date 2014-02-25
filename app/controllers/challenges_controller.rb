@@ -47,8 +47,8 @@ class ChallengesController < ApplicationController
     search_options << "challenges.start_date <= \"#{Time.parse(params[:start_date_to])}\"" if params[:start_date_to] != nil && params[:start_date_to] != ''
     search_options << "challenges.end_date >= \"#{Time.parse(params[:end_date_from])}\"" if params[:end_date_from] != nil && params[:end_date_from] != ''
     search_options << "challenges.end_date <= \"#{Time.parse(params[:end_date_to])}\"" if params[:end_date_to] != nil && params[:end_date_to] != ''
-    search_options << "challenges.started =  0" if params[:status] != nil && params[:status] == 'upcoming'
-    search_options << "challenges.started =  1 AND challenges.finished = 0" if params[:status] != nil && params[:status] == 'running'
+    search_options << "(challenges.started =  0 OR challenges.started IS NULL)" if params[:status] != nil && params[:status] == 'upcoming'
+    search_options << "challenges.started =  1 AND (challenges.finished = 0 OR challenges.finished IS NULL)" if params[:status] != nil && params[:status] == 'running'
     search_options << "challenges.finished = 1" if params[:status] != nil && params[:status] == 'finished'
     search_options = search_options.join(' AND ')
 
