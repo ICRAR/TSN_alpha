@@ -45,3 +45,5 @@
     - refresh_time = challenge.start_date + 2.minutes + rand(0..180).seconds
     - refresh_page = (refresh_time > 1.minutes.from_now).to_s
     .countdown_timer{data: {countdown_to: time_to_js(refresh_time), refresh: refresh_page} }
+  - if user_signed_in? && challenge.manager_id == current_user.profile.id
+    =link_to "Manage your challenge", edit_challenge_path(challenge)

@@ -128,7 +128,7 @@ Tsn::Application.routes.draw do
     end
   end
 
-  resources :challenges, :only => [:index, :show, :new, :create] do
+  resources :challenges, :except => [:destroy] do
     member do
       get 'join'
     end

@@ -3,10 +3,30 @@ class ChallengesController < ApplicationController
   # GET /alliances.json
   authorize_resource
   helper_method :sort_column, :sort_direction
+
+  def edit
+    @challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])
+    auth_user_for_challenge_manage(@challenge)
+
+  end
+  def update
+    @challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])
+    auth_user_for_challenge_manage(@challenge)
+    if @challenge.update_attributes(params[:challenge].slice(:desc))
+      redirect_to @challenge, notice: 'Challenge was successfully updated.'
+    else
+      render :edit
+    end
+  end
+
   def create
-    redirect_to root_url, :notice => "You must be logged in to do that" unless user_signed_in? && user_is_admin?
+    auth_user_for_challenge
     @challenge = Challenge.new(params[:challenge])
+    @challenge.project = 'All'
+    #@challenge.hidden = true
+    @challenge.manager = current_user.profile
     if @challenge.save
+      @challenge.add_start_job
       redirect_to @challenge
     else
       render :new
@@ -14,7 +34,7 @@ class ChallengesController < ApplicationController
   end
 
   def new
-    redirect_to root_url, :notice => "You must be logged in to do that" unless user_signed_in? && user_is_admin?
+    auth_user_for_challenge
     @challenge = Challenge.new()
   end
 
@@ -52,7 +72,7 @@ class ChallengesController < ApplicationController
   end
 
   def join
-    redirect_to root_url, :notice => "You must be logged in to do that" unless user_signed_in?
+    auth_user_for_challenge
     challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])
     error_msg = ''
     if challenge.joinable?(challenge.invite_code)
@@ -71,7 +91,7 @@ class ChallengesController < ApplicationController
       error_msg = 'This challenge can not be joined at the moment'
     end
 
-    #now if error msg is still == '' then this user is allowed to join
+    #now if error msg is still == '' then this user is allowe@challenged to join
     if error_msg == ''
       #check invite code
       if challenge.joinable?(params[:invite_code])
@@ -104,6 +124,13 @@ class ChallengesController < ApplicationController
   end
 
   private
+  def auth_user_for_challenge
+    redirect_to root_url, :notice => "You must be logged in to do that" unless user_signed_in?
+  end
+  def auth_user_for_challenge_manage(challenge)
+    auth_user_for_challenge
+    redirect_to challenges_url, :notice => "You are not authorised to do that" unless challenge.manager_id == current_user.profile.id
+  end
 
   def sort_column
     sort = %w[start_date end_date name status].include?(params[:sort]) ? params[:sort] : "start_date"
