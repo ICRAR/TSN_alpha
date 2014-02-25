@@ -47,3 +47,12 @@
     .countdown_timer{data: {countdown_to: time_to_js(refresh_time), refresh: refresh_page} }
   - if user_signed_in? && challenge.manager_id == current_user.profile.id
     =link_to "Manage your challenge", edit_challenge_path(challenge)
+    - if challenge.invite_only?
+      .well.well-small
+        %h4 Invite Only Details
+        %p
+          As this challenge is an invite only challenge any one signing up will need to use the following code:
+          %b= challenge.invite_code
+        %p Or they can use this link:
+        - link = challenge_url(challenge, {:protocol => 'https', invite_code: challenge.invite_code})
+        %p= link_to link, link
