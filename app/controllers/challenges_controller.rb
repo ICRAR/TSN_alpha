@@ -55,7 +55,7 @@ class ChallengesController < ApplicationController
     redirect_to root_url, :notice => "You must be logged in to do that" unless user_signed_in?
     challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])
     error_msg = ''
-    if challenge.joinable?
+    if challenge.joinable?(challenge.invite_code)
       profile = current_user.profile
       case challenge.challenger_type.downcase
         when 'alliance'
@@ -73,20 +73,25 @@ class ChallengesController < ApplicationController
 
     #now if error msg is still == '' then this user is allowed to join
     if error_msg == ''
-      case challenge.challenger_type.downcase
-        when 'alliance'
-          new_challenger = challenge.join profile.alliance_leader
-        when 'profile'
-          new_challenger = challenge.join profile
-      end
-      if new_challenger == false
-        error_msg = 'This challenge can not be joined at the moment'
-      else
-        if new_challenger.class == Challenger
-          error_msg = "Oh no something went wrong: #{new_challenger.errors.messages}" unless new_challenger.errors.messages == {}
-        else
-          error_msg = "Oh no something went wrong"
+      #check invite code
+      if challenge.joinable?(params[:invite_code])
+        case challenge.challenger_type.downcase
+          when 'alliance'
+            new_challenger = challenge.join profile.alliance_leader, params[:invite_code]
+          when 'profile'
+            new_challenger = challenge.join profile, params[:invite_code]
         end
+        if new_challenger == false
+          error_msg = 'This challenge can not be joined at the moment'
+        else
+          if new_challenger.class == Challenger
+            error_msg = "Oh no something went wrong: #{new_challenger.errors.messages}" unless new_challenger.errors.messages == {}
+          else
+            error_msg = "Oh no something went wrong"
+          end
+        end
+      else
+        error_msg = "Sorry you need the correct invite code."
       end
     end
     #if there has been an error ie error_msg != '' then flash error

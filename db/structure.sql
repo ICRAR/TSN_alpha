@@ -148,6 +148,7 @@ CREATE TABLE `challenges` (
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `handicap_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `comments_count` int(11) DEFAULT NULL,
+  `invite_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_challenges_on_start_date` (`start_date`),
   KEY `index_challenges_on_end_date` (`end_date`)
@@ -194,7 +195,7 @@ CREATE TABLE `comments` (
   KEY `comment_parent_id` (`parent_id`),
   KEY `comment_profile_id` (`profile_id`),
   KEY `comment_commentable` (`commentable_type`,`commentable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=467 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=469 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `conversations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -306,7 +307,7 @@ CREATE TABLE `news` (
   PRIMARY KEY (`id`),
   KEY `pubished_time_index_asc` (`published_time`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -781,3 +782,5 @@ INSERT INTO schema_migrations (version) VALUES ('20140213041029');
 INSERT INTO schema_migrations (version) VALUES ('20140218052156');
 
 INSERT INTO schema_migrations (version) VALUES ('20140224041125');
+
+INSERT INTO schema_migrations (version) VALUES ('20140225021502');

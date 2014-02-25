@@ -1,5 +1,6 @@
 class Challenge < ActiveRecord::Base
-  attr_accessible :name, :desc, :end_date, :handicap_type, :start_date, :invite_only, :challenge_system, :challenger_type, :project, :manager_id, :started, :finished, :join_while_running, :hidden, as: [:admin, :default]
+  attr_accessible :name, :desc, :end_date, :handicap_type, :start_date, :invite_only, :challenge_system, :challenger_type, :project, :join_while_running, as: [:admin, :default]
+  attr_accessible :invite_code, :manager_id, :started, :finished, :hidden, as: [:admin]
   has_many :challengers
   belongs_to :manager, class_name: 'Profile'
   def self.not_hidden(admin = false)
@@ -25,6 +26,14 @@ class Challenge < ActiveRecord::Base
   def project_enum
     ['All']
   end
+
+  before_save :update_invite_only
+  def update_invite_only
+    if invite_only_changed? && invite_only?
+      self.generate_invite_code
+    end
+  end
+
 
 =begin
   Each challenge id defiend using several type options
@@ -200,8 +209,12 @@ Finally the score value is set in the update action using the following formula:
     started && !finished
   end
 
-  def joinable?
-    !invite_only? && ((running? && join_while_running?) || !started)
+  def joinable?(check_code = '')
+    if invite_only?
+      #check invite code
+      return false unless (invite_code != nil && invite_code != '') && check_code == invite_code
+    end
+    return ((running? && join_while_running?) || !started)
   end
 
   def status
@@ -217,9 +230,9 @@ Finally the score value is set in the update action using the following formula:
     end
   end
 
-  def join(entity)
+  def join(entity,check_code = '')
     #double check entity is allowed to join
-    return false unless self.joinable?
+    return false unless self.joinable?(check_code)
     #create new challenger object
     new_challenger = Challenger.new(
         challenge: self,
@@ -348,5 +361,10 @@ Finally the score value is set in the update action using the following formula:
     else
       challengers.send(handicap_options_hash[:join_option]).update_all(handicap_options_hash[:handicap_query])
     end
+  end
+
+  #generates a new invite code
+  def generate_invite_code
+    self.invite_code = SecureRandom.hex(3)
   end
 end
