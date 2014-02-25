@@ -41,7 +41,7 @@ module Delayed
       end
       new_start_time = Time.now - run_time + self.class.run_interval
       #report to statsd
-      $statsd.gauge("site_stats.background_jobs.#{self.class.to_s.underscore}",run_time)
+      $statsd.gauge("background_jobs.#{self.class.to_s.underscore}",run_time)
       schedule! new_start_time # only schedule if job did not raise
     end
 
