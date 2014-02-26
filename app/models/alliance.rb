@@ -1,7 +1,7 @@
 class Alliance < ActiveRecord::Base
   acts_as_taggable
 
-  attr_accessible :name,:tags,:desc,:country, :old_id, :tag_list, :invite_only, :is_boinc,  :as => [:default, :admin]
+  attr_accessible :name,:tags,:desc,:country, :old_id, :tag_list, :invite_only, :is_boinc, :current_members,  :as => [:default, :admin]
   attr_accessible :leader_id, :member_ids, as: :admin
 
   validates :name, uniqueness: true, presence: true
@@ -23,8 +23,8 @@ class Alliance < ActiveRecord::Base
     end
   end
 
-  scope :temp_credit, joins(:member_items).select("alliances.*, sum(alliance_members.leave_credit-IFNULL(alliance_members.start_credit,0)) as temp_credit").group('alliances.id')
-  scope :temp_rac, joins(:members => [:general_stats_item]).select("alliances.*, sum(general_stats_items.recent_avg_credit) as temp_rac, count(general_stats_items.id) as total_members").group('alliances.id')
+  scope :member_credit, joins(:member_items).select{id}.select{(sum(IFNULL(member_items.leave_credit,0)-IFNULL(member_items.start_credit,0))).as 'temp_credit'}.group('alliances.id')
+  scope :temp_rac, joins(:members => [:general_stats_item]).select("alliances.id, sum(general_stats_items.recent_avg_credit) as temp_rac, count(general_stats_items.id) as total_members").group('alliances.id')
   scope :ranked, where("credit IS NOT NULL").order("credit DESC")
   scope :for_leaderboard, where("credit IS NOT NULL").includes(:leader)
   scope :for_leaderboard_small, where("credit IS NOT NULL")
@@ -37,6 +37,22 @@ class Alliance < ActiveRecord::Base
   #challengers
   has_many :challengers, as: :entity
 
+  def self.update_all_credits
+    sub_query = Alliance.member_credit.to_sql
+    main_query = Alliance.joins("INNER JOIN (#{sub_query}) totals ON totals.id = `alliances`.`id`")
+    main_query.update_all(" `alliances`.credit = totals.temp_credit")
+  end
+  def self.update_all_rac_current_members
+    sub_query = Alliance.temp_rac.to_sql
+    main_query = Alliance.joins("INNER JOIN (#{sub_query}) totals ON totals.id = `alliances`.`id`")
+    main_query.update_all(" `alliances`.RAC = totals.temp_rac, `alliances`.current_members = totals.total_members")
+  end
+  def self.update_ranks
+    Alliance.transaction do
+      Alliance.connection.execute 'SET @new_rank := 0'
+      Alliance.ranked.update_all('ranking = @new_rank := @new_rank + 1')
+    end
+  end
   before_destroy :remove_current_members
   def remove_current_members
     Profile.where{alliance_id == my{self.id}}.update_all(:alliance_id => nil)
@@ -268,5 +284,7 @@ class Alliance < ActiveRecord::Base
       end
     end
   end
+
+
 
 end

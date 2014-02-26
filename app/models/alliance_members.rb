@@ -4,6 +4,10 @@ class AllianceMembers < ActiveRecord::Base
   belongs_to :alliance
   belongs_to :profile
 
+  scope :joins_gsi, joins{'INNER JOIN general_stats_items ON general_stats_items.profile_id = alliance_members.profile_id'}
+  scope :current, where{leave_date == nil}
+
+
   def self.for_alliance_show(alliance_id)
     members = joins(:profile => [:general_stats_item]).
         select("alliance_members.*, (alliance_members.leave_credit-IFNULL(alliance_members.start_credit,0)) as credit_contributed, general_stats_items.rank as rank, general_stats_items.total_credit as credits").
