@@ -3,14 +3,24 @@ class GeneralStatsItem < ActiveRecord::Base
 
   scope :has_credit, where("total_credit IS NOT NULL AND total_credit != 0 AND power_user = false").order("total_credit DESC")
   scope :no_credit,  where("total_credit IS NULL OR total_credit = 0")
-  scope :for_update_credits, joins('LEFT JOIN boinc_stats_items ON boinc_stats_items.general_stats_item_id = general_stats_items.id
-                                    LEFT JOIN nereus_stats_items ON nereus_stats_items.general_stats_item_id = general_stats_items.id').
-                                   select("general_stats_items.*,
-                                          boinc_stats_items.credit as boinc_credit,
-                                          boinc_stats_items.`RAC` as boinc_daily,
-                                          nereus_stats_items.credit as nereus_credit,
-                                          nereus_stats_items.daily_credit as nereus_daily").
-                                   includes(:bonus_credits)
+  scope :for_stats, select([:id,:rank, :recent_avg_credit, :total_credit, :profile_id])
+  scope :for_update_credits, joins{boinc_stats_item.outer}.joins{nereus_stats_item.outer}.joins{bonus_credits.outer}.group{id}.
+                select{id}.select{(ifnull(boinc_stats_item.credit,0) + ifnull(nereus_stats_item.credit,0) + ifnull(sum(bonus_credits.amount),0)).as 'total_credit'}.
+                select{(ifnull(boinc_stats_item.RAC,0) + ifnull(nereus_stats_item.daily_credit,0)).as 'rac'}
+
+  def self.update_all_credits
+    sub_query = GeneralStatsItem.for_update_credits.to_sql
+    main_query = GeneralStatsItem.joins("INNER JOIN (#{sub_query}) totals ON totals.id = `general_stats_items`.`id`")
+    main_query.update_all(" `general_stats_items`.total_credit = totals.total_credit,
+                           `general_stats_items`.recent_avg_credit = rac")
+  end
+
+  def self.update_ranks
+    GeneralStatsItem.transaction do
+      GeneralStatsItem.connection.execute 'SET @new_rank := 0'
+      GeneralStatsItem.has_credit.order{total_credit.desc}.update_all('rank = @new_rank := @new_rank + 1')
+    end
+  end
 
   has_one :boinc_stats_item
   has_one :nereus_stats_item
