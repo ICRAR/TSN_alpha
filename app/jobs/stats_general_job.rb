@@ -1,5 +1,4 @@
-class StatsGeneralJob
-  include Delayed::ScheduledJob
+class StatsGeneralJob < Delayed::BaseScheduledJob
   run_every 1.hour
   def perform
     #start statsd batch

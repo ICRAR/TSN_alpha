@@ -1,5 +1,4 @@
-class AdventJob
-  include Delayed::ScheduledJob
+class AdventJob < Delayed::BaseScheduledJob
   run_every 24.hours
   def perform
     users = User.joins(:profile).where{profile.advent_notify == true}

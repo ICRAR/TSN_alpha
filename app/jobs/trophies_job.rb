@@ -1,5 +1,4 @@
-class TrophiesJob
-  include Delayed::ScheduledJob
+class TrophiesJob < Delayed::BaseScheduledJob
   run_every 1.hour
   def perform
     @statsd_batch = Statsd::Batch.new($statsd)

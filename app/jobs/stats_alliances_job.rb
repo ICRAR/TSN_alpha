@@ -1,5 +1,4 @@
-class StatsAlliancesJob
-  include Delayed::ScheduledJob
+class StatsAlliancesJob < Delayed::BaseScheduledJob
   run_every 1.hour
   def perform
     statsd_batch = Statsd::Batch.new($statsd)

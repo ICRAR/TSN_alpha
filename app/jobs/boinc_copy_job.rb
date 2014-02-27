@@ -1,5 +1,4 @@
-class BoincCopyJob
-  include Delayed::ScheduledJob
+class BoincCopyJob < Delayed::BaseScheduledJob
   run_every 1.hour
 
   def perform
