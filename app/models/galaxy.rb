@@ -6,35 +6,27 @@ class Galaxy < PogsModel
   self.table_name = 'galaxy'
 
   has_many :areas, class_name: "GalaxyArea"
+  has_many :galaxy_users
+
 
   def self.num_current
     where{status_id == 0}.count
   end
 
   def self.find_by_user_id(user_id)
-    uniq.joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
-            INNER JOIN area_user ON area.area_id = area_user.area_id")
-    .where("area_user.userid = ?",user_id )
+    joins{galaxy_users}.where{galaxy_users.userid == user_id}
   end
   def self.find_by_user_id_last(user_id)
-    joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
-            INNER JOIN area_user ON area.area_id = area_user.area_id")
-    .where("area_user.userid = ?",user_id )
-    .order("`area_user`.`areauser_id` DESC")
-    .limit(1).first
+    find_by_user_id(user_id).last
   end
 
   #returns an active relations object containing the profiles of all people who worked on this galaxy
   def profiles
-    db_ids = Galaxy.connection.execute("select distinct au.userid
-                from area_user au, area a
-                where au.area_id = a.area_id
-                and a.galaxy_id = #{self.id};
-                ")
-    boinc_ids = db_ids.map {|i| i[0].to_i}
-
+    boinc_ids = galaxy_users.pluck(:userid)
     profiles = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id.in boinc_ids}
   end
+
+
 
   def thumbnail_url
     APP_CONFIG['pogs_graphs_url'] + s3_name + "tn_colour_1.png"
