@@ -74,7 +74,9 @@ class Trophy < ActiveRecord::Base
 
   def award_by_galaxy_count(profiles = nil)
     profiles ||= Profile
-    boinc_ids = 0
+    GalaxyUser.profiles_in_batches(self.credits,profiles) do |ps|
+      self.award_to_profiles ps
+    end
   end
 
   def award_by_rac(profiles = nil)
@@ -84,7 +86,7 @@ class Trophy < ActiveRecord::Base
     self.award_to_profiles profiles
   end
 
-  #not this function skips active record
+  #note this function skips active record
   def award_to_profiles(profiles)
     inserts = []
     update_profiles = nil
