@@ -66,6 +66,7 @@ CREATE TABLE `alliances` (
   `pogs_update_time` int(11) DEFAULT NULL,
   `duplicate_id` int(11) DEFAULT NULL,
   `current_members` int(11) DEFAULT NULL,
+  `comments_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `credit_desc` (`credit`),
   KEY `ranking_asc` (`ranking`),
@@ -196,7 +197,7 @@ CREATE TABLE `comments` (
   KEY `comment_parent_id` (`parent_id`),
   KEY `comment_profile_id` (`profile_id`),
   KEY `comment_commentable` (`commentable_type`,`commentable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=469 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=470 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `conversations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -790,3 +791,5 @@ INSERT INTO schema_migrations (version) VALUES ('20140225021502');
 INSERT INTO schema_migrations (version) VALUES ('20140226055642');
 
 INSERT INTO schema_migrations (version) VALUES ('20140303022212');
+
+INSERT INTO schema_migrations (version) VALUES ('20140303024437');

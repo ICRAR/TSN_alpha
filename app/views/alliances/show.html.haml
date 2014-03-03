@@ -87,7 +87,13 @@
               -# - else
               -#   = link_to "Mark as a Duplicate Alliance", "#", class: "btn btn-tsn", id: "duplicate_btn"
 
-
+      .row-fluid
+        .span12.well.well-white
+          #alliance_graph
+      - if user_signed_in? && (current_user.profile.alliance_id == @alliance.id || current_user.is_admin?)
+        .row-fluid
+          .span12.well.well-white
+            = render :partial => "comments/comments_section", :locals => {commentable: @alliance}
       .row-fluid
         .span12.well.well-white
           %h2 All Members:
@@ -129,6 +135,5 @@
           =paginate @members
           =page_entries_info @members
           %p (*) Members that have left the alliance.
-      .row-fluid
-        .span12.well.well-white
-          #alliance_graph
+
+
