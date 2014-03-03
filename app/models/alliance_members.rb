@@ -115,11 +115,15 @@ class AllianceMembers < ActiveRecord::Base
         (profile_id == my{profile.id}) &
         (leave_date == nil)
     }.first
-    if member.nil? && m.total_credit.to_i == 0
+    if member.nil? && (m.total_credit.to_i == 0 || !m.check_if_first)
       #can't find corresponding join entry
-      #if total credit is 0 ignore, strange boinc condition
+      #if total credit is 0 ignore, strange boinc condition dosn't matter anyone as they had 0 credit
+      # or if this is not the first entry in the team delta table for that user, then this was most
+      #   likely caused by a race condition between theskynet and BOINC so we can safely ignore it
     else
       if member.nil? && m.total_credit.to_i > 0
+        #check to see if this is first teamdelta entry for that user
+
         #Team delta is a new feature to BOINC we must assume this member joined before that time
         #So create them a new member item starting with 0 credit
         member = AllianceMembers.new
@@ -129,6 +133,7 @@ class AllianceMembers < ActiveRecord::Base
         member.start_credit =0
       end
 
+      #now make that member item leave the alliance
       member.leave_date = Time.at(m.timestamp)
       member.leave_credit = m.total_credit
       #if timestamp is within 1 day and the users local credit is higher than POGS credit use local credit
