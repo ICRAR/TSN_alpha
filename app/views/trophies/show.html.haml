@@ -7,35 +7,35 @@
 
 -content_for(:content) do
   #content-wrap
-    .shadowed
-      .inner-boundary
-        #content-inner
-          - if @trophy.hidden?(@trophy_ids)
-            .well
-              %h3.text-error= t ".warning"
-              %p.text-error
-                %strong= t ".denied"
-          %p= image_tag @trophy.image.url(:base)
-          %p
-            %strong= t ".belongs_to"
-            = @set.name
-          %p
-            = @trophy.desc(@trophy_ids).html_safe
-            -unless @trophy.credits.nil? || @trophy.credits == 0
-              -case @trophy.set_type
-              -when 'leader_board_position_active'
-                ="(Awarded for being in the top #{number_with_delimiter @trophy.show_credits(@trophy_ids)} people)"
-              -when 'time_active'
-                ="(Awarded for being a member for at least #{number_with_delimiter @trophy.show_credits(@trophy_ids)} days)"
-              -when "RAC_active"
-                ="(Awarded for reaching an RAC of #{number_with_delimiter @trophy.show_credits(@trophy_ids)} or higher)"
-              -else
-                ="(Awarded for achieving #{number_with_delimiter @trophy.show_credits(@trophy_ids)} credits)"
+    .well.well-white
+      - if @trophy.hidden?(@trophy_ids)
+        .well
+          %h3.text-error= t ".warning"
+          %p.text-error
+            %strong= t ".denied"
+      %p= image_tag @trophy.image.url(:base)
+      %p
+        %strong= t ".belongs_to"
+        = @set.name
+      %p
+        = @trophy.desc(@trophy_ids).html_safe
+        -unless @trophy.credits.nil? || @trophy.credits == 0
+          -case @trophy.set_type
+          -when 'leader_board_position_active'
+            ="(Awarded for being in the top #{number_with_delimiter @trophy.show_credits(@trophy_ids)} people)"
+          -when 'time_active'
+            ="(Awarded for being a member for at least #{number_with_delimiter @trophy.show_credits(@trophy_ids)} days)"
+          -when "RAC_active"
+            ="(Awarded for reaching an RAC of #{number_with_delimiter @trophy.show_credits(@trophy_ids)} or higher)"
+          -else
+            ="(Awarded for achieving #{number_with_delimiter @trophy.show_credits(@trophy_ids)} credits)"
+    .well.well-white
+      %p
+        = t".won_by"
+        = @trophy.profiles_count
+        = t(".user").pluralize(@trophy.profiles_count)
+        = link_to "click here to see them all.", search_profiles_path(:trophy_id => @trophy.id)
+      - if user_signed_in? && current_user.profile.has_trophy(@trophy)
+        = render 'trophies/trophys_share', :trophy => @trophy
 
-          %p
-            = t".won_by"
-            = @trophy.profiles_count
-            = t(".user").pluralize(@trophy.profiles_count)
-            = link_to "click here to see them all.", search_profiles_path(:trophy_id => @trophy.id)
-          - if user_signed_in? && current_user.profile.has_trophy(@trophy)
-            = render 'trophies/trophys_share', :trophy => @trophy
+      =render :partial => "comments/comments_section", :locals => {commentable: @trophy}

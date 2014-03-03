@@ -22,6 +22,10 @@ class Trophy < ActiveRecord::Base
       where{(trophy_sets.set_type =~ "credit_active") | (trophy_sets.set_type =~ "credit_classic")}.
       where("credits IS NOT NULL")
 
+
+  has_many :comments, as: :commentable
+  attr_readonly :comments_count
+
   attr_accessor :profiles_count_store, :last_priority, :next_priority
 
   before_save :update_set_type
