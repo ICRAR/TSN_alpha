@@ -42,6 +42,7 @@ CREATE TABLE `alliance_members` (
   `profile_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `log` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `profile_id_index` (`profile_id`),
   KEY `alliance_id_index` (`alliance_id`),
@@ -197,7 +198,7 @@ CREATE TABLE `comments` (
   KEY `comment_parent_id` (`parent_id`),
   KEY `comment_profile_id` (`profile_id`),
   KEY `comment_commentable` (`commentable_type`,`commentable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=470 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=473 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `conversations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -793,3 +794,5 @@ INSERT INTO schema_migrations (version) VALUES ('20140226055642');
 INSERT INTO schema_migrations (version) VALUES ('20140303022212');
 
 INSERT INTO schema_migrations (version) VALUES ('20140303024437');
+
+INSERT INTO schema_migrations (version) VALUES ('20140303070636');

@@ -37,7 +37,11 @@ class PogsTeam < BoincPogsModel
     leader_boinc_item = BoincStatsItem.where{boinc_id == my{leader_boinc_id}}.first
     unless leader_boinc_item.try(:general_stats_item).nil?
       profile = leader_boinc_item.general_stats_item.profile
-      local.leader = profile unless (local.leader_id == profile.id) || !profile.alliance_leader_id.nil?
+      unless (local.leader_id == profile.id) || !profile.alliance_leader_id.nil?
+        local.leader = profile
+        profile.join_alliance(local, false, 'Ensure that leader is part of the alliance (Boinc Sync)')
+      end
+
     end
   end
 
@@ -83,7 +87,7 @@ class PogsTeam < BoincPogsModel
                 UserMailer.alliance_sync_removal(profile, profile.alliance, alliance).deliver
               end
 
-              profile.leave_alliance(false)
+              profile.leave_alliance(false, "User left the alliance in BOINC change is being sycned to local DB")
               profile.alliance = alliance
               profile.save
               #update notifications

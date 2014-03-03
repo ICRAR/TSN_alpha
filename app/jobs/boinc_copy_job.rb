@@ -49,7 +49,7 @@ class BoincCopyJob < Delayed::BaseScheduledJob
                 profile.save
               else
                 UserMailer.alliance_sync_removal(profile, profile.alliance, alliance).deliver
-                profile.leave_alliance
+                profile.leave_alliance(false, 'User was in the wrong alliance according to the BOINC users table')
                 profile.alliance = alliance
                 profile.save
               end

@@ -75,7 +75,7 @@ class AlliancesController < ApplicationController
       @alliance.credit = 0
       @alliance.leader = current_user.profile
       if @alliance.save
-        current_user.profile.join_alliance @alliance
+        current_user.profile.join_alliance(@alliance, true, 'Creating alliance through theSkyNet website')
         @alliance.create_pogs_team if @alliance.is_boinc?
 
         redirect_to @alliance, notice: 'Alliance was successfully created.'
@@ -131,7 +131,7 @@ class AlliancesController < ApplicationController
     elsif (@alliance.pogs_team_id > 0 && current_user.profile.general_stats_item.boinc_stats_item.nil?)
       flash[:alert] = "Sorry the #{@alliance.name} alliance is part of POGS. To join you must be also be a member of the POGS project."
     else
-      current_user.profile.join_alliance @alliance
+      current_user.profile.join_alliance(@alliance, true, "Joining allaince through theSkyNet website")
       flash[:notice] = "Welcome to the #{@alliance.name} Alliance"
     end
 
@@ -153,7 +153,7 @@ class AlliancesController < ApplicationController
       flash[:notice] = 'Sorry the current leader cannot leave an alliance'
     else
       #remove user from alliance
-      current_user.profile.leave_alliance
+      current_user.profile.leave_alliance(true, "leaving alliance from theSkyNet website")
       flash[:notice] = "You have left the #{@alliance.name} alliance"
     end
     redirect_to my_profile_path
