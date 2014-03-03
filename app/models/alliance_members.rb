@@ -199,7 +199,8 @@ class AllianceMembers < ActiveRecord::Base
 
   #doesn't save
   def log_msg(msg)
-    self.log << "\n" unless self.log.nil? || self.log == ''
+    self.log = '' if self.log.nil?
+    self.log << "\n" unless self.log == ''
     self.log << "Updated: #{Time.now} :: #{msg}"
   end
 
