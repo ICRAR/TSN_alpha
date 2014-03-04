@@ -57,7 +57,7 @@ Tsn::Application.routes.draw do
     member do
       get 'trophies'
       get 'alliance_history'
-
+      get 'challenge_history' => 'challenges#history', as: 'challenge_history'
     end
 
   end

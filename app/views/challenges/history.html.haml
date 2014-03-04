@@ -1,0 +1,125 @@
+- my_meta :title => "theSkyNet Challenges: #{@profile.name}",
+    :description => "Challenge history for #{@profile.name}"
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= "#{@profile.name.possessive} Challenge History"
+  - @user_page =  'dashboard'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    = render :partial => 'shared/under_construction'
+    .well.well-small
+      %h3= format_breadcrumbs({@profile.name => profile_path(@profile), 'Challenge History' => ''})
+    .row-fluid
+      .span6.well.well-white
+        %h2
+          Since
+          =link_to @profile.name ,profile_path(@profile)
+          joined theSkyNet they have:
+        %dl.dl-horizontal
+          %dt participated in:
+          %dd= "#{@challenges_p.size} challenges"
+          %dt won:
+          %dd= "#{number_of_places(@challenges_p, 1)} challenges"
+          %dt come 2nd in:
+          %dd= "#{number_of_places(@challenges_p, 2)} challenges"
+          %dt come 3rd in:
+          %dd= "#{number_of_places(@challenges_p, 3)} challenges"
+
+      - unless @profile.alliance_id.nil?
+        .span6.well.well-white
+          %h2
+            =  "#{@profile.name.possessive} Alliance, "
+            = link_to @profile.alliance.name, @profile.alliance
+            has:
+          %dl.dl-horizontal
+            %dt participated in:
+            %dd= "#{@challenges_a.size} challenges"
+            %dt won:
+            %dd= "#{number_of_places(@challenges_a, 1)} challenges"
+            %dt come 2nd in:
+            %dd= "#{number_of_places(@challenges_a, 2)} challenges"
+            %dt come 3rd in:
+            %dd= "#{number_of_places(@challenges_a, 3)} challenges"
+
+
+
+    .row-fluid
+      .span12.well.well-white
+        %h2= "Challenges that #{@profile.name.possessive} has participated in"
+        %table#challenges.table.table-striped
+          %thead
+            %tr
+              %th Name
+              %th Start Date
+              %th End Date
+              %th Number of Challengers
+              %th Status
+              %th Manager
+              %th Rank
+              -if user_is_admin?
+                %th Hidden?
+
+          %tbody
+            - @challenges_p.each do |challenge|
+              %tr
+                - link = challenge_path(challenge)
+                %td
+                  %a{href: link}= challenge.name
+                %td
+                  %a{href: link}= challenge.start_date.strftime '%B %d, %Y'
+                %td
+                  %a{href: link}= challenge.end_date.strftime '%B %d, %Y'
+                %td
+                  %a{href: link}= challenge.challengers.size
+                %td
+                  %a{href: link}= challenge.status
+
+                %td= link_to(challenge.manager.name, challenge.manager, :style => "text-decoration: underline")
+                %td
+                  %a{href: link}= challenge.finished? ? challenge.rank : ''
+                - if user_is_admin?
+                  %td
+                    %a{href: link}= challenge.hidden?
+    .row-fluid
+      .span12.well.well-white
+        %h2
+          = "Challenges that #{@profile.name.possessive} Alliance, "
+          = link_to(@profile.alliance.name, @profile.alliance)
+          has participated in
+        %table#challenges.table.table-striped
+          %thead
+            %tr
+              %th Name
+              %th Start Date
+              %th End Date
+              %th Number of Challengers
+              %th Status
+              %th Manager
+              %th Rank
+              -if user_is_admin?
+                %th Hidden?
+
+          %tbody
+            - @challenges_a.each do |challenge|
+              %tr
+                - link = challenge_path(challenge)
+                %td
+                  %a{href: link}= challenge.name
+                %td
+                  %a{href: link}= challenge.start_date.strftime '%B %d, %Y'
+                %td
+                  %a{href: link}= challenge.end_date.strftime '%B %d, %Y'
+                %td
+                  %a{href: link}= challenge.challengers.size
+                %td
+                  %a{href: link}= challenge.status
+
+                %td= link_to(challenge.manager.name, challenge.manager, :style => "text-decoration: underline")
+                %td
+                  %a{href: link}= challenge.finished? ? challenge.rank : ''
+                - if user_is_admin?
+                  %td
+                    %a{href: link}= challenge.hidden?
+
+

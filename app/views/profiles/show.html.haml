@@ -53,6 +53,9 @@
             %p
               = link_to alliance_history_profile_path(@profile) do
                 = "See #{@profile.name.possessive} alliance history."
+            %p
+              = link_to challenge_history_profile_path(@profile) do
+                = "See #{@profile.name.possessive} challenge history."
             -if user_signed_in?
               %p= link_to "Compare #{@profile.name.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
 

@@ -4,13 +4,27 @@ class Challenge < ActiveRecord::Base
   has_many :challengers
   belongs_to :manager, class_name: 'Profile'
   def self.not_hidden(admin = false)
-    if admin
+    if admin == true
       self.scoped
     else
       where{hidden == false}
     end
   end
 
+  def self.find_by_profile(profile)
+    joins{challengers}.
+    where{(challengers.entity_type == 'Profile') & (challengers.entity_id == profile.id)}.
+    select('*').select{challengers.rank.as 'rank'}
+  end
+  def self.find_by_profile_alliance(profile)
+    if profile.alliance_id.nil?
+      nil
+    else
+      joins{challengers}.
+      where{(challengers.entity_type == 'Alliance') & (challengers.entity_id == profile.alliance_id)}.
+      select('*').select{challengers.rank.as 'rank'}
+    end
+  end
   has_many :comments, as: :commentable
   attr_readonly :comments_count
 

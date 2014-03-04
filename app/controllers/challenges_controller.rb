@@ -123,6 +123,12 @@ class ChallengesController < ApplicationController
 
   end
 
+  def history
+    @profile = Profile.find(params[:id])
+    @challenges_p = Challenge.not_hidden(user_is_admin?).find_by_profile(@profile)
+    @challenges_a = Challenge.not_hidden(user_is_admin?).find_by_profile_alliance(@profile)
+  end
+
   private
   def auth_user_for_challenge
     redirect_to root_url, :notice => "You must be logged in to do that" unless user_signed_in?

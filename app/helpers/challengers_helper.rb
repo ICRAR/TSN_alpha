@@ -14,4 +14,8 @@ module ChallengersHelper
     end
     data
   end
+
+  def number_of_places(challengers, rank)
+    challengers.all.count{|c| c.finished? && c.rank == rank}
+  end
 end

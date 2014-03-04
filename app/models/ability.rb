@@ -45,6 +45,7 @@ class Ability
     cannot :read, User
     can :alliance_history, Profile
     can :compare, Challenger
+    can :history, Challenge
 
 
     if user.id #user is not a quest user
