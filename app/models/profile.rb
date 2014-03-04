@@ -137,12 +137,12 @@ class Profile < ActiveRecord::Base
   end
 
 
-  def join_alliance(alliance, update_pogs = true)
+  def join_alliance(alliance, update_pogs = true, msg = 'no msg given')
     if self.alliance != nil || (alliance.pogs_team_id > 0 && self.general_stats_item.boinc_stats_item.nil?)
       false
     else
       self.alliance = alliance
-      AllianceMembers.join_alliance(self,alliance)
+      AllianceMembers.join_alliance(self,alliance, msg)
       self.save
       if alliance.pogs_team_id > 0 && update_pogs
         BoincRemoteUser.delay.join_team self.general_stats_item.boinc_stats_item.boinc_id, alliance.pogs_team_id
@@ -150,12 +150,12 @@ class Profile < ActiveRecord::Base
     end
   end
 
-  def leave_alliance(update_pogs = true)
+  def leave_alliance(update_pogs = true, msg = 'no msg given')
     if self.alliance == nil
       false
     else
       item = self.alliance_items.where{(leave_date == nil) & (alliance_id == my{self.alliance.id})}.first
-      item.leave_alliance(self)
+      item.leave_alliance(self, msg)
       if self.alliance.pogs_team_id > 0 && update_pogs
         BoincRemoteUser.delay.leave_team self.general_stats_item.boinc_stats_item.boinc_id
       end

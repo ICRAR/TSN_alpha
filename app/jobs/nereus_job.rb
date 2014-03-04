@@ -1,5 +1,4 @@
-class NereusJob
-  include Delayed::ScheduledJob
+class NereusJob < Delayed::BaseScheduledJob
   run_every 1.hour
 
   def perform

@@ -1,42 +1,27 @@
-class StatsGeneralJob
-  include Delayed::ScheduledJob
+class StatsGeneralJob < Delayed::BaseScheduledJob
   run_every 1.hour
   def perform
     #start statsd batch
     statsd_batch = Statsd::Batch.new($statsd)
-    total_daily_credits = 0
     bench_time = Benchmark.bm do |bench|
       bench.report('copy credit user') {
         #load From DB
-        combined_credits = GeneralStatsItem.for_update_credits
+        #copy total credit and rac
+        GeneralStatsItem.update_all_credits
+        #update ranks
+        GeneralStatsItem.update_ranks
+
+
+        for_stats = GeneralStatsItem.for_stats
         #add credits and record totals
-        combined_credits.each do |stat|
-          total_credits = stat.nereus_credit.to_i+stat.boinc_credit.to_i+stat.total_bonus_credit.to_i
-          avg_daily_credit = stat.nereus_daily.to_i+stat.boinc_daily.to_i
-          stat.total_credit = total_credits
-          stat.recent_avg_credit = avg_daily_credit
-          statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.credit",total_credits)
-          statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.avg_daily_credit",avg_daily_credit)
-          total_daily_credits += avg_daily_credit
+        for_stats.find_each do |stat|
+
+          statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.credit",stat.total_credit)
+          statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.avg_daily_credit",stat.recent_avg_credit)
+          statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.rank",stat.rank)
         end
 
-        #sort by total credit
-        combined_credits.sort! {|a,b| b.total_credit <=> a.total_credit}
-        i = 1
 
-        #update ranks and load to DB
-        GeneralStatsItem.transaction do
-          combined_credits.each do |stat|
-            if stat.total_credit > 0 && stat.power_user == false
-              stat.rank = i
-              i += 1
-            else
-              stat.rank = nil
-            end
-            statsd_batch.gauge("general.users.#{GraphitePathModule.path_for_stats(stat.profile_id)}.rank",stat.rank)
-            stat.save()
-          end
-        end
       }
 
       bench.report('site stats') {

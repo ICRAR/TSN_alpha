@@ -9,6 +9,11 @@ class TrophiesController < ApplicationController
 
     @trophy = Trophy.find(params[:id])
 
+    if user_signed_in?
+      @comment = Comment.new(:commentable => @trophy)
+      @comment.profile = current_user.profile
+    end
+
     @set = @trophy.trophy_set
   end
   def promote

@@ -6,8 +6,7 @@
 #
 # Sample :
 #
-#     class MyJob
-#       include Delayed::ScheduledJob
+#     class MyJob < Delayed::BaseScheduledJob
 #
 #       run_every 1.day
 #
@@ -24,6 +23,7 @@
 # inspired by http://rifkifauzi.wordpress.com/2010/07/29/8/
 # then copied from https://gist.github.com/kares/1024726
 #
+
 module Delayed
   module ScheduledJob
 
@@ -40,7 +40,9 @@ module Delayed
         perform_without_schedule
       end
       new_start_time = Time.now - run_time + self.class.run_interval
-      schedule! new_start_time # only schedule if job did not raise
+      #report to statsd
+      $statsd.gauge("site_stats.background_jobs.#{self.class.to_s.underscore}",run_time)
+      schedule! new_start_time unless self.options[:run_once]# note only schedule if job did not raise
     end
 
     # schedule this "repeating" job
@@ -53,7 +55,6 @@ module Delayed
     def reschedule!
       schedule! Time.now
     end
-
 
 
     module ClassMethods
@@ -99,7 +100,13 @@ module Delayed
         jobs.count > 0
       end
 
+      def run_once(run_at = nil)
+        run_at ||= Time.now
+        new(run_once: true).schedule!(run_at) unless scheduled?
+      end
+
     end
 
   end
+
 end

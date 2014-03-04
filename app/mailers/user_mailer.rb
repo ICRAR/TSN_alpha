@@ -41,6 +41,6 @@ class UserMailer < ActionMailer::Base
   def contact_support(name,email,message)
     @name = name
     @message = message
-    mail to: email, subject: 'Thank you for contact theSkyNet support team.'
+    mail to: email, subject: 'Thank you for contacting the theSkyNet support team.'
   end
 end

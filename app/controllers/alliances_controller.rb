@@ -15,12 +15,17 @@ class AlliancesController < ApplicationController
   # GET /alliances/1.json
   def show
     @per_page = params[:per_page].to_i
-    @per_page = 20 if @per_page == 0
+    @per_page = 10 if @per_page == 0
     @page =  params[:page].to_i
     @page = 1 if @page == 0
     @alliance = Alliance.for_show(params[:id]) || not_found
     @members = AllianceMembers.page(@page).per(@per_page).for_alliance_show(params[:id])
     @total_members  = AllianceMembers.where(:alliance_id =>params[:id]).count
+
+    if user_signed_in? && current_user.profile.alliance_id == @alliance.id
+      @comment = Comment.new(:commentable => @alliance)
+      @comment.profile = current_user.profile
+    end
   end
 
   # GET /alliances/new
@@ -70,7 +75,7 @@ class AlliancesController < ApplicationController
       @alliance.credit = 0
       @alliance.leader = current_user.profile
       if @alliance.save
-        current_user.profile.join_alliance @alliance
+        current_user.profile.join_alliance(@alliance, true, 'Creating alliance through theSkyNet website')
         @alliance.create_pogs_team if @alliance.is_boinc?
 
         redirect_to @alliance, notice: 'Alliance was successfully created.'
@@ -126,7 +131,7 @@ class AlliancesController < ApplicationController
     elsif (@alliance.pogs_team_id > 0 && current_user.profile.general_stats_item.boinc_stats_item.nil?)
       flash[:alert] = "Sorry the #{@alliance.name} alliance is part of POGS. To join you must be also be a member of the POGS project."
     else
-      current_user.profile.join_alliance @alliance
+      current_user.profile.join_alliance(@alliance, true, "Joining allaince through theSkyNet website")
       flash[:notice] = "Welcome to the #{@alliance.name} Alliance"
     end
 
@@ -148,7 +153,7 @@ class AlliancesController < ApplicationController
       flash[:notice] = 'Sorry the current leader cannot leave an alliance'
     else
       #remove user from alliance
-      current_user.profile.leave_alliance
+      current_user.profile.leave_alliance(true, "leaving alliance from theSkyNet website")
       flash[:notice] = "You have left the #{@alliance.name} alliance"
     end
     redirect_to my_profile_path

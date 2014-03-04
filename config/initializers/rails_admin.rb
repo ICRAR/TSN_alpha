@@ -38,7 +38,7 @@ RailsAdmin.config do |config|
   # config.default_items_per_page = 20
 
   # Exclude specific models (keep the others):
-  config.excluded_models = ['Galaxy', 'GalaxyArea', 'GalaxyAreaUser', "GalaxyRegister","ProfileTrophy","Receipt","GalaxyImageFilter","BoincResult", "ChallengeData"]
+  config.excluded_models = ['Galaxy', 'GalaxyArea', 'GalaxyUser', 'GalaxyAreaUser', "GalaxyRegister","ProfileTrophy","Receipt","GalaxyImageFilter","BoincResult", "ChallengeData"]
 
   # Include specific models (exclude the others):
   # config.included_models = ['Page', 'User']
