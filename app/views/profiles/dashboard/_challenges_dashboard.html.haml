@@ -1,27 +1,28 @@
-.pull-right
-  %a.min_link{href: '#', data: {min_id: 'challenge_min'}}
-    %i.icon-resize-small
-%h2 Upcoming Challenges
-#challenge_min.minimisable
-  - if  @challenges.empty?
-    %p
-      There are no upcoming challenges, why not make your own
-      = link_to 'here?', new_challenge_path
-  -else
-    %table.table.table-striped
-      %thead
-        %tr
-          %th Name
-          %th Starts In
-      %tbody
-        -@challenges.each do |challenge|
+#challenge_widget
+  .pull-right
+    %a.min_link{href: '#', data: {min_id: 'challenge_widget'}}
+      %i.icon-resize-small.challenge_min
+  %h2 Upcoming Challenges
+  .minimisable
+    - if  @challenges.empty?
+      %p
+        There are no upcoming challenges, why not make your own
+        = link_to 'here?', new_challenge_path
+    -else
+      %table.table.table-striped
+        %thead
           %tr
-            - link = challenge_path(challenge)
-            %td
-              %a{href: link}= challenge.name
-            %td
-              %a{href: link}
-                .countdown_timer.countdown_timer-small{data: {countdown_to: time_to_js(challenge.start_date), refresh: 'false'} }
+            %th Name
+            %th Starts In
+        %tbody
+          -@challenges.each do |challenge|
+            %tr
+              - link = challenge_path(challenge)
+              %td
+                %a{href: link}= challenge.name
+              %td
+                %a{href: link}
+                  .countdown_timer.countdown_timer-small{data: {countdown_to: time_to_js(challenge.start_date), refresh: 'false'} }
 
 
-  %p= link_to "Your challenge history", challenge_history_profile_path(@profile)
+    %p= link_to "Your challenge history", challenge_history_profile_path(@profile)

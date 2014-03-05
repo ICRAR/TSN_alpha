@@ -24,12 +24,15 @@ init_minimise_button = () ->
   store_item = JSON.parse(localStorage.getItem('tsn_dashboard_min_array'))
   store_item = [] if store_item == null
   for id in store_item
-    $("##{id}").hide()
+    $("##{id} .minimisable").hide()
+    icon = $("##{id} .min_link i").first()
+    icon.toggleClass('icon-resize-small')
+    icon.toggleClass('icon-resize-full')
   $('.min_link').click((e) ->
     e.preventDefault()
     min_id = $(this).data('minId')
 
-    $("##{min_id}").slideToggle()
+    $("##{min_id}  .minimisable").slideToggle()
     #then toggle icon class
     icon = $(this).children('i').first()
     icon.toggleClass('icon-resize-small')

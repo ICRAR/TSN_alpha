@@ -1,48 +1,49 @@
-.pull-right
-  %a.min_link{href: '#', data: {min_id: 'leaderboards_min'}}
-    %i.icon-resize-small
-%h2= t "leaderboards.title"
-#leaderboards_min.minimisable
-  .tabbable
-    %ul.nav.nav-tabs
-      %li.active
-        %a{"data-toggle" => "tab", href: "#tab-individual"}= t "leaderboards.individual"
-      %li
-        %a{"data-toggle" => "tab", href: "#tab-alliances"}= t "leaderboards.alliances"
-    .tab-content
-      #tab-individual.tab-pane.active.fade.in
-        %table.table.table-striped
-          %thead
-            %tr
-              %th= t "leaderboards.rank"
-              %th= t "leaderboards.name"
-              %th= t "leaderboards.credit"
-          %tbody
-            - @top_profiles.each do |profile|
+#leaderboards_widget
+  .pull-right
+    %a.min_link{href: '#', data: {min_id: 'leaderboards_widget'}}
+      %i.icon-resize-small.leaderboards_min
+  %h2= t "leaderboards.title"
+  .minimisable
+    .tabbable
+      %ul.nav.nav-tabs
+        %li.active
+          %a{"data-toggle" => "tab", href: "#tab-individual"}= t "leaderboards.individual"
+        %li
+          %a{"data-toggle" => "tab", href: "#tab-alliances"}= t "leaderboards.alliances"
+      .tab-content
+        #tab-individual.tab-pane.active.fade.in
+          %table.table.table-striped
+            %thead
               %tr
-                - link = profile_path(profile)
-                %td
-                  %a{href: link}= profile.rank
-                %td
-                  %a{href: link}= profile.name
-                %td
-                  %a{href: link}= number_with_delimiter(profile.credits)
-        = link_to "View full leaderboards", profiles_path, :class=>"btn btn-tsn"
-      #tab-alliances.tab-pane.fade
-        %table.table.table-striped
-          %thead
-            %tr
-              %th= t "leaderboards.rank"
-              %th= t "leaderboards.name"
-              %th= t "leaderboards.credit"
-          %tbody
-            - @top_alliances.each do |alliance|
-              - link = alliance_path(alliance)
+                %th= t "leaderboards.rank"
+                %th= t "leaderboards.name"
+                %th= t "leaderboards.credit"
+            %tbody
+              - @top_profiles.each do |profile|
+                %tr
+                  - link = profile_path(profile)
+                  %td
+                    %a{href: link}= profile.rank
+                  %td
+                    %a{href: link}= profile.name
+                  %td
+                    %a{href: link}= number_with_delimiter(profile.credits)
+          = link_to "View full leaderboards", profiles_path, :class=>"btn btn-tsn"
+        #tab-alliances.tab-pane.fade
+          %table.table.table-striped
+            %thead
               %tr
-                %td
-                  %a{href: link}= alliance.ranking
-                %td
-                  %a{href: link}= alliance.name
-                %td
-                  %a{href: link}= number_with_delimiter(alliance.credit)
-        = link_to t("leaderboards.full_link"), alliances_path, :class=>"btn btn-tsn"
+                %th= t "leaderboards.rank"
+                %th= t "leaderboards.name"
+                %th= t "leaderboards.credit"
+            %tbody
+              - @top_alliances.each do |alliance|
+                - link = alliance_path(alliance)
+                %tr
+                  %td
+                    %a{href: link}= alliance.ranking
+                  %td
+                    %a{href: link}= alliance.name
+                  %td
+                    %a{href: link}= number_with_delimiter(alliance.credit)
+          = link_to t("leaderboards.full_link"), alliances_path, :class=>"btn btn-tsn"
