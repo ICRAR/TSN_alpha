@@ -91,6 +91,8 @@ class ProfilesController < ApplicationController
       end
     end
 
+    @challenges = Challenge.not_hidden(user_is_admin?).upcoming
+
     profile_step = @profile.new_profile_step
     if profile_step == 1 && !params[:next_step].nil?
       @profile.new_profile_step = [3,@profile.new_profile_step].max

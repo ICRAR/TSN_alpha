@@ -18,6 +18,36 @@ TSN.trophy_share = (obj_id,trophy_name, trophy_url) ->
   }
 #**************************************
 
+#******* minimise widget on dashboard
+init_minimise_button = () ->
+  #minimise widgets bassed on stored array
+  store_item = JSON.parse(localStorage.getItem('tsn_dashboard_min_array'))
+  store_item = [] if store_item == null
+  for id in store_item
+    $("##{id}").hide()
+  $('.min_link').click((e) ->
+    e.preventDefault()
+    min_id = $(this).data('minId')
+
+    $("##{min_id}").slideToggle()
+    #then toggle icon class
+    icon = $(this).children('i').first()
+    icon.toggleClass('icon-resize-small')
+    icon.toggleClass('icon-resize-full')
+
+    #store which widgets are minimised
+    store_item = JSON.parse(localStorage.getItem('tsn_dashboard_min_array'))
+    store_item = [] if store_item == null
+    check_index = store_item.indexOf(min_id)
+    if check_index == -1
+      store_item.push min_id
+    else
+      store_item.splice(check_index, 1)
+    localStorage.setItem('tsn_dashboard_min_array',JSON.stringify(store_item))
+
+  )
+
+
 
 #******* custom alert box using bootbox
 custom_alert_box = ->
@@ -112,6 +142,7 @@ $(document).ready( ->
   custom_alert_box()
   placeholder_check()
   date_range_picker()
+  init_minimise_button()
   #init anycountdown timeers
   $('.countdown_timer').each ->
     div = $(this)
