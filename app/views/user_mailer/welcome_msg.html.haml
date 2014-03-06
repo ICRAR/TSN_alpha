@@ -8,10 +8,23 @@
   More importantly, contributing to either project will help me process more astronomy data.
   You can learn more once you sign in to your account for the first time.
 %p
+  To get started with you new account head to your new
+  = link_to 'dashboard.', my_profile_url
+
+%p
   If you have any further questions, please don’t hesitate to contact my humans using the form
   =link_to "here", new_contact_form_url
   or chat on the
   =link_to "forum.", APP_CONFIG['forum_url']
+%h4 Your details:
+%dl
+  %dt Your username:
+  %dd= @profile.user.username
+  %dt Your email:
+  %dd= @profile.user.email
+%p
+  If you loose your password you can request a new one from
+  = link_to new_user_password_url
 %p
   Thank you for your valuable computing power and for playing your part in discovering our Universe.
   %br
