@@ -36,3 +36,5 @@ TSN.misc.advent = () ->
 
     false
   )
+
+TSN.misc.site_map = () ->

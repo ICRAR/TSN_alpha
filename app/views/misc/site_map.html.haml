@@ -1,0 +1,12 @@
+- my_meta :title => "Site Map",
+    :description => "A map of the sites main pages"
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Site Map
+  - @user_page =  ''
+  = render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    #test.well.well-white
+      Hello world

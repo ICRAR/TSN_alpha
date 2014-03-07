@@ -19,6 +19,7 @@ Tsn::Application.routes.draw do
   resource :misc, :only => [], controller: 'misc' do
     get 'advent'
     get 'advent_subscribe'
+    get 'site_map'
   end
 
   resources :contact_forms, :only => [:new, :create]

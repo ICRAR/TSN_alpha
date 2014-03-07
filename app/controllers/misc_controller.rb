@@ -55,4 +55,8 @@ class MiscController < ApplicationController
       redirect_to root_url, notice: "Sorry you need to be logged in to do that."
     end
   end
+  def site_map
+
+  end
+
 end
