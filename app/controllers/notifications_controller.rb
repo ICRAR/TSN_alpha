@@ -1,6 +1,7 @@
 class NotificationsController < ApplicationController
   before_filter :notify_auth
   skip_before_filter :check_announcement
+  skip_before_filter :special_days
   def notify_auth
     if user_signed_in?
       if current_user.admin? && !params[:profile_id].nil?
