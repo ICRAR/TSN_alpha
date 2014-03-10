@@ -17,7 +17,12 @@ class Galaxy < PogsModel
     joins{galaxy_users}.where{galaxy_users.userid == user_id}
   end
   def self.find_by_user_id_last(user_id)
-    find_by_user_id(user_id).last
+    #find_by_user_id(user_id).last
+    joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
+            INNER JOIN area_user ON area.area_id = area_user.area_id")
+    .where("area_user.userid = ?",user_id )
+    .order("`area_user`.`areauser_id` DESC")
+    .limit(1).first
   end
 
   #returns an active relations object containing the profiles of all people who worked on this galaxy
