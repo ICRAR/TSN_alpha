@@ -16,7 +16,7 @@
             %li= link_to(t("nav.trophies"), trophies_profile_path(current_user.profile))
             - if  current_user.profile.alliance
               %li= link_to(t("nav.my_alliance"), current_user.profile.alliance)
-              %li= link_to(t("nav.edit_reg"), edit_user_registration_path)
+            %li= link_to(t("nav.edit_reg"), edit_user_registration_path)
         %li= link_to(t("nav.news"), news_index_path)
         %li.dropdown-submenu
           %a{:href => "#"}
