@@ -6,12 +6,14 @@ class BoincCopyJob < Delayed::BaseScheduledJob
     statsd_batch = Statsd::Batch.new($statsd)
     bench_time = Benchmark.bm do |bench|
       bench.report('users and alliances') {
-
-        boinc_local_items = BoincStatsItem.all
+        next_id = SiteStat.try_get("boinc_copy_job_last_userid", 0).value
+        SiteStat.set("boinc_copy_job_last_userid", BoincRemoteUser.maximum(:id))
+        boinc_local_items = BoincStatsItem.where{boinc_id >= next_id}.all
         boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
-        BoincRemoteUser.where{id >= my{BoincStatsItem.next_id}}.each do |b|
+        BoincRemoteUser.where{id >= my{next_id}}.each do |b|
           b.check_local boinc_hash[b.id]
         end
+
         begin
           alliance_local_items = Alliance.where{pogs_team_id > 0}
           alliance_hash = Hash[*alliance_local_items.map{|a| [a.pogs_team_id, a]}.flatten]
