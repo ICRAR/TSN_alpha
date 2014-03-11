@@ -106,7 +106,7 @@ class PogsTeam < BoincPogsModel
         end
       end
     end
-    alliance.update_column(:pogs_update_time, a.max_update_time) unless alliance.pogs_update_time == max_update_time
+    alliance.update_column(:pogs_update_time, alliance.max_update_time) unless alliance.pogs_update_time == max_update_time
   end
 
   ###FUNCTIONS FOR WEBRPC Calls to boinc server
