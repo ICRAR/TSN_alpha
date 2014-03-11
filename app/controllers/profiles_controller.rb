@@ -91,7 +91,8 @@ class ProfilesController < ApplicationController
       end
     end
 
-    @challenges = Challenge.not_hidden(user_is_admin?).upcoming
+    @challenges_upcoming = Challenge.not_hidden(user_is_admin?).upcoming
+    @challenges_running = Challenge.not_hidden(user_is_admin?).running
 
     profile_step = @profile.new_profile_step
     if profile_step == 1 && !params[:next_step].nil?

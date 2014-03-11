@@ -11,6 +11,7 @@ class Challenge < ActiveRecord::Base
     end
   end
   scope :upcoming, where{(started == nil) | (started == false)}.order{start_date.asc}.limit(5)
+  scope :running, where{((started == true) & ((finished == nil) | (finished == false)))}
   def self.find_by_profile(profile)
     joins{challengers}.
     where{(challengers.entity_type == 'Profile') & (challengers.entity_id == profile.id)}.
