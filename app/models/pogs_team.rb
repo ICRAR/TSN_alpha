@@ -34,7 +34,7 @@ class PogsTeam < BoincPogsModel
     #update team leader
     #find team leader
     leader_boinc_id = self.userid
-    profile = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id == leader_boinc_id}
+    profile = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id == leader_boinc_id}.first
     unless profile.nil?
       unless (local.leader_id == profile.id) || !profile.alliance_leader_id.nil?
         local.leader = profile
@@ -55,51 +55,53 @@ class PogsTeam < BoincPogsModel
     #update per user
     all_memberships.each do |pogs_id,members|
       #find local user
-      boinc_item = boinc_stats_item_hash[pogs_id] unless boinc_stats_item_hash.nil?
-      boinc_item ||= BoincStatsItem.where{boinc_id == my{pogs_id}}.first
-      if !boinc_item.nil? && !boinc_item.general_stats_item.nil?
-        profile = boinc_item.general_stats_item.profile
+      profile = nil
+      if boinc_stats_item_hash.nil?
+        profile = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id == pogs_id}.first
+      else
+        boinc_item = boinc_stats_item_hash[pogs_id]
+        profile = boinc_item.general_stats_item.profile unless boinc_item.nil?
+      end
+      if profile.nil?
         last = nil
-        if !profile.nil?
-          #if local user is found
-          #iterate through each membership to be updated
-          members.each do |m|
-            #if this is joining a team
-            if m.joining == 1
-              AllianceMembers.join_alliance_from_boinc(profile,alliance,m)
-            else
-              #or leaving a team
-              AllianceMembers.leave_alliance_from_boinc(profile,alliance,m)
-            end
+        #if local user is found
+        #iterate through each membership to be updated
+        members.each do |m|
+          #if this is joining a team
+          if m.joining == 1
+            AllianceMembers.join_alliance_from_boinc(profile,alliance,m)
+          else
+            #or leaving a team
+            AllianceMembers.leave_alliance_from_boinc(profile,alliance,m)
           end
-          #finnally make sure last action is reflected in theSkyNet
-          if members.last.try(:joining) == 1
-            if profile.alliance.nil?
-              profile.alliance = alliance
-              profile.save
-              #update notifications
-              AllianceMembers.create_notification_join(profile.alliance_items.last.id)
-            elsif profile.alliance_id != alliance.id
-              #email user notifying them that they have been automatically removed from an alliance
-              if profile.alliance.pogs_team_id.nil? || profile.alliance.pogs_team_id == 0
-                UserMailer.alliance_sync_removal(profile, profile.alliance, alliance).deliver
-              end
-
-              profile.leave_alliance(false, "User left the alliance in BOINC change is being sycned to local DB")
-              profile.alliance = alliance
-              profile.save
-              #update notifications
-              AllianceMembers.create_notification_join(profile.alliance_items.last.id)
+        end
+        #finnally make sure last action is reflected in theSkyNet
+        if members.last.try(:joining) == 1
+          if profile.alliance.nil?
+            profile.alliance = alliance
+            profile.save
+            #update notifications
+            AllianceMembers.create_notification_join(profile.alliance_items.last.id)
+          elsif profile.alliance_id != alliance.id
+            #email user notifying them that they have been automatically removed from an alliance
+            if profile.alliance.pogs_team_id.nil? || profile.alliance.pogs_team_id == 0
+              UserMailer.alliance_sync_removal(profile, profile.alliance, alliance).deliver
             end
 
-          elsif members.last.try(:joining) == 0
-            #if this was the users current alliance make sure they leave.
-            if profile.alliance_id == alliance.id
-              profile.alliance = nil
-              profile.save
-              #update notifications
-              AllianceMembers.create_notification_leave(profile.alliance_items.last.id)
-            end
+            profile.leave_alliance(false, "User left the alliance in BOINC change is being sycned to local DB")
+            profile.alliance = alliance
+            profile.save
+            #update notifications
+            AllianceMembers.create_notification_join(profile.alliance_items.last.id)
+          end
+
+        elsif members.last.try(:joining) == 0
+          #if this was the users current alliance make sure they leave.
+          if profile.alliance_id == alliance.id
+            profile.alliance = nil
+            profile.save
+            #update notifications
+            AllianceMembers.create_notification_leave(profile.alliance_items.last.id)
           end
         end
       end
