@@ -34,7 +34,7 @@ class PogsTeam < BoincPogsModel
     #update team leader
     #find team leader
     leader_boinc_id = self.userid
-    profile = Profile.joins{general_stats_items.boinc_stats_items}.where{boinc_stats_items.boinc_id == leader_boinc_id}
+    profile = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id == leader_boinc_id}
     unless profile.nil?
       unless (local.leader_id == profile.id) || !profile.alliance_leader_id.nil?
         local.leader = profile
