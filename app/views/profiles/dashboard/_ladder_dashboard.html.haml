@@ -1,7 +1,8 @@
 #leaderboards_widget
-  .pull-right
-    %a.min_link{href: '#', data: {min_id: 'leaderboards_widget'}}
-      %i.icon-resize-small.leaderboards_min
+  - if minimise == true
+    .pull-right
+      %a.min_link{href: '#', data: {min_id: 'dashboard #leaderboards_widget'}}
+        %i.icon-resize-small.leaderboards_min
   %h2= t "leaderboards.title"
   .minimisable
     .tabbable
