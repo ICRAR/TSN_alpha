@@ -337,7 +337,7 @@ Finally the score value is set in the update action using the following formula:
     c.update_stats
 
     #reschedule update to run again in another 30 mins unless end time is within 30mins
-    next_update = 1.hour.from_now
+    next_update = 30.minutes.from_now
     if c.end_date > next_update
       c.next_update_time = next_update
       c.save

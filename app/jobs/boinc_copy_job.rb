@@ -26,7 +26,7 @@ class BoincCopyJob < Delayed::BaseScheduledJob
             msg += "\n\n"
             msg += e.backtrace.join("\n")
             AdminMailer.debug(msg, "Error in BOINC Job").deliver
-          end;
+          end
         }
         bench.report('users2') {
           #update team members not in team_delta
