@@ -28,20 +28,18 @@ class PogsTeam < BoincPogsModel
     #update local alliance
     local.desc = self.description
     local.invite_only = (self.joinable == 0)
-    local.save
+    local.save if local.changed?
     self.update_memberships local, boinc_stats_item_hash
 
     #update team leader
     #find team leader
     leader_boinc_id = self.userid
-    leader_boinc_item = BoincStatsItem.where{boinc_id == my{leader_boinc_id}}.first
-    unless leader_boinc_item.try(:general_stats_item).nil?
-      profile = leader_boinc_item.general_stats_item.profile
+    profile = Profile.joins{general_stats_items.boinc_stats_items}.where{boinc_stats_items.boinc_id == leader_boinc_id}
+    unless profile.nil?
       unless (local.leader_id == profile.id) || !profile.alliance_leader_id.nil?
         local.leader = profile
         profile.join_alliance(local, false, 'Ensure that leader is part of the alliance (Boinc Sync)')
       end
-
     end
   end
 

@@ -34,4 +34,16 @@ class Comment < ActiveRecord::Base
     end
     out
   end
+
+  def test
+    #https://github.com/yuku-t/jquery-textcomplete
+    t.gsub( /@(\w+)/ ) do |un|
+      u = User.find_by_username(un.gsub('@', ''))
+      if u.nil?
+        un
+      else
+        link_to(un,Rails.application.routes.url_helpers.profile_path(u.profile))
+      end
+    end
+  end
 end

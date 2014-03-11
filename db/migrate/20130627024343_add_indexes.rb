@@ -11,7 +11,9 @@ class AddIndexes < ActiveRecord::Migration
 
 
     add_index :nereus_stats_items, :general_stats_item_id, {name: 'general_stats_item_index'}
+    add_index :nereus_stats_items, :nereus_id, {name: 'nereus_id_index'}
     add_index :boinc_stats_items, :general_stats_item_id, {name: 'general_stats_item_index'}
+    add_index :boinc_stats_items, :boinc_id, {name: 'boinc_id_index'}
     add_index :bonus_credits, :general_stats_item_id, {name: 'general_stats_item_index'}
 
     add_index :profiles_trophies, :trophy_id, {name: 'trophy_id_index'}
@@ -27,6 +29,7 @@ class AddIndexes < ActiveRecord::Migration
 
 
 
+=begin
     add_index :alliances, :id, {name: 'id_index'}
     add_index :alliance_invites, :id, {name: 'id_index'}
     add_index :alliance_members, :id, {name: 'id_index'}
@@ -40,6 +43,7 @@ class AddIndexes < ActiveRecord::Migration
     add_index :profiles_trophies, :id, {name: 'id_index'}
     add_index :trophies, :id, {name: 'id_index'}
     add_index :users, :id, {name: 'id_index'}
+=end
 
 
 
