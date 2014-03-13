@@ -2,7 +2,7 @@ this.Notifications = new Object();
 Notifications.update = ->
   Notifications.load_all((data) ->
     for n in data['result']
-      Notifications.display(n['notification'])
+      Notifications.display(n['profile_notification'])
   )
 
 Notifications.load_all = (load_fnc) ->
@@ -27,7 +27,7 @@ Notifications.display = (note) ->
         action: ->
           temp_msg = this
           Notifications.load_one(note['id'], (data) ->
-            note = data['result']['notification']
+            note = data['result']['profile_notification']
             temp_msg.update
               message: note['body']
               actions:
@@ -36,7 +36,7 @@ Notifications.display = (note) ->
                   action: ->
                     this.hide()
                     Notifications.dismiss(note['id'], (data) ->
-                      note = data['result']['notification']
+                      note = data['result']['profile_notification']
                     )
             $('.messenger-message-inner a').click( ->
               temp_msg.hide()
@@ -50,7 +50,7 @@ Notifications.display = (note) ->
         action: ->
           this.hide()
           Notifications.dismiss(note['id'], (data) ->
-            note = data['result']['notification']
+            note = data['result']['profile_notification']
           )
       dismiss_all:
         label: "Dimsiss All"
