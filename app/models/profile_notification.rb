@@ -68,6 +68,7 @@ class ProfileNotification < ActiveRecord::Base
 
     def aggrigate_by_class_id(class_name,class_id,subject,body)
       ProfileNotification.transaction do
+        ProfileNotification.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
         to_be_rel = ProfileNotification.where{aggregatable == true}.
                       where{read == false}.
                       where{notifier_type == class_name}
