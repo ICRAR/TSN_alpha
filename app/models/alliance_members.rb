@@ -165,16 +165,21 @@ class AllianceMembers < ActiveRecord::Base
     #send to member
     subject = "Welcome to the alliance, #{am.alliance.name}"
     link_alliance = ActionController::Base.helpers.link_to(am.alliance.name, Rails.application.routes.url_helpers.alliance_path(am.alliance))
-    body = "Welcome #{am.profile.name} \nThank you for joining the #{link_alliance} alliance. \n Happy Computing! \n  - theSkyNet"
-    am.profile.notify(subject, body, am)
+    body = "Welcome #{am.profile.name} <br /> Thank you for joining the #{link_alliance} alliance. <br /> Happy Computing! <br />  - theSkyNet"
+    ProfileNotification.notify(am.profile,subject,body,am.alliance)
 
     #send to leader unless you are the leader
     leader = am.alliance.leader
     unless leader.nil? || leader.id == am.profile.id
       subject = "#{am.profile.name} has joined your Alliance"
       link_profile = ActionController::Base.helpers.link_to(am.profile.name, Rails.application.routes.url_helpers.profile_path(am.profile))
-      body = "#{link_profile} is eager to help and has joined the #{link_alliance} alliance. \n Happy Computing! \n  - theSkyNet"
-      leader.notify(subject, body, am)
+      body = "#{link_profile} is eager to help and has joined the #{link_alliance} alliance. <br /> Happy Computing! <br />  - theSkyNet"
+
+      aggregation_subject = "%COUNT% people have joined your alliance"
+      aggregation_body = "Hey #{leader.name}, <br /> The following %COUNT% people have joined your alliance, #{link_alliance}:"
+      aggregation_text = "#{link_profile} <br />"
+      ProfileNotification.notify_with_aggrigation(leader,subject,body,aggregation_subject,aggregation_body,'class_id',am.alliance, aggregation_text, 'join')
+
     end
   end
   def self.create_notification_leave(id)
@@ -184,16 +189,23 @@ class AllianceMembers < ActiveRecord::Base
     subject = "Goodbye from, #{am.alliance.name}"
     credits = am.leave_credit.to_i - am.start_credit.to_i
     link_alliance = ActionController::Base.helpers.link_to(am.alliance.name, Rails.application.routes.url_helpers.alliance_path(am.alliance))
-    body = "Thank your for your help and contribution to the #{link_alliance} alliance. \n Over your time as a member you have contributed #{credits} credits \n Happy Computing! \n  - theSkyNet"
-    am.profile.notify(subject, body, am)
+    body = "Thank your for your help and contribution to the #{link_alliance} alliance. <br /> Over your time as a member you have contributed #{credits} credits <br /> Happy Computing! <br />  - theSkyNet"
+    ProfileNotification.notify(am.profile,subject,body,am.alliance)
+
+
 
     #send to leader
     leader = am.alliance.leader
     unless leader.nil?
-      subject = "#{am.profile.name} as left your Alliance"
+      subject = "#{am.profile.name} has left your Alliance"
       link_profile = ActionController::Base.helpers.link_to(am.profile.name, Rails.application.routes.url_helpers.profile_path(am.profile))
-      body = "#{link_profile} has left the #{link_alliance} alliance. \n During their time as a member they contributed #{credits} credits \n Happy Computing! \n  - theSkyNet"
-      leader.notify(subject, body, am)
+      body = "#{link_profile} has left the #{link_alliance} alliance. <br /> During their time as a member they contributed #{credits} credits <br /> Happy Computing! <br />  - theSkyNet"
+
+      aggregation_subject = "%COUNT% people have left your alliance"
+      aggregation_body = "Hey #{leader.name}, <br /> The following %COUNT% people have left your alliance, #{link_alliance}:"
+      aggregation_text = "#{link_profile} <br />"
+      ProfileNotification.notify_with_aggrigation(leader,subject,body,aggregation_subject,aggregation_body,'class_id',am.alliance, aggregation_text, 'leave')
+
     end
   end
 

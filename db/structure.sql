@@ -198,7 +198,7 @@ CREATE TABLE `comments` (
   KEY `comment_parent_id` (`parent_id`),
   KEY `comment_profile_id` (`profile_id`),
   KEY `comment_commentable` (`commentable_type`,`commentable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=474 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=475 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `conversations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -310,7 +310,7 @@ CREATE TABLE `news` (
   PRIMARY KEY (`id`),
   KEY `pubished_time_index_asc` (`published_time`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -332,7 +332,7 @@ CREATE TABLE `notifications` (
   PRIMARY KEY (`id`),
   KEY `index_notifications_on_conversation_id` (`conversation_id`),
   CONSTRAINT `notifications_on_conversation_id` FOREIGN KEY (`conversation_id`) REFERENCES `conversations` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4831 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4836 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `page_translations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -369,12 +369,13 @@ CREATE TABLE `profile_notifications` (
   `aggregatable` tinyint(1) DEFAULT NULL,
   `aggregator_count` int(11) DEFAULT NULL,
   `aggregation_text` text COLLATE utf8_unicode_ci,
+  `aggregation_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `notifier_id` int(11) DEFAULT NULL,
   `notifier_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `profile_aggrigate_index` (`profile_id`,`read`,`aggregatable`,`notifier_type`,`notifier_id`),
+  KEY `profile_aggrigate_index` (`profile_id`,`read`,`aggregatable`,`notifier_type`,`notifier_id`,`aggregation_type`),
   KEY `profile_read_index` (`profile_id`,`read`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -446,7 +447,7 @@ CREATE TABLE `receipts` (
   KEY `index_receipts_on_notification_id` (`notification_id`),
   KEY `index_receiver_id_is_read` (`receiver_id`,`is_read`),
   CONSTRAINT `receipts_on_notification_id` FOREIGN KEY (`notification_id`) REFERENCES `notifications` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11374 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11379 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) CHARACTER SET latin1 NOT NULL,

@@ -8,11 +8,12 @@ class CreateProfileNotifications < ActiveRecord::Migration
       t.boolean :aggregatable
       t.integer :aggregator_count
       t.text :aggregation_text
+      t.string :aggregation_type
       t.belongs_to :notifier, polymorphic: true
 
       t.timestamps
     end
-    add_index :profile_notifications, [:profile_id, :read, :aggregatable, :notifier_type, :notifier_id], :name => "profile_aggrigate_index"
+    add_index :profile_notifications, [:profile_id, :read, :aggregatable, :notifier_type, :notifier_id, :aggregation_type], :name => "profile_aggrigate_index"
     add_index :profile_notifications, [:profile_id, :read, :created_at], :name => "profile_read_index"
   end
 end

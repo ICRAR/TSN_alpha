@@ -53,6 +53,9 @@ class TrophiesJob < Delayed::BaseScheduledJob
         end
 
 
+        #finally aggregate all trophy notifications so users to do get spammed
+        Trophy.aggregate_notifications
+
       }
 
 

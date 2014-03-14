@@ -19,6 +19,7 @@ class CommentsController < ApplicationController
     @comment = Comment.new(params[:comment])
     @comment.profile = current_user.profile
     @comment.save
+    Comment.notify_users(@commnet.id) unless @comment.errors.present?
     respond_to do |format|
       format.html do
         if @comment.errors.present?
