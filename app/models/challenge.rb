@@ -97,8 +97,8 @@ Finally the score value is set in the update action using the following formula:
                 change_in_rank: {
                     handicap_types: {none: true},
                     join_option: :joins_profile_with_gsi,
-                    start_query: 'challengers.start = IFNULL(g.rank,0)',
-                    update_query: 'challengers.save_value = IFNULL(g.rank,0)'
+                    start_query: 'challengers.start = IFNULL(g.rank,0) * -1',
+                    update_query: 'challengers.save_value = IFNULL(g.rank,0) * -1'
                 }
             },
             alliance: {
