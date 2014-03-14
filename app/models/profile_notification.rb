@@ -1,6 +1,6 @@
 class ProfileNotification < ActiveRecord::Base
   table_name = :profile_notifications
-  attr_accessible :body, :read, :subject,:aggregatable, :aggregator_count, :aggregation_text, :profile, :notifier
+  attr_accessible :body, :read, :subject,:aggregatable, :aggregator_count, :aggregation_text, :profile, :profile_id, :notifier, :notifier_id, :notifier_type
   belongs_to :profile
   belongs_to :notifier, polymorphic: true
   scope :unread, where{read == false}.order{created_at.asc}
@@ -59,7 +59,36 @@ class ProfileNotification < ActiveRecord::Base
         end
       end
     end
-
+    def aggrigate_by_class(class_name,subject,body)
+      ProfileNotification.transaction do
+        to_be_rel = ProfileNotification.where{aggregatable == true}.
+                      where{read == false}.
+                      where{notifier_type == class_name}
+        to_be_data = to_be_rel.group(:profile_id).select("GROUP_CONCAT(aggregation_text SEPARATOR '') as new_aggregation_text").
+                        select("GROUP_CONCAT(id SEPARATOR ', ') as ids").
+                        select{sum(aggregator_count).as new_count}.select('`profile_notifications`.*').
+                        having('COUNT(*) > 1').all
+        to_be_data.each do |note|
+          to_del_ids = note.ids.split(",").map(&:to_i)
+          ProfileNotification.where{id.in to_del_ids}.delete_all
+          agg_count = note.new_count
+          new_subject = subject.sub('%COUNT%',(agg_count).to_s)
+          new_body = body.sub('%COUNT%',(agg_count).to_s) + '<br />' + note.new_aggregation_text
+          note = new({
+                         profile_id: note.profile_id,
+                         subject: new_subject,
+                         body: new_body,
+                         notifier_type: note.notifier_type,
+                         notifier_id: note.notifier_id,
+                         aggregatable: true,
+                         aggregator_count: agg_count,
+                         aggregation_text: note.new_aggregation_text,
+                         read: false,
+                     })
+          note.save
+        end
+      end
+    end
     def notify_all(profiles,subject,body,notifier=nil,aggregatable=false)
       #notfies all profiles
       #improves efficacy by using direct SQL inserts
