@@ -4,7 +4,7 @@
 - else
   -comment = comments_hash[0]
   -child_hash = comments_hash[1]
-.well.well-white.media{id: "comment_#{comment.id}"}
+.well.well-white.media{id: "comment_#{comment.id}", class: (comment.parent.nil? ? '' : 'sub_comment')}
   .pull-left
     = image_tag comment.profile.avatar_url(64), class: 'media-object'
   .media-body
@@ -28,5 +28,5 @@
             = link_to 'Report', "#", class: "btn report-btn", data: {comment_id: comment.id}
       - else
         You must log in to comment
-    - child_hash.reverse_each do |new_comments_hash|
-      = render('comments/comment', {comments_hash: new_comments_hash})
+  - child_hash.reverse_each do |new_comments_hash|
+    = render('comments/comment', {comments_hash: new_comments_hash})
