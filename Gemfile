@@ -64,6 +64,7 @@ gem 'premailer-rails'
 gem 'closure_tree'
 gem 'redcarpet'
 gem 'composite_primary_keys'
+gem 'activerecord-import', '0.3.1'
 
 gem 'delayed_job_active_record'
 gem 'daemons'

@@ -20,23 +20,23 @@ class NotificationsController < ApplicationController
   end
   def index
 
-    @notifications =  @profile.mailbox.notifications.limit(10).unread
+    @notifications =  @profile.profile_notifications.limit(10).unread
 
   end
   def show
-    @notification =  @profile.mailbox.notifications.find params[:id]
+    @notification =  @profile.profile_notifications.find params[:id]
   end
   def dismiss_all
-    @notifications =  @profile.mailbox.notifications.unread
+    @notifications =  @profile.profile_notifications.unread
     @notifications.each do |note|
-      note.mark_as_read @profile
+      note.mark_as_read
     end
 
     render :index
   end
   def dismiss
-    @notification =  @profile.mailbox.notifications.find params[:id]
-    @notification.mark_as_read @profile
+    @notification =  @profile.profile_notifications.find params[:id]
+    @notification.mark_as_read
     render :show
   end
 end

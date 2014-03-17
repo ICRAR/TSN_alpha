@@ -119,9 +119,17 @@ class Trophy < ActiveRecord::Base
     Activity.track(profiles,'award',self)
     subject = "You have been awarded a new trophy, #{self.title}"
     link = link_to(self.title, Rails.application.routes.url_helpers.trophy_path(self))
-    body = "Congratulations! \n You have been awarded a new trophy, #{link}. \n Thank you and happy computing! \n theSkyNet"
-    Notification.notify_all(profiles,subject, body, self)
+    body = "Congratulations! <br /> You have been awarded a new trophy, #{link}. <br /> Thank you and happy computing! <br /> theSkyNet"
+    aggregation_text = "#{link} <br />"
+    profile_ids = profiles.map(&:id)
+    ProfileNotification.notify_all_id_array(profile_ids,subject,body,self,true, aggregation_text)
   end
+  def self.aggregate_notifications
+    subject = "Wow! You have been awarded %COUNT% new trophies"
+    body = "Congratulations! <br /> You have been awarded the following %COUNT% new trophies:"
+    ProfileNotification.aggrigate_by_class(Trophy.to_s,subject,body)
+  end
+
 
   def self.next_trophy(cr,classic = false)
     if classic == true

@@ -6,10 +6,11 @@ class Profile < ActiveRecord::Base
   has_many :alliance_items, :class_name => 'AllianceMembers'
   has_many :activities
 
-  has_many :profiles_trophies
+  has_many :profiles_trophies, :dependent => :destroy
   has_many :trophies, :through => :profiles_trophies
   has_many :trophy_sets, :through => :trophies
   has_many :comments
+  has_many :profile_notifications
   before_destroy :remove_trophies
   def remove_trophies
     self.profiles_trophies.delete_all
