@@ -17,7 +17,7 @@ module ChallengesHelper
         return 'You must be the leader of an Alliance to join this challenge.' if profile.alliance_leader_id.nil? || profile.alliance_leader_id == 0
       when 'profile'
         #check if current user is already in the challenge
-        return 'Congratulations you are participating in this challenge.' if challenge.challengers.where{entity_id == my{profile.id}}.exists?
+        return 'Congratulations, you are participating in this challenge.' if challenge.challengers.where{entity_id == my{profile.id}}.exists?
         return '' unless challenge.joinable?(challenge.invite_code)
     end
     if challenge.joinable?(params[:invite_code])

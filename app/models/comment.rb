@@ -32,7 +32,7 @@ class Comment < ActiveRecord::Base
     notify_parent(profile_id,profile.name)
     #then notify all alliance members if this is a new thread
     notify_alliance if commentable_type == Alliance.to_s && parent_id == nil
-    notify_challenges if commentable_type == Challenge.to_s && parent_id == nil
+    #notify_challenges if commentable_type == Challenge.to_s && parent_id == nil
   end
   def notify_alliance
     alliance = commentable
