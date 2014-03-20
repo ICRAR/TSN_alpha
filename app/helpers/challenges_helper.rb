@@ -1,4 +1,14 @@
 module ChallengesHelper
+  def current_users_challenger(challenge,profile)
+    challenger = nil
+    case challenge.challenger_type.downcase
+      when 'alliance'
+        challenger = challenge.challengers.where{entity_id == my{profile.alliance_id}}.first
+      when 'profile'
+        challenger = challenge.challengers.where{entity_id == my{profile.id}}.first
+    end
+    return challenger
+  end
   def challenge_states(current)
     options_for_select([
                            ['All',nil],

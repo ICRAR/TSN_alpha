@@ -58,9 +58,13 @@ class ChallengesController < ApplicationController
   def show
     @per_page = params[:per_page].to_i
     @per_page = 20 if @per_page == 0
-    @page =  params[:page].to_i
-    @page = 1 if @page == 0
     @challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])
+    if params[:rank].to_i && !params[:page]
+      @page = (params[:rank].to_i-1) / @per_page + 1
+    else
+      @page = params[:page].to_i
+    end
+    @page = 1 if @page == 0
     @challengers = Challenger.page(@page).per(@per_page).includes(:entity).where{challenge_id == my{@challenge.id}}.order{rank.asc}
 
     if user_signed_in?
