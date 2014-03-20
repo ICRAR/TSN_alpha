@@ -11,6 +11,8 @@ module TrophiesHelper
         trophy_dec = "RAC"
       when "time_active"
         trophy_dec = "Days"
+      when 'galaxy_count_active'
+        trophy_dec = "Galaxies"
       else
         trophy_dec = "cr"
     end
@@ -36,6 +38,8 @@ module TrophiesHelper
         out = "(Awarded for being a member for at least #{number_with_delimiter @trophy.show_credits(@trophy_ids)} days)"
       when "RAC_active"
         out = "(Awarded for reaching an RAC of #{number_with_delimiter @trophy.show_credits(@trophy_ids)} or higher)"
+      when "galaxy_count_active"
+        out = "(Awarded for contributing to more than #{number_with_delimiter @trophy.show_credits(@trophy_ids)} galaxies)"
       else
         out = "(Awarded for achieving #{number_with_delimiter @trophy.show_credits(@trophy_ids)} credits)"
     end
