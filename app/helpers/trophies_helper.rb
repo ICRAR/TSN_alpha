@@ -1,5 +1,9 @@
 module TrophiesHelper
+  def display_trophy_suffix(trophy,trophy_ids)
+    return (!(trophy.credits.nil? || trophy.credits == 0) || ["time_active"].include?(trophy.set_type))
+  end
   def format_credit(trophy,trophy_ids)
+    return nil unless display_trophy_suffix(trophy,trophy_ids)
     case trophy.set_type
       when 'leader_board_position_active'
         trophy_dec = "Rank"
@@ -14,10 +18,28 @@ module TrophiesHelper
   end
 
   def format_heading(trophy,trophy_ids)
-    if trophy.credits.nil? || trophy.credits == 0
+    suffix = format_credit(trophy,trophy_ids)
+    if suffix.nil?
       trophy.title
     else
-      "#{trophy.title} (#{format_credit(trophy,trophy_ids)})"
+      "#{trophy.title} (#{suffix})"
     end
   end
+
+  def format_desc(trophy,trophy_ids)
+    return nil unless display_trophy_suffix(trophy,trophy_ids)
+    out = ''
+    case @trophy.set_type
+      when 'leader_board_position_active'
+        out = "(Awarded for being in the top #{number_with_delimiter @trophy.show_credits(@trophy_ids)} people)"
+      when 'time_active'
+        out = "(Awarded for being a member for at least #{number_with_delimiter @trophy.show_credits(@trophy_ids)} days)"
+      when "RAC_active"
+        out = "(Awarded for reaching an RAC of #{number_with_delimiter @trophy.show_credits(@trophy_ids)} or higher)"
+      else
+        out = "(Awarded for achieving #{number_with_delimiter @trophy.show_credits(@trophy_ids)} credits)"
+    end
+    return out
+  end
+
 end
