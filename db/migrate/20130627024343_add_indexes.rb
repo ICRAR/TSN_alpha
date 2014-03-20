@@ -8,6 +8,7 @@ class AddIndexes < ActiveRecord::Migration
     add_index :profiles, :user_id, {name: 'user_id_index'}
     add_index :profiles, :alliance_leader_id, {name: 'alliance_leader_id_index'}
     add_index :profiles, :alliance_id, {name: 'alliance_id_index'}
+    add_index :users, :joined_at, {name: 'joined_at_index'}
 
 
     add_index :nereus_stats_items, :general_stats_item_id, {name: 'general_stats_item_index'}

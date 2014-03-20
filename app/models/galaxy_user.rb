@@ -11,8 +11,12 @@ class GalaxyUser < PogsModel
     having('count(*) >= ?',num).group(:userid)
   end
 
-  def self.profiles_in_batches(num, profiles, &blk)
-    ids_all = GalaxyUser.with_at_least_galaxies(num).pluck(:userid)
+  def self.profiles_in_batches_by_count(num, profiles,users_array = nil,&blk)
+    if users_array.nil?
+      ids_all = GalaxyUser.with_at_least_galaxies(num).pluck(:userid)
+    else
+      ids_all = GalaxyUser.users_from_array(num, users_array)
+    end
     ids_all.each_slice(1000) do |ids_batch|
       ps = profiles.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id.in ids_batch}
       blk.call(ps)
@@ -25,4 +29,12 @@ class GalaxyUser < PogsModel
     end
   end
 
+  def self.all_users_count
+    query = GalaxyUser.group(:userid).select{userid}.select{count('*').as 'count'}
+    GalaxyUser.connection.select_all(query)
+  end
+  def self.users_from_array(count, users_array)
+    users_array ||= GalaxyUser.all_users_count
+    users_array.select{|x| x['count'] > count}.map{|x| x['userid']}
+  end
 end

@@ -46,9 +46,10 @@ class TrophiesJob < Delayed::BaseScheduledJob
 
         #update galaxy count trophies
         galaxy_count_sets = TrophySet.where{set_type == 'galaxy_count_active'}
+        galaxy_user_count_array = GalaxyUser.all_users_count
         galaxy_count_sets.each do |set|
           set.trophies.each do |trophy|
-            trophy.award_by_galaxy_count()
+            trophy.award_by_galaxy_count(nil, galaxy_user_count_array)
           end
         end
 

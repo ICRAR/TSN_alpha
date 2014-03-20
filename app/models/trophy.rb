@@ -58,7 +58,7 @@ class Trophy < ActiveRecord::Base
     profiles ||= Profile
     profiles = profiles.for_trophies
     .joins{user}
-    .where{DATEDIFF(now.func,user.joined_at) >= my{self.credits}}
+    .where{user.joined_at <= my{self.credits.days.ago}}
     self.award_to_profiles profiles
   end
 
@@ -76,9 +76,9 @@ class Trophy < ActiveRecord::Base
     self.award_to_profiles profiles
   end
 
-  def award_by_galaxy_count(profiles = nil)
+  def award_by_galaxy_count(profiles = nil, user_galaxy_count_hash = nil)
     profiles ||= Profile
-    GalaxyUser.profiles_in_batches(self.credits,profiles) do |ps|
+    GalaxyUser.profiles_in_batches_by_count(self.credits,profiles,user_galaxy_count_hash) do |ps|
       self.award_to_profiles ps
     end
   end
@@ -146,54 +146,6 @@ class Trophy < ActiveRecord::Base
     end
   end
 
-  #takes a list of trophies and awards them bassed on credit.
-  #NOTE this function skips active record
-  #main indicates that this is the main trophy group as represented by the progress bar on the users dashboard
-  #this function should not be used
-  def self.handout_by_credit(trophies,main = true)
-    puts "depreciation:: use award_by_credit instead, its faster and better :)"
-    all_trophies = trophies
-    trophies_credit_only = trophies.pluck(:credits)
-
-    #load all profiles with general stats data
-    profiles = Profile.for_trophies
-
-    #check through all profiles adding upsert where needed and adding new profiles_trophies items
-    connection = ActiveRecord::Base.connection.instance_variable_get(:@connection)
-    table_name = :general_stats_items
-    profiles_trophies_inserts = []
-    Upsert.batch(connection,table_name) do |upsert|
-      profiles.each do |profile|
-        changed = false
-        if main
-          trophy_index  = trophies_credit_only.index(profile.last_trophy_credit_value.to_i)
-          #check for new users with no existing trophy ie last_trophy_credit_value = 0
-          trophy_index ||=  -1
-        else
-          trophy_index = -1
-        end
-        required_for_next = all_trophies[trophy_index+1].try(:credits)
-        while required_for_next != nil && required_for_next.to_i < profile.credits.to_i
-          changed = true
-          trophy_index += 1
-          #add values to profiles_trophies (trophy_id,profile_id)
-          profiles_trophies_inserts.push("(#{all_trophies[trophy_index].id}, #{profile.id}, '#{Time.now}', '#{Time.now}')")
-          required_for_next = all_trophies[trophy_index+1].try(:credits)
-        end
-        if changed && main
-          upsert.row({:id => profile.stats_id}, :last_trophy_credit_value => all_trophies[trophy_index].credits, :updated_at => Time.now, :created_at => Time.now)
-        end
-      end
-
-    end
-    #add new rows to profiles_trophies
-    if profiles_trophies_inserts != []
-      sql = "INSERT INTO profiles_trophies (trophy_id , profile_id, created_at, updated_at) VALUES #{profiles_trophies_inserts.join(", ")}"
-      db_conn = ActiveRecord::Base.connection
-      db_conn.execute sql
-      #print sql
-    end
-  end
 
   rails_admin do
     field :credits
