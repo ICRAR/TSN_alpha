@@ -58,15 +58,16 @@
             %p Or they can use this link:
             - link = challenge_url(challenge, {:protocol => 'https', invite_code: challenge.invite_code})
             %p= link_to link, link
-  -your_challenger = current_users_challenger(challenge,current_user.profile)
-  - unless your_challenger.nil?
-    .row-fluid
-      .span12.well.well-white
-        %h2 Your stats:
-        %dl.dl-horizontal
-          %dt Score
-          %dd= your_challenger.score
-          %dt Rank
-          %dd= your_challenger.rank
-        %p= link_to "Find me in the challenge leaderboards", challenge_path(challenge, {rank: your_challenger.rank})
+  - if user_signed_in?
+    -your_challenger = current_users_challenger(challenge,current_user.profile)
+    - unless your_challenger.nil?
+      .row-fluid
+        .span12.well.well-white
+          %h2 Your stats:
+          %dl.dl-horizontal
+            %dt Score
+            %dd= your_challenger.score
+            %dt Rank
+            %dd= your_challenger.rank
+          %p= link_to "Find me in the challenge leaderboards", challenge_path(challenge, {rank: your_challenger.rank})
 
