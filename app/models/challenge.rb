@@ -15,7 +15,7 @@ class Challenge < ActiveRecord::Base
   def self.find_by_profile(profile)
     joins{challengers}.
     where{(challengers.entity_type == 'Profile') & (challengers.entity_id == profile.id)}.
-    select('*').select{challengers.rank.as 'rank'}
+    select('challenges.*').select{challengers.rank.as 'rank'}
   end
   def self.find_by_profile_alliance(profile)
     if profile.alliance_id.nil?
@@ -23,7 +23,7 @@ class Challenge < ActiveRecord::Base
     else
       joins{challengers}.
       where{(challengers.entity_type == 'Alliance') & (challengers.entity_id == profile.alliance_id)}.
-      select('*').select{challengers.rank.as 'rank'}
+      select('challenges.*').select{challengers.rank.as 'rank'}
     end
   end
   has_many :comments, as: :commentable
