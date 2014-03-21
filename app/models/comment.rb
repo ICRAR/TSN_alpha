@@ -32,7 +32,24 @@ class Comment < ActiveRecord::Base
     notify_parent(profile_id,profile.name)
     #then notify all alliance members if this is a new thread
     notify_alliance if commentable_type == Alliance.to_s && parent_id == nil
-    #notify_challenges if commentable_type == Challenge.to_s && parent_id == nil
+    #then notify all challengers if this is a new thread
+    notify_challenges if commentable_type == Challenge.to_s && parent_id == nil
+  end
+
+  def notify_challenge
+    challenge = commentable
+    profiles = challenge.profiles.where{id != my{profile_id}}
+    subject = "#{profile.name} has started a new thread on a challenge that you are involved in."
+    link_challenge = ActionController::Base.helpers.link_to(ch.name, polymorphic_path(commentable))
+    link_commentor = ActionController::Base.helpers.link_to(profile.name, Rails.application.routes.url_helpers.profile_path(profile_id))
+    body = "Hey, <br /> #{link_commentor} has started a new thread on the #{link_challenge} challenge page. <br /> Happy Computing! <br />  - theSkyNet"
+
+    aggregation_subject = "%COUNT% new threads have been started on the #{challenge.name} page"
+    aggregation_body = "Hey, <br /> %COUNT% new threads have been started on the #{link_challenge} page. <br /> By:"
+    aggregation_text = "#{link_commentor} <br />"
+    ProfileNotification.notify_all(profiles,subject,body,challenge,true, aggregation_text)
+    ProfileNotification.aggrigate_by_class_id(Challenge.to_s,challenge.id,aggregation_subject,aggregation_body)
+
   end
   def notify_alliance
     alliance = commentable

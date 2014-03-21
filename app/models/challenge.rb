@@ -29,6 +29,18 @@ class Challenge < ActiveRecord::Base
   has_many :comments, as: :commentable
   attr_readonly :comments_count
 
+  #returns a relation of all the profiles assicated with this challenge
+  def profiles
+    if self.challenger_type == 'Profile'
+      return Profile.joins{challengers}.where{challengers.challenge_id == my{self.id}}
+    elsif self.challenger_type == 'Alliance'
+      return Profile.joins{"INNER JOIN `challengers` ON `challengers`.`entity_id` = `profiles`.`alliance_id` AND `challengers`.`entity_type` = 'Alliance'"}.where{challengers.challenge_id == my{self.id}}
+    else
+      return nil
+    end
+  end
+
+
   def challenger_type_enum
     ['Profile', 'Alliance']
     end
