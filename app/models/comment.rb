@@ -40,7 +40,7 @@ class Comment < ActiveRecord::Base
     challenge = commentable
     profiles = challenge.profiles.where{id != my{profile_id}}
     subject = "#{profile.name} has started a new thread on a challenge that you are involved in."
-    link_challenge = ActionController::Base.helpers.link_to(ch.name, polymorphic_path(commentable))
+    link_challenge = ActionController::Base.helpers.link_to(challenge.name, polymorphic_path(commentable))
     link_commentor = ActionController::Base.helpers.link_to(profile.name, Rails.application.routes.url_helpers.profile_path(profile_id))
     body = "Hey, <br /> #{link_commentor} has started a new thread on the #{link_challenge} challenge page. <br /> Happy Computing! <br />  - theSkyNet"
 
