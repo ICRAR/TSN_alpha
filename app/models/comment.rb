@@ -33,10 +33,10 @@ class Comment < ActiveRecord::Base
     #then notify all alliance members if this is a new thread
     notify_alliance if commentable_type == Alliance.to_s && parent_id == nil
     #then notify all challengers if this is a new thread
-    notify_challenges if commentable_type == Challenge.to_s && parent_id == nil
+    notify_challengers if commentable_type == Challenge.to_s && parent_id == nil
   end
 
-  def notify_challenge
+  def notify_challengers
     challenge = commentable
     profiles = challenge.profiles.where{id != my{profile_id}}
     subject = "#{profile.name} has started a new thread on a challenge that you are involved in."
