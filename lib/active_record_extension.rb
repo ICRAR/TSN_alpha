@@ -29,7 +29,7 @@ module ActiveRecordExtension
     def my_batch_id(opts = {}, &blk)
       batch_size = opts[:batch_size] || 1000
       relation = self.reorder("#{quoted_table_name}.#{quoted_primary_key} ASC").limit(batch_size)
-      ids = relation.pluck(quoted_primary_key)
+      ids = relation.pluck("#{Profile.quoted_table_name}.#{Profile.quoted_primary_key}")
       while ids.any?
         ids_size = ids.size
         primary_key_offset = ids.last
