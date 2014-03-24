@@ -11,6 +11,7 @@
             %li{:class => ('active' if (@user_page == 'my_trophies'))}= link_to(t("nav.trophies"), trophies_profile_path(current_user.profile))
             - if  current_user.profile.alliance
               %li{:class => ('active' if (@user_page == 'my_alliance'))}= link_to(t("nav.my_alliance"), current_user.profile.alliance)
+            %li= link_to(t("nav.my_profile"), profile_path(current_user.profile))
             %li= link_to(t("nav.edit_reg"), edit_user_registration_path)
       - else
         %li= link_to t("nav.sign_up"), new_user_registration_path

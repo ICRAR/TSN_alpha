@@ -5,6 +5,7 @@ class BoincRemoteUser < BoincPogsModel
   scope :does_not_have_team_delta, where{id.not_in(PogsTeamMember.select(:userid).group(:userid))}
   scope :teamid_no_team_delta, does_not_have_team_delta.where{teamid != 0}
 
+  has_one :profile, class_name: BoincProfile, foreign_key: 'userid'
 
 
 
@@ -103,6 +104,7 @@ class BoincRemoteUser < BoincPogsModel
       profile.use_full_name = false
       profile.country = self[:country]
       profile.new_profile_step= 2
+      profile.description = self.profile.description
       profile.save
     end
     #puts new_user.to_json

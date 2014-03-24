@@ -16,7 +16,7 @@
             %li= link_to(t("nav.trophies"), trophies_profile_path(current_user.profile))
             - if  current_user.profile.alliance
               %li= link_to(t("nav.my_alliance"), current_user.profile.alliance)
-            %li= link_to(t("nav.edit_reg"), edit_user_registration_path)
+            %li= link_to(t("nav.my_profile"), profile_path(current_user.profile))
         %li= link_to(t("nav.news"), news_index_path)
         %li.dropdown-submenu
           %a{:href => "#"}
@@ -37,6 +37,7 @@
             %li= link_to(t("nav.challenges_create"), new_challenge_path)
         %li= link_to(t("nav.forum"), APP_CONFIG['forum_url'])
         %li= link_to t("nav.faq"), {:controller => "/pages", :action => "show", :slug => "member%20faq"}
+        %li= link_to(t("nav.edit_reg"), edit_user_registration_path)
 - else
   %span.navbar-text= t "nav.not_logged_in"
   %span.btn-toolbar

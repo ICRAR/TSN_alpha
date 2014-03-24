@@ -27,7 +27,10 @@
     (optional)
     %br/
     = f.text_field :second_name
-  = f.input :country, iso_codes: true
+  .field
+    = f.input :country, iso_codes: true
+  .field
+    = f.input :description, hint: "You may use <a href=\"https://help.github.com/articles/github-flavored-markdown\">GitHub Flavored Markdown</a> for formatting.".html_safe
   .actions
     = f.submit
 - if @profile.general_stats_item.nereus_stats_item

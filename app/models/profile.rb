@@ -18,7 +18,7 @@ class Profile < ActiveRecord::Base
   has_one :general_stats_item, :dependent => :destroy, :inverse_of => :profile
   has_one :invited_by, :class_name => "AllianceInvite", :inverse_of => :redeemed_by, :foreign_key => "redeemed_by_id"
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :invited_by, :foreign_key => "invited_by_id"
-  attr_accessible :country, :use_full_name, :nickname, :first_name, :second_name, :old_site_user,  :as => [:default, :admin]
+  attr_accessible :description, :country, :use_full_name, :nickname, :first_name, :second_name, :old_site_user,  :as => [:default, :admin]
   attr_accessible :trophy_ids, :new_profile_step, as: :admin
 
   #validates :nickname, :uniqueness => true
@@ -76,6 +76,17 @@ class Profile < ActiveRecord::Base
     #if false
     return nil
   end
+
+  #adds social methods using the socialization gem
+  # https://github.com/cmer/socialization
+  # profiles can follow each other
+  acts_as_followable
+  acts_as_follower
+  # profiles can like things
+  acts_as_liker
+  #profiles can mention and be mentioned in posts
+  acts_as_mentionable
+  acts_as_mentioner
 
   def  self.for_show(id)
     p = includes(:general_stats_item => [:boinc_stats_item, :nereus_stats_item]).includes(:trophies, :user,:alliance).find(id)

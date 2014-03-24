@@ -89,6 +89,23 @@
                     %dt
                       %abbr{:title => "Recent Average Credit"} RAC
                     %dd= boinc.RAC
+        -if @profile.description.nil? || @profile.description == ''
+          -if user_signed_in? && current_user.id == @profile.id
+            .row-fluid
+              .span12.well.well-white
+                %h2 Who am I??
+                %p
+                  You haven't created a profile yet. Let people know who you are by creating one on the
+                  = link_to 'account settings page.', edit_user_registration_path
+        -else
+          .row-fluid
+            .span12.well.well-white
+              %h2 Who am i?
+              %blockquote.pull-right
+                %p= markdown(@profile.description)
+                %small= @profile.name
+              .clearfix
+
 
 
     .row-fluid
