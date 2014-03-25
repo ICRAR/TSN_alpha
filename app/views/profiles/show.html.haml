@@ -40,17 +40,6 @@
               = @profile.user.joined_at.try(:strftime, '%B %d, %Y')
 
             %p
-              %b Latest Achievement:
-              -if @profile.trophies.empty?
-                = @profile.name + " hasn't won any trophies yet."
-              -else
-                - @trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
-                = link_to (image_tag @trophy.image.url(:base)), @trophy
-                = link_to @trophy.title,  @trophy
-            %p
-              = link_to  trophies_profile_path(@profile) do
-                = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
-            %p
               = link_to alliance_history_profile_path(@profile) do
                 = "See #{@profile.name.possessive} alliance history."
             %p
@@ -59,6 +48,22 @@
             -if user_signed_in?
               %p= link_to "Compare #{@profile.name.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
 
+        -if @profile.description.nil? || @profile.description == ''
+          -if user_signed_in? && current_user.id == @profile.id
+            .row-fluid
+              .span12.well.well-white
+                %h2 Who am I??
+                %p
+                  You haven't created a profile yet. Let people know who you are by creating one on the
+                  = link_to 'account settings page.', edit_user_registration_path
+        -else
+          .row-fluid
+            .span12.well.well-white
+              %h2 Who am i?
+              %blockquote.pull-right
+                %p= markdown(@profile.description)
+                %small= @profile.name
+              .clearfix
       .span5
         -if @profile.general_stats_item.nereus_stats_item != nil
           .row-fluid
@@ -89,22 +94,26 @@
                     %dt
                       %abbr{:title => "Recent Average Credit"} RAC
                     %dd= boinc.RAC
-        -if @profile.description.nil? || @profile.description == ''
-          -if user_signed_in? && current_user.id == @profile.id
-            .row-fluid
-              .span12.well.well-white
-                %h2 Who am I??
-                %p
-                  You haven't created a profile yet. Let people know who you are by creating one on the
-                  = link_to 'account settings page.', edit_user_registration_path
-        -else
-          .row-fluid
-            .span12.well.well-white
-              %h2 Who am i?
-              %blockquote.pull-right
-                %p= markdown(@profile.description)
-                %small= @profile.name
-              .clearfix
+        .row-fluid
+          .span12.well.well-white#latest_trophy
+            %h2 Latest Achievement:
+            -if @profile.trophies.empty?
+              %p
+                = @profile.name + " hasn't won any trophies yet."
+            -else
+              - @trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
+              .media
+                %a.pull-left{href: trophy_path(@trophy.id)}
+                  = image_tag @trophy.image.url(:medium), class: 'media-object'
+                .media-body
+                  %h4.media-heading
+                    = link_to @trophy.title,  @trophy
+                  .desc= @trophy.desc(@trophy_ids).html_safe
+
+            %p
+              = link_to  trophies_profile_path(@profile) do
+                = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
+
 
 
 

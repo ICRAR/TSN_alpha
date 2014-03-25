@@ -50,6 +50,11 @@ class ProfilesController < ApplicationController
   # GET /profiles/1
   # GET /profiles/1.json
   def show
+    if user_signed_in?
+      @trophy_ids = current_user.profile.trophy_ids
+    else
+      @trophy_ids = nil
+    end
     @profile = Profile.for_show(params[:id])
     @trophy  = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
   end

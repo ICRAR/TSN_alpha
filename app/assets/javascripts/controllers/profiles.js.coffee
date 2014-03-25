@@ -8,6 +8,8 @@ TSN.profiles = new Object;
 TSN.profiles.show = () ->
   profile_show_graphs(false)
   $("#credit_explain").popover()
+  $('#latest_trophy .desc').dotdotdot()
+
 TSN.profiles.dashboard = () ->
   profile_show_graphs(true)
   $("#credit_explain").popover()
