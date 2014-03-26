@@ -9,8 +9,6 @@ namespace :schedule_jobs do
     BoincCopyJob.schedule Time.now
     puts 'starting Trophy Update'
     TrophiesJob.schedule Time.now
-    puts 'starting Nereus Update'
-    NereusJob.schedule Time.now
     puts 'starting elastic search check'
     ElasticSearchJob.schedule Time.now
     end

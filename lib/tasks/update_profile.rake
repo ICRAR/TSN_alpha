@@ -1,5 +1,26 @@
 namespace :update_profiles do
-
+  desc "recent nereus users"
+  task :recent_nereus_users => :environment do
+    remote_sql = NereusStatsItem.connect_to_backend_db
+    query = "SELECT distinct skynetID From dailyaccountusage where day > #{((Time.now.to_i)/86400).to_i-7} and skynetID > 0"
+    ids_result = remote_sql.query query
+    ids = ids_result.map{|r| r['skynetID'].to_i}
+    csv = CSV.generate({}) do |csv|
+      csv << ["theSkyNet User ID","First Name","Last Name","Email Address","Country", "theSkyNet Username"]
+      profiles = Profile.includes(:user).joins{general_stats_item.nereus_stats_item}.where{general_stats_item.nereus_stats_item.nereus_id.in ids}
+      profiles.find_in_batches(:batch_size => 1000) do |group|
+        group.each do |p|
+          if p.user.nil?
+            puts p.to_yaml
+          else
+            csv << [p.id,p.first_name,p.second_name,p.user.email,p.country_name,p.user.username]
+          end
+        end
+      end
+    end
+    file = Rails.root.join('tmp', 'profiles.csv')
+    File.open(file, "w") { |file| file.write csv }
+  end
   desc "reset trophies to 0"
   task :fix_trophies => :environment do
 

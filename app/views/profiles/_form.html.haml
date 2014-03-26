@@ -30,16 +30,18 @@
   = f.input :country, iso_codes: true
   .actions
     = f.submit
-- if @profile.general_stats_item.nereus_stats_item
-  %h2 Edit my SourceFinder settings
-  = form_for(@profile.general_stats_item.nereus_stats_item, :as => 'nereus_stats_item', :url => update_nereus_settings_path, :html => { :method => :put }) do |f|
-    .field
-      = f.label :network_limit_mb
-      in MegaBytes
-      %br/
-      = f.text_field :network_limit_mb
-    .actions
-      = f.submit
+-#
+  - if @profile.general_stats_item.nereus_stats_item
+    %h2 Edit my SourceFinder settings
+    = form_for(@profile.general_stats_item.nereus_stats_item, :as => 'nereus_stats_item', :url => update_nereus_settings_path, :html => { :method => :put }) do |f|
+      .field
+        = f.label :network_limit_mb
+        in MegaBytes
+        %br/
+        = f.text_field :network_limit_mb
+      .actions
+        = f.submit
+- if @profile.general_stats_item.boinc_stats_item
   %h2 Edit my POGS settings
   %p
     To edit your POGS (BOINC) settings head to

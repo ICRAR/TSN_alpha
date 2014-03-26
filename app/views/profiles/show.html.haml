@@ -70,9 +70,6 @@
               %dl.dl-horizontal
                 %dt Total Credit
                 %dd= number_with_delimiter(nereus.credit)
-                %dt
-                  %abbr{:title => "Recent Average Credit"} RAC
-                %dd= number_with_delimiter(nereus.daily_credit)
 
         -if @profile.general_stats_item.boinc_stats_item != nil
           .row-fluid
