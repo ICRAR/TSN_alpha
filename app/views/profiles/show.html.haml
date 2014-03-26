@@ -13,32 +13,31 @@
         .row-fluid
           .span12.well.well-white#general
             = image_tag @profile.avatar_url(128)
-            %p
-              %b Name:
-              = @profile.name
-            %p
-              %b Country:
-              = @profile.country_name
-            %p
-              %b Total Credit:
-              = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"
-              |
-              =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank, :page=>'me')
-              |
-              %a#credit_explain{:href => "#", :data => {:toggle => "popover",
-                            :placement => "bottom",
-                            :content => credit_location(@profile),
-                            :html => 'true',
-                            :no => {:turbolink => true}},
-                           :title => "theSkyNet credit is an amalgamation from several sources: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#credit_explain&quot;).popover(&quot;hide&quot;);\">&times;</button>"} Explain
-            -if @profile.alliance
-              %p
-                %b Proud member of :
-                = link_to(@profile.alliance.name,@profile.alliance)
-            %p
-              %b Member Since:
-              = @profile.user.joined_at.try(:strftime, '%B %d, %Y')
-
+            %dl.dl-horizontal
+              %dt Name:
+              %dd= @profile.name
+              %dt Country:
+              %dd= @profile.country_name
+              %dt Total Credit:
+              %dd
+                = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"
+                |
+                %a#credit_explain{:href => "#", :data => {:toggle => "popover",
+                              :placement => "bottom",
+                              :content => credit_location(@profile),
+                              :html => 'true',
+                              :no => {:turbolink => true}},
+                             :title => "theSkyNet credit is an amalgamation from several sources: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#credit_explain&quot;).popover(&quot;hide&quot;);\">&times;</button>"} Explain
+              %dt Rank:
+              %dd
+                = @profile.general_stats_item.rank
+                |
+                =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank, :page=>'me')
+              -if @profile.alliance
+                %dt Proud member of:
+                %dd= link_to(@profile.alliance.name,@profile.alliance)
+              %dt Member Since:
+              %dd= @profile.user.joined_at.try(:strftime, '%B %d, %Y')
             %p
               = link_to alliance_history_profile_path(@profile) do
                 = "See #{@profile.name.possessive} alliance history."

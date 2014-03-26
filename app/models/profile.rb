@@ -111,7 +111,7 @@ class Profile < ActiveRecord::Base
     self.trophies.select("trophies.id").map(&:id)
   end
   def country_name
-    return '' if country.nil?
+    return 'None' if country.nil? || country == ''
     out = ::CountrySelect::COUNTRIES[country.downcase]
     out = country if out.nil?
     return out
