@@ -21,6 +21,8 @@
         = @trophy.desc(@trophy_ids).html_safe
       %p
         = format_desc(@trophy,@trophy_ids)
+      %p
+        = render 'shared/social/like', model: @trophy
     .well.well-white
       %p
         = t".won_by"

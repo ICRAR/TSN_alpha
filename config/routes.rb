@@ -16,6 +16,11 @@ Tsn::Application.routes.draw do
     end
   end
 
+  resource :social, :only => [], controller: 'social' do
+    get 'like_model'
+    get 'unlike_model'
+  end
+
   resource :misc, :only => [], controller: 'misc' do
     get 'advent'
     get 'advent_subscribe'

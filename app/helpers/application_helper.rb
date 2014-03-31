@@ -106,4 +106,14 @@ module ApplicationHelper
                                           disable_indented_code_blocks: true)
     @markdown.render(content).html_safe
   end
+
+  #takes an array of strings and outputs (1,2 and 3)
+  def array_to_paragraph(array)
+    if array.size == 0
+      'None.'
+    else
+      array.to_sentence(:last_word_connector => ' and ').html_safe + '.'
+    end
+  end
+
 end

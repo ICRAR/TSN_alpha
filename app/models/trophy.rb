@@ -28,6 +28,9 @@ class Trophy < ActiveRecord::Base
 
   attr_accessor :profiles_count_store, :last_priority, :next_priority
 
+  #socil functions
+  acts_as_likeable
+
   before_save :update_set_type
   def update_set_type
     self.set_type = self.trophy_set.set_type

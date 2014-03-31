@@ -1,0 +1,24 @@
+#like_box.well.well-small
+  - short ||= false
+  %p
+    %span.like_number
+      - like_number = model.likers_relation(Profile).count
+      -if short == true
+        = "Likes: #{like_number}."
+      -else
+        = "This #{model.class.to_s} has been liked #{pluralize(like_number, 'time')}."
+    - if user_signed_in?
+      -if current_user.profile.likes? model
+        - unless short == true
+          = "You already like this #{model.class.to_s}."
+        %span.unlike_button
+          = link_to unlike_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn' do
+            %i.icon-star
+            = ' '
+            Unlike!
+      -else
+        %span.like_button
+          = link_to like_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn' do
+            %i.icon-star-empty
+            = ' '
+            Like!

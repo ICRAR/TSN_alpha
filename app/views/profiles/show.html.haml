@@ -58,11 +58,20 @@
         -else
           .row-fluid
             .span12.well.well-white
-              %h2 Who am i?
+              %h2 Who am I?
               %blockquote.pull-right
                 %p= markdown(@profile.description)
                 %small= @profile.name
               .clearfix
+              -if user_signed_in? && current_user.id == @profile.id
+                %p= link_to 'Edit my profile.', edit_user_registration_path
+        .row-fluid
+          .span12.well.well-white
+            %h2 Things I like:
+            = show_likes(Trophy, 'Trophies:', :title)
+            = show_likes(Alliance, 'Alliances:', :name)
+
+
       .span5
         -if @profile.general_stats_item.nereus_stats_item != nil
           .row-fluid

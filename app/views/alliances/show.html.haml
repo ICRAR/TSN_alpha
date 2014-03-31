@@ -33,6 +33,7 @@
               %ul.inline
                 -@alliance.tags.each do |tag|
                   %li= link_to tag.name, search_alliances_path(:search => tag.name)
+          = render 'shared/social/like', model: @alliance
         .span7
           -if user_signed_in? && current_user.profile.alliance.try(:id) == @alliance.id
             .row-fluid

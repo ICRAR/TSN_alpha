@@ -41,6 +41,10 @@ class Alliance < ActiveRecord::Base
   has_many :comments, as: :commentable
   attr_readonly :comments_count
 
+
+  #socil functions
+  acts_as_likeable
+
   def self.update_all_credits
     sub_query = Alliance.member_credit.to_sql
     main_query = Alliance.joins("INNER JOIN (#{sub_query}) totals ON totals.id = `alliances`.`id`")
