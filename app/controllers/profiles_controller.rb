@@ -79,7 +79,7 @@ class ProfilesController < ApplicationController
         return
       end
       @trophy  = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
-      @profile.general_stats_item.nereus_stats_item.update_status  if @profile.general_stats_item.nereus_stats_item != nil
+      #@profile.general_stats_item.nereus_stats_item.update_status  if @profile.general_stats_item.nereus_stats_item != nil
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'
       return
@@ -99,10 +99,19 @@ class ProfilesController < ApplicationController
     @challenges_upcoming = Challenge.not_hidden(user_is_admin?).upcoming
     @challenges_running = Challenge.not_hidden(user_is_admin?).running
 
+
+
     profile_step = @profile.new_profile_step
+    if profile_step == 1 && !@profile.general_stats_item.boinc_stats_item.nil?
+      @profile.new_profile_step = 3
+      @profile.save
+      profile_step = @profile.new_profile_step
+    end
+
     if profile_step == 1 && !params[:next_step].nil?
       @profile.new_profile_step = [3,@profile.new_profile_step].max
       @profile.save
+      profile_step = @profile.new_profile_step
     end
     profile_step = params[:step].to_i - 1 if current_user.admin? && !params[:step].nil?
 
@@ -261,6 +270,7 @@ class ProfilesController < ApplicationController
     end
   end
   def update_nereus_id
+    return
     if user_signed_in?
       @profile = current_user.profile
       nereus = NereusStatsItem.where(:nereus_id => params['nereus_id']).try(:first)
@@ -283,6 +293,7 @@ class ProfilesController < ApplicationController
     end
   end
   def update_nereus_settings
+    return
     if user_signed_in?
       @profile = current_user.profile
       nereus = current_user.profile.general_stats_item.nereus_stats_item
@@ -300,6 +311,7 @@ class ProfilesController < ApplicationController
     end
   end
   def pause_nereus
+    return
     if user_signed_in?
       @profile = current_user.profile
       nereus = current_user.profile.general_stats_item.nereus_stats_item
@@ -318,6 +330,7 @@ class ProfilesController < ApplicationController
     end
   end
   def resume_nereus
+    return
     if user_signed_in?
       @profile = current_user.profile
       nereus = current_user.profile.general_stats_item.nereus_stats_item

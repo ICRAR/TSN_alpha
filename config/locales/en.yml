@@ -8,7 +8,7 @@ en:
       msg: "Thank you for signing up to theSkyNet. Before you can get started processing radio astronomy data we just need to gather a few details for your profile."
     new_profile_step_2:
       heading: "Excellent, next we need to setup your account to start collecting credits"
-      msg: "theSkyNet is currently running two different projects, POGS and SourceFinder. Both projects will allow you to gain credits and compete in theSkyNet leader boards. More importantly contributing to either project will help us process more radio astronomy data. Find out more details about each project below."
+      msg: "theSkyNet is currently running one main different project, theSkyNet POGS. This project will allow you to gain credits and compete in theSkyNet leader boards. Contributing to this project will help us process more radio astronomy data. Find out more details about POGS project below."
       thank_you: "Thank you for joining <br /> - theSKyNet team"
       continue: "Continue to your dashboard"
       source_finder:
