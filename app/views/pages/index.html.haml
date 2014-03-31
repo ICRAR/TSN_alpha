@@ -1,8 +1,11 @@
 -content_for(:title_home) do
   #intro-home
-    #intro-home-wrap
-      %h1.fontface= t '.splash_header'
-      %p= t".splash_msg"
+    -if @special_days.contains_feature('april_fools_2014')
+      = image_tag 'April-Fools-medium-slow.gif'
+    - else
+      #intro-home-wrap
+        %h1.fontface= t '.splash_header'
+        %p= t".splash_msg"
     %span#intro-img= ' '
   %span.ribbon
     #ribbon-content
