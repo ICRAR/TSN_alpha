@@ -22,7 +22,7 @@ class SocialController < ApplicationController
   private
   def likable_model
     return nil if params[:model_type].nil?
-    model_name = %w[Trophy Alliance].include?(params[:model_type]) ? params[:model_type] : nil
+    model_name = %w[Trophy Alliance Comment].include?(params[:model_type]) ? params[:model_type] : nil
     return nil if model_name.nil?
     return model_name.constantize
   end

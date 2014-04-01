@@ -4,7 +4,7 @@
 - else
   -comment = comments_hash[0]
   -child_hash = comments_hash[1]
-.well.well-white.media{id: "comment_#{comment.id}", class: (comment.parent.nil? ? '' : 'sub_comment')}
+.well.well-white.media{id: "comment_#{comment.id}", class: (comment.parent_id.nil? ? '' : 'sub_comment')}
   .pull-left
     = image_tag comment.profile.avatar_url(64), class: 'media-object'
   .media-body
@@ -16,6 +16,7 @@
             (Staff)
         = distance_of_time_in_words(Time.now, comment.created_at)
         ago.
+
       %p= markdown(comment.content)
       - if can?(:create, Comment)
         .new_comment_link
@@ -26,6 +27,7 @@
             = link_to 'Delete', comment_path(comment), :confirm => 'Are you sure you want to delete this post? This will also delete any child posts.', :method => :delete, :remote => true, :class => "btn"
           - if can?(:report, comment)
             = link_to 'Report', "#", class: "btn report-btn", data: {comment_id: comment.id}
+          = render 'shared/social/like', model: comment, comment: true
       - else
         You must log in to comment
   - child_hash.reverse_each do |new_comments_hash|

@@ -16,13 +16,29 @@ class Comment < ActiveRecord::Base
     ['news', 'challenge', 'trophy']
   end
 
-  scope :for_show_commentable, includes(:profile => [:user])
+  scope :include_likes_count, joins{likes.outer}.
+        group{id}.
+        select("#{self.table_name}.*").select{count(likes.id).as('likes_count')}
+  def self.include_liked(profile_id)
+      scoped.select{coalesce(find_in_set(profile_id,likes.liker_id),0).as('liked')}
+  end
+
+  def self.for_show_commentable(current_user = nil)
+    if current_user.nil?
+      return scoped.includes(:profile => [:user]).include_likes_count
+    else
+      return scoped.includes(:profile => [:user]).include_likes_count.include_liked(current_user.profile.id)
+    end
+  end
   scope :for_show_index, includes(:commentable).where{commentable_type.in Comment.index_types}.
     order{created_at.desc}
   def  self.for_show_profile(find_profile_id)
       scoped.for_show_index.where{profile_id == my{find_profile_id}}
   end
 
+  #socil functions
+  acts_as_likeable
+  has_many :likes, as: :likeable, class_name: Socialization.like_model.to_s
 
   def self.notify_users(id)
     Comment.find(id).notify_users
