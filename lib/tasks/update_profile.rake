@@ -88,10 +88,12 @@ namespace :update_profiles do
 
   desc "export emails to file"
   task :export_emails => :enviroment do
+    profiles = Profile
+
     Benchmark.measure do
       csv = CSV.generate({}) do |csv|
         csv << ["theSkyNet User ID","First Name","Last Name","Email Address","Country", "theSkyNet Username"]
-        Profile.includes(:user).find_in_batches(:batch_size => 1000) do |group|
+        profiles.includes(:user).find_in_batches(:batch_size => 1000) do |group|
           group.each do |p|
             if p.user.nil?
               puts p.to_yaml
