@@ -118,7 +118,16 @@
             %p
               = link_to  trophies_profile_path(@profile) do
                 = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
-
+        .row-fluid
+          .span12.well.well-white#latest_trophy
+            %h2= "#{@profile.name} is following:"
+            - @profile.followees_for_show.each do |followee|
+              = link_to profile_path(followee) do
+                = image_tag followee.avatar_url(32), title: followee.name
+            %h2 And is followed by:
+            - @profile.followers_for_show.each do |followee|
+              = link_to profile_path(followee) do
+                = image_tag followee.avatar_url(32), title: followee.name
 
 
 

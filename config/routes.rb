@@ -19,6 +19,8 @@ Tsn::Application.routes.draw do
   resource :social, :only => [], controller: 'social' do
     get 'like_model'
     get 'unlike_model'
+    get 'follow'
+    get 'unfollow'
   end
 
   resource :misc, :only => [], controller: 'misc' do

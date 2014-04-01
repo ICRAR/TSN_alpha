@@ -1,8 +1,6 @@
 class SocialController < ApplicationController
   before_filter :signed_in, :except => []
-  def signed_in
-    redirect_to( root_url, notice: 'Sorry could must be signed in to do that') unless user_signed_in?
-  end
+
 
   def like_model
     object = likable_object
@@ -22,6 +20,19 @@ class SocialController < ApplicationController
     redirect_to after_sign_in_path_for, notice: 'Success, your like was removed.'
   end
 
+  def follow
+    followee = Profile.find params[:id]
+    follower = current_user.profile
+    follower.follow! followee
+    redirect_to after_sign_in_path_for, notice: "Success, you are now following #{followee.name}."
+  end
+  def unfollow
+    followee = Profile.find params[:id]
+    follower = current_user.profile
+    follower.unfollow! followee
+    redirect_to after_sign_in_path_for, notice: "Success, you are no longer following #{followee.name}."
+  end
+
   private
   def likable_model
     return nil if params[:model_type].nil?
@@ -37,4 +48,7 @@ class SocialController < ApplicationController
     return model.find(params[:model_id])
   end
 
+  def signed_in
+    redirect_to( root_url, notice: 'Sorry could must be signed in to do that') unless user_signed_in?
+  end
 end

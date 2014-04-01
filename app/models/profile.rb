@@ -82,6 +82,13 @@ class Profile < ActiveRecord::Base
   # profiles can follow each other
   acts_as_followable
   acts_as_follower
+
+  def followers_for_show
+    self.followers_relation(Profile).includes(:user)
+  end
+  def followees_for_show
+    self.followees_relation(Profile).includes(:user)
+  end
   # profiles can like things
   acts_as_liker
   #profiles can mention and be mentioned in posts
