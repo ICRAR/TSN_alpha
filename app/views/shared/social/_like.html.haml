@@ -3,7 +3,7 @@
 - like_number ||= model.likers_relation(Profile).count
 - liked = false
 - if user_signed_in?
-  - liked = model[:liked].nil? ? (current_user.profile.likes?(model)) : (model[:liked] == 1)
+  - liked = model[:liked].nil? ? (current_user.profile.likes?(model)) : (model[:liked] >= 1)
 -if comment == true
   %span#like_comment
     = "Liked:  #{pluralize(like_number, 'time')}."

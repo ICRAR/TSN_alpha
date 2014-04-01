@@ -9,6 +9,9 @@ class SocialController < ApplicationController
     return redirect_to( root_url, notice: 'Sorry could not find that object') if object.nil?
     profile = current_user.profile
     profile.like!(object)
+    if likable_model == Comment
+     Comment.delay.like_comment(object.id,profile.id)
+    end
     redirect_to after_sign_in_path_for, notice: 'Success, your like was counted.'
   end
   def unlike_model
@@ -16,7 +19,7 @@ class SocialController < ApplicationController
     return redirect_to( root_url, notice: 'Sorry could not find that object') if object.nil?
     profile = current_user.profile
     profile.unlike!(object)
-    redirect_to after_sign_in_path_for, notice: 'Success, your like was counted.'
+    redirect_to after_sign_in_path_for, notice: 'Success, your like was removed.'
   end
 
   private

@@ -20,7 +20,7 @@ class Comment < ActiveRecord::Base
         group{id}.
         select("#{self.table_name}.*").select{count(likes.id).as('likes_count')}
   def self.include_liked(profile_id)
-      scoped.select{coalesce(find_in_set(profile_id,likes.liker_id),0).as('liked')}
+      scoped.select{coalesce(find_in_set(profile_id,group_concat(likes.liker_id)),0).as('liked')}
   end
 
   def self.for_show_commentable(current_user = nil)
@@ -39,6 +39,25 @@ class Comment < ActiveRecord::Base
   #socil functions
   acts_as_likeable
   has_many :likes, as: :likeable, class_name: Socialization.like_model.to_s
+
+  def self.like_comment(comment_id, liker_profile_id)
+    comment = Comment.find comment_id
+    liker = Profile.find liker_profile_id
+    comment.like_comment(liker)
+  end
+  def like_comment(liker)
+    return if liker.id == profile_id
+
+    subject = "#{liker.name} likes to your comment on, #{commentable_name}"
+    link_commentable = ActionController::Base.helpers.link_to(commentable_name, polymorphic_path(commentable))
+    link_liker = ActionController::Base.helpers.link_to(liker.name, Rails.application.routes.url_helpers.profile_path(liker.id))
+    body = "Hey #{profile.name}, <br /> #{link_liker} likes your comment on #{link_commentable}. <br /> Happy Computing! <br />  - theSkyNet"
+
+    aggregation_subject = "Your comment on #{link_commentable} has been liked to %COUNT% times"
+    aggregation_body = "Hey #{profile.name}, <br /> Your comment on #{link_commentable} has been liked to %COUNT% times. <br /> By:"
+    aggregation_text = "#{link_liker} <br />"
+    ProfileNotification.notify_with_aggrigation(profile,subject,body,aggregation_subject,aggregation_body,'class_id',commentable, aggregation_text, 'like_comment')
+  end
 
   def self.notify_users(id)
     Comment.find(id).notify_users

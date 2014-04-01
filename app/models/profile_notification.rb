@@ -119,7 +119,7 @@ class ProfileNotification < ActiveRecord::Base
                         where{read == false}.
                         where{notifier_type == my{notifier.nil? ? nil : notifier.class.to_s}}
       relation_out = relation_out.where{notifier_id == my{notifier.nil? ? nil : notifier.id}} if aggrigate_type == 'class_id'
-      relation_out = relation_out.where{aggregation_type == my{agg_type}} unless agg_type == nil
+      relation_out = relation_out.where{aggregation_type == my{agg_type}}
       relation_out
     end
 
