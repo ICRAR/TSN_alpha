@@ -74,7 +74,44 @@ class ChallengesController < ApplicationController
 
     render :show
   end
-
+  def leave
+    auth_user_for_challenge
+    challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])
+    error_msg = ''
+    if challenge.leaveable?
+      profile = current_user.profile
+      case challenge.challenger_type.downcase
+        when 'alliance'
+          #check if current user is a alliance leader
+          error_msg = 'You must be the leader of an Alliance to leave this challenge.' if profile.alliance_leader_id.nil? || profile.alliance_leader_id == 0
+          #check if their alliance is already in the challenge
+          error_msg = 'Your alliance is not participating in this challenge yet.' unless challenge.challengers.where{entity_id == my{profile.alliance_leader_id}}.exists?
+        when 'profile'
+          #check if current user is already in the challenge
+          error_msg = 'You not participating in this challenge. yet' unless challenge.challengers.where{entity_id == my{profile.id}}.exists?
+      end
+    else
+      error_msg = 'This challenge cannot be left at the moment'
+    end
+    #now if error msg is still == '' then this user is allowed to leave the challenge
+    if error_msg == ''
+      case challenge.challenger_type.downcase
+        when 'alliance'
+          left_check = challenge.leave profile.alliance_leader
+        when 'profile'
+          left_check = challenge.leave profile
+      end
+      if left_check == false
+        error_msg = 'Oh no something went wrong'
+      end
+    end
+    #if there has been an error ie error_msg != '' then flash error
+    if error_msg == ''
+      redirect_to challenge_path(challenge), notice: 'Success you have left the challenge'
+    else
+      redirect_to challenge_path(challenge), alert: error_msg
+    end
+  end
   def join
     auth_user_for_challenge
     challenge = Challenge.not_hidden(user_is_admin?).find(params[:id])

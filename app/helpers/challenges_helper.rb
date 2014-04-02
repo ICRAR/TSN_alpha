@@ -21,13 +21,13 @@ module ChallengesHelper
     case challenge.challenger_type.downcase
       when 'alliance'
         #check if their alliance is already in the challenge
-        return 'Congratulations your alliance is participating in this challenge.' if challenge.challengers.where{entity_id == my{profile.alliance_id}}.exists?
+        return challenge_leave_button(challenge) if challenge.challengers.where{entity_id == my{profile.alliance_id}}.exists?
         return '' unless challenge.joinable?(challenge.invite_code)
         #check if current user is a alliance leader
         return 'You must be the leader of an Alliance to join this challenge.' if profile.alliance_leader_id.nil? || profile.alliance_leader_id == 0
       when 'profile'
         #check if current user is already in the challenge
-        return 'Congratulations, you are participating in this challenge.' if challenge.challengers.where{entity_id == my{profile.id}}.exists?
+        return challenge_leave_button(challenge) if challenge.challengers.where{entity_id == my{profile.id}}.exists?
         return '' unless challenge.joinable?(challenge.invite_code)
     end
     if challenge.joinable?(params[:invite_code])
@@ -35,6 +35,17 @@ module ChallengesHelper
     else
       return invite_code_form
     end
+  end
+  def challenge_leave_button(challenge)
+    ('Congratulations your alliance is participating in this challenge. </br>'+
+      link_to(
+        'Leave this challenge',
+        leave_challenge_path(challenge),
+        class: 'btn btn-danger',
+        method: 'get',
+        confirm: "Are you sure? This action will remove you from the challenge, including removing your statistics from the challenge and can not be undone.",
+      )
+    ).html_safe
   end
   def invite_code_form
     form_tag('', method: :get) do

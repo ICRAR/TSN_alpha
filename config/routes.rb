@@ -132,6 +132,7 @@ Tsn::Application.routes.draw do
   resources :challenges, :except => [:destroy] do
     member do
       get 'join'
+      get 'leave'
     end
     resources :challengers, :only => [:show] do
       collection do

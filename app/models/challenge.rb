@@ -235,7 +235,9 @@ Finally the score value is set in the update action using the following formula:
   def running?
     started && !finished
   end
-
+  def leaveable?
+    return !finished?
+  end
   def joinable?(check_code = '')
     if invite_only?
       #check invite code
@@ -256,7 +258,18 @@ Finally the score value is set in the update action using the following formula:
         'Unknown'
     end
   end
+  def leave(leave_entity)
+    #get challenger
+    challenger = self.challengers.where{entity_type == leave_entity.class.to_s}.
+        where{entity_id == leave_entity.id}.first
+    return false if challenger.nil?
+    #delete challenger's metrics
+    challenger.metrics.delete_all
 
+    #delete challenger
+    challenger.destroy
+    return true
+  end
   def join(entity,check_code = '')
     #double check entity is allowed to join
     return false unless self.joinable?(check_code)
