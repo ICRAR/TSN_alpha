@@ -24,6 +24,7 @@ class SocialController < ApplicationController
     followee = Profile.find params[:id]
     follower = current_user.profile
     follower.follow! followee
+    Profile.delay.notify_follow followee.id, follower.id
     redirect_to after_sign_in_path_for, notice: "Success, you are now following #{followee.name}."
   end
   def unfollow

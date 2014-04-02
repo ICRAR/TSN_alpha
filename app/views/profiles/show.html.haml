@@ -46,6 +46,13 @@
                 = "See #{@profile.name.possessive} challenge history."
             -if user_signed_in?
               %p= link_to "Compare #{@profile.name.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
+              - unless current_user.profile.id == @profile.id
+                - if @profile.followed_by? current_user.profile
+                  -# unfollow button
+                  = link_to "Unfollow", unfollow_social_path(id: @profile.id), class: 'btn btn-tsn'
+                - else
+                  -# follow button
+                  = link_to "Follow", follow_social_path(id: @profile.id), class: 'btn btn-tsn'
 
         -if @profile.description.nil? || @profile.description == ''
           -if user_signed_in? && current_user.id == @profile.id

@@ -1,5 +1,5 @@
 class Profile < ActiveRecord::Base
-
+  include Rails.application.routes.url_helpers
   belongs_to :user
   belongs_to :alliance_leader, :class_name => 'Alliance', inverse_of: :leader
   belongs_to :alliance, inverse_of: :members
@@ -276,6 +276,23 @@ class Profile < ActiveRecord::Base
 
   mapping do
     indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
+  end
+
+  def self.notify_follow(id, follower_id)
+    self.find(id).notify_follow(follower_id)
+  end
+  def notify_follow(follower_id)
+    follower = Profile.find follower_id
+    return false if follower.nil?
+
+    subject = "#{follower.name} has followed your profile."
+    link_follower = ActionController::Base.helpers.link_to(follower.name, Rails.application.routes.url_helpers.profile_path(follower.id))
+    body = "Hey #{name}, <br /> #{link_follower} has followed your profile. <br /> Happy Computing! <br />  - theSkyNet"
+
+    aggregation_subject = "Your profile has been followed by %COUNT% users."
+    aggregation_body = "Hey #{name}, <br /> Your profile has been followed by %COUNT% users:"
+    aggregation_text = "#{link_follower} <br />"
+    ProfileNotification.notify_with_aggrigation(self,subject,body,aggregation_subject,aggregation_body,'class_id',self, aggregation_text, 'follow')
   end
 
   def self.search(query,page = 1,per_page = 10)
