@@ -43,7 +43,7 @@ module ChallengesHelper
     end
   end
   def challenge_leave_button(challenge)
-    ('Congratulations your are participating in this challenge. </br>'+
+    ('Congratulations you are participating in this challenge. </br>'+
       link_to(
         'Leave this challenge',
         leave_challenge_path(challenge),
