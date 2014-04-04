@@ -184,6 +184,8 @@ class AllianceMembers < ActiveRecord::Base
   end
   def create_timeline_entry_join
     link_to_alliance = link_to(self.alliance.name, Rails.application.routes.url_helpers.alliance_path(self.alliance))
+    link_profile = ActionController::Base.helpers.link_to(self.profile.name, Rails.application.routes.url_helpers.profile_path(self.profile.id))
+
     TimelineEntry.post_to self.profile, {
         more: '',
         more_aggregate: '',
@@ -191,7 +193,7 @@ class AllianceMembers < ActiveRecord::Base
         subject_aggregate: "joined an alliance",
         aggregate_type: "joined_alliance",
         aggregate_type_2: am.alliance.id,
-        aggregate_text: "#{self.profle.name} joined #{link_to_alliance} <br />",
+        aggregate_text: "#{link_profile} joined #{link_to_alliance} <br />",
     }
   end
   def self.create_notification_leave(id)
@@ -222,6 +224,8 @@ class AllianceMembers < ActiveRecord::Base
   end
   def create_timeline_entry_leave
     link_to_alliance = link_to(self.alliance.name, Rails.application.routes.url_helpers.alliance_path(self.alliance))
+    link_profile = ActionController::Base.helpers.link_to(self.profile.name, Rails.application.routes.url_helpers.profile_path(self.profile.id))
+
     TimelineEntry.post_to self.profile, {
         more: '',
         more_aggregate: '',
@@ -229,7 +233,7 @@ class AllianceMembers < ActiveRecord::Base
         subject_aggregate: "left an alliance",
         aggregate_type: "left_alliance",
         aggregate_type_2: am.alliance.id,
-        aggregate_text: "#{self.profle.name} left #{link_to_alliance} <br />",
+        aggregate_text: "#{link_profile} left #{link_to_alliance} <br />",
     }
   end
 

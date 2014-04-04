@@ -121,10 +121,12 @@ class Trophy < ActiveRecord::Base
 
   def create_timeline_entry(profiles)
     link_to_trophy = link_to(self.title, Rails.application.routes.url_helpers.trophy_path(self))
+
     if profiles.class == ActiveRecord::Relation || profiles.class == Array
       aggregate_text = "%profile_name% was awarded #{link_to_trophy} <br />"
     else
-      aggregate_text = "#{profiles.name} was awarded #{link_to_trophy} <br />"
+      link_profile = ActionController::Base.helpers.link_to(profiles.name, Rails.application.routes.url_helpers.profile_path(profiles.id))
+      aggregate_text = "#{link_profile} was awarded #{link_to_trophy} <br />"
     end
     TimelineEntry.post_to profiles, {
         more: '',

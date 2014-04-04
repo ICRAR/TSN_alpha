@@ -70,6 +70,19 @@ class Comment < ActiveRecord::Base
     #then notify all challengers if this is a new thread
     notify_challengers if commentable_type == Challenge.to_s && parent_id == nil
   end
+  def create_timeline_entry
+    link_commentable = ActionController::Base.helpers.link_to(commentable_name, polymorphic_path(commentable))
+    link_commentor = ActionController::Base.helpers.link_to(profile.name, Rails.application.routes.url_helpers.profile_path(profile.id))
+    TimelineEntry.post_to self.profile, {
+        more: '',
+        more_aggregate: '',
+        subject: "commented on #{link_commentable}",
+        subject_aggregate: "commented on #{link_commentable}",
+        aggregate_type: "commented_on_#{commentable.class.to_s}_#{commentable.id}",
+        aggregate_type_2: nil,
+        aggregate_text: "#{link_commentor} <br />",
+    }
+  end
 
   def notify_challengers
     challenge = commentable

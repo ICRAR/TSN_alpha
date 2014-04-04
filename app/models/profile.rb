@@ -126,6 +126,7 @@ class Profile < ActiveRecord::Base
       end
       link_to_object = ActionController::Base.helpers.link_to(object_name, polymorphic_path(object))
     end
+    link_profile = ActionController::Base.helpers.link_to(self.name, Rails.application.routes.url_helpers.profile_path(self.id))
     TimelineEntry.post_to self, {
         more: '',
         more_aggregate: '',
@@ -133,7 +134,7 @@ class Profile < ActiveRecord::Base
         subject_aggregate: "liked #{object.class.to_s.pluralize}",
         aggregate_type: "like_#{object.class.to_s}",
         aggregate_type_2: object.id,
-        aggregate_text: "#{self.name} likes: #{link_to_object} <br />",
+        aggregate_text: "#{link_profile} likes: #{link_to_object} <br />",
     }
   end
 

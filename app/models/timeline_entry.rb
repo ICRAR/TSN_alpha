@@ -1,4 +1,5 @@
 class TimelineEntry < ActiveRecord::Base
+  include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::TextHelper
   attr_accessible  :profile_id, :posted_at, :aggregate_text, :aggregate_type, :aggregate_type_2,
                    :more, :more_aggregate,
@@ -34,7 +35,8 @@ class TimelineEntry < ActiveRecord::Base
       cols = [:profile_id,:more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_type_2,:aggregate_text,:posted_at]
       time_now = Time.now
       profiles.each do |profile|
-        aggregate_text_each = aggregate_text.sub('%profile_name%', profile.name)
+        link_profile = ActionController::Base.helpers.link_to(profile.name, Rails.application.routes.url_helpers.profile_path(profile.id))
+        aggregate_text_each = aggregate_text.sub('%profile_name%', link_profile)
         entires << [profile.id, more, more_aggregate,subject,subject_aggregate,aggregate_type,aggregate_type_2,aggregate_text_each,time_now]
       end
       TimelineEntry.import cols, entires
