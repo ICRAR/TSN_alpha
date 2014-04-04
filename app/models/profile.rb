@@ -132,6 +132,7 @@ class Profile < ActiveRecord::Base
         subject: "liked #{link_to_object}",
         subject_aggregate: "liked #{object.class.to_s.pluralize}",
         aggregate_type: "like_#{object.class.to_s}",
+        aggregate_type_2: object.id,
         aggregate_text: "#{self.name} likes: #{link_to_object} <br />",
     }
   end

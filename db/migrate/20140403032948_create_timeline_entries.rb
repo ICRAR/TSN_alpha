@@ -6,12 +6,13 @@ class CreateTimelineEntries < ActiveRecord::Migration
       t.string :subject_aggregate
       t.text :more_aggregate
       t.string :aggregate_type
+      t.string :aggregate_type_2
       t.string :aggregate_text
       t.datetime :posted_at
       t.belongs_to :profile
 
       t.timestamps
     end
-    add_index :timeline_entries, ["profile_id", "posted_at","aggregate_type"], name: "agg_timeline_index"
+    add_index :timeline_entries, ["profile_id", "posted_at","aggregate_type","aggregate_type_2"], name: "agg_timeline_index"
   end
 end

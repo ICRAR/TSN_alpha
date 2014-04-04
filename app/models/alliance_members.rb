@@ -159,7 +159,7 @@ class AllianceMembers < ActiveRecord::Base
 
   def self.create_notification_join(id)
     am = AllianceMembers.find id
-
+    am.create_timeline_entry_join
     Activity.track(am.profile, "joined", am.alliance)
 
     #send to member
@@ -182,9 +182,21 @@ class AllianceMembers < ActiveRecord::Base
 
     end
   end
+  def create_timeline_entry_join
+    link_to_alliance = link_to(self.alliance.name, Rails.application.routes.url_helpers.alliance_path(self.alliance))
+    TimelineEntry.post_to self.profile, {
+        more: '',
+        more_aggregate: '',
+        subject: "joined #{link_to_alliance}",
+        subject_aggregate: "joined an alliance",
+        aggregate_type: "joined_alliance",
+        aggregate_type_2: am.alliance.id,
+        aggregate_text: "#{self.profle.name} joined #{link_to_alliance} <br />",
+    }
+  end
   def self.create_notification_leave(id)
     am = AllianceMembers.find id
-
+    am.create_timeline_entry_leave
     #send to member
     subject = "Goodbye from, #{am.alliance.name}"
     credits = am.leave_credit.to_i - am.start_credit.to_i
@@ -207,6 +219,18 @@ class AllianceMembers < ActiveRecord::Base
       ProfileNotification.notify_with_aggrigation(leader,subject,body,aggregation_subject,aggregation_body,'class_id',am.alliance, aggregation_text, 'leave')
 
     end
+  end
+  def create_timeline_entry_leave
+    link_to_alliance = link_to(self.alliance.name, Rails.application.routes.url_helpers.alliance_path(self.alliance))
+    TimelineEntry.post_to self.profile, {
+        more: '',
+        more_aggregate: '',
+        subject: "left #{link_to_alliance}",
+        subject_aggregate: "left an alliance",
+        aggregate_type: "left_alliance",
+        aggregate_type_2: am.alliance.id,
+        aggregate_text: "#{self.profle.name} left #{link_to_alliance} <br />",
+    }
   end
 
   #doesn't save

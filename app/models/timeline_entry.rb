@@ -1,6 +1,6 @@
 class TimelineEntry < ActiveRecord::Base
   include ActionView::Helpers::TextHelper
-  attr_accessible  :profile_id, :posted_at, :aggregate_text, :aggregate_type,
+  attr_accessible  :profile_id, :posted_at, :aggregate_text, :aggregate_type, :aggregate_type_2,
                    :more, :more_aggregate,
                    :subject, :subject_aggregate
 
@@ -14,6 +14,7 @@ class TimelineEntry < ActiveRecord::Base
     subject_aggregate = opts[:subject_aggregate] || subject
     aggregate_text = opts[:aggregate_text] || "#{profile.name} </br> \n"
     aggregate_type = opts[:aggregate_type] || nil
+    aggregate_type_2 = opts[:aggregate_type_2] || nil
 
     if profiles.class == Profile
       self.create ({
@@ -23,17 +24,18 @@ class TimelineEntry < ActiveRecord::Base
           subject: subject,
           subject_aggregate: subject_aggregate,
           aggregate_type: aggregate_type,
+          aggregate_type_2: aggregate_type_2,
           aggregate_text: aggregate_text,
           posted_at: Time.now,
       })
     elsif profiles.class == ActiveRecord::Relation || profiles.class == Array
 
       entires = []
-      cols = [:profile_id,:more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_text,:posted_at]
+      cols = [:profile_id,:more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_type_2,:aggregate_text,:posted_at]
       time_now = Time.now
       profiles.each do |profile|
         aggregate_text_each = aggregate_text.sub('%profile_name%', profile.name)
-        entires << [profile.id, more, more_aggregate,subject,subject_aggregate,aggregate_type,aggregate_text_each,time_now]
+        entires << [profile.id, more, more_aggregate,subject,subject_aggregate,aggregate_type,aggregate_type_2,aggregate_text_each,time_now]
       end
       TimelineEntry.import cols, entires
     end
@@ -48,6 +50,7 @@ class TimelineEntry < ActiveRecord::Base
       order{posted_at.desc}.
       select("#{self.table_name}.*").
       select{'count(*) as aggregate_count'}.
+      select{'count(distinct aggregate_type_2) as type_count'}.
       select{'count(distinct profile_id) as distinct_aggregate_count'}.
       select('GROUP_CONCAT(aggregate_text SEPARATOR \'\') as aggregate_texts').
       includes{profile.user}
@@ -59,30 +62,36 @@ class TimelineEntry < ActiveRecord::Base
         order{posted_at.desc}.
         select("#{self.table_name}.*").
         select{'count(*) as aggregate_count'}.
+        select{'count(distinct aggregate_type_2) as type_count'}.
         select{'count(distinct profile_id) as distinct_aggregate_count'}.
         select('GROUP_CONCAT(aggregate_text SEPARATOR \'\') as aggregate_texts').
         includes{profile.user}
   end
 
 
-  #we use the aggregate subject and more if multiple actions have taken place ie aggregate_count > distinct_aggregate_count
+  #we use the aggregate subject and more if multiple actions have taken place ie type_count > 1
   #if more the one user was involved distinct_aggregate_count > 1 then we sub 'was' with 'were'
   def get_subject
     out = ''
-    if aggregate_count > 1
-      if  aggregate_count > distinct_aggregate_count
-        if distinct_aggregate_count > 1
+    if aggregate_count > 1 #multiple records of any type
+      if  type_count > 1 #multiple types of records
+        if distinct_aggregate_count > 1 #multiple profiles
           others = (distinct_aggregate_count-1)
           out << "and #{pluralize(others, 'other')} "
           out << subject_aggregate.sub('was ','were ')
-          out << " #{aggregate_count} times" unless aggregate_count == distinct_aggregate_count
+          out << " #{type_count} times"
         else
           out << subject_aggregate
-          out << " #{aggregate_count} times" unless aggregate_count == distinct_aggregate_count
+          out << " #{type_count} times"
         end
       else
-        out << "and #{(distinct_aggregate_count-1).to_s} others "
-        out << subject.sub('was ','were ')
+        if distinct_aggregate_count > 1 #multiple profiles
+          others = (distinct_aggregate_count-1)
+          out << "and #{pluralize(others, 'other')} "
+          out << subject.sub('was ','were ')
+        else
+          out << subject
+        end
       end
     else
       out << subject
@@ -92,8 +101,8 @@ class TimelineEntry < ActiveRecord::Base
   #if more than one action as occurred by any number of profiles then append the aggregate_texts
   def get_more
     out = ''
-    if aggregate_count > 1
-      if  aggregate_count > distinct_aggregate_count
+    if aggregate_count > 1 #multiple records of any type
+      if  type_count > 1 #multiple types of records
         if distinct_aggregate_count > 1
           out << more_aggregate.sub('was ','were ')
         else
