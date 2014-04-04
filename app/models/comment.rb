@@ -31,7 +31,7 @@ class Comment < ActiveRecord::Base
     end
   end
   scope :for_show_index, includes(:commentable).where{commentable_type.in Comment.index_types}.
-    order{created_at.desc}
+    order{created_at.desc}.includes(:profile => [:user])
   def  self.for_show_profile(find_profile_id)
       scoped.for_show_index.where{profile_id == my{find_profile_id}}
   end
