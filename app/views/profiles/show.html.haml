@@ -72,11 +72,11 @@
               .clearfix
               -if user_signed_in? && current_user.id == @profile.id
                 %p= link_to 'Edit my profile.', edit_user_registration_path
+
         .row-fluid
-          .span12.well.well-white
-            %h2 Things I like:
-            = show_likes(Trophy, 'Trophies:', :title)
-            = show_likes(Alliance, 'Alliances:', :name)
+          .span12.well.well-white#timeline
+            %h2= "#{@profile.name.possessive} Timeline"
+            #timeline_entries
 
 
       .span5
@@ -126,7 +126,12 @@
               = link_to  trophies_profile_path(@profile) do
                 = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
         .row-fluid
-          .span12.well.well-white#latest_trophy
+          .span12.well.well-white
+            %h2 Things I like:
+            = show_likes(Trophy, 'Trophies:', :title)
+            = show_likes(Alliance, 'Alliances:', :name)
+        .row-fluid
+          .span12.well.well-white#following
             %h2= "#{@profile.name} is following:"
             - @profile.followees_for_show.each do |followee|
               = link_to profile_path(followee) do

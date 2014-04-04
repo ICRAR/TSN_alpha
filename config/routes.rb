@@ -21,6 +21,7 @@ Tsn::Application.routes.draw do
     get 'unlike_model'
     get 'follow'
     get 'unfollow'
+    get 'timeline'
   end
 
   resource :misc, :only => [], controller: 'misc' do
