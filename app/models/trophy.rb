@@ -114,8 +114,21 @@ class Trophy < ActiveRecord::Base
       db_conn.execute sql
 
       create_notification(update_profiles)
+      create_timeline_entry(update_profiles)
     end
 
+  end
+
+  def create_timeline_entry(profiles)
+    link_to_trophy = link_to(self.title, Rails.application.routes.url_helpers.trophy_path(self))
+    TimelineEntry.post_to profiles, {
+        more: '',
+        more_aggregate: '',
+        subject: "was awarded #{link_to_trophy}",
+        subject_aggregate: "was awarded many #{self.class.to_s.pluralize}",
+        aggregate_type: "awarded_trophy",
+        aggregate_text: "%profile_name% was awarded #{link_to_trophy} <br />",
+    }
   end
 
   def create_notification(profiles)
@@ -125,6 +138,7 @@ class Trophy < ActiveRecord::Base
     body = "Congratulations! <br /> You have been awarded a new trophy, #{link}. <br /> Thank you and happy computing! <br /> theSkyNet"
     aggregation_text = "#{link} <br />"
     profile_ids = profiles.map(&:id)
+
     ProfileNotification.notify_all_id_array(profile_ids,subject,body,self,true, aggregation_text)
   end
   def self.aggregate_notifications

@@ -6,7 +6,7 @@ class TimelineEntry < ActiveRecord::Base
 
   belongs_to :profile
 
-  def self.post_to(profile, opts = {})
+  def self.post_to(profiles, opts = {})
     opts.symbolize_keys!()
     more = opts[:more] || ''
     more_aggregate = opts[:more] || more
@@ -15,19 +15,34 @@ class TimelineEntry < ActiveRecord::Base
     aggregate_text = opts[:aggregate_text] || "#{profile.name} </br> \n"
     aggregate_type = opts[:aggregate_type] || nil
 
-    self.create ({
-      profile_id: profile.id,
-      more: more,
-      more_aggregate: more_aggregate,
-      subject: subject,
-      subject_aggregate: subject_aggregate,
-      aggregate_type: aggregate_type,
-      aggregate_text: aggregate_text,
-      posted_at: Time.now,
-    })
+    if profiles.class == Profile
+      self.create ({
+          profile_id: profiles.id,
+          more: more,
+          more_aggregate: more_aggregate,
+          subject: subject,
+          subject_aggregate: subject_aggregate,
+          aggregate_type: aggregate_type,
+          aggregate_text: aggregate_text,
+          posted_at: Time.now,
+      })
+    elsif profiles.class == ActiveRecord::Relation || profiles.class == Array
+
+      entires = []
+      cols = [:profile_id,:more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_text,:posted_at]
+      time_now = Time.now
+      profiles.each do |profile|
+        aggregate_text_each = aggregate_text.sub('%profile_name%', profile.name)
+        entires << [profile.id, more, more_aggregate,subject,subject_aggregate,aggregate_type,aggregate_text_each,time_now]
+      end
+      TimelineEntry.import cols, entires
+    end
+
+
   end
 
   def self.get_timeline(profile_ids)
+    ProfileNotification.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
     self.where{profile_id.in profile_ids}.
       group{[aggregate_type,TO_DAYS(posted_at)]}.
       order{posted_at.desc}.
@@ -36,6 +51,17 @@ class TimelineEntry < ActiveRecord::Base
       select{'count(distinct profile_id) as distinct_aggregate_count'}.
       select('GROUP_CONCAT(aggregate_text SEPARATOR \'\') as aggregate_texts').
       includes{profile.user}
+  end
+  def self.get_timeline_all
+    ProfileNotification.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
+    self.
+        group{[aggregate_type,TO_DAYS(posted_at)]}.
+        order{posted_at.desc}.
+        select("#{self.table_name}.*").
+        select{'count(*) as aggregate_count'}.
+        select{'count(distinct profile_id) as distinct_aggregate_count'}.
+        select('GROUP_CONCAT(aggregate_text SEPARATOR \'\') as aggregate_texts').
+        includes{profile.user}
   end
 
 

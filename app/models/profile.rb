@@ -107,21 +107,25 @@ class Profile < ActiveRecord::Base
     object = object_class.constantize.find object_id
     profile = Profile.find profile_id
     profile.timeline_like object
-  end
-  def timeline_like(object)
     if object.class == Comment
       Comment.delay.like_comment(object.id,profile.id)
     end
+  end
+  def timeline_like(object)
+
     if object.class == Comment
       object_name = "a comment on #{object.commentable_name}"
-    elsif object.respond_to? :name
-      object_name = object.name
-    elsif object.respond_to? :title
-      object_name = object.title
+      link_to_object = ActionController::Base.helpers.link_to(object_name, polymorphic_path(object.commentable))
     else
-      object_name = object.class.to_s
+      if object.respond_to? :name
+        object_name = object.name
+      elsif object.respond_to? :title
+        object_name = object.title
+      else
+        object_name = object.class.to_s
+      end
+      link_to_object = ActionController::Base.helpers.link_to(object_name, polymorphic_path(object))
     end
-    link_to_object = ActionController::Base.helpers.link_to(object_name, polymorphic_path(object))
     TimelineEntry.post_to self, {
         more: '',
         more_aggregate: '',

@@ -39,8 +39,13 @@ class SocialController < ApplicationController
       signed_in
       @timeline = current_user.profile.followees_timeline.page(page).per(3)
     else
-      profile = Profile.find params[:profile_id]
-      @timeline = profile.own_timeline.page(page).per(3)
+      if params[:profile_id] == 'all' && user_is_admin?
+        @timeline = TimelineEntry.get_timeline_all.page(page).per(3)
+
+      else
+        profile = Profile.find params[:profile_id]
+        @timeline = profile.own_timeline.page(page).per(3)
+      end
     end
   end
 
