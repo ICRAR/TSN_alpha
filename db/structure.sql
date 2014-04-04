@@ -235,7 +235,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `follows` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -247,7 +247,7 @@ CREATE TABLE `follows` (
   PRIMARY KEY (`id`),
   KEY `fk_follows` (`follower_id`,`follower_type`),
   KEY `fk_followables` (`followable_id`,`followable_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -283,7 +283,7 @@ CREATE TABLE `likes` (
   PRIMARY KEY (`id`),
   KEY `fk_likes` (`liker_id`,`liker_type`),
   KEY `fk_likeables` (`likeable_id`,`likeable_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `members_science_portals` (
   `member_id` int(11) DEFAULT NULL,
@@ -434,6 +434,7 @@ CREATE TABLE `profiles` (
   `advent_notify` tinyint(1) DEFAULT NULL,
   `advent_last_day` int(11) DEFAULT NULL,
   `description` text COLLATE utf8_unicode_ci,
+  `comments_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`user_id`),
   KEY `alliance_leader_id_index` (`alliance_leader_id`),
@@ -586,13 +587,15 @@ CREATE TABLE `timeline_entries` (
   `subject_aggregate` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `more_aggregate` text COLLATE utf8_unicode_ci,
   `aggregate_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `aggregate_type_2` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `aggregate_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `posted_at` datetime DEFAULT NULL,
   `profile_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `agg_timeline_index` (`profile_id`,`posted_at`,`aggregate_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `agg_timeline_index` (`profile_id`,`posted_at`,`aggregate_type`,`aggregate_type_2`)
+) ENGINE=InnoDB AUTO_INCREMENT=503 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -880,3 +883,5 @@ INSERT INTO schema_migrations (version) VALUES ('20140324020539');
 INSERT INTO schema_migrations (version) VALUES ('20140324032411');
 
 INSERT INTO schema_migrations (version) VALUES ('20140403032948');
+
+INSERT INTO schema_migrations (version) VALUES ('20140404081950');

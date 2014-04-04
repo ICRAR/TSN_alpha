@@ -13,7 +13,7 @@ class Comment < ActiveRecord::Base
   belongs_to :profile
 
   def self.index_types
-    ['news', 'challenge', 'trophy']
+    ['news', 'challenge', 'trophy', 'Profile']
   end
 
   scope :include_likes_count, joins{likes.outer}.
@@ -69,6 +69,10 @@ class Comment < ActiveRecord::Base
     notify_alliance if commentable_type == Alliance.to_s && parent_id == nil
     #then notify all challengers if this is a new thread
     notify_challengers if commentable_type == Challenge.to_s && parent_id == nil
+    #if it is a post on someone's wall notify that person
+    notify_wall if commentable_type == Profile.to_s && parent_id == nil && commentable_id != profile.id
+
+    create_timeline_entry
   end
   def create_timeline_entry
     link_commentable = ActionController::Base.helpers.link_to(commentable_name, polymorphic_path(commentable))
@@ -83,7 +87,17 @@ class Comment < ActiveRecord::Base
         aggregate_text: "#{link_commentor} <br />",
     }
   end
+  def notify_wall
+    link_wall = ActionController::Base.helpers.link_to('wall', polymorphic_path(commentable))
+    subject = "#{profile.name} has left a comment on your wall."
+    link_commentor = ActionController::Base.helpers.link_to(profile.name, Rails.application.routes.url_helpers.profile_path(profile.id))
+    body = "Hey #{commentable.name}, <br /> #{link_commentor} has left a comment on your #{link_wall}. <br /> Happy Computing! <br />  - theSkyNet"
 
+    aggregation_subject = "%COUNT% new threads have been started on your wall."
+    aggregation_body = "Hey #{commentable.name}, <br /> %COUNT% new threads have been started on your #{link_wall}. <br /> By:"
+    aggregation_text = "#{link_commentor} <br />"
+    ProfileNotification.notify_with_aggrigation(commentable,subject,body,aggregation_subject,aggregation_body,'class_id',self.commentable, aggregation_text)
+  end
   def notify_challengers
     challenge = commentable
     profiles = challenge.profiles.where{id != my{profile_id}}

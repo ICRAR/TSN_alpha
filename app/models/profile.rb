@@ -10,6 +10,8 @@ class Profile < ActiveRecord::Base
   has_many :trophies, :through => :profiles_trophies
   has_many :trophy_sets, :through => :trophies
   has_many :comments
+  has_many :comments_wall, as: :commentable, class_name: 'Comment'
+  attr_readonly :comments_count
   has_many :profile_notifications
   before_destroy :remove_trophies
   def remove_trophies

@@ -52,10 +52,15 @@ class ProfilesController < ApplicationController
   def show
     if user_signed_in?
       @trophy_ids = current_user.profile.trophy_ids
+
     else
       @trophy_ids = nil
     end
     @profile = Profile.for_show(params[:id])
+    if user_signed_in?
+      @comment = Comment.new(:commentable => @profile)
+      @comment.profile = current_user.profile
+    end
     @trophy  = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
   end
 

@@ -144,6 +144,11 @@
 
 
     .row-fluid
+      .span12.well.well-white.wall
+        %h2= "Leave #{@profile.name} a message"
+        %p Note: these comments are public
+        =render :partial => "comments/comments_section", :locals => {commentable: @profile}
+    .row-fluid
       .span12.well.well-white.graphs
         -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil && @profile.general_stats_item.boinc_stats_item.credit > 0
         -nereus_id= @profile.general_stats_item.nereus_stats_item.nereus_id if @profile.general_stats_item.nereus_stats_item != nil && @profile.general_stats_item.nereus_stats_item.credit > 0
