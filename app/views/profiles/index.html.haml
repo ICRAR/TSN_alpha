@@ -22,6 +22,15 @@
               .media-body
                 %h4.media-heading= link_to @galaxy.name ,  @galaxy
                 %p This galaxy has been worked on by the following people.
+          -elsif params[:followers]
+            .well
+              %h4
+                = link_to @profile.name.possessive, @profile
+                followers:
+              %p
+                This leaderboard only shows profiles that
+                = @profile.name
+                is following or is followed by.
         .span5
           = form_tag(search_profiles_path, :method => "get", :class => "pull-right") do
             = form_get_hidden_tag(search_profiles_path)

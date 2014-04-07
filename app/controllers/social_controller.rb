@@ -35,10 +35,7 @@ class SocialController < ApplicationController
 
   def timeline
     page = params[:page].to_i || 1
-    if params[:profile_id].nil?
-      signed_in
-      @timeline = current_user.profile.followees_timeline.page(page).per(3)
-    else
+    if params[:profile_id]
       if params[:profile_id] == 'all' && user_is_admin?
         @timeline = TimelineEntry.get_timeline_all.page(page).per(3)
 
@@ -46,7 +43,14 @@ class SocialController < ApplicationController
         profile = Profile.find params[:profile_id]
         @timeline = profile.own_timeline.page(page).per(3)
       end
+    elsif params[:alliance_id]
+      alliance = Alliance.find params[:alliance_id]
+      @timeline = alliance.own_timeline.page(page).per(3)
+    else
+      signed_in
+      @timeline = current_user.profile.followees_timeline.page(page).per(3)
     end
+
   end
 
   private

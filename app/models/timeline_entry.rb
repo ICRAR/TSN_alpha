@@ -1,13 +1,13 @@
 class TimelineEntry < ActiveRecord::Base
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::TextHelper
-  attr_accessible  :profile_id, :posted_at, :aggregate_text, :aggregate_type, :aggregate_type_2,
+  attr_accessible  :timelineable, :timelineable_id, :timelineable_type, :posted_at, :aggregate_text, :aggregate_type, :aggregate_type_2,
                    :more, :more_aggregate,
                    :subject, :subject_aggregate
 
-  belongs_to :profile
+  belongs_to :timelineable, polymorphic: true
 
-  def self.post_to(profiles, opts = {})
+  def self.post_to(timelineables, opts = {})
     opts.symbolize_keys!()
     more = opts[:more] || ''
     more_aggregate = opts[:more] || more
@@ -17,9 +17,20 @@ class TimelineEntry < ActiveRecord::Base
     aggregate_type = opts[:aggregate_type] || nil
     aggregate_type_2 = opts[:aggregate_type_2] || nil
 
-    if profiles.class == Profile
+    if timelineables.class == ActiveRecord::Relation || timelineables.class == Array
+
+      entires = []
+      cols = [:timelineables_id,:timelineables_type, :more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_type_2,:aggregate_text,:posted_at]
+      time_now = Time.now
+      timelineables.each do |timelineable|
+        link_profile = ActionController::Base.helpers.link_to(profile.name, Rails.application.routes.url_helpers.profile_path(profile.id))
+        aggregate_text_each = aggregate_text.sub('%profile_name%', link_profile)
+        entires << [timelineables.id,timelineables.class.to_s, more, more_aggregate,subject,subject_aggregate,aggregate_type,aggregate_type_2,aggregate_text_each,time_now]
+      end
+      TimelineEntry.import cols, entires
+    else
       self.create ({
-          profile_id: profiles.id,
+          timelineable: timelineables,
           more: more,
           more_aggregate: more_aggregate,
           subject: subject,
@@ -29,33 +40,30 @@ class TimelineEntry < ActiveRecord::Base
           aggregate_text: aggregate_text,
           posted_at: Time.now,
       })
-    elsif profiles.class == ActiveRecord::Relation || profiles.class == Array
-
-      entires = []
-      cols = [:profile_id,:more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_type_2,:aggregate_text,:posted_at]
-      time_now = Time.now
-      profiles.each do |profile|
-        link_profile = ActionController::Base.helpers.link_to(profile.name, Rails.application.routes.url_helpers.profile_path(profile.id))
-        aggregate_text_each = aggregate_text.sub('%profile_name%', link_profile)
-        entires << [profile.id, more, more_aggregate,subject,subject_aggregate,aggregate_type,aggregate_type_2,aggregate_text_each,time_now]
-      end
-      TimelineEntry.import cols, entires
     end
 
 
   end
 
-  def self.get_timeline(profile_ids)
+  def self.get_timeline(timelineables)
     ProfileNotification.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
-    self.where{profile_id.in profile_ids}.
+    where_strings = []
+    timelineables.each do |key, ids|
+      type_e = Mysql2::Client.escape(key)
+      ids_e = Mysql2::Client.escape(ids.join(', '))
+      where_strings << "(timelineable_type = '#{type_e}' AND timelineable_id IN (#{ids_e}) )"
+    end
+    where_string = where_strings.join(' OR ')
+
+    self.where(where_string).
       group{[aggregate_type,TO_DAYS(posted_at)]}.
       order{posted_at.desc}.
       select("#{self.table_name}.*").
       select{'count(*) as aggregate_count'}.
       select{'count(distinct aggregate_type_2) as type_count'}.
-      select{'count(distinct profile_id) as distinct_aggregate_count'}.
+      select{'count(distinct CONCAT(timelineable_type,timelineable_id)) as distinct_aggregate_count'}.
       select('GROUP_CONCAT(aggregate_text SEPARATOR \'\') as aggregate_texts').
-      includes{profile.user}
+      includes{timelineable}
   end
   def self.get_timeline_all
     ProfileNotification.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
@@ -125,5 +133,17 @@ class TimelineEntry < ActiveRecord::Base
     aggregate_count > 1 ?
         ((more_aggregate != '' && more_aggregate != nil) || (aggregate_texts != '' && aggregate_texts != nil)) :
         (more != '' && more != nil)
+  end
+
+  def timelineable_name
+    t = timelineable
+    if t.respond_to? :name
+      out = t.name
+    elsif t.respond_to? :title
+      out = t.title
+    else
+      out = ''
+    end
+    out
   end
 end

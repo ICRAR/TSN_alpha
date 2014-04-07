@@ -97,12 +97,18 @@ class Profile < ActiveRecord::Base
   acts_as_mentionable
   acts_as_mentioner
 
-  has_many :timeline_entires
+  has_many :timeline_entires, as: :timelineable
   def own_timeline
-    TimelineEntry.get_timeline([self.id])
+    TimelineEntry.get_timeline('Profile' => [self.id])
   end
   def followees_timeline
-    TimelineEntry.get_timeline(followees_relation(Profile).pluck(:id))
+    timeline_hash = {
+      'Profile' => followees_relation(Profile).pluck(:id),
+      'Alliance' => likeables_relation(Alliance).pluck(:id),
+    }
+    timeline_hash['Alliance'] << alliance_id unless alliance_id.nil?
+    TimelineEntry.get_timeline(timeline_hash)
+
   end
 
   def self.timeline_like(profile_id,object_class,object_id)

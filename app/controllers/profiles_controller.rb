@@ -3,7 +3,7 @@ class ProfilesController < ApplicationController
   # GET /profiles.json
   authorize_resource
   helper_method :sort_column, :sort_direction
-  def index
+  def index #main leaderboard
     per_page = [params[:per_page].to_i,1000].min
     per_page = 30 if per_page == 0
     #Finds and highlights a users postion in the tables
@@ -368,6 +368,13 @@ class ProfilesController < ApplicationController
     elsif params[:galaxy_id]
       @galaxy = Galaxy.where(:galaxy_id => params[:galaxy_id]).first || not_found
       @profiles = @galaxy.profiles.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
+      render :index
+    elsif params[:followers]
+      @profile = Profile.find params[:followers]
+      followees_id = @profile.followees_relation(Profile).pluck(:id)
+      followees_id << @profile.followers_relation(Profile).pluck(:id)
+      followees_id << @profile.id
+      @profiles = Profile.where{id.in followees_id}.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
       render :index
     else
       redirect_to( profiles_path, :alert => "You did not enter a valid search query")

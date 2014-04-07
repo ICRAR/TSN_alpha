@@ -1,7 +1,8 @@
 .timeline_entry{id: "timeline_entry_#{entry.id}"}
   %p
-    =image_tag entry.profile.avatar_url(32), title: entry.profile.name
-    =link_to entry.profile.name, entry.profile
+    -if entry.timelineable_type == 'Profile'
+      =image_tag entry.timelineable.avatar_url(32), title: entry.timelineable.name
+    =link_to entry.timelineable_name, entry.timelineable
     = entry.get_subject
     = " #{distance_of_time_in_words(Time.now, entry.posted_at)} ago."
     - if entry.has_more?

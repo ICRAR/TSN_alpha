@@ -10,30 +10,36 @@
   #content-wrap
     #alliance-show
       .row-fluid
-        .span5.well.well-white
-          %h2= @alliance.name
-          %dl.dl-horizontal
-            %dt Alliance ID
-            %dd= @alliance.id
-            %dt Total Credit
-            %dd= number_with_delimiter(@alliance.credit)
-            %dt Rank
-            %dd= @alliance.ranking
-            %dt Leader
-            %dd= @alliance.leader != nil ? link_to(@alliance.leader.name, @alliance.leader) : "-"
-            %dt Total Members
-            %dd
-              =@alliance.members.size
-              %abbr{:title=>"including old members"}="(#{@total_members})"
-            %dt Founded on
-            -date_founded = Time.at(@alliance.created_at)
-            %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
-            %dt Tags
-            %dd
-              %ul.inline
-                -@alliance.tags.each do |tag|
-                  %li= link_to tag.name, search_alliances_path(:search => tag.name)
-          = render 'shared/social/like', model: @alliance
+        .span5
+          .row-fluid
+            .span12.well.well-white
+              %h2= @alliance.name
+              %dl.dl-horizontal
+                %dt Alliance ID
+                %dd= @alliance.id
+                %dt Total Credit
+                %dd= number_with_delimiter(@alliance.credit)
+                %dt Rank
+                %dd= @alliance.ranking
+                %dt Leader
+                %dd= @alliance.leader != nil ? link_to(@alliance.leader.name, @alliance.leader) : "-"
+                %dt Total Members
+                %dd
+                  =@alliance.members.size
+                  %abbr{:title=>"including old members"}="(#{@total_members})"
+                %dt Founded on
+                -date_founded = Time.at(@alliance.created_at)
+                %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
+                %dt Tags
+                %dd
+                  %ul.inline
+                    -@alliance.tags.each do |tag|
+                      %li= link_to tag.name, search_alliances_path(:search => tag.name)
+              = render 'shared/social/like', model: @alliance
+          .row-fluid
+            .span12.well.well-white#timeline
+              %h2= "#{@alliance.name.possessive} Timeline"
+              #timeline_entries
         .span7
           -if user_signed_in? && current_user.profile.alliance.try(:id) == @alliance.id
             .row-fluid
@@ -57,6 +63,7 @@
                   =form_tag(invite_alliance_path, :method => "post", :remote => true, :id => 'invite_form') do
                     =text_field_tag(:email,nil,:class => "search-query", :placeholder => "email")
                     =submit_tag('Invite', :class => "btn btn-success")
+
 
           .row-fluid
             .span12.well.well-white

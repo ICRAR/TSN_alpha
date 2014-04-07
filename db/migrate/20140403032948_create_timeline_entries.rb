@@ -9,10 +9,10 @@ class CreateTimelineEntries < ActiveRecord::Migration
       t.string :aggregate_type_2
       t.string :aggregate_text
       t.datetime :posted_at
-      t.belongs_to :profile
+      t.references  :timelineable, polymorphic: true
 
       t.timestamps
     end
-    add_index :timeline_entries, ["profile_id", "posted_at","aggregate_type","aggregate_type_2"], name: "agg_timeline_index"
+    add_index :timeline_entries, ["timelineable_id", "timelineable_type", "posted_at","aggregate_type","aggregate_type_2"], name: "agg_timeline_index"
   end
 end
