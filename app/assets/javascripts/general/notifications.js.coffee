@@ -19,7 +19,7 @@ Notifications.dismiss_all = (load_fnc) ->
 
 Notifications.display = (note) ->
   Messenger().post
-    message: note['subject']
+    message: note['subject'] + '<br />' + note['time_ago_string'] + ' ago.'
     type: 'success'
     actions:
       more:
