@@ -24,6 +24,7 @@
           %li{:class => ('active' if (@user_page == 'leaderboard'))}= link_to(t("leaderboards.individual"), profiles_path)
           - if user_signed_in?
             %li= link_to(t("leaderboards.individual_rank"), profiles_path(:rank => current_user.profile.general_stats_item.rank, :page => 'me'))
+            %li{:class => ('active' if (@user_page == 'leaderboard_followers'))}= link_to(t("leaderboards.friends"), search_profiles_path(followers: current_user.profile.id))
           %li{:class => ('active' if (@user_page == 'alliance_leaderboard'))}= link_to(t("leaderboards.alliances"), alliances_path)
       %li{:class => ('active' if (@user_page == 'science'))}= link_to(t("nav.science"),science_portals_path)
       - if user_signed_in?

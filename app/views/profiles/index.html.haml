@@ -4,6 +4,7 @@
   #intro-sml-wrap
     %h1.fontface Leaderboard
   - @user_page =  'leaderboard'
+  - @user_page =  'leaderboard_followers' if params[:followers]
   = render 'layouts/user_nav'
 - content_for(:content) do
   #content-wrap
@@ -42,7 +43,11 @@
           %tr
             %th Name
             %th Country
-            %th= sortable "rank", "Rank"
+            - if @search_ranks == true
+              %th Rank In List
+              %th= sortable "current_rank", "Overall Rank"
+            - else
+              %th= sortable "rank", "Rank"
             %th= sortable "credits", "Total Credit"
             %th= sortable "rac", "Average Daily Credit"
             %th Alliance
@@ -56,6 +61,9 @@
                   = profile.name
               %td
                 %a{href: link}= profile.country
+              - if @search_ranks == true
+                %td
+                  %a{href: link}= @ranks_hash[profile.id]
               %td
                 %a{href: link}= profile.rank.nil? ? '-':profile.rank
               %td

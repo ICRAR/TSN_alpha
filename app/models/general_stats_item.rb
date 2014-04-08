@@ -21,7 +21,19 @@ class GeneralStatsItem < ActiveRecord::Base
       GeneralStatsItem.has_credit.order{total_credit.desc}.update_all('rank = @new_rank := @new_rank + 1')
     end
   end
+  def self.ranks_from_profile_array(profile_ids)
+    ranks_hash = {}
+    GeneralStatsItem.transaction do
+      GeneralStatsItem.connection.execute 'SET @new_rank := 0'
+      ranks = GeneralStatsItem.has_credit.order{total_credit.desc}.
+          where{profile_id.in profile_ids}.select(:profile_id).select('@new_rank := @new_rank + 1 as current_rank')
+      ranks.each do |obj|
+        ranks_hash[obj.profile_id] = obj.current_rank
+      end
+    end
 
+    ranks_hash
+  end
   has_one :boinc_stats_item
   has_one :nereus_stats_item
   belongs_to :profile
