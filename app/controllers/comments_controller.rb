@@ -60,6 +60,11 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:id])
     authorize! :update, @comment
     @comment.update_attributes(params[:comment])
+    mentioned_profile_ids = @comment.find_and_replace_at_mentions
+    @comment.save
+    unless @comment.errors.present?
+      Profile.delay.notify_mentions_comment(current_user.profile.id,mentioned_profile_ids, @comment.id)
+    end
     respond_to do |format|
       format.html do
         if @comment.errors.present?
