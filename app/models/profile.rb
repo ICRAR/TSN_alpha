@@ -91,6 +91,13 @@ class Profile < ActiveRecord::Base
   def followees_for_show
     self.followees_relation(Profile).includes(:user)
   end
+  def friends_ids
+    out_array = self.followees_relation(Profile).pluck(:id)
+    self.followers_relation(Profile).pluck(:id).each do |i|
+      out_array << i
+    end
+    return out_array
+  end
   # profiles can like things
   acts_as_liker
   #profiles can mention and be mentioned in posts
@@ -325,9 +332,7 @@ class Profile < ActiveRecord::Base
     end
   end
 
-  mapping do
-    indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
-  end
+
 
   def self.notify_follow(id, follower_id)
     self.find(id).notify_follow(follower_id)
@@ -346,6 +351,35 @@ class Profile < ActiveRecord::Base
     ProfileNotification.notify_with_aggrigation(self,subject,body,aggregation_subject,aggregation_body,'class_id',self, aggregation_text, 'follow')
   end
 
+  mapping do
+    indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
+    indexes :id
+  end
+
+  def friends_search(name)
+    ids = self.friends_ids
+    Profile.name_search(name, ids)
+  end
+
+  def self.name_search(name, ids)
+    tire.search(
+        page: 1,
+        per_page: 10,
+        load: {
+            include: [:alliance, :user]
+        }
+    ) do
+      query do
+        boolean(:minimum_number_should_match => 1) do
+          should {match :name, name}
+          should {prefix :name, name}
+        end
+      end
+      filter  :terms, id: ids
+      facet('id') { terms :id }
+    end
+  end
+
   def self.search(query,page = 1,per_page = 10)
     tire.search(
         :page => (page || 1),
@@ -362,6 +396,7 @@ class Profile < ActiveRecord::Base
           should {match :name, query}
           should {prefix :name, query}
         end
+
       end
     end
   end

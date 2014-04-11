@@ -68,7 +68,5 @@ class SocialController < ApplicationController
     return model.find(params[:model_id])
   end
 
-  def signed_in
-    redirect_to( root_url, notice: 'Sorry could must be signed in to do that') unless user_signed_in?
-  end
+
 end

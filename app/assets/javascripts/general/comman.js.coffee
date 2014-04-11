@@ -1,4 +1,4 @@
-this.TSN = new Object();
+TSN = this.TSN
 #**** share box for trophies
 TSN.trophy_share = (obj_id,trophy_name, trophy_url) ->
   tbx = document.getElementById(obj_id)

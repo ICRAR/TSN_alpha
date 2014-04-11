@@ -62,6 +62,7 @@ Tsn::Application.routes.draw do
     collection do
       get 'search'
       get 'boinc_challenge'
+      get 'name_search' => 'profiles#name_search', :as => 'profile_name_search'
     end
     member do
       get 'trophies'

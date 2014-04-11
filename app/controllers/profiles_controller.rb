@@ -354,6 +354,11 @@ class ProfilesController < ApplicationController
       return
     end
   end
+  def name_search
+    signed_in
+    profile = current_user.profile
+    @profiles = profile.friends_search params[:name]
+  end
   def search
     @search_ranks = false
     per_page = [params[:per_page].to_i,1000].min
@@ -374,8 +379,7 @@ class ProfilesController < ApplicationController
     elsif params[:followers]
       @search_ranks = true
       @profile = Profile.find params[:followers]
-      followees_id = @profile.followees_relation(Profile).pluck(:id)
-      followees_id << @profile.followers_relation(Profile).pluck(:id)
+      followees_id = @profile.friends_ids
       followees_id << @profile.id
       @profiles = Profile.where{id.in followees_id}.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
       @ranks_hash = GeneralStatsItem.ranks_from_profile_array followees_id
