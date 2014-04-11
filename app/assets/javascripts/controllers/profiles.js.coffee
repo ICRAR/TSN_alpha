@@ -14,8 +14,6 @@ TSN.profiles.dashboard = () ->
 
 profile_show_graphs = (all) ->
   profile_id = $("#chart_container").data("profile-id")
-  profile_id = 1050
-
   boinc_id = $("#chart_container").data("boinc-id")
   nereus_id = $("#chart_container").data("nereus-id")
   name = []
