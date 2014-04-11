@@ -167,6 +167,9 @@ $(document).ready( ->
   init_countdown_timers()
   report_comment()
 
+  #enable at mentions feature on comments
+  TSN.atMention('#new_comment_inline_ textarea#comment_content')
+
   #fix for bootstrap modal's getting stuck behind the background
   $('.modal').appendTo("body")
 

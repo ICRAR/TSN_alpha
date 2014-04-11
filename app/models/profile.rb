@@ -103,6 +103,53 @@ class Profile < ActiveRecord::Base
   #profiles can mention and be mentioned in posts
   acts_as_mentionable
   acts_as_mentioner
+  #note that the mentioned locations must have the acts_as_mentioner trait
+  def self.notify_mentions_comment(mentioner_id,mentioned_ids, comment_id)
+    mentioner = Profile.find mentioner_id
+    mentioner.notify_mentions_comment(mentioned_ids, comment_id)
+  end
+  def notify_mentions_comment(mentioned_ids, comment_id)
+    mentioner = self
+    comment = Comment.find comment_id
+    mentioneds = Profile.where{id.in mentioned_ids}
+    link_location = ActionController::Base.helpers.link_to(comment.commentable_name, polymorphic_path(comment.commentable))
+    link_mentioner = ActionController::Base.helpers.link_to(mentioner.name, Rails.application.routes.url_helpers.profile_path(mentioner.id))
+
+    mentioneds.each do |mentioned|
+      comment.mention!(mentioned)
+      link_mentioned = ActionController::Base.helpers.link_to(mentioned.name, Rails.application.routes.url_helpers.profile_path(mentioned.id))
+      #add to mentioned's timeline.
+      TimelineEntry.post_to mentioned, {
+          more: '',
+          more_aggregate: '',
+          subject: "was mentioned by #{link_mentioner} on #{link_location}",
+          subject_aggregate: "was mentioned",
+          aggregate_type: "mentioned",
+          aggregate_type_2: "#{mentioner.id}_on_comment_#{comment.id}",
+          aggregate_text: "#{link_mentioner} mentioned #{link_mentioned} on #{link_location} <br />",
+      }
+
+      #add to mentionier's timeline
+      TimelineEntry.post_to mentioner, {
+          more: '',
+          more_aggregate: '',
+          subject: "mentioned #{link_mentioned} on #{link_location}",
+          subject_aggregate: "mentioned people",
+          aggregate_type: "mentioner",
+          aggregate_type_2: "#{mentioned.id}_on_comment_#{comment.id}",
+          aggregate_text: "#{link_mentioner} mentioned #{link_mentioned} on #{link_location} <br />",
+      }
+    end
+    #notify mentioned
+    subject = "#{mentioner.name} has mentioned you in a comment on #{comment.commentable_name}."
+    body = "Hey, <br /> #{link_mentioner} has mentioned you in a comment on  #{link_location} page. <br /> Happy Computing! <br />  - theSkyNet"
+
+    aggregation_subject = "You have been mentioned in %COUNT% new comments"
+    aggregation_body = "Hey, <br /> You have been mentioned in the following %COUNT% new comments. <br /> By:"
+    aggregation_text = "on #{link_location} by #{link_mentioner}<br />"
+    ProfileNotification.notify_all(mentioneds,subject,body,comment,true, aggregation_text,'mention')
+    ProfileNotification.aggrigate_by_class(Comment.to_s,aggregation_subject,aggregation_body,'mention')
+  end
 
   has_many :timeline_entires, as: :timelineable
   def own_timeline

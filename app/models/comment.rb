@@ -38,6 +38,7 @@ class Comment < ActiveRecord::Base
 
   #socil functions
   acts_as_likeable
+  acts_as_mentioner
   has_many :likes, as: :likeable, class_name: Socialization.like_model.to_s
 
   def self.like_comment(comment_id, liker_profile_id)
@@ -161,6 +162,26 @@ class Comment < ActiveRecord::Base
       out = ''
     end
     out
+  end
+
+  #functions for finding and replacing @username mentions
+  #in the form of @(NAME)[PROFILE_ID]
+
+  #finds replaces @mentions and returns an array of the mentions profile_ids
+  def find_and_replace_at_mentions
+  at_mentions_regex = /@\(([^\)]+)\)\[(\d+)\]/
+  profiles_to_notify = []
+  self.content = self.content.gsub(at_mentions_regex) {
+    #get profile
+    name = $1
+    profile_id = $2
+    path = Rails.application.routes.url_helpers.profile_path(profile_id)
+    profiles_to_notify << profile_id.to_i
+
+    #replace string
+    "[#{name}](#{path})"
+  }
+  return profiles_to_notify
   end
 
   def test

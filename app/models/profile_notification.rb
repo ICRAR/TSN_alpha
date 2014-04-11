@@ -62,17 +62,18 @@ class ProfileNotification < ActiveRecord::Base
         end
       end
     end
-    def aggrigate_by_class(class_name,subject,body)
-      aggrigate_by_class_id(class_name,nil,subject,body)
+    def aggrigate_by_class(class_name,subject,body,agg_type = nil)
+      aggrigate_by_class_id(class_name,nil,subject,body,agg_type)
     end
 
-    def aggrigate_by_class_id(class_name,class_id,subject,body)
+    def aggrigate_by_class_id(class_name,class_id,subject,body,agg_type = nil)
       ProfileNotification.transaction do
         ProfileNotification.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
         to_be_rel = ProfileNotification.where{aggregatable == true}.
                       where{read == false}.
                       where{notifier_type == class_name}
         to_be_rel = to_be_rel.where{notifier_id == class_id} unless class_id.nil?
+        to_be_rel = to_be_rel.where{aggregation_type == agg_type} unless agg_type.nil?
         to_be_data = to_be_rel.group(:profile_id).select("GROUP_CONCAT(aggregation_text SEPARATOR '') as new_aggregation_text").
                         select("GROUP_CONCAT(id SEPARATOR ', ') as ids").
                         select{sum(aggregator_count).as new_count}.select('`profile_notifications`.*').
@@ -92,20 +93,20 @@ class ProfileNotification < ActiveRecord::Base
         ProfileNotification.import cols, new_notes
       end
     end
-    def notify_all(profiles,subject,body,notifier=nil,aggregatable=false, aggregation_text = '')
+    def notify_all(profiles,subject,body,notifier=nil,aggregatable=false, aggregation_text = '',aggregation_type = nil)
       #notfies all profiles
       #improves efficacy by using direct SQL inserts
       profiles.my_batch_id do |profile_ids|
-        ProfileNotification.notify_all_id_array(profile_ids,subject,body,notifier,aggregatable, aggregation_text)
+        ProfileNotification.notify_all_id_array(profile_ids,subject,body,notifier,aggregatable, aggregation_text,aggregation_type)
       end
     end
-    def notify_all_id_array(ids,subject,body,notifier=nil,aggregatable=false, aggregation_text = '')
+    def notify_all_id_array(ids,subject,body,notifier=nil,aggregatable=false, aggregation_text = '',aggregation_type = nil)
       notes = []
-      cols = [:profile_id,:subject,:body,:notifier_type,:notifier_id,:aggregatable,:aggregator_count,:aggregation_text,:read]
+      cols = [:profile_id,:subject,:body,:notifier_type,:notifier_id,:aggregatable,:aggregator_count,:aggregation_text,:read, :aggregation_type]
       notifier_type = notifier.nil? ? nil : notifier.class.to_s
       notifier_id = notifier.nil? ? nil : notifier.id
       ids.each do |id|
-        notes << [id, subject, body,notifier_type,notifier_id,aggregatable,1,aggregation_text,false]
+        notes << [id, subject, body,notifier_type,notifier_id,aggregatable,1,aggregation_text,false, aggregation_type]
       end
       ProfileNotification.import cols, notes
     end
