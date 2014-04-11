@@ -14,6 +14,8 @@ TSN.profiles.dashboard = () ->
 
 profile_show_graphs = (all) ->
   profile_id = $("#chart_container").data("profile-id")
+  profile_id = 1050
+
   boinc_id = $("#chart_container").data("boinc-id")
   nereus_id = $("#chart_container").data("nereus-id")
   name = []
@@ -38,7 +40,7 @@ profile_show_graphs = (all) ->
   total_credit_name
   total_RAC_name
   if boinc_id & nereus_id
-    total_credit_name = "sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.credit)"
+    total_credit_name = "maxSeries(sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.credit),stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id)}.credit)"
     total_RAC_name = "sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.daily_credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.rac)"
   else if boinc_id
     total_credit_name = "stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.credit"
