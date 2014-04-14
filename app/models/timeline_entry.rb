@@ -23,6 +23,7 @@ class TimelineEntry < ActiveRecord::Base
       cols = [:timelineables_id,:timelineables_type, :more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_type_2,:aggregate_text,:posted_at]
       time_now = Time.now
       timelineables.each do |timelineable|
+        profile = timelineable
         link_profile = ActionController::Base.helpers.link_to(profile.name, Rails.application.routes.url_helpers.profile_path(profile.id))
         aggregate_text_each = aggregate_text.sub('%profile_name%', link_profile)
         entires << [timelineables.id,timelineables.class.to_s, more, more_aggregate,subject,subject_aggregate,aggregate_type,aggregate_type_2,aggregate_text_each,time_now]

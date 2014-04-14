@@ -104,7 +104,7 @@ class BoincRemoteUser < BoincPogsModel
       profile.use_full_name = false
       profile.country = self[:country]
       profile.new_profile_step= 2
-      profile.description = self.profile.description
+      profile.description = self.profile.description unless self.profile.nil?
       profile.save
     end
     #puts new_user.to_json
