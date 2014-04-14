@@ -20,7 +20,7 @@ class TimelineEntry < ActiveRecord::Base
     if timelineables.class == ActiveRecord::Relation || timelineables.class == Array
 
       entires = []
-      cols = [:timelineables_id,:timelineables_type, :more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_type_2,:aggregate_text,:posted_at]
+      cols = [:timelineable_id,:timelineable_type, :more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_type_2,:aggregate_text,:posted_at]
       time_now = Time.now
       timelineables.each do |timelineable|
         profile = timelineable
