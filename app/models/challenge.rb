@@ -1,4 +1,5 @@
 class Challenge < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
   attr_accessible :name, :desc, :end_date, :handicap_type, :start_date, :invite_only, :challenge_system, :challenger_type, :project, :join_while_running, as: [:admin, :default]
   attr_accessible :invite_code, :manager_id, :started, :finished, :hidden, as: [:admin]
   has_many :challengers
@@ -302,10 +303,59 @@ Finally the score value is set in the update action using the following formula:
         challenger_relation.update_all('challengers.score = (challengers.save_value - challengers.start) * challengers.handicap')
 
       end
+      case
+        when 'alliance'
+          add_join_to_timeline_alliance(entity)
+        when 'profile'
+          #add event to profiles timeline
+          add_join_to_timeline_profile(entity)
+      end
     end
+
+
     return new_challenger
 
 
+  end
+
+  def add_join_to_timeline_profile(profile)
+    link_challenge = ActionController::Base.helpers.link_to(self.name, challenge_path(self))
+    link_profile = ActionController::Base.helpers.link_to(profile.name, profile_path(profile))
+    TimelineEntry.post_to profile, {
+        more: '',
+        more_aggregate: '',
+        subject: "joined the #{link_challenge} challenge",
+        subject_aggregate: nil,
+        aggregate_type: "joined_challenge_#{self.id}",
+        aggregate_type_2: nil,
+        aggregate_text: "#{link_profile} joined the #{link_challenge} challenge. <br />",
+    }
+  end
+  def add_join_to_timeline_alliance(alliance)
+    link_challenge = ActionController::Base.helpers.link_to(self.name, challenge_path(self))
+    link_alliance = ActionController::Base.helpers.link_to(alliance.name, alliance_path(alliance))
+    TimelineEntry.post_to alliance, {
+        more: '',
+        more_aggregate: '',
+        subject: "joined the #{link_challenge} challenge",
+        subject_aggregate: nil,
+        aggregate_type: "joined_challenge_#{self.id}",
+        aggregate_type_2: nil,
+        aggregate_text: "#{link_alliance} joined the #{link_challenge} challenge. <br />",
+    }
+  end
+
+  def add_create_timeline
+    link_challenge = ActionController::Base.helpers.link_to(self.name, challenge_path(self))
+    TimelineEntry.post_to self.manager, {
+        more: '',
+        more_aggregate: '',
+        subject: "created a new challenge: #{link_challenge}",
+        subject_aggregate: nil,
+        aggregate_type: "created_challenge_#{self.id}",
+        aggregate_type_2: nil,
+        aggregate_text: nil,
+    }
   end
 
   def add_start_job

@@ -41,6 +41,9 @@ TSN.alliances.show = () ->
   )
 
 
+  #load timeline
+  $.ajax("/social/timeline.js?alliance_id=#{$('body').data('id')}")
+
 TSN.alliances.edit = () -> alliance_tags()
 TSN.alliances.create = () -> alliance_tags()
 TSN.alliances.new = () -> alliance_tags()

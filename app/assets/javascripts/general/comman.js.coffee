@@ -1,4 +1,4 @@
-this.TSN = new Object();
+TSN = this.TSN
 #**** share box for trophies
 TSN.trophy_share = (obj_id,trophy_name, trophy_url) ->
   tbx = document.getElementById(obj_id)
@@ -166,6 +166,9 @@ $(document).ready( ->
   init_minimise_button()
   init_countdown_timers()
   report_comment()
+
+  #enable at mentions feature on comments
+  TSN.atMention('#new_comment_inline_ textarea#comment_content')
 
   #fix for bootstrap modal's getting stuck behind the background
   $('.modal').appendTo("body")

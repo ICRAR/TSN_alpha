@@ -1,0 +1,15 @@
+<% render_string = ''
+
+@timeline.each do |entry|
+  render_string << render(partial: 'timeline_entry', locals: {entry: entry})
+end
+render_string << "\n"
+render_string << paginate( @timeline, :remote => true )
+if @timeline.empty?
+  render_string << (params[:profile_id].nil? ?
+    "None of your friends have any recent activity, try following some more people :)." :
+    "This user has no recent activity.")
+end
+
+%>
+$('#timeline_entries').html("<%= escape_javascript(render_string.html_safe)%>");

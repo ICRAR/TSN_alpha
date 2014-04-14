@@ -327,6 +327,8 @@ GEM
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
       rspec-mocks (~> 2.13.0)
+    ruby-bbcode-to-md (0.0.15)
+      activesupport
     ruby-hmac (0.4.0)
     ruby-prof (0.14.2)
     ruby-units (1.4.3)
@@ -354,6 +356,8 @@ GEM
     simplecov-html (0.8.0)
     soap4r (1.5.8)
       httpclient (>= 2.1.1)
+    socialization (1.1.0)
+      activerecord
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -487,12 +491,14 @@ DEPENDENCIES
   rename
   rmagick
   rspec-rails
+  ruby-bbcode-to-md
   ruby-prof
   sanitize
   sass-rails (~> 3.2.3)
   selenium-webdriver
   simple_form
   simplecov
+  socialization
   squeel
   statsd-ruby
   talk_like_a_pirate

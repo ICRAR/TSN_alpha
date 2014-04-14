@@ -23,6 +23,8 @@ class Alliance < ActiveRecord::Base
     end
   end
 
+
+
   scope :member_credit, joins(:member_items).select{id}.select{(sum(IFNULL(member_items.leave_credit,0)-IFNULL(member_items.start_credit,0))).as 'temp_credit'}.group('alliances.id')
   scope :temp_rac, joins(:members => [:general_stats_item]).select("alliances.id, sum(general_stats_items.recent_avg_credit) as temp_rac, count(general_stats_items.id) as total_members").group('alliances.id')
   scope :ranked, where("credit IS NOT NULL").order("credit DESC")
@@ -40,6 +42,14 @@ class Alliance < ActiveRecord::Base
   #comments
   has_many :comments, as: :commentable
   attr_readonly :comments_count
+
+
+  #socil functions
+  acts_as_likeable
+  has_many :timeline_entires, as: :timelineable
+  def own_timeline
+    TimelineEntry.get_timeline('Alliance' => [self.id])
+  end
 
   def self.update_all_credits
     sub_query = Alliance.member_credit.to_sql

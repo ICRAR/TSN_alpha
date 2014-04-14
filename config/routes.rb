@@ -16,6 +16,14 @@ Tsn::Application.routes.draw do
     end
   end
 
+  resource :social, :only => [], controller: 'social' do
+    get 'like_model'
+    get 'unlike_model'
+    get 'follow'
+    get 'unfollow'
+    get 'timeline'
+  end
+
   resource :misc, :only => [], controller: 'misc' do
     get 'advent'
     get 'advent_subscribe'
@@ -54,6 +62,7 @@ Tsn::Application.routes.draw do
     collection do
       get 'search'
       get 'boinc_challenge'
+      get 'name_search' => 'profiles#name_search', :as => 'profile_name_search'
     end
     member do
       get 'trophies'

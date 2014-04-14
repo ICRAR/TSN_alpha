@@ -8,9 +8,13 @@ TSN.profiles = new Object;
 TSN.profiles.show = () ->
   profile_show_graphs(false)
   $("#credit_explain").popover()
+  $('#latest_trophy .desc').dotdotdot()
+  $.ajax("/social/timeline.js?profile_id=#{$('body').data('id')}")
+
 TSN.profiles.dashboard = () ->
   profile_show_graphs(true)
   $("#credit_explain").popover()
+  $.ajax('/social/timeline.js')
 
 profile_show_graphs = (all) ->
   profile_id = $("#chart_container").data("profile-id")

@@ -27,6 +27,7 @@ class ChallengesController < ApplicationController
     @challenge.manager = current_user.profile
     if @challenge.save
       @challenge.add_start_job
+      @challenge.add_create_timeline
       redirect_to @challenge
     else
       render :new

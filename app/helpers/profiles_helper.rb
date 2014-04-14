@@ -73,4 +73,18 @@ module ProfilesHelper
     end
     rows
   end
+
+  def show_likes(model, display, model_name_method)
+    out = ''
+    out << "<h3>#{display}</h3> \n"
+    out << ""
+    m_array = []
+    objects = @profile.likeables_relation(model)
+    objects.each do |object|
+      m_array << link_to(object.send(model_name_method), object)
+    end
+    out << "<p>#{array_to_paragraph(m_array)}</p>"
+    return out.html_safe
+  end
+
 end

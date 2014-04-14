@@ -3,7 +3,8 @@ class ProfilesController < ApplicationController
   # GET /profiles.json
   authorize_resource
   helper_method :sort_column, :sort_direction
-  def index
+  def index #main leaderboard
+    @search = false
     per_page = [params[:per_page].to_i,1000].min
     per_page = 30 if per_page == 0
     #Finds and highlights a users postion in the tables
@@ -50,7 +51,17 @@ class ProfilesController < ApplicationController
   # GET /profiles/1
   # GET /profiles/1.json
   def show
+    if user_signed_in?
+      @trophy_ids = current_user.profile.trophy_ids
+
+    else
+      @trophy_ids = nil
+    end
     @profile = Profile.for_show(params[:id])
+    if user_signed_in?
+      @comment = Comment.new(:commentable => @profile)
+      @comment.profile = current_user.profile
+    end
     @trophy  = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
   end
 
@@ -343,7 +354,13 @@ class ProfilesController < ApplicationController
       return
     end
   end
+  def name_search
+    signed_in
+    profile = current_user.profile
+    @profiles = profile.friends_search params[:name]
+  end
   def search
+    @search_ranks = false
     per_page = [params[:per_page].to_i,1000].min
     per_page = 30 if per_page == 0
     page_num = params[:page]
@@ -358,6 +375,14 @@ class ProfilesController < ApplicationController
     elsif params[:galaxy_id]
       @galaxy = Galaxy.where(:galaxy_id => params[:galaxy_id]).first || not_found
       @profiles = @galaxy.profiles.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
+      render :index
+    elsif params[:followers]
+      @search_ranks = true
+      @profile = Profile.find params[:followers]
+      followees_id = @profile.friends_ids
+      followees_id << @profile.id
+      @profiles = Profile.where{id.in followees_id}.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
+      @ranks_hash = GeneralStatsItem.ranks_from_profile_array followees_id
       render :index
     else
       redirect_to( profiles_path, :alert => "You did not enter a valid search query")

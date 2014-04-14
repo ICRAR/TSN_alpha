@@ -28,6 +28,9 @@ class Trophy < ActiveRecord::Base
 
   attr_accessor :profiles_count_store, :last_priority, :next_priority
 
+  #socil functions
+  acts_as_likeable
+
   before_save :update_set_type
   def update_set_type
     self.set_type = self.trophy_set.set_type
@@ -111,8 +114,29 @@ class Trophy < ActiveRecord::Base
       db_conn.execute sql
 
       create_notification(update_profiles)
+      create_timeline_entry(update_profiles)
     end
 
+  end
+
+  def create_timeline_entry(profiles)
+    link_to_trophy = link_to(self.title, Rails.application.routes.url_helpers.trophy_path(self))
+
+    if profiles.class == ActiveRecord::Relation || profiles.class == Array
+      aggregate_text = "%profile_name% was awarded #{link_to_trophy} <br />"
+    else
+      link_profile = ActionController::Base.helpers.link_to(profiles.name, Rails.application.routes.url_helpers.profile_path(profiles.id))
+      aggregate_text = "#{link_profile} was awarded #{link_to_trophy} <br />"
+    end
+    TimelineEntry.post_to profiles, {
+        more: '',
+        more_aggregate: '',
+        subject: "was awarded #{link_to_trophy}",
+        subject_aggregate: "was awarded many #{self.class.to_s.pluralize}",
+        aggregate_type: "awarded_trophy",
+        aggregate_type_2: self.id,
+        aggregate_text: aggregate_text,
+    }
   end
 
   def create_notification(profiles)
@@ -122,6 +146,7 @@ class Trophy < ActiveRecord::Base
     body = "Congratulations! <br /> You have been awarded a new trophy, #{link}. <br /> Thank you and happy computing! <br /> theSkyNet"
     aggregation_text = "#{link} <br />"
     profile_ids = profiles.map(&:id)
+
     ProfileNotification.notify_all_id_array(profile_ids,subject,body,self,true, aggregation_text)
   end
   def self.aggregate_notifications
