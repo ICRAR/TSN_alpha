@@ -26,7 +26,7 @@ class TimelineEntry < ActiveRecord::Base
         profile = timelineable
         link_profile = ActionController::Base.helpers.link_to(profile.name, Rails.application.routes.url_helpers.profile_path(profile.id))
         aggregate_text_each = aggregate_text.sub('%profile_name%', link_profile)
-        entires << [timelineables.id,timelineables.class.to_s, more, more_aggregate,subject,subject_aggregate,aggregate_type,aggregate_type_2,aggregate_text_each,time_now]
+        entires << [profile.id,profile.class.to_s, more, more_aggregate,subject,subject_aggregate,aggregate_type,aggregate_type_2,aggregate_text_each,time_now]
       end
       TimelineEntry.import cols, entires
     else
@@ -52,7 +52,7 @@ class TimelineEntry < ActiveRecord::Base
     timelineables.each do |key, ids|
       type_e = Mysql2::Client.escape(key)
       ids_e = Mysql2::Client.escape(ids.join(', '))
-      where_strings << "(timelineable_type = '#{type_e}' AND timelineable_id IN (#{ids_e}) )"
+      where_strings << "(timelineable_type = '#{type_e}' AND timelineable_id IN (#{ids_e}) )" unless ids.empty?
     end
     where_string = where_strings.join(' OR ')
 
