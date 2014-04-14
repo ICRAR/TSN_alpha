@@ -478,4 +478,12 @@ namespace :update_profiles do
     end; nil
 
   end
+
+  desc "copy BOINC profiles"
+  task :copy_boinc_profiles => :environment do
+    BoincProfile.all.each do |bp|
+      puts bp.description
+    end; nil
+
+  end
 end
