@@ -154,7 +154,6 @@ class AllianceMembers < ActiveRecord::Base
   end
 
   #A user should be notifed whenever a they join or leave an alliance. We will also notify the alliance leader.
-  has_many :notifications, foreign_key: :notified_object_id, conditions: {notified_object_type: 'AllianceMembers'}, dependent: :destroy
 
 
   def self.create_notification_join(id)
@@ -192,7 +191,7 @@ class AllianceMembers < ActiveRecord::Base
         subject: "joined #{link_to_alliance}",
         subject_aggregate: "joined an alliance",
         aggregate_type: "joined_alliance",
-        aggregate_type_2: am.alliance.id,
+        aggregate_type_2: self.alliance.id,
         aggregate_text: "#{link_profile} joined #{link_to_alliance} <br />",
     }
   end
@@ -232,7 +231,7 @@ class AllianceMembers < ActiveRecord::Base
         subject: "left #{link_to_alliance}",
         subject_aggregate: "left an alliance",
         aggregate_type: "left_alliance",
-        aggregate_type_2: am.alliance.id,
+        aggregate_type_2: self.alliance.id,
         aggregate_text: "#{link_profile} left #{link_to_alliance} <br />",
     }
   end

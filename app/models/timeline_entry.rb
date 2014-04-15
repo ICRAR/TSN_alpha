@@ -13,12 +13,12 @@ class TimelineEntry < ActiveRecord::Base
     more_aggregate = opts[:more] || more
     subject = opts[:subject] || 'did something'
     subject_aggregate = opts[:subject_aggregate] || subject
-    aggregate_text = opts[:aggregate_text] || "#{profile.name} </br> \n"
+    aggregate_text = opts[:aggregate_text] || nil
     aggregate_type = opts[:aggregate_type] || nil
     aggregate_type_2 = opts[:aggregate_type_2] || nil
 
     if timelineables.class == ActiveRecord::Relation || timelineables.class == Array
-
+      aggregate_text ||= "%profile_name%</br> \n"
       entires = []
       cols = [:timelineable_id,:timelineable_type, :more,:more_aggregate,:subject,:subject_aggregate,:aggregate_type,:aggregate_type_2,:aggregate_text,:posted_at]
       time_now = Time.now
@@ -30,6 +30,7 @@ class TimelineEntry < ActiveRecord::Base
       end
       TimelineEntry.import cols, entires
     else
+      aggregate_text ||= "#{timelineables.name} </br> \n"
       self.create ({
           timelineable: timelineables,
           more: more,
@@ -47,7 +48,7 @@ class TimelineEntry < ActiveRecord::Base
   end
 
   def self.get_timeline(timelineables)
-    ProfileNotification.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
+    TimelineEntry.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
     where_strings = []
     timelineables.each do |key, ids|
       type_e = Mysql2::Client.escape(key)
@@ -67,16 +68,16 @@ class TimelineEntry < ActiveRecord::Base
       includes{timelineable}
   end
   def self.get_timeline_all
-    ProfileNotification.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
-    self.
+    TimelineEntry.connection.execute 'SET SESSION group_concat_max_len = 1024000;'
+    TimelineEntry.
         group{[aggregate_type,TO_DAYS(posted_at)]}.
         order{posted_at.desc}.
-        select("#{self.table_name}.*").
+        select("#{TimelineEntry.table_name}.*").
         select{'count(*) as aggregate_count'}.
         select{'count(distinct aggregate_type_2) as type_count'}.
-        select{'count(distinct profile_id) as distinct_aggregate_count'}.
+        select{'count(distinct CONCAT(timelineable_type,timelineable_id)) as distinct_aggregate_count'}.
         select('GROUP_CONCAT(aggregate_text SEPARATOR \'\') as aggregate_texts').
-        includes{profile.user}
+        includes{timelineable}
   end
 
 
