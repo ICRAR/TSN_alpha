@@ -129,16 +129,22 @@ namespace :update_profiles do
   end
   desc "award trophies for galaxy"
   task :trophies_csv => :environment do
-    trophy_id = 129
+    trophy_id = 191
     trophy = Trophy.find trophy_id
-    galaxy_id = 10000
+    galaxy_id = 17000
 
-    db_ids = Galaxy.connection.execute("select distinct au.userid
-                from area_user au, area a
-                where au.area_id = a.area_id
-                and a.galaxy_id = #{galaxy_id};
-                ")
-    boinc_ids = db_ids.map {|i| i[0].to_i}
+    galaxy = Galaxy.find galaxy_id
+    profiles = galaxy.profiles
+    trophy.award_to_profiles(profiles)
+  end
+  desc "award trophies for a galaxy area "
+  task :trophies_csv => :environment do
+    trophy_id = 184
+    trophy = Trophy.find trophy_id
+    galaxy_area_id = 8 * 1000 * 1000
+
+    boinc_ids = GalaxyAreaUser.where{area_id == galaxy_area_id}.pluck(:userid)
+
 
     profiles = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id.in boinc_ids}
     trophy.award_to_profiles(profiles)
