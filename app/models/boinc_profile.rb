@@ -21,7 +21,7 @@ class BoincProfile < BoincPogsModel
   def bb_code_to_lower(s)
     s.gsub /\[([^\]]+)\]/ do |f|
       f.downcase
-    end
+    end.gsub('[%between%]', '')
   end
   def r1
     self.bb_code_to_lower self.response1
