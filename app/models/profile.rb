@@ -90,6 +90,12 @@ class Profile < ActiveRecord::Base
   end
   def followees_for_show
     self.followees_relation(Profile).includes(:user)
+    end
+  def followers_for_friends
+    self.followers_for_show.includes(:alliance)
+  end
+  def followees_for_friends
+    self.followees_for_show.includes(:alliance)
   end
   def friends_ids
     out_array = self.followees_relation(Profile).pluck(:id)

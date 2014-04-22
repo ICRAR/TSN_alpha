@@ -132,14 +132,26 @@
             = show_likes(Alliance, 'Alliances:', :name)
         .row-fluid
           .span12.well.well-white#following
+            - friends_link = friends_profile_path(@profile)
             %h2= "#{@profile.name} is following:"
-            - @profile.followees_for_show.each do |followee|
-              = link_to profile_path(followee) do
-                = image_tag followee.avatar_url(32), title: followee.name
-            %h2 And is followed by:
-            - @profile.followers_for_show.each do |followee|
-              = link_to profile_path(followee) do
-                = image_tag followee.avatar_url(32), title: followee.name
+            - i = 0
+            - @profile.followees_for_show.limit(16).each do |followee|
+              - i += 1
+              - if i == 16
+                %span= link_to '...', friends_link
+              -else
+                = link_to profile_path(followee) do
+                  = image_tag followee.avatar_url(32), title: followee.name
+            %h3 And is followed by:
+            - i = 0
+            - @profile.followers_for_show.limit(16).each do |followee|
+              - i += 1
+              - if i == 16
+                %span= link_to '...', friends_link
+              -else
+                = link_to profile_path(followee) do
+                  = image_tag followee.avatar_url(32), title: followee.name
+            %p= link_to 'See All.', friends_link
 
 
 

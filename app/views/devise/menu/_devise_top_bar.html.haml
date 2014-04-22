@@ -17,6 +17,7 @@
             - if  current_user.profile.alliance
               %li= link_to(t("nav.my_alliance"), current_user.profile.alliance)
             %li= link_to(t("nav.my_profile"), profile_path(current_user.profile))
+            %li= link_to(t("nav.my_friends"), friends_profile_path(current_user.profile))
         %li= link_to(t("nav.news"), news_index_path)
         %li.dropdown-submenu
           %a{:href => "#"}

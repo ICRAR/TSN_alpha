@@ -488,7 +488,18 @@ namespace :update_profiles do
   desc "copy BOINC profiles"
   task :copy_boinc_profiles => :environment do
     BoincProfile.all.each do |bp|
-      puts bp.description
+      boinc_item = BoincStatsItem.find_by_boinc_id bp.userid
+      unless boinc_item.nil?
+        profile =  boinc_item.general_stats_item_id.nil? ? nil : boinc_item.general_stats_item.profile
+        unless profile.nil?
+          puts profile.name
+          puts bp.description.gsub('[%between%]', '')
+          if profile.description.nil? || profile.description == ''
+            profile.description = bp.description.gsub('[%between%]', '')
+            profile.save
+          end
+        end
+      end
     end; nil
 
   end

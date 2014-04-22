@@ -65,7 +65,9 @@ class ProfilesController < ApplicationController
     end
     @trophy  = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
   end
-
+  def friends
+    @profile = Profile.for_show(params[:id])
+  end
   def compare
     @profiles = Profile.for_compare(params[:id1],params[:id2])
     if @profiles.length != 2
