@@ -4,44 +4,44 @@
 - liked = false
 - if user_signed_in?
   - liked = model[:liked].nil? ? (current_user.profile.likes?(model)) : (model[:liked] >= 1)
--if comment == true
-  %span#like_comment
-    = "Liked:  #{pluralize(like_number, 'time')}."
-    - if user_signed_in?
-      -if liked == true
-        %span.unlike_button
-          = link_to unlike_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn btn-small' do
-            %i.icon-star
-            = ' '
-            Unlike!
-      -else
-        %span.like_button
-          = link_to like_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn btn-small' do
-            %i.icon-star-empty
-            = ' '
-            Like!
-
--else
-  #like_box.well.well-small
-    - short ||= false
-    %p
-      %span.like_number
-        -if short == true
-          = "Liked:  #{pluralize(like_number, 'time')}."
-        -else
-          = "This #{model.class.to_s} has been liked #{pluralize(like_number, 'time')}."
+.like_box{id: "#{model.class.to_s}_#{model.id}_like"}
+  -if model.class.to_s == 'Comment'
+    %span#like_comment
+      = "Liked:  #{pluralize(like_number, 'time')}."
       - if user_signed_in?
         -if liked == true
-          - unless short == true
-            = "You already like this #{model.class.to_s}."
           %span.unlike_button
-            = link_to unlike_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn' do
+            = link_to unlike_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn btn-small', remote: true do
               %i.icon-star
               = ' '
               Unlike!
         -else
           %span.like_button
-            = link_to like_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn' do
+            = link_to like_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn btn-small', remote: true do
               %i.icon-star-empty
               = ' '
               Like!
+  -else
+    .well.well-small
+      - short ||= false
+      %p
+        %span.like_number
+          -if short == true
+            = "Liked:  #{pluralize(like_number, 'time')}."
+          -else
+            = "This #{model.class.to_s} has been liked #{pluralize(like_number, 'time')}."
+        - if user_signed_in?
+          -if liked == true
+            - unless short == true
+              = "You already like this #{model.class.to_s}."
+            %span.unlike_button
+              = link_to unlike_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn', remote: true do
+                %i.icon-star
+                = ' '
+                Unlike!
+          -else
+            %span.like_button
+              = link_to like_model_social_path(model_type: model.class.to_s, model_id: model.id), class: 'btn btn-tsn', remote: true do
+                %i.icon-star-empty
+                = ' '
+                Like!

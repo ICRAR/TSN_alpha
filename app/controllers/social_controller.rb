@@ -9,14 +9,22 @@ class SocialController < ApplicationController
     profile.like!(object)
     Profile.delay.timeline_like(profile.id,object.class.to_s,object.id)
 
-    redirect_to after_sign_in_path_for, notice: 'Success, your like was counted.'
+    respond_to do |format|
+      format.html { redirect_to after_sign_in_path_for, notice: 'Success, your like was counted.'}
+      format.js { @model = object }
+    end
+
+
   end
   def unlike_model
     object = likable_object
     return redirect_to( root_url, notice: 'Sorry could not find that object') if object.nil?
     profile = current_user.profile
     profile.unlike!(object)
-    redirect_to after_sign_in_path_for, notice: 'Success, your like was removed.'
+    respond_to do |format|
+      format.html { redirect_to after_sign_in_path_for, notice:  'Success, your like was removed.'}
+      format.js { @model = object; render :like_model }
+    end
   end
 
   def follow

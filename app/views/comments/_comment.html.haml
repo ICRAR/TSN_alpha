@@ -27,7 +27,7 @@
             = link_to 'Delete', comment_path(comment), :confirm => 'Are you sure you want to delete this post? This will also delete any child posts.', :method => :delete, :remote => true, :class => "btn"
           - if can?(:report, comment)
             = link_to 'Report', "#", class: "btn report-btn", data: {comment_id: comment.id}
-          = render 'shared/social/like', model: comment, comment: true
+          = render 'shared/social/like', model: comment
       - else
         You must log in to comment
   - child_hash.reverse_each do |new_comments_hash|
