@@ -30,22 +30,15 @@ class GalaxiesController < ApplicationController
     per_page ||= 10
     page_num = params[:page]
 
-    search_options = []
-    search_options << "galaxy.name LIKE \"%#{Mysql2::Client.escape(params[:name])}%\"" if params[:name] != nil  && params[:name] != ''
-    search_options << "galaxy.galaxy_type = \"#{Mysql2::Client.escape(params[:galaxy_type])}\"" if params[:galaxy_type] != nil && params[:galaxy_type] != ''
-    search_options << "galaxy.galaxy_id >= \"#{Mysql2::Client.escape(params[:id_from])}\"" if params[:id_from] != nil && params[:id_from] != ''
-    search_options << "galaxy.galaxy_id <= \"#{Mysql2::Client.escape(params[:id_to])}\"" if params[:id_to] != nil && params[:id_to] != ''
-    search_options << "galaxy.ra_cent >= \"#{Mysql2::Client.escape(params[:ra_from])}\"" if params[:ra_from] != nil && params[:ra_from] != ''
-    search_options << "galaxy.ra_cent <= \"#{Mysql2::Client.escape(params[:ra_to])}\"" if params[:ra_to] != nil && params[:ra_to] != ''
-    search_options << "galaxy.dec_cent >= \"#{Mysql2::Client.escape(params[:dec_from])}\"" if params[:dec_from] != nil && params[:dec_from] != ''
-    search_options << "galaxy.dec_cent <= \"#{Mysql2::Client.escape(params[:dec_to])}\"" if params[:dec_to] != nil && params[:dec_to] != ''
-    search_options = search_options.join(' AND ')
+    @galaxies = Galaxy.search_options(params)
 
     if (@boinc_id == nil) || (@boinc_id == 'all')
-      @galaxies = Galaxy.page(page_num).per(per_page).where(search_options).order(sort_column + " " + sort_direction)
+      @galaxies = @galaxies.page(page_num).per(per_page).order(sort_column + " " + sort_direction)
     else
-      @galaxies = Galaxy.page(page_num).per(per_page).find_by_user_id(@boinc_id).where(search_options).order(sort_column("galaxy_id") + " " + sort_direction("desc"))
+      @galaxies = @galaxies.page(page_num).per(per_page).find_by_user_id(@boinc_id).where(search_options).order(sort_column("galaxy_id") + " " + sort_direction("desc"))
     end
+
+
 
   end
   def show
@@ -63,7 +56,7 @@ class GalaxiesController < ApplicationController
     #if false
       return_data = {:success => true}
     else
-      return_data = {:success => false, :message => 'Too recent attempt'}
+      return_data = {:success => false, :message => 'Too many recent attempt'}
     end
     render json: return_data
   end
@@ -79,6 +72,10 @@ class GalaxiesController < ApplicationController
     file_name = "#{galaxy.name}_#{@boinc_id}_#{params[:colour]}.png"
     expires_in 10.minutes, :public => true
     send_data image, :type => "image/png", :disposition => 'inline', :filename => file_name
+  end
+
+  def tags
+    @tags = GalaxyTag.search_tag params[:search]
   end
 
   private

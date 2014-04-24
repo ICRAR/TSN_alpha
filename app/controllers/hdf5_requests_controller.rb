@@ -24,10 +24,11 @@ class Hdf5RequestsController < ApplicationController
 
     @request_new = Hdf5Request.new(params[:hdf5_request].except(:galaxy_id))
     @request_new.profile_id = current_user.profile.id
-    @request_new.galaxy_ids = @hdf5_request_galaxies.map {|i| i[:id]}
+    @request_new.galaxy_ids = @hdf5_request_galaxies.map {|i| i[:galaxy_id]}
 
     if @request_new.save
-      session[:hdf5_request_galaxies] = nil
+      @hdf5_request_galaxies = []
+      save_galaxy_cart
       redirect_to hdf5_requests_path, notice: "Request Added, you will be emailed when the results are ready"
     else
       if params[:hdf5_request][:galaxy_id]
@@ -58,14 +59,14 @@ class Hdf5RequestsController < ApplicationController
     @science_user = true
     @galaxy = Galaxy.where{galaxy_id == my{params[:galaxy_id]}}.first || not_found
     if [3,4].include? @galaxy.status_id
-      if @hdf5_request_galaxies.any? {|i| i[:id] == @galaxy.id}
-        flash.now[:alert] = "Sorry you've all ready added that galaxy."
+      if @hdf5_request_galaxies.any? {|i| i[:galaxy_id] == @galaxy.id}
+        flash.now[:alert] = "Sorry you've already added that galaxy."
         @request_new = Hdf5Request.new()
         render 'galaxies/show'
       else
-        @hdf5_request_galaxies.push({:id => @galaxy.id, :name => @galaxy.name})
-        session[:hdf5_request_galaxies] = @hdf5_request_galaxies
-        redirect_to galaxies_path(request.query_parameters.except(:galaxy_id)), notice: "Success you added #{@galaxy.name} to your shopping cat"
+        @hdf5_request_galaxies.push({:galaxy_id => @galaxy.id, :name => @galaxy.name})
+        save_galaxy_cart
+        redirect_to galaxies_path(request.query_parameters.except(:galaxy_id)), notice: "Success you added #{@galaxy.name} to your shopping cart"
       end
     else
       flash.now[:alert] = "Sorry that galaxy is not ready yet."
@@ -75,15 +76,38 @@ class Hdf5RequestsController < ApplicationController
     end
     #redirect_to galaxy page
   end
+  def add_search
+    load_galaxy_cart
+    galaxies = Galaxy.search_options(params)
+    galaxies_added_names = []
+    galaxies.each do |galaxy|
+      galaxy_name = "Galaxy: #{galaxy.name} (#{galaxy.id})"
+      if [3,4].include? galaxy.status_id
+        if @hdf5_request_galaxies.any? {|i| i[:galaxy_id] == galaxy.id}
+          galaxies_added_names << "#{galaxy_name} was already in the cart"
+        else
+          @hdf5_request_galaxies.push({:galaxy_id => galaxy.id, :name => galaxy.name})
+          galaxies_added_names << "#{galaxy_name} was added to the cart"
+        end
+      else
+        galaxies_added_names << "#{galaxy_name} is not ready yet and wasn't added"
+      end
+    end
+    save_galaxy_cart
+    notice = "The following modifications were made to the your galaxy cart: <br /> \n"
+    #notice << galaxies_added_names.join(" <br /> \n")
+    redirect_to galaxies_path(request.query_parameters), notice: notice
+  end
   def clear
     #clears the 'shopping cart'
-    session[:hdf5_request_galaxies] = nil
-    redirect_to galaxies_path, notice: 'Success your Galaxy Request shopping cat has been cleared'
+    @hdf5_request_galaxies = []
+    save_galaxy_cart
+    redirect_to galaxies_path, notice: 'Success your Galaxy Request shopping cart has been cleared'
   end
   def remove
     load_galaxy_cart
-    @hdf5_request_galaxies.reject!{|i| i[:id] == params[:galaxy_id].to_i}
-    session[:hdf5_request_galaxies] = @hdf5_request_galaxies
+    @hdf5_request_galaxies.reject!{|i| i[:galaxy_id] == params[:galaxy_id].to_i}
+    save_galaxy_cart
     if  params[:current_galaxy_id]
       @science_user = true
       @galaxy = Galaxy.where{galaxy_id == my{params[:current_galaxy_id]}}.first || not_found

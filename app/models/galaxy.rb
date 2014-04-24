@@ -8,6 +8,33 @@ class Galaxy < PogsModel
   has_many :areas, class_name: "GalaxyArea"
   has_many :galaxy_users
 
+  has_and_belongs_to_many :tags,
+                          class_name: "GalaxyTag",
+                          foreign_key: "galaxy_id",
+                          association_foreign_key: "tag_id",
+                          join_table: "tag_galaxy"
+
+
+  def self.search_options (options)
+    search_options = []
+    search_options << "galaxy.name LIKE \"%#{Mysql2::Client.escape(options[:name])}%\"" if options[:name] != nil  && options[:name] != ''
+    search_options << "galaxy.galaxy_type = \"#{Mysql2::Client.escape(options[:galaxy_type])}\"" if options[:galaxy_type] != nil && options[:galaxy_type] != ''
+    search_options << "galaxy.galaxy_id >= \"#{Mysql2::Client.escape(options[:id_from])}\"" if options[:id_from] != nil && options[:id_from] != ''
+    search_options << "galaxy.galaxy_id <= \"#{Mysql2::Client.escape(options[:id_to])}\"" if options[:id_to] != nil && options[:id_to] != ''
+    search_options << "galaxy.ra_cent >= \"#{Mysql2::Client.escape(options[:ra_from])}\"" if options[:ra_from] != nil && options[:ra_from] != ''
+    search_options << "galaxy.ra_cent <= \"#{Mysql2::Client.escape(options[:ra_to])}\"" if options[:ra_to] != nil && options[:ra_to] != ''
+    search_options << "galaxy.dec_cent >= \"#{Mysql2::Client.escape(options[:dec_from])}\"" if options[:dec_from] != nil && options[:dec_from] != ''
+    search_options << "galaxy.dec_cent <= \"#{Mysql2::Client.escape(options[:dec_to])}\"" if options[:dec_to] != nil && options[:dec_to] != ''
+    search_options = search_options.join(' AND ')
+
+    galaxies = where(search_options)
+    if options[:tag] != nil && options[:tag] != ''
+      search_query = options[:tag]
+      galaxies = galaxies.joins{tags}.where{tag.tag_text == search_query}
+    end
+
+    galaxies
+  end
 
   def self.num_current
     where{status_id == 0}.count

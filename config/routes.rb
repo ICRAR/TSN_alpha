@@ -12,6 +12,7 @@ Tsn::Application.routes.draw do
     collection do
       get 'clear'
       get 'add'
+      get 'add_search'
       get 'remove'
     end
   end
@@ -129,7 +130,11 @@ Tsn::Application.routes.draw do
     end
   end
 
-  resources :galaxies, :only => [:index, :show]
+  resources :galaxies, :only => [:index, :show] do
+    collection do
+      get 'tags'
+    end
+  end
   resources :boinc, :only => [], :controller => "boinc_stats_item" do
     resources :galaxies, :only => [:index, :show]  do
       member do

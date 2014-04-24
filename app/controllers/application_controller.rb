@@ -104,10 +104,17 @@ class ApplicationController < ActionController::Base
   end
 
   def load_galaxy_cart
-    @hdf5_request_galaxies = session[:hdf5_request_galaxies]
+    hdf5_request_galaxies_ids = session[:hdf5_request_galaxies_ids]
+    galaxies_query = Galaxy.where{galaxy_id.in hdf5_request_galaxies_ids}.select([:galaxy_id,:name])
+    @hdf5_request_galaxies = Galaxy.connection.select_all(galaxies_query)
     @hdf5_request_galaxies ||= []
+    @hdf5_request_galaxies.map(&:symbolize_keys!)
   end
-
+  def save_galaxy_cart
+    hdf5_request_galaxies_ids = []
+    hdf5_request_galaxies_ids = @hdf5_request_galaxies.map{|i| i[:galaxy_id]}
+    session[:hdf5_request_galaxies_ids] = hdf5_request_galaxies_ids
+  end
   private
 
   def signed_in
