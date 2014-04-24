@@ -35,7 +35,7 @@ class GalaxiesController < ApplicationController
     if (@boinc_id == nil) || (@boinc_id == 'all')
       @galaxies = @galaxies.page(page_num).per(per_page).order(sort_column + " " + sort_direction)
     else
-      @galaxies = @galaxies.page(page_num).per(per_page).find_by_user_id(@boinc_id).where(search_options).order(sort_column("galaxy_id") + " " + sort_direction("desc"))
+      @galaxies = @galaxies.page(page_num).per(per_page).find_by_user_id(@boinc_id).order(sort_column("galaxy_id") + " " + sort_direction("desc"))
     end
 
 
