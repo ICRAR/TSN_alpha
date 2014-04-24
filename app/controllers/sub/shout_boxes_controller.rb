@@ -12,8 +12,7 @@ class Sub::ShoutBoxesController < Sub::ApplicationController
 
   def create
     new_shout_box = Sub::ShoutBox.create(params.slice(:msg))
-    model_json = Sub::ShoutBoxSerializer.new(new_shout_box).to_json
-    faye_broadcast "/messages/new/model", model_json
+    post_faye_model new_shout_box, Sub::ShoutBoxSerializer
     respond_with new_shout_box
   end
 
