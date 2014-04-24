@@ -3,7 +3,7 @@
 TheSkyMap.Store = DS.Store.extend
   # Override the default adapter with the `DS.ActiveModelAdapter` which
   # is built to work nicely with the ActiveModel::Serializers gem.
-  revision: 12,
-  #adapter: '_ams'
+  #revision: 12,
+  adapter: '-active-model'
 DS.RESTAdapter.reopen
   namespace: 'sub'

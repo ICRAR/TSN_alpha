@@ -1,4 +1,4 @@
-class Sub::ShoutBoxesController < ApplicationController
+class Sub::ShoutBoxesController < Sub::ApplicationController
 
   respond_to :json
 
@@ -11,7 +11,10 @@ class Sub::ShoutBoxesController < ApplicationController
   end
 
   def create
-    respond_with Sub::ShoutBox.create(params[:entry])
+    new_shout_box = Sub::ShoutBox.create(params.slice(:msg))
+    model_json = Sub::ShoutBoxSerializer.new(new_shout_box).to_json
+    faye_broadcast "/messages/new/model", model_json
+    respond_with new_shout_box
   end
 
   def update

@@ -5,4 +5,4 @@ TheSkyMap.Router.map ()->
   @route 'shout_boxes', path: '/'
 TheSkyMap.ShoutBoxesRoute = Ember.Route.extend
   model: ->
-    @get('store').findAll('shout_boxes')
+    this.store.find('shout_box')

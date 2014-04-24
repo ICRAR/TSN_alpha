@@ -61,7 +61,8 @@ gem 'metamagic'
 gem 'talk_like_a_pirate'
 
 gem 'ember-rails'
-gem 'ember-source', '1.3.0' # or the version you need
+gem 'ember-source', '1.5.0' # or the version you need
+gem 'ember-data-source', "~> 1.0.0.beta.7" # or the version you need
 
 gem 'delayed_job_active_record'
 gem 'daemons'

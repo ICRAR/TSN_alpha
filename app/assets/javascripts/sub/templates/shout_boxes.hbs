@@ -1,8 +1,8 @@
 {{view TheSkyMap.NewShoutBoxView}}
 <ul>
-    {{#each user in model}}
+    {{#each shout in model}}
     <li>
-        {{name}}
+        {{shout.msg}}
     </li>
     {{/each}}
 </ul>
