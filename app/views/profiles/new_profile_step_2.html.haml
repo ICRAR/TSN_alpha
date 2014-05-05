@@ -19,15 +19,16 @@
             = render 'boinc_forms'
           -else
             %p= t '.pogs.existing'
-      .well.well-white#sourcefinder
-        =link_to science_portal_path(:id => 'SourceFinder') do
-          %h2= image_tag 'sub_brands/SourceFinder-Small.png'
-        %p
-          =t '.source_finder.about'
-          = link_to t('.source_finder.link_to'), science_portal_path(:id => 'SourceFinder')
-        .well
-          -if @profile.general_stats_item.boinc_stats_item.nil?
-            = render 'profiles/nereus_form'
-          -else
-            %p= t '.source_finder.exisiting'
+      -#
+        .well.well-white#sourcefinder
+          =link_to science_portal_path(:id => 'SourceFinder') do
+            %h2= image_tag 'sub_brands/SourceFinder-Small.png'
+          %p
+            =t '.source_finder.about'
+            = link_to t('.source_finder.link_to'), science_portal_path(:id => 'SourceFinder')
+          .well
+            -if @profile.general_stats_item.boinc_stats_item.nil?
+              = render 'profiles/nereus_form'
+            -else
+              %p= t '.source_finder.exisiting'
       %p= link_to t('.continue'), my_profile_path(:next_step => true), :class => "btn btn-tsn"

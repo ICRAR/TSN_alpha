@@ -1,50 +1,61 @@
 - nereus = @profile.general_stats_item.nereus_stats_item
-= link_to science_portal_path(:id => "SourceFinder") do
-  %h2.pagination-centered
-    =image_tag('sub_brands/SourceFinder-Small.png')
+
 -if nereus == nil
-  = render 'profiles/nereus_form'
+  -#= render 'profiles/nereus_form'
 -else
-  .row-fluid
-    .span11.offset1
-      %dl.dl-horizontal
-        %dt Total Credit
-        %dd= number_with_delimiter(nereus.credit)
-        %dt
-          %abbr{:title => "Recent Average Credit"} RAC
-        %dd= number_with_delimiter(nereus.daily_credit)
-        %dt Current Connections
-        %dd
-          = "#{nereus.online_now} (#{nereus.mips_now}"
-          %abbr{:title=>"Million Instructions per Second"} MIPS
-          )
-        %dt Connections Today
-        %dd
-          = "#{nereus.online_today} (#{nereus.mips_today}"
-          %abbr{:title=>"Million Instructions per Second"} MIPS
-          )
-        %dt Network usage
-        %dd
-          = "#{number_with_delimiter(nereus.monthly_network_usage_mb)} MB"
-          = " out of #{number_with_delimiter(nereus.network_limit_mb)} MB" if nereus.network_limit > 0
-          this month
-        %dt Your Nereus ID
-        %dd= nereus.nereus_id
+  .span6.well.well-white#nereus
+    = link_to science_portal_path(:id => "SourceFinder") do
+      %h2.pagination-centered
+        =image_tag('sub_brands/SourceFinder-Small.png')
+    .row-fluid
+      .span11.offset1
+        %dl.dl-horizontal
+          %dt Total Credit
+          %dd= number_with_delimiter(nereus.credit)
+          %dt Your Nereus ID
+          %dd= nereus.nereus_id
+        -#
+          %dl.dl-horizontal
+            %dt Total Credit
+            %dd= number_with_delimiter(nereus.credit)
+            %dt
+              %abbr{:title => "Recent Average Credit"} RAC
+            %dd= number_with_delimiter(nereus.daily_credit)
+            %dt Current Connections
+            %dd
+              = "#{nereus.online_now} (#{nereus.mips_now}"
+              %abbr{:title=>"Million Instructions per Second"} MIPS
+              )
+            %dt Connections Today
+            %dd
+              = "#{nereus.online_today} (#{nereus.mips_today}"
+              %abbr{:title=>"Million Instructions per Second"} MIPS
+              )
+            %dt Network usage
+            %dd
+              = "#{number_with_delimiter(nereus.monthly_network_usage_mb)} MB"
+              = " out of #{number_with_delimiter(nereus.network_limit_mb)} MB" if nereus.network_limit > 0
+              this month
+            %dt Your Nereus ID
+            %dd= nereus.nereus_id
 
-  .well.well-small
-    .media
-      %a.media-object.pull-left#startbutton{:href => "#",:onClick=>"run(101032);"}
-        =image_tag nereus.nereus_control_details[:image], :style => 'border:0;', :width=> 95, :height => 95, :alt => nereus.nereus_control_details[:image_alt]
-      .media-body
-        %h4#startHeader.media-heading
-          %a{:href => "#",:onClick=>"run(101032);"}= nereus.nereus_control_details[:heading]
-        -if nereus.nereus_control_details[:link] == "Pause"
-          %p#startText= link_to (nereus.nereus_control_details[:desc].html_safe), pause_nereus_path
-        -elsif nereus.nereus_control_details[:link] == "Resume"
-          %p#startText= link_to (nereus.nereus_control_details[:desc].html_safe), resume_nereus_path
-        -else
-          %p#startText= (nereus.nereus_control_details[:desc].html_safe)
-
-  %p= link_to "Or download the background installer here", page_path(:slug => 'download')
-  %p.muted
-    %small= "Last updated: " + nereus.last_checked_time.to_s
+    .well.well-small
+      %p
+        Thank you so much for your contribution to theSkyNet SourceFinder. This project has processed over 300 TB’s of data! This phase is now over, but we are planning to bring SourceFinder back on the BOINC platform, so keep an eye out for more details in the future.
+      -#
+        .media
+          %a.media-object.pull-left#startbutton{:href => "#",:onClick=>"run(101032);"}
+            =image_tag nereus.nereus_control_details[:image], :style => 'border:0;', :width=> 95, :height => 95, :alt => nereus.nereus_control_details[:image_alt]
+          .media-body
+            %h4#startHeader.media-heading
+              %a{:href => "#",:onClick=>"run(101032);"}= nereus.nereus_control_details[:heading]
+            -if nereus.nereus_control_details[:link] == "Pause"
+              %p#startText= link_to (nereus.nereus_control_details[:desc].html_safe), pause_nereus_path
+            -elsif nereus.nereus_control_details[:link] == "Resume"
+              %p#startText= link_to (nereus.nereus_control_details[:desc].html_safe), resume_nereus_path
+            -else
+              %p#startText= (nereus.nereus_control_details[:desc].html_safe)
+    -#
+      %p= link_to "Or download the background installer here", page_path(:slug => 'download')
+      %p.muted
+        %small= "Last updated: " + nereus.last_checked_time.to_s

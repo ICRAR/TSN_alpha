@@ -1,0 +1,115 @@
+!!!
+%html
+  %head
+    =metamagic :title => "theSkyNet Advent", :description => "Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
+    =favicon_link_tag('favicon.ico')
+    =stylesheet_link_tag    "application", :media => "all"
+    =javascript_include_tag "application"
+    %script{:type=>"text/javascript"}
+      I18n.defaultLocale = "#{I18n.default_locale}";
+      I18n.locale = "#{I18n.locale}";
+      I18n.fallbacks = true;
+
+    =csrf_meta_tags
+
+    - track_options = {}
+    - track_options[:local] = Rails.env.development?
+    - track_options[:page] = flash[:page] unless flash[:page].nil?
+    = analytics_init track_options
+
+    = render :partial => 'layouts/js_vars'
+    %script{:type=>"text/javascript"}
+      window.rails.snow = true
+  %body.advent{'data-controller'=> controller_name, 'data-action'=> action_name, 'data-id' => (params[:id] ? params[:id] : ''), 'data-no-turbolink' => true}
+    #top-nav.navbar.navbar-inverse.navbar-fixed-top
+      .navbar-inner
+        #language-top.pull-right
+          %span.navbar-text= render 'layouts/langauge_select'
+        .pull-right
+          =render 'devise/menu/devise_top_bar'
+
+
+    #wrapper.container
+      =bootstrap_flash
+      =render 'shared/announcement', :announcement => @announcement if @announcement != nil
+      %h1#header.snow_logo= link_to "theSkyNet", main_app.root_url
+      %h2 12 DAYS OF CHRISTMAS
+      .clearing
+      #main
+        .row-fluid
+          .span12
+            .alert.alert-block.alert-info
+              %a{href: "#", class: "close", data: {dismiss: "alert"}} &times;
+              - if user_signed_in?
+                %p
+                  %strong= "Hello #{current_user.profile.name},"
+                %p To celebrate the holiday season my humans have put together twelve days of amazing numbers about me. Check back to open a new window every day until Christmas, and watch out for some goodies along the way!
+                -if current_user.profile.advent_notify == true
+                  %p
+                    You are currently signed up to receive notifications and I will email you when the next box opens up. If you would like to stop receiving notifications just
+                    = link_to 'click here.', advent_subscribe_misc_path(add: false)
+
+                - else
+                  %p
+                    If you would like to receive a notification when the next box opens just
+                    = link_to 'click here.', advent_subscribe_misc_path(add: true)
+                    = link_to 'Notify Me', advent_subscribe_misc_path(add: true), class: 'btn btn-warning pull-right'
+
+              - else
+                %p
+                  %strong Hello Human,
+                %p To celebrate the holiday season my humans have put together twelve days of amazing numbers about me. You'll need to be logged in to see them though!
+                %p
+                  Don't have an account? What are you waiting for?
+                  = link_to 'Sign Up ', new_user_registration_path
+                  now to start helping me discover our Universe, or
+                  = link_to 'read more ', page_path(slug: 'about')
+                  about me and the amazing astronomy I'm doing.
+                %p Once you're logged in, check back to open a new window every day until Christmas, and watch out for some goodies along the way!
+                = link_to 'Sign Up', new_user_registration_path, class: 'btn btn-warning pull-right'
+
+              %p
+                Wishing you all a safe and happy holidays.
+                %br
+                theSkyNet
+
+        .row-fluid
+          .span4
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 1 , active_colour: 'pink', msg: 'One (not yet self aware) distributed computing site, theSkyNet!',                                                            image:  '12_days/1-small.png', h: 121, w: 150, large: '12_days/1.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 6 , active_colour: 'purp', msg: 'Six amazing team members.',                                                                                                   image:  '12_days/6-small.png', h: 177, w: 150, large: '12_days/6.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 10, active_colour: 'blue', msg: 'Ten thousand, six hundred plus galaxies processed.', bg_image: true,                                                             image: '12_days/10-small.png', h: 150, w: 150, large: '12_days/10.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 3 , active_colour: 'pink', msg: 'Three hundred and forty-seven thousand, five hundred and fifty-three trophies awarded.',                                    image:  '12_days/3-small.png', h: 100, w: 150, large: '12_days/3.png'}
+
+          .span4
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 9 , active_colour: 'blue', msg: 'Ninety-four countries contribute to theSkyNet POGS. ',                                                                         image:  '12_days/9-small.png', h: 247, w: 150, large: '12_days/9.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 11, active_colour: 'purp', msg: "TheSkyNet's 2+ years of processing equals eleven weeks on the Pawsey Centre's top 500 supercomputer - the RTC at iVEC - which would cost of over ?? million. ", image: '12_days/11-small.png', h: 140, w: 150, large: '12_days/11.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 4 , active_colour: 'pink', msg: 'Four thousand, eight hundred and forty-five forum posts.',                                                                        image:  '12_days/4-small.png', h: 87 , w: 150, large: '12_days/4.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 12, active_colour: 'blue', msg: 'Eleven thousand, four hundred and nineteen wise women and men helping discover our Universe!',                                     image: '12_days/12-small.png', h: 225, w: 150, large: '12_days/12.png'}
+
+          .span4
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 8 , active_colour: 'purp', msg: 'Eight hundred and thirty six alliances.',                                                                                        image:  '12_days/8-small.png', h: 150, w: 150, large: '12_days/8.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 5 , active_colour: 'pink', msg: 'Five hundred and sixty-four thousand and eighty-eight visits to the theSkyNet.org.',                                          image:  '12_days/5-small.png', h: 100, w: 150, large: '12_days/5.png'}
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 2 , active_colour: 'blue', msg: 'Two astronomy projects.',                                                                                                     image:  '12_days/2-small.png', h: 200, w: 150, large: '12_days/2.png'}
+            - time_word = (Time.now - Time.parse('13th Sept, 2011')).to_i.en.numwords
+            - time_word[0] = time_word[0].capitalize
+            = render partial: 'advent_day', locals: {last_day: @last_day, current_day: @current_day, day: 7 , active_colour: 'purp', msg: "#{time_word} seconds since theSkyNet went live!",                image:  '12_days/7-small.png', h: 142, w: 150, large: '12_days/7.png'}
+    .footer
+      =image_tag '12_days/footer.png'
+    #bg_image_pop_up{style:"display:none;"}
+      %p To say thank you for all your amazing contributions over the last year I have prepared theses amazing backgrounds made with the very images processed by theSkyNet POGS.
+      %p Just choose your size and image type:
+      .row-fluid
+        .span6
+          - bg_dim = [[800,600],[1024,768],[1280,720],[1280,800],[1280,960],[1280,1024],[1440,900],[1600,1200],[1680,1050],[1920,1080],[1920,1200],[2560,1440]]
+          %ul
+            - bg_dim.each do |d|
+              %li= link_to "#{d[0]}x#{d[1]} JPG", "http://tsn.production.public.s3.amazonaws.com/pogs/galaxy_background/#{d[0]}-#{d[1]}.jpg"
+        .span6
+          %ul
+            - bg_dim.each do |d|
+              %li= link_to "#{d[0]}x#{d[1]} PNG", "http://tsn.production.public.s3.amazonaws.com/pogs/galaxy_background/#{d[0]}-#{d[1]}.png"
+      %p
+        Merry Christmas
+        %br
+        theSkyNet
+

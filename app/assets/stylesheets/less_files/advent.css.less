@@ -1,0 +1,79 @@
+body.advent {
+  color: white;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+
+  #header {
+    height: 210px;
+    &.snow_logo a:link {
+      background:image-url('logo_snow_advent.png') 0 0 no-repeat;
+      height: 211px;
+      width: 200px;
+    }
+
+  }
+
+  h2 {
+    .pull-right;
+    position: relative;
+    top: 100px;
+    text-shadow: 3px 3px #000000;
+  }
+
+  .box {
+    border: 1px dashed white;
+    margin: 10px 0px;
+    padding: 15px;
+    p {
+      .pull-right;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1em;
+    }
+    img {
+      .pull-right;
+    }
+
+    h3 {
+      position: relative;
+      top: -110px;
+      font-size: 100px;
+      font-weight: bolder;
+      padding:1px;
+      line-height: 100px;
+
+    }
+
+    &.active {
+      &.purp {
+        #gradient > .vertical(#8649a1, #4a205a);
+      }
+      &.blue {
+        #gradient > .vertical(#3e5e99, #243962);
+      }
+      &.pink {
+        #gradient > .vertical(#a93472, #861852);
+      }
+      &.yell {
+        #gradient > .vertical(#ffc61d, #c79819);
+        color: #545454;
+        p {
+          color: #545454;
+        }
+      }
+
+    }
+
+  }
+  .footer {
+    width: 1552px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #bg_image_pop_up {
+    color: black
+  }
+
+}

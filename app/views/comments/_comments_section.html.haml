@@ -1,0 +1,16 @@
+.comments
+  %h3 Comments:
+  - if @comment.nil?
+    %p
+      You must be
+      = link_to 'logged in ', new_user_session_path
+      to comment.
+  - else
+    = render "comments/form", remote: true
+  - if commentable.class == Profile
+    - all_comments = commentable.comments_wall
+  -else
+    - all_comments = commentable.comments
+  - all_comments = all_comments.for_show_commentable(current_user).hash_tree
+  - all_comments.reverse_each do |comments_hash|
+    = render('comments/comment', {comments_hash: comments_hash})

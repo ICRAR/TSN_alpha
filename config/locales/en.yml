@@ -8,7 +8,7 @@ en:
       msg: "Thank you for signing up to theSkyNet. Before you can get started processing radio astronomy data we just need to gather a few details for your profile."
     new_profile_step_2:
       heading: "Excellent, next we need to setup your account to start collecting credits"
-      msg: "theSkyNet is currently running two different projects, POGS and SourceFinder. Both projects will allow you to gain credits and compete in theSkyNet leader boards. More importantly contributing to either project will help us process more radio astronomy data. Find out more details about each project below."
+      msg: "theSkyNet is currently running one main different project, theSkyNet POGS. This project will allow you to gain credits and compete in theSkyNet leader boards. Contributing to this project will help us process more radio astronomy data. Find out more details about POGS project below."
       thank_you: "Thank you for joining <br /> - theSKyNet team"
       continue: "Continue to your dashboard"
       source_finder:
@@ -43,7 +43,7 @@ en:
     hint: "You can login with either your theSkyNet username, your theSkyNet email or your POGS email."
     sign_up:
       header: "Help us discover the universe."
-      msg: "Fill in the following form to create your account on theSkyNet. Please note that fields containing an asterisk (*) are required for this registration."
+      msg: "Fill in the following form to create your account on theSkyNet."
   contact_forms:
     title: "Contact Us"
     controller:
@@ -76,6 +76,7 @@ You have not earned the rights to view the full details of this trophy yet."
   social:
     FB_fav: "Become a Facebook Fan"
     twitter_follow: "Follow us on Twitter"
+    atom: "Atom 1.0"
   nav:
     home: "Home"
     about: "About"
@@ -92,8 +93,14 @@ You have not earned the rights to view the full details of this trophy yet."
     logout: "Logout"
     news: "News"
     forum: "Forum"
+    challenges: "Challenges"
+    challenges_all: "All Challenges"
+    challenges_my: "My Challenges Histroy"
+    challenges_create: "Create a new Challenge"
     welcome: "Welcome back,"
     edit_reg: "Edit Registration"
+    my_profile: "My Profile"
+    my_friends: "My Friends"
     not_logged_in: "You are not logged in."
     faq: "FAQ"
 
@@ -133,6 +140,7 @@ You have not earned the rights to view the full details of this trophy yet."
     individual: "Individual"
     individual_rank: "My Position"
     alliances: "Alliances"
+    friends: "Friends"
     rank: "Rank"
     name: "Name"
     credit: "Credit"

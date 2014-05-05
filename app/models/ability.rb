@@ -11,12 +11,12 @@ class Ability
     #     can :read, :all
     #   end
     #
-    # The first argument to `can` is the action you are giving the user 
+    # The first argument to `can` is the action you are giving the user
     # permission to do.
     # If you pass :manage it will apply to every action. Other common actions
     # here are :read, :create, :update and :destroy.
     #
-    # The second argument is the resource the user can perform the action on. 
+    # The second argument is the resource the user can perform the action on.
     # If you pass :all it will apply to every resource. Otherwise pass a Ruby
     # class of the resource.
     #
@@ -29,35 +29,47 @@ class Ability
     # See the wiki for details:
     # https://github.com/ryanb/cancan/wiki/Defining-Abilities
 
-   #note the user object is managed within devise
-   user ||= User.new # guest user
+    #note the user object is managed within devise
+    user ||= User.new # guest user
 
-   #defult permissions for all users
-   can :run, NereusStatsItem
-   can :read, :all
-   can :search, :all
-   can :trophies, Profile
-   cannot :join, Alliance
-   cannot :leave, Alliance
-   can :image, Galaxy
-   can :send_report, Galaxy
-   cannot :read, User
-   can :alliance_history, Profile
+    #defult permissions for all users
+    can :run, NereusStatsItem
+    can :read, :all
+    can :search, :all
+    can :promote, Trophy
+    can :trophies, Profile
+    cannot :join, Alliance
+    cannot :leave, Alliance
+    can :image, Galaxy
+    can :send_report, Galaxy
+    cannot :read, User
+    can :alliance_history, Profile
+    can :compare, Challenger
+    can :history, Challenge
 
-  if user.id #user is not a quest user
-    can :new, NereusStatsItem
-    can :create, Alliance
-    can :manage, Alliance, :id => user.profile.alliance_leader_id
-    can :manage, Profile, :user_id => user.id
-    can :manage, User, :id => user.id
-    can :join, Alliance
-    can :leave, Alliance
-    can :dismiss, News
-    can :send_cert, NereusStatsItem
-  end
-   #admin users can do everything :)
-   if user.is_admin?
+
+    if user.id #user is not a quest user
+      can :new, NereusStatsItem
+      can :create, Alliance
+      can :manage, Alliance, :id => user.profile.alliance_leader_id
+      can :manage, Profile, :user_id => user.id
+      can :manage, User, :id => user.id
+      can :join, Alliance
+      can :leave, Alliance
+      can :dismiss, News
+      can :send_cert, NereusStatsItem
+      can :create, Comment
+      can :report, Comment
+      can [:update, :destroy], Comment do |comment|
+        comment.created_at >= 60.minutes.ago && comment.profile_id == user.profile.id
+      end
+      can :join, Challenge
+      can :create, Challenge
+      can :manage, Challenge, :manager_id => user.profile.id
+    end
+    #admin users can do everything :)
+    if user.is_admin?
       can :manage, :all
-   end
-end
+    end
+  end
 end

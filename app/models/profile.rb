@@ -1,14 +1,18 @@
 class Profile < ActiveRecord::Base
-
+  include Rails.application.routes.url_helpers
   belongs_to :user
   belongs_to :alliance_leader, :class_name => 'Alliance', inverse_of: :leader
   belongs_to :alliance, inverse_of: :members
   has_many :alliance_items, :class_name => 'AllianceMembers'
   has_many :activities
 
-  has_many :profiles_trophies
+  has_many :profiles_trophies, :dependent => :destroy
   has_many :trophies, :through => :profiles_trophies
   has_many :trophy_sets, :through => :trophies
+  has_many :comments
+  has_many :comments_wall, as: :commentable, class_name: 'Comment'
+  attr_readonly :comments_count
+  has_many :profile_notifications
   before_destroy :remove_trophies
   def remove_trophies
     self.profiles_trophies.delete_all
@@ -16,7 +20,7 @@ class Profile < ActiveRecord::Base
   has_one :general_stats_item, :dependent => :destroy, :inverse_of => :profile
   has_one :invited_by, :class_name => "AllianceInvite", :inverse_of => :redeemed_by, :foreign_key => "redeemed_by_id"
   has_many :invites, :class_name => "AllianceInvite", :inverse_of => :invited_by, :foreign_key => "invited_by_id"
-  attr_accessible :country, :use_full_name, :nickname, :first_name, :second_name, :old_site_user,  :as => [:default, :admin]
+  attr_accessible :description, :country, :use_full_name, :nickname, :first_name, :second_name, :old_site_user,  :as => [:default, :admin]
   attr_accessible :trophy_ids, :new_profile_step, as: :admin
 
   #validates :nickname, :uniqueness => true
@@ -56,8 +60,15 @@ class Profile < ActiveRecord::Base
                           association_foreign_key: "science_portal_id",
                           join_table: "leaders_science_portals"
 
+  def science_portals_all
+    members_science_portals + leaders_science_portals
+  end
+  #challengers
+  has_many :challengers, as: :entity
   #sets up simple messaging
   acts_as_messageable
+
+
   #Returning the email address of the model if an email should be sent for this object (Message or Notification).
   #If no mail has to be sent, return nil.
   def mailboxer_email(object)
@@ -66,6 +77,133 @@ class Profile < ActiveRecord::Base
     #return "define_email@on_your.model"
     #if false
     return nil
+  end
+
+  #adds social methods using the socialization gem
+  # https://github.com/cmer/socialization
+  # profiles can follow each other
+  acts_as_followable
+  acts_as_follower
+
+  def followers_for_show
+    self.followers_relation(Profile).includes(:user)
+  end
+  def followees_for_show
+    self.followees_relation(Profile).includes(:user)
+    end
+  def followers_for_friends
+    self.followers_for_show.includes(:alliance)
+  end
+  def followees_for_friends
+    self.followees_for_show.includes(:alliance)
+  end
+  def friends_ids
+    out_array = self.followees_relation(Profile).pluck(:id)
+    self.followers_relation(Profile).pluck(:id).each do |i|
+      out_array << i
+    end
+    return out_array
+  end
+  # profiles can like things
+  acts_as_liker
+  #profiles can mention and be mentioned in posts
+  acts_as_mentionable
+  acts_as_mentioner
+  #note that the mentioned locations must have the acts_as_mentioner trait
+  def self.notify_mentions_comment(mentioner_id,mentioned_ids, comment_id)
+    mentioner = Profile.find mentioner_id
+    mentioner.notify_mentions_comment(mentioned_ids, comment_id)
+  end
+  def notify_mentions_comment(mentioned_ids, comment_id)
+    mentioner = self
+    comment = Comment.find comment_id
+    mentioneds = Profile.where{id.in mentioned_ids}
+    link_location = ActionController::Base.helpers.link_to(comment.commentable_name, polymorphic_path(comment.commentable))
+    link_mentioner = ActionController::Base.helpers.link_to(mentioner.name, Rails.application.routes.url_helpers.profile_path(mentioner.id))
+
+    mentioneds.each do |mentioned|
+      comment.mention!(mentioned)
+      link_mentioned = ActionController::Base.helpers.link_to(mentioned.name, Rails.application.routes.url_helpers.profile_path(mentioned.id))
+      #add to mentioned's timeline.
+      TimelineEntry.post_to mentioned, {
+          more: '',
+          more_aggregate: '',
+          subject: "was mentioned by #{link_mentioner} on #{link_location}",
+          subject_aggregate: "was mentioned",
+          aggregate_type: "mentioned",
+          aggregate_type_2: "#{mentioner.id}_on_comment_#{comment.id}",
+          aggregate_text: "#{link_mentioner} mentioned #{link_mentioned} on #{link_location} <br />",
+      }
+
+      #add to mentionier's timeline
+      TimelineEntry.post_to mentioner, {
+          more: '',
+          more_aggregate: '',
+          subject: "mentioned #{link_mentioned} on #{link_location}",
+          subject_aggregate: "mentioned people",
+          aggregate_type: "mentioner",
+          aggregate_type_2: "#{mentioned.id}_on_comment_#{comment.id}",
+          aggregate_text: "#{link_mentioner} mentioned #{link_mentioned} on #{link_location} <br />",
+      }
+    end
+    #notify mentioned
+    subject = "#{mentioner.name} has mentioned you in a comment on #{comment.commentable_name}."
+    body = "Hey, <br /> #{link_mentioner} has mentioned you in a comment on  #{link_location} page. <br /> Happy Computing! <br />  - theSkyNet"
+
+    aggregation_subject = "You have been mentioned in %COUNT% new comments"
+    aggregation_body = "Hey, <br /> You have been mentioned in the following %COUNT% new comments. <br /> By:"
+    aggregation_text = "on #{link_location} by #{link_mentioner}<br />"
+    ProfileNotification.notify_all(mentioneds,subject,body,comment,true, aggregation_text,'mention')
+    ProfileNotification.aggrigate_by_class(Comment.to_s,aggregation_subject,aggregation_body,'mention')
+  end
+
+  has_many :timeline_entires, as: :timelineable
+  def own_timeline
+    TimelineEntry.get_timeline('Profile' => [self.id])
+  end
+  def followees_timeline
+    timeline_hash = {
+      'Profile' => followees_relation(Profile).pluck(:id),
+      'Alliance' => likeables_relation(Alliance).pluck(:id),
+    }
+    timeline_hash['Alliance'] << alliance_id unless alliance_id.nil?
+    TimelineEntry.get_timeline(timeline_hash)
+
+  end
+
+  def self.timeline_like(profile_id,object_class,object_id)
+    object = object_class.constantize.find object_id
+    profile = Profile.find profile_id
+    profile.timeline_like object
+    if object.class == Comment
+      Comment.delay.like_comment(object.id,profile.id)
+    end
+  end
+  def timeline_like(object)
+
+    if object.class == Comment
+      object_name = "a comment on #{object.commentable_name}"
+      link_to_object = ActionController::Base.helpers.link_to(object_name, polymorphic_path(object.commentable))
+    else
+      if object.respond_to? :name
+        object_name = object.name
+      elsif object.respond_to? :title
+        object_name = object.title
+      else
+        object_name = object.class.to_s
+      end
+      link_to_object = ActionController::Base.helpers.link_to(object_name, polymorphic_path(object))
+    end
+    link_profile = ActionController::Base.helpers.link_to(self.name, Rails.application.routes.url_helpers.profile_path(self.id))
+    TimelineEntry.post_to self, {
+        more: '',
+        more_aggregate: '',
+        subject: "liked #{link_to_object}",
+        subject_aggregate: "liked #{object.class.to_s.pluralize}",
+        aggregate_type: "like_#{object.class.to_s}",
+        aggregate_type_2: object.id,
+        aggregate_text: "#{link_profile} likes: #{link_to_object} <br />",
+    }
   end
 
   def  self.for_show(id)
@@ -91,7 +229,7 @@ class Profile < ActiveRecord::Base
     self.trophies.select("trophies.id").map(&:id)
   end
   def country_name
-    return '' if country.nil?
+    return 'None' if country.nil? || country == ''
     out = ::CountrySelect::COUNTRIES[country.downcase]
     out = country if out.nil?
     return out
@@ -129,36 +267,31 @@ class Profile < ActiveRecord::Base
   end
 
 
-  def join_alliance(alliance)
-    if self.alliance != nil
+  def join_alliance(alliance, update_pogs = true, msg = 'no msg given')
+    if self.alliance != nil || (alliance.pogs_team_id > 0 && self.general_stats_item.boinc_stats_item.nil?)
       false
     else
       self.alliance = alliance
-      item = AllianceMembers.new
-      item.join_date = Time.now
-      item.start_credit = self.general_stats_item.total_credit
-      item.start_credit ||= 0
-      item.leave_credit = self.general_stats_item.total_credit
-      item.leave_credit ||= 0
-      item.leave_date = nil
-
-      self.alliance_items << item
-      alliance.member_items << item
-
-      item.save
+      AllianceMembers.join_alliance(self,alliance, msg)
       self.save
+      if alliance.pogs_team_id > 0 && update_pogs
+        BoincRemoteUser.delay.join_team self.general_stats_item.boinc_stats_item.boinc_id, alliance.pogs_team_id
+      end
     end
   end
-  def leave_alliance
+
+  def leave_alliance(update_pogs = true, msg = 'no msg given')
     if self.alliance == nil
       false
     else
       item = self.alliance_items.where{(leave_date == nil) & (alliance_id == my{self.alliance.id})}.first
-      item.leave_date = Time.now
-      item.leave_credit = self.general_stats_item.total_credit
-      item.save
+      item.leave_alliance(self, msg)
+      if self.alliance.pogs_team_id > 0 && update_pogs
+        BoincRemoteUser.delay.leave_team self.general_stats_item.boinc_stats_item.boinc_id
+      end
       self.alliance = nil
       self.save
+
     end
   end
 
@@ -183,11 +316,11 @@ class Profile < ActiveRecord::Base
   def avatar_url(size=48)
     default_url = "retro"
     gravatar_id = Digest::MD5.hexdigest(self.user.email.downcase)
-    "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
+    "https://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}&d=#{CGI.escape(default_url)}"
   end
 
   def avatar_edit_url
-    "http://en.gravatar.com/emails/"
+    "https://en.gravatar.com/emails/"
   end
 
 
@@ -200,9 +333,47 @@ class Profile < ActiveRecord::Base
     sets
   end
 
+  def trophies_by_priority
+    self.trophies.
+        select('trophies.*').
+        select{coalesce(profiles_trophies.priority,trophies.priority,trophy_sets.priority,0).as(trophy_priority)}.
+        joins(:trophy_set).
+        order('trophy_priority desc')
+  end
+
+  def trophies_by_priority_set
+    sets = trophy_sets.order("trophy_sets.main DESC").uniq
+    all_trophies = trophies.
+        select('trophies.*').
+        select{coalesce(profiles_trophies.priority,trophies.priority,trophy_sets.priority,0).as(trophy_priority)}.
+        joins(:trophy_set).
+        order('trophy_priority desc').
+        group_by{|t| t.trophy_set_id}
+    sets.each do |set|
+      set.profile_trophies = all_trophies[set.id]
+    end
+    sets
+  end
+
   def has_trophy(trophy)
     ProfilesTrophy.where{(profile_id == my{self.id}) & (trophy_id == my{trophy.id})}.count > 0
   end
+
+
+
+  def is_science_user?
+    science_portal = SciencePortal.where{slug == "galaxy_private"}.first
+    if science_portal.nil?
+      return false
+    else
+      return science_portal.check_access(self.id)
+    end
+  end
+
+  def is_pogs?
+    !self.general_stats_item.boinc_stats_item.nil?
+  end
+
 
   #search methods
   include Tire::Model::Search
@@ -215,19 +386,52 @@ class Profile < ActiveRecord::Base
   end
 
 
-  def is_science_user?
-    science_portal = SciencePortal.where{slug == "galaxy_private"}.first
-    if science_portal.nil?
-      return false
-    else
-      return science_portal.check_access(self.id)
-    end
+
+  def self.notify_follow(id, follower_id)
+    self.find(id).notify_follow(follower_id)
+  end
+  def notify_follow(follower_id)
+    follower = Profile.find follower_id
+    return false if follower.nil?
+
+    subject = "#{follower.name} has followed your profile."
+    link_follower = ActionController::Base.helpers.link_to(follower.name, Rails.application.routes.url_helpers.profile_path(follower.id))
+    body = "Hey #{name}, <br /> #{link_follower} has followed your profile. <br /> Happy Computing! <br />  - theSkyNet"
+
+    aggregation_subject = "Your profile has been followed by %COUNT% users."
+    aggregation_body = "Hey #{name}, <br /> Your profile has been followed by %COUNT% users:"
+    aggregation_text = "#{link_follower} <br />"
+    ProfileNotification.notify_with_aggrigation(self,subject,body,aggregation_subject,aggregation_body,'class_id',self, aggregation_text, 'follow')
   end
 
   mapping do
     indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
+    indexes :id
   end
 
+  def friends_search(name)
+    ids = self.friends_ids
+    Profile.name_search(name, ids)
+  end
+
+  def self.name_search(name, ids)
+    tire.search(
+        page: 1,
+        per_page: 10,
+        load: {
+            include: [:alliance, :user]
+        }
+    ) do
+      query do
+        boolean(:minimum_number_should_match => 1) do
+          should {match :name, name}
+          should {prefix :name, name}
+        end
+      end
+      filter  :terms, id: ids
+      facet('id') { terms :id }
+    end
+  end
 
   def self.search(query,page = 1,per_page = 10)
     tire.search(
@@ -245,7 +449,9 @@ class Profile < ActiveRecord::Base
           should {match :name, query}
           should {prefix :name, query}
         end
+
       end
     end
   end
+
 end

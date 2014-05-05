@@ -21,7 +21,9 @@ class SiteStat < ActiveRecord::Base
     end
     s
   end
-
+  def self.try_get(name,default_value)
+    self.get(name) || self.set(name,default_value)
+  end
   def self.get(name)
     self.find_by_name(name)
   end
@@ -35,6 +37,7 @@ class SiteStat < ActiveRecord::Base
       s.previous_value = value
       s.name = name
       s.change_time = Time.now
+      s.show_in_list = false
       s.save
     else
       s.set(value)
@@ -44,7 +47,7 @@ class SiteStat < ActiveRecord::Base
   def set(value)
     value = value.to_s
     $statsd.gauge("site_stats.#{name}",value)
-    if self.value ==  value
+    if self.current_value ==  value
       self.touch
     else
       self.previous_value = self.current_value
@@ -59,7 +62,7 @@ class SiteStat < ActiveRecord::Base
     current_value.to_i >= previous_value.to_i ? 'asc' : 'desc'
   end
   def value
-    current_value
+    current_value.to_i
   end
 
   def desc

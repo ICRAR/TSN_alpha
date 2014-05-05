@@ -1,12 +1,14 @@
 .row-fluid
   #footer-icrar
-    %a{:href=>"http://www.icrar.org", :target =>"_blank"}= image_tag "icrar.jpg", :size => "276x114", :alt => "ICRAR"
+    %a{:href=>"http://www.icrar.org", :target =>"_blank"}= image_tag "footer_icrar.png", :size => "276x114", :alt => "ICRAR"
   #footer-social
     %ul.unstyled
       %li
         %a.icon.twitter{:href => "http://twitter.com/#!/_theskynet"}= t "social.twitter_follow"
       %li
         %a.icon.facebook{:href=>"http://www.facebook.com/pages/TheSkyNet/214061585306810"}= t "social.FB_fav"
+      %li
+        = link_to t("social.atom"), news_index_url(format: 'atom'), class: "icon rss"
   #footer-map
     %ul.unstlyed
       %li= link_to t("nav.home"), root_path
@@ -15,3 +17,5 @@
       %li= link_to t("nav.contact"), new_contact_form_path
 .row-fluid
   #language-footer.span4.offset1= render 'layouts/langauge_select'
+  #serverTime.span5.offset2
+    = "Current Server Time: #{Time.now}"

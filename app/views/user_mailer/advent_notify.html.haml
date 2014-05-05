@@ -1,0 +1,32 @@
+%h2= "Hi #{@profile.name},"
+-if @day == 12
+  %p
+    I've just unlocked the final box on our 12 days of Christmas page for 2013, click
+    =link_to "here ", advent_misc_url
+    to check it out.
+    I hope you've enjoyed the creative facts and graphics that my humans created to celebrate the festive seasons this year.
+  %p
+    Thank you for your valuable computing power and for playing your part in discovering our Universe.
+    Merry Christmas and Happy Holidays
+    %br
+    = link_to "-TheSkyNet", root_url
+-else
+  %p
+    We've just unlocked box
+    = "#{@day.en.numwords} "
+    on our 12 days of Christmas page, click
+    =link_to "here ", advent_misc_url
+    to check it out.
+  - if @day == 3
+    Make sure to open the box today to receive an exclusive surprise in your trophy cabinet.
+  - if @day == 10
+    Today we have an extra special background for you to download, so make sure to go and take a look.
+
+  %p
+    Thank you for your valuable computing power and for playing your part in discovering our Universe.
+    %br
+    = link_to "-TheSkyNet", root_url
+
+- if @day == 5
+  %p
+    486170707920486F6C69646179732066726F6D20746865536B794E6574210D0A536F6D65206F6620796F75206D61792068617665206E6F74696365642074686174207965737465726461797320696D61676520636F6E7461696E7320736F6D6520636F646564206D657373616765732E205468657265277320612074726F70687920666F7220616E796F6E652077686F2074656C6C73206D65207768617420746865206D6573736167657320736179202D206A757374207573652074686520636F6E7461637420757320666F726D21

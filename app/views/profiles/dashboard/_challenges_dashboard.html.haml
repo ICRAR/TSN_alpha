@@ -1,0 +1,47 @@
+#challenge_widget
+  .pull-right
+    %a.min_link{href: '#', data: {min_id: 'challenge_widget'}}
+      %i.icon-resize-small.challenge_min
+  %h2= link_to t('nav.challenges'), challenges_path
+  .minimisable
+    - if  @challenges_upcoming.empty? & @challenges_running.empty?
+      %p
+        There are no upcoming challenges, why not make your own
+        = link_to 'here?', new_challenge_path
+    -else
+      -unless  @challenges_upcoming.empty?
+        %h3 Upcoming Challenges
+        %table.table.table-striped
+          %thead
+            %tr
+              %th Name
+              %th Starts In
+          %tbody
+            -@challenges_upcoming.each do |challenge|
+              %tr
+                - link = challenge_path(challenge)
+                %td
+                  %a{href: link}= challenge.name
+                %td
+                  %a{href: link}
+                    .countdown_timer.countdown_timer-small{data: {countdown_to: time_to_js(challenge.start_date), refresh: 'false'} }
+
+      -unless  @challenges_running.empty?
+        %h3 Currently Running Challenges
+        %table.table.table-striped
+          %thead
+            %tr
+              %th Name
+              %th Time remaining
+          %tbody
+            -@challenges_running.each do |challenge|
+              %tr
+                - link = challenge_path(challenge)
+                %td
+                  %a{href: link}= challenge.name
+                %td
+                  %a{href: link}
+                    .countdown_timer.countdown_timer-small{data: {countdown_to: time_to_js(challenge.end_date), refresh: 'false'} }
+
+
+    %p= link_to "Your challenge history", challenge_history_profile_path(@profile)

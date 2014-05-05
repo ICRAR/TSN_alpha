@@ -35,11 +35,11 @@ class AllianceInvite < ActiveRecord::Base
       if profile.alliance_leader
         return false
       else
-        profile.leave_alliance if profile.alliance
+        profile.leave_alliance(true, "User is redeeming an alliance invite and needs to leave this alliance first") if profile.alliance
         self.used = true
         self.redeemed_on = Time.now
         profile.invited_by = self
-        profile.join_alliance self.alliance
+        profile.join_alliance(self.alliance, true, 'User is redeeming an alliance invite')
         self.save
       end
     else

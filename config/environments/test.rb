@@ -19,7 +19,7 @@ Tsn::Application.configure do
   config.action_controller.perform_caching = false
 
   # Raise exceptions instead of rendering exception templates
-  config.action_dispatch.show_exceptions = false
+  config.action_dispatch.show_exceptions = :builtin
 
   # Disable request forgery protection in test environment
   config.action_controller.allow_forgery_protection    = false
@@ -41,6 +41,10 @@ Tsn::Application.configure do
 
   #config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
   config.assets.prefix = "/assets_dev"
+  config.i18n.fallbacks = true
+
+  #speed up devise in testing
+  config.stretches = Rails.env.test? ? 1 : 10
 
   config.ember.variant = :development
 end

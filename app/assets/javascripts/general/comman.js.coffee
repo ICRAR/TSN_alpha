@@ -1,4 +1,4 @@
-this.TSN = new Object();
+TSN = this.TSN
 #**** share box for trophies
 TSN.trophy_share = (obj_id,trophy_name, trophy_url) ->
   tbx = document.getElementById(obj_id)
@@ -17,6 +17,39 @@ TSN.trophy_share = (obj_id,trophy_name, trophy_url) ->
       twitter: "I just earned '#{trophy_name}' from @_theSkyNet for playing my part in discovering our Universe! {{url}}"
   }
 #**************************************
+
+#******* minimise widget on dashboard
+init_minimise_button = () ->
+  #minimise widgets bassed on stored array
+  store_item = JSON.parse(localStorage.getItem('tsn_dashboard_min_array'))
+  store_item = [] if store_item == null
+  for id in store_item
+    $("##{id} .minimisable").hide()
+    icon = $("##{id} .min_link i").first()
+    icon.toggleClass('icon-resize-small')
+    icon.toggleClass('icon-resize-full')
+  $('.min_link').click((e) ->
+    e.preventDefault()
+    min_id = $(this).data('minId')
+
+    $("##{min_id}  .minimisable").slideToggle()
+    #then toggle icon class
+    icon = $(this).children('i').first()
+    icon.toggleClass('icon-resize-small')
+    icon.toggleClass('icon-resize-full')
+
+    #store which widgets are minimised
+    store_item = JSON.parse(localStorage.getItem('tsn_dashboard_min_array'))
+    store_item = [] if store_item == null
+    check_index = store_item.indexOf(min_id)
+    if check_index == -1
+      store_item.push min_id
+    else
+      store_item.splice(check_index, 1)
+    localStorage.setItem('tsn_dashboard_min_array',JSON.stringify(store_item))
+
+  )
+
 
 
 #******* custom alert box using bootbox
@@ -40,6 +73,27 @@ custom_alert_box = ->
         $.rails.handleLink(link);
 #**************************************
 
+date_range_picker = ->
+  $('.date_range_form').each ->
+    main = $(this)
+    $(main.data('fromAltId')).datepicker(
+      altField: main.data('fromId')
+      dateFormat: "DD, d MM, yy"
+      altFormat: "yy-mm-d"
+      changeMonth: true
+      onClose: (selectedDate) ->
+        $(main.data('toAltId')).datepicker "option", "minDate", selectedDate
+    ).keyup (e) ->
+      $.datepicker._clearDate this  if e.keyCode is 8 or e.keyCode is 46
+    $(main.data('toAltId')).datepicker(
+      altField: main.data('toId')
+      dateFormat: "DD, d MM, yy"
+      altFormat: "yy-mm-d"
+      changeMonth: true
+      onClose: (selectedDate) ->
+        $(main.data('fromAltId')).datepicker "option", "maxDate", selectedDate
+    ).keyup (e) ->
+      $.datepicker._clearDate this  if e.keyCode is 8 or e.keyCode is 46
 
 setup_announcement = ->
   $(".announcement").each( ->
@@ -74,10 +128,51 @@ placeholder_check = () ->
         $(element).attr('placeholder') + ': ' + label.html()
       )
 
+report_comment = () ->
+  $('.report-btn').click( ->
+    comment_id = $(this).data('commentId')
+    bootbox.prompt "Please enter a reason for reporting this comment.", (result) ->
+      unless result is null
+        w = window.location
+        new_url = "#{w.protocol}//#{w.hostname}:#{w.port}/comments/#{comment_id}/report?reason=#{encodeURIComponent(result)}"
+        window.location.href = new_url
+
+    false
+  )
+
+init_countdown_timers = () ->
+  #init anycountdown timeers
+  $('.countdown_timer').each ->
+    div = $(this)
+    div.countdown {
+      date: div.data('countdownTo')
+      render: (data) ->
+        el = $(this.el)
+        el.empty()
+        el.append("<div>" + this.leadingZeros(data.years, 4) + " <span>years</span></div>") if data.years > 0
+        el.append("<div>" + this.leadingZeros(data.days, 3) + " <span>days</span></div>") if data.years > 0 || data.days > 0
+        el.append("<div>" + this.leadingZeros(data.hours, 2) + " <span>hrs</span></div>")
+        el.append("<div>" + this.leadingZeros(data.min, 2) + " <span>min</span></div>")
+        el.append("<div>" + this.leadingZeros(data.sec, 2) + " <span>sec</span></div>")
+      onEnd: () ->
+        if $(this.el).data('refresh') == true
+          location.reload(true)
+    }
 $(document).ready( ->
   setup_announcement()
   custom_alert_box()
   placeholder_check()
+  date_range_picker()
+  init_minimise_button()
+  init_countdown_timers()
+  report_comment()
+
+  #enable at mentions feature on comments
+  TSN.atMention('#new_comment_inline_ textarea#comment_content')
+
+  #fix for bootstrap modal's getting stuck behind the background
+  $('.modal').appendTo("body")
+
   #using bootstrap-progressbar
   $('.progress .bar').progressbar(
     display_text: 1
@@ -95,14 +190,16 @@ $(document).ready( ->
   #setup an idle timer stop updating users notifications if they've been idle for 2 mins
   $( document ).idleTimer( 120000 );
   $(document).on "idle.idleTimer", ->
+    $('#test').text('idle')
     # function you want to fire when the user goes idle
-    TSN.notifications_timer.pause();
+    TSN.notifications_timer.pause() unless !TSN.notifications_timer?
     TSN.bat_timer.pause() if typeof(TSN.bat_timer) == 'object'
     TSN.activity_pause = true
 
   $(document).on "active.idleTimer", ->
+    $('#test').text('active')
     # function you want to fire when the user becomes active again
-    TSN.notifications_timer.play()
+    TSN.notifications_timer.play()  unless !TSN.notifications_timer?
     TSN.bat_timer.play() if typeof(TSN.bat_timer) == 'object'
     TSN.activity_pause = false
 
@@ -111,7 +208,7 @@ $(document).ready( ->
 
   #start the bat timer
   if rails.bat == true && typeof(TSN.bat_timer) != 'object'
-    TSN.bat_timer = $.timer(TSN.spawn_bats, 40000, true)
+    TSN.bat_timer = $.timer(Bats.spawn_bats, 40000, true)
     TSN.bat_timer.once(2000)
     getMousePosition = (timeoutMilliSeconds) ->
       # "one" attaches the handler to the event and removes it after it has executed once
@@ -125,91 +222,16 @@ $(document).ready( ->
     # start storing the mouse position every 100 milliseconds
     getMousePosition 100
     window.mousePos = [0,0]
+
+  #snow at christmas
+  if rails.snow == true
+    $(document).snowfall({round: true, minSize: 1, maxSize:5, flakeCount : 250});
+
+  #start fireworks
+  if rails.fireworks == true
+    Fireworks.run()
+  true
 )
-TSN.spawn_bats = () ->
-  for i in [0..20]
-    o = $("h1").offset()
-    TSN.spawn_bat(o.left+110,o.top+75)
-TSN.spawn_bat = (x,y) ->
-  b = new TSN.Bat(x,y)
-  b.home = [Math.random()*200+200,Math.random()*500+200]
-  b.fly()
-  b.live(Math.random()*10+10)
-  b
-
-TSN.bat_id = 0
-class TSN.Bat
-  constructor: (x,y) ->
-    @home = [200,200]
-    TSN.bat_id += 1
-    @name = "bat#{TSN.bat_id}"
-    @pos = [x,y]
-    @alive = true
-    @vel = [10,10]
-    $('body').append("<div id=\"#{@name}\" class=\"bat\" style='left:#{x}px; top:#{y}px;'>/^v^\\</div>")
-    @move
-  move: () ->
-    @update('x')
-    @update('y')
-    $("\##{@name}").animate({
-      left:@pos[0],
-      top: @pos[1]
-    }, 100)
-  fly: () ->
-    @fly_timer = $.timer =>
-      @move()
-    , 100
-    , true
-  die: () ->
-    $("\##{@name}").remove()
-  live: (t) ->
-    #the bat will live for between t seconds before flying away and dieing
-    @life_timer = $.timer =>
-      @fly_away()
-    , 3000
-    , false
-    @life_timer.once(t*1000)
-  fly_away: () ->
-    @alive = false
-    dir = Math.random()*2*Math.PI
-    @home[0] = $(window).width()*(0.5 + 4*Math.cos(dir))
-    @home[1] = $(window).height()*(0.5 + 4*Math.sin(dir))
-    @die_timer = $.timer =>
-      @die()
-    , 3000
-    , false
-    @die_timer.once(3000)
-  stop: () ->
-    @fly_timer.pause()
-  update: (c) ->
-    i = if (c == 'x') then 0 else 1
-    v = @vel[i]  #start at current speed
-    v += (Math.random()-.5)*10 #add a random amount
-
-    #calculates the distance to home + a random number (maxed and mined)
-    edge = if (c == 'x') then ($(window).width()- 100) else ($(window).height() - 300)
-    if @alive & window.mousePos[i] > 100 &  window.mousePos[i] < edge
-      h = window.mousePos[i]
-      home_trend = 0.02
-    else
-      h = @home[i]
-      home_trend = 0.007
-    dis = h-@pos[i]
-    dis = if (dis > 400) then 300 else dis
-    dis = if (dis < -400) then -300 else dis
-    dis += (Math.random()-.5)*30
-
-    v += dis* home_trend #trend towards home
-    v -= v*.03 #remove a damping factor
-
-    @vel[i] = v
-    @pos[i] += @vel[i]
-  test: () ->
-    t = 0
-    for x in [1..100000]
-      t += (Math.random()-.50000000001)
-    t
-
 
 
 TSN.GRAPHITE =  {
@@ -230,3 +252,4 @@ TSN.months_from_launch = ->
   d1 = new Date(2011, 8, 13)
   d2 = new Date()
   TSN.monthDiff(d1, d2) + 1
+

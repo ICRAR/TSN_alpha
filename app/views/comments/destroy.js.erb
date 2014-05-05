@@ -1,0 +1,2 @@
+var comment_whole = $("#comment_<%= @comment.id %>");
+comment_whole.replaceWith("<%= escape_javascript("<p>#{flash.discard(:notice)}</p>".html_safe)%>");

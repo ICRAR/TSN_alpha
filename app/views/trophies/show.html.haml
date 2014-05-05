@@ -7,26 +7,29 @@
 
 -content_for(:content) do
   #content-wrap
-    .shadowed
-      .inner-boundary
-        #content-inner
-          - if @trophy.hidden?(@trophy_ids)
-            .well
-              %h3.text-error= t ".warning"
-              %p.text-error
-                %strong= t ".denied"
-          %p= image_tag @trophy.image.url
-          %p
-            %strong= t ".belongs_to"
-            = @set.name
-          %p
-            = @trophy.desc(@trophy_ids).html_safe
-            -unless @trophy.credits.nil? || @trophy.credits == 0
-              ="(#{@trophy.show_credits(@trophy_ids)})"
-          %p
-            = t".won_by"
-            = @trophy.profiles_count
-            = t(".user").pluralize(@trophy.profiles_count)
-            = link_to "click here to see them all.", search_profiles_path(:trophy_id => @trophy.id)
-          - if user_signed_in? && current_user.profile.has_trophy(@trophy)
-            = render 'trophies/trophys_share', :trophy => @trophy
+    .well.well-white
+      - if @trophy.hidden?(@trophy_ids)
+        .well
+          %h3.text-error= t ".warning"
+          %p.text-error
+            %strong= t ".denied"
+      %p= image_tag @trophy.image.url(:base)
+      %p
+        %strong= t ".belongs_to"
+        = @set.name
+      %p
+        = @trophy.desc(@trophy_ids).html_safe
+      %p
+        = format_desc(@trophy,@trophy_ids)
+      %p
+        = render 'shared/social/like', model: @trophy
+    .well.well-white
+      %p
+        = t".won_by"
+        = @trophy.profiles_count
+        = t(".user").pluralize(@trophy.profiles_count)
+        = link_to "click here to see them all.", search_profiles_path(:trophy_id => @trophy.id)
+      - if user_signed_in? && current_user.profile.has_trophy(@trophy)
+        = render 'trophies/trophys_share', :trophy => @trophy
+
+      =render :partial => "comments/comments_section", :locals => {commentable: @trophy}

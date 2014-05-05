@@ -3,7 +3,9 @@ class ProfilesController < ApplicationController
   # GET /profiles.json
   authorize_resource
   helper_method :sort_column, :sort_direction
-  def index
+  skip_before_filter :check_announcement, only: [:name_search]
+  def index #main leaderboard
+    @search = false
     per_page = [params[:per_page].to_i,1000].min
     per_page = 30 if per_page == 0
     #Finds and highlights a users postion in the tables
@@ -31,13 +33,41 @@ class ProfilesController < ApplicationController
     @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).order("-"+sort_column + " " + sort_direction)
   end
 
+  def boinc_challenge
+    per_page = [params[:per_page].to_i,1000].min
+    per_page = 30 if per_page == 0
+    page_num = params[:page]
+    page_padding = 0;
+
+    @profiles = Profile.for_leader_boards.page(page_num).per(per_page).padding(page_padding).
+        joins(:general_stats_item =>:boinc_stats_item).
+        where{boinc_stats_items.RAC > 0}.
+        select("boinc_stats_items.challenge as rac_change").
+        select("boinc_stats_items.credit as boinc_credit").
+        select("boinc_stats_items.RAC as boinc_rac").
+        select("boinc_stats_items.boinc_id as boinc_id").
+        order('rac_change DESC')
+  end
+
   # GET /profiles/1
   # GET /profiles/1.json
   def show
+    if user_signed_in?
+      @trophy_ids = current_user.profile.trophy_ids
+
+    else
+      @trophy_ids = nil
+    end
     @profile = Profile.for_show(params[:id])
+    if user_signed_in?
+      @comment = Comment.new(:commentable => @profile)
+      @comment.profile = current_user.profile
+    end
     @trophy  = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
   end
-
+  def friends
+    @profile = Profile.for_show(params[:id])
+  end
   def compare
     @profiles = Profile.for_compare(params[:id1],params[:id2])
     if @profiles.length != 2
@@ -58,7 +88,7 @@ class ProfilesController < ApplicationController
         return
       end
       @trophy  = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
-      @profile.general_stats_item.nereus_stats_item.update_status  if @profile.general_stats_item.nereus_stats_item != nil
+      #@profile.general_stats_item.nereus_stats_item.update_status  if @profile.general_stats_item.nereus_stats_item != nil
     else
       redirect_to root_url, notice: 'You must be logged in to view your own profile.'
       return
@@ -75,10 +105,22 @@ class ProfilesController < ApplicationController
       end
     end
 
+    @challenges_upcoming = Challenge.not_hidden(user_is_admin?).upcoming
+    @challenges_running = Challenge.not_hidden(user_is_admin?).running
+
+
+
     profile_step = @profile.new_profile_step
+    if profile_step == 1 && !@profile.general_stats_item.boinc_stats_item.nil?
+      @profile.new_profile_step = 3
+      @profile.save
+      profile_step = @profile.new_profile_step
+    end
+
     if profile_step == 1 && !params[:next_step].nil?
       @profile.new_profile_step = [3,@profile.new_profile_step].max
       @profile.save
+      profile_step = @profile.new_profile_step
     end
     profile_step = params[:step].to_i - 1 if current_user.admin? && !params[:step].nil?
 
@@ -113,10 +155,41 @@ class ProfilesController < ApplicationController
       @trophy_ids = nil
     end
     @profile = Profile.find(params[:id])
+    @by_sets = false
     if params[:style] == "credit"
       @trophies = @profile.trophies.order{credits.desc}
+    elsif params[:style] == "priority"
+      if params[:by_set]
+        @by_sets = true
+        @trophies = @profile.trophies_by_priority_set
+        @trophies.each do |set|
+          last_priority = 0
+          set.profile_trophies.each do |trophy|
+            trophy.last_priority = last_priority
+            last_priority = trophy.trophy_priority
+          end
+          next_priority = 0
+          set.profile_trophies.reverse_each do |trophy|
+            trophy.next_priority = next_priority
+            next_priority = trophy.trophy_priority
+          end
+        end
+      else
+        @trophies = @profile.trophies_by_priority
+        last_priority = 0
+        @trophies.each do |trophy|
+          trophy.last_priority = last_priority
+          last_priority = trophy.trophy_priority
+        end
+        next_priority = 0
+        @trophies.reverse_each do |trophy|
+          trophy.next_priority = next_priority
+          next_priority = trophy.trophy_priority
+        end
+      end
     else
       @trophies = @profile.trophies_by_set
+      @by_sets = true
     end
 
 
@@ -206,6 +279,7 @@ class ProfilesController < ApplicationController
     end
   end
   def update_nereus_id
+    return
     if user_signed_in?
       @profile = current_user.profile
       nereus = NereusStatsItem.where(:nereus_id => params['nereus_id']).try(:first)
@@ -228,6 +302,7 @@ class ProfilesController < ApplicationController
     end
   end
   def update_nereus_settings
+    return
     if user_signed_in?
       @profile = current_user.profile
       nereus = current_user.profile.general_stats_item.nereus_stats_item
@@ -245,6 +320,7 @@ class ProfilesController < ApplicationController
     end
   end
   def pause_nereus
+    return
     if user_signed_in?
       @profile = current_user.profile
       nereus = current_user.profile.general_stats_item.nereus_stats_item
@@ -263,6 +339,7 @@ class ProfilesController < ApplicationController
     end
   end
   def resume_nereus
+    return
     if user_signed_in?
       @profile = current_user.profile
       nereus = current_user.profile.general_stats_item.nereus_stats_item
@@ -280,7 +357,13 @@ class ProfilesController < ApplicationController
       return
     end
   end
+  def name_search
+    signed_in
+    profile = current_user.profile
+    @profiles = profile.friends_search params[:name]
+  end
   def search
+    @search_ranks = false
     per_page = [params[:per_page].to_i,1000].min
     per_page = 30 if per_page == 0
     page_num = params[:page]
@@ -296,6 +379,14 @@ class ProfilesController < ApplicationController
       @galaxy = Galaxy.where(:galaxy_id => params[:galaxy_id]).first || not_found
       @profiles = @galaxy.profiles.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
       render :index
+    elsif params[:followers]
+      @search_ranks = true
+      @profile = Profile.find params[:followers]
+      followees_id = @profile.friends_ids
+      followees_id << @profile.id
+      @profiles = Profile.where{id.in followees_id}.for_leader_boards.page(page_num).per(per_page).order("-"+sort_column + " " + sort_direction)
+      @ranks_hash = GeneralStatsItem.ranks_from_profile_array followees_id
+      render :index
     else
       redirect_to( profiles_path, :alert => "You did not enter a valid search query")
     end
@@ -308,7 +399,6 @@ class ProfilesController < ApplicationController
 
       @total_members  = @alliance ? AllianceMembers.where(:alliance_id =>@alliance.id).count : nil
   end
-
 
   private
 

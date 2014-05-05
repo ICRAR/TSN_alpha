@@ -1,0 +1,34 @@
+.trophy_thumbnail{:class => size}
+  - if size == :medium || size == :large
+    .caption
+      %h4= link_to "#{trophy.title}" ,  "#trophyPopUp#{trophy.id}", "data-toggle" => "modal"
+      -unless trophy.credits.nil? || trophy.credits == 0
+        %p= "(#{format_credit(trophy,@trophy_ids)})"
+  - if user_signed_in? && current_user.profile.id == params[:id].to_i
+    - if trophy.last_priority > 0
+      = link_to "+", promote_trophy_path(id: trophy.id, value: trophy.last_priority+1)
+    - if trophy.next_priority > 0
+      = link_to "-", demote_trophy_path(id: trophy.id, value: trophy.next_priority-1)
+
+  %a{:href=>"#trophyPopUp#{trophy.id}", "data-toggle" => "modal"}= image_tag trophy.image.url(size.to_sym), :class=>"media-object", :title => trophy.title
+
+
+
+.modal.hide.fade.trophy-modal{:id => "trophyPopUp#{trophy.id}","aria-hidden" => "true", "aria-labelledby" => "myModalLabel", role: "dialog", tabindex: "-1"}
+  .modal-header
+    %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
+    %h3#myModalLabel= trophy.title
+  .modal-body
+    - if trophy.hidden?(@trophy_ids)
+      .well.well-small
+        %h3.text-error= t "trophies.show.warning"
+        %p.text-error
+          %strong= t "trophies.show.denied"
+    %p= image_tag trophy.image.url(:base)
+    %p
+      = trophy.desc(@trophy_ids).html_safe
+      -unless trophy.credits.nil? || trophy.credits == 0
+        ="(awarded for #{format_credit(trophy,@trophy_ids)})"
+  .modal-footer
+    %button.btn{"aria-hidden" => "true", "data-dismiss" => "modal"} Close
+    %a.btn.btn-primary{href: trophy_path(trophy)} More

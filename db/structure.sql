@@ -13,7 +13,7 @@ CREATE TABLE `activities` (
   PRIMARY KEY (`id`),
   KEY `index_activities_on_profile_id` (`profile_id`),
   KEY `index_activities_on_trackable_id` (`trackable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1821 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2580 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `alliance_invites` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -42,11 +42,12 @@ CREATE TABLE `alliance_members` (
   `profile_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `log` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `profile_id_index` (`profile_id`),
   KEY `alliance_id_index` (`alliance_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14452 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15157 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `alliances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -65,11 +66,13 @@ CREATE TABLE `alliances` (
   `pogs_team_id` int(11) DEFAULT '0',
   `pogs_update_time` int(11) DEFAULT NULL,
   `duplicate_id` int(11) DEFAULT NULL,
+  `current_members` int(11) DEFAULT NULL,
+  `comments_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `credit_desc` (`credit`),
   KEY `ranking_asc` (`ranking`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2105 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2145 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `boinc_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -85,8 +88,8 @@ CREATE TABLE `boinc_stats_items` (
   `challenge` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
-  KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13192 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `boinc_id_index` (`boinc_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14701 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `bonus_credits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -98,7 +101,61 @@ CREATE TABLE `bonus_credits` (
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5057 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5058 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `challenge_data` (
+  `measurable_id` int(11) DEFAULT NULL,
+  `measurable_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `metric_key` int(11) NOT NULL DEFAULT '0',
+  `value` int(11) NOT NULL,
+  `datetime` datetime NOT NULL,
+  UNIQUE KEY `challenge_data_primary_index` (`measurable_type`,`measurable_id`,`metric_key`,`datetime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `challengers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `score` int(11) DEFAULT NULL,
+  `save_value` int(11) DEFAULT NULL,
+  `start` int(11) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
+  `challenge_id` int(11) DEFAULT NULL,
+  `entity_id` int(11) DEFAULT NULL,
+  `entity_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `joined_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `handicap` float NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `index_challengers_on_challenge_id_and_rank` (`challenge_id`,`rank`),
+  KEY `index_challengers_on_entity_type_and_entity_id` (`entity_type`,`entity_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `challenges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `desc` text COLLATE utf8_unicode_ci,
+  `start_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `invite_only` tinyint(1) DEFAULT NULL,
+  `join_while_running` tinyint(1) DEFAULT NULL,
+  `challenger_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `challenge_system` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `project` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `manager_id` int(11) DEFAULT NULL,
+  `started` tinyint(1) DEFAULT NULL,
+  `finished` tinyint(1) DEFAULT NULL,
+  `challengers_count` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `next_update_time` datetime DEFAULT NULL,
+  `hidden` tinyint(1) NOT NULL DEFAULT '0',
+  `handicap_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comments_count` int(11) DEFAULT NULL,
+  `invite_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_challenges_on_start_date` (`start_date`),
+  KEY `index_challenges_on_end_date` (`end_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `ckeditor_assets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -116,6 +173,32 @@ CREATE TABLE `ckeditor_assets` (
   KEY `idx_ckeditor_assetable_type` (`assetable_type`,`type`,`assetable_id`),
   KEY `idx_ckeditor_assetable` (`assetable_type`,`assetable_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `comment_hierarchies` (
+  `ancestor_id` int(11) NOT NULL,
+  `descendant_id` int(11) NOT NULL,
+  `generations` int(11) NOT NULL,
+  UNIQUE KEY `comment_anc_desc_udx` (`ancestor_id`,`descendant_id`,`generations`),
+  KEY `comment_desc_idx` (`descendant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `content` text COLLATE utf8_unicode_ci,
+  `moderated` tinyint(1) DEFAULT '0',
+  `moderated_at` datetime DEFAULT NULL,
+  `profile_id` int(11) DEFAULT NULL,
+  `commentable_id` int(11) DEFAULT NULL,
+  `commentable_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `comment_id` (`id`),
+  KEY `comment_parent_id` (`parent_id`),
+  KEY `comment_profile_id` (`profile_id`),
+  KEY `comment_commentable` (`commentable_type`,`commentable_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=483 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `conversations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -152,7 +235,19 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=227 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `follows` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `follower_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `follower_id` int(11) DEFAULT NULL,
+  `followable_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `followable_id` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_follows` (`follower_id`,`follower_type`),
+  KEY `fk_followables` (`followable_id`,`followable_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -170,7 +265,7 @@ CREATE TABLE `general_stats_items` (
   KEY `total_credit_index_desc` (`total_credit`),
   KEY `rank_asc` (`rank`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21510 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22997 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `leaders_science_portals` (
   `leader_id` int(11) DEFAULT NULL,
@@ -178,10 +273,34 @@ CREATE TABLE `leaders_science_portals` (
   KEY `index_leaders_science_portals_on_leader_id_and_science_portal_id` (`leader_id`,`science_portal_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `likes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `liker_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `liker_id` int(11) DEFAULT NULL,
+  `likeable_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `likeable_id` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_likes` (`liker_id`,`liker_type`),
+  KEY `fk_likeables` (`likeable_id`,`likeable_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `members_science_portals` (
   `member_id` int(11) DEFAULT NULL,
   `science_portal_id` int(11) DEFAULT NULL,
   KEY `index_members_science_portals_on_member_id_and_science_portal_id` (`member_id`,`science_portal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `mentions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mentioner_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `mentioner_id` int(11) DEFAULT NULL,
+  `mentionable_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `mentionable_id` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_mentions` (`mentioner_id`,`mentioner_type`),
+  KEY `fk_mentionables` (`mentionable_id`,`mentionable_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `nereus_stats_items` (
@@ -205,7 +324,7 @@ CREATE TABLE `nereus_stats_items` (
   `report_time_sent` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `general_stats_item_index` (`general_stats_item_id`),
-  KEY `id_index` (`id`)
+  KEY `nereus_id_index` (`nereus_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9239 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `news` (
@@ -222,10 +341,12 @@ CREATE TABLE `news` (
   `image_file_size` int(11) DEFAULT NULL,
   `image_updated_at` datetime DEFAULT NULL,
   `notify` tinyint(1) DEFAULT '0',
+  `comments_count` int(11) DEFAULT NULL,
+  `use_disqus` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `pubished_time_index_asc` (`published_time`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -247,7 +368,7 @@ CREATE TABLE `notifications` (
   PRIMARY KEY (`id`),
   KEY `index_notifications_on_conversation_id` (`conversation_id`),
   CONSTRAINT `notifications_on_conversation_id` FOREIGN KEY (`conversation_id`) REFERENCES `conversations` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3468 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4836 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `page_translations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -275,6 +396,25 @@ CREATE TABLE `pages` (
   KEY `id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `profile_notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `profile_id` int(11) DEFAULT NULL,
+  `subject` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `body` text COLLATE utf8_unicode_ci,
+  `read` tinyint(1) DEFAULT NULL,
+  `aggregatable` tinyint(1) DEFAULT NULL,
+  `aggregator_count` int(11) DEFAULT NULL,
+  `aggregation_text` text COLLATE utf8_unicode_ci,
+  `aggregation_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `notifier_id` int(11) DEFAULT NULL,
+  `notifier_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `profile_aggrigate_index` (`profile_id`,`read`,`aggregatable`,`notifier_type`,`notifier_id`,`aggregation_type`),
+  KEY `profile_read_index` (`profile_id`,`read`,`created_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=93648 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -293,11 +433,13 @@ CREATE TABLE `profiles` (
   `old_site_user` tinyint(1) DEFAULT NULL,
   `advent_notify` tinyint(1) DEFAULT NULL,
   `advent_last_day` int(11) DEFAULT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `comments_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`user_id`),
   KEY `alliance_leader_id_index` (`alliance_leader_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21510 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22997 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `profiles_trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -312,7 +454,7 @@ CREATE TABLE `profiles_trophies` (
   KEY `profile_id_index` (`profile_id`),
   KEY `trophy_id_index` (`trophy_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=892436 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=981105 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `rails_admin_histories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -343,7 +485,7 @@ CREATE TABLE `receipts` (
   KEY `index_receipts_on_notification_id` (`notification_id`),
   KEY `index_receiver_id_is_read` (`receiver_id`,`is_read`),
   CONSTRAINT `receipts_on_notification_id` FOREIGN KEY (`notification_id`) REFERENCES `notifications` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7382 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11379 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -385,7 +527,7 @@ CREATE TABLE `site_stats` (
   PRIMARY KEY (`id`),
   KEY `show_index` (`show_in_list`),
   KEY `name_index` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `special_days` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -408,7 +550,7 @@ CREATE TABLE `special_days` (
   `logo_file_size` int(11) DEFAULT NULL,
   `logo_updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `sub_shout_boxes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -416,7 +558,7 @@ CREATE TABLE `sub_shout_boxes` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `taggings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -438,6 +580,24 @@ CREATE TABLE `tags` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=867 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `timeline_entries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subject` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `more` text COLLATE utf8_unicode_ci,
+  `subject_aggregate` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `more_aggregate` text COLLATE utf8_unicode_ci,
+  `aggregate_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `aggregate_type_2` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `aggregate_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `posted_at` datetime DEFAULT NULL,
+  `timelineable_id` int(11) DEFAULT NULL,
+  `timelineable_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `agg_timeline_index` (`timelineable_id`,`timelineable_type`,`posted_at`,`aggregate_type`,`aggregate_type_2`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -453,9 +613,10 @@ CREATE TABLE `trophies` (
   `trophy_set_id` int(11) DEFAULT NULL,
   `set_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `priority` int(11) DEFAULT NULL,
+  `comments_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `trophy_sets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -466,7 +627,7 @@ CREATE TABLE `trophy_sets` (
   `updated_at` datetime NOT NULL,
   `priority` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -505,8 +666,9 @@ CREATE TABLE `users` (
   UNIQUE KEY `index_users_on_username` (`username`),
   UNIQUE KEY `index_users_on_invitation_token` (`invitation_token`),
   KEY `index_users_on_invited_by_id` (`invited_by_id`),
-  KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21511 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `id_index` (`id`),
+  KEY `index_joined_at` (`joined_at`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=22998 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `versions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -680,3 +842,47 @@ INSERT INTO schema_migrations (version) VALUES ('20131218043420');
 INSERT INTO schema_migrations (version) VALUES ('20140106083424');
 
 INSERT INTO schema_migrations (version) VALUES ('20140122062212');
+
+INSERT INTO schema_migrations (version) VALUES ('20140129035940');
+
+INSERT INTO schema_migrations (version) VALUES ('20140129061603');
+
+INSERT INTO schema_migrations (version) VALUES ('20140204035251');
+
+INSERT INTO schema_migrations (version) VALUES ('20140204035930');
+
+INSERT INTO schema_migrations (version) VALUES ('20140204063822');
+
+INSERT INTO schema_migrations (version) VALUES ('20140207070234');
+
+INSERT INTO schema_migrations (version) VALUES ('20140212024154');
+
+INSERT INTO schema_migrations (version) VALUES ('20140213041029');
+
+INSERT INTO schema_migrations (version) VALUES ('20140218052156');
+
+INSERT INTO schema_migrations (version) VALUES ('20140224041125');
+
+INSERT INTO schema_migrations (version) VALUES ('20140225021502');
+
+INSERT INTO schema_migrations (version) VALUES ('20140226055642');
+
+INSERT INTO schema_migrations (version) VALUES ('20140303022212');
+
+INSERT INTO schema_migrations (version) VALUES ('20140303024437');
+
+INSERT INTO schema_migrations (version) VALUES ('20140303070636');
+
+INSERT INTO schema_migrations (version) VALUES ('20140312013603');
+
+INSERT INTO schema_migrations (version) VALUES ('20140324020537');
+
+INSERT INTO schema_migrations (version) VALUES ('20140324020538');
+
+INSERT INTO schema_migrations (version) VALUES ('20140324020539');
+
+INSERT INTO schema_migrations (version) VALUES ('20140324032411');
+
+INSERT INTO schema_migrations (version) VALUES ('20140403032948');
+
+INSERT INTO schema_migrations (version) VALUES ('20140404081950');

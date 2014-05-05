@@ -36,7 +36,7 @@ Tsn::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.default_url_options = { :host => 'lvh.me:3000' }
   config.action_mailer.delivery_method = :smtp
 
 
@@ -45,6 +45,7 @@ Tsn::Application.configure do
 
   #config.action_controller.asset_host = "//#{APP_CONFIG['AWS_BUCKET']}.s3.amazonaws.com"
   config.assets.prefix = "/assets_dev"
+  #config.action_mailer.asset_host = "http://localhost:3000"
 
   # fallback to what's specified in config.i18n.default_locale
   config.i18n.fallbacks = true

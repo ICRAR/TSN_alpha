@@ -1,3 +1,5 @@
+- my_meta :title => "Your Dashboard",
+    :description => "This page contains all the key data for monitoring your theSkyNet.org account"
 -content_for(:title_bar) do
   #intro-sml-wrap
     %h1.fontface Account Dashboard
@@ -13,15 +15,22 @@
         .span5
           .row-fluid
             .span12.well.well-white#leaderboards
-              = render 'profiles/dashboard/ladder_dashboard'
+              = render 'profiles/dashboard/ladder_dashboard', minimise: true
           .row-fluid
             .span12.well.well-white#alliance
               =render 'profiles/dashboard/alliances_dashboard'
       .row-fluid
+        .span12.well.well-white#challenge
+          =render 'profiles/dashboard/challenges_dashboard'
+      .row-fluid
+        .span12.well.well-white#timeline
+          %h2 Timeline
+          #timeline_entries
+      .row-fluid
         .span6.well.well-white#boinc
           =render 'profiles/dashboard/boinc_dashboard'
-        .span6.well.well-white#nereus
-          =render 'profiles/dashboard/nereus_dashboard'
+
+        =render 'profiles/dashboard/nereus_dashboard'
 
 
 

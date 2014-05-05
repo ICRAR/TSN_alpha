@@ -1,0 +1,82 @@
+- my_meta :title => "Create a new Challenge",
+    :description => ""
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface New Challenge
+  -@user_page =  'challenge'
+  =render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    #alliance-show
+      = render :partial => 'shared/under_construction'
+      .row-fluid
+        .span12.well.well-white
+          .well
+            %p
+              TheSkyNet challenge system is a way to create a short term ( 1 to 31 days) challenge on a
+              variety of different theSkyNet stats. Once created invite your friends to determine who will
+              reign supreme.
+          - #raise 'test'
+          = simple_form_for(@challenge, :html => {:class => 'form-horizontal' }) do |f|
+            .row-fluid
+              .span8
+                = f.input :name, input_html: {class: 'input-xlarge'}
+
+            .row-fluid
+              .span7
+                = f.input :desc, input_html: {rows: 5, class: 'input-xlarge'}
+              .span5
+                .well.well-small
+                  %p= "You may use <a href=\"https://help.github.com/articles/github-flavored-markdown\">GitHub Flavored Markdown</a> for formatting.".html_safe
+            .row-fluid
+              .span7
+                = f.input :invite_only
+              .span5
+                .well.well-small
+                  %p= 'If this box is marked, new members will require an invite code to join.'
+            .row-fluid
+              .span7
+                = f.input :join_while_running
+              .span5
+                .well.well-small
+                  %p= 'If this box is marked, new challengers will be able to join whilst the challenge is underway.'
+            .row-fluid
+              .span7
+                = f.input :start_date, as: :string
+                = f.input :end_date, as: :string
+              .span5
+                .well.well-small
+                  %p Times are in UTC
+            .row-fluid
+              .span7
+                = f.input :challenger_type, collection: @challenge.challenger_type_enum
+              .span5
+                .well.well-small
+                  %p Is this challenge for Profiles (Profiles) or Alliances/Teams
+            .row-fluid
+              .span7
+                = f.input :challenge_system, collection: @challenge.challenge_system_enum
+              .span5
+                .well.well-small
+                  %p The challenge system defines what is being measured and used to rank the challengers. Options include:
+                  %ul.small-font
+                    %li Credit, credit gained over the challenge (Profiles and Alliances)
+                    %li RAC, change in RAC over the challenge (Profiles and Alliances)
+                    %li Peak RAC, highest recorded RAC over the challenge (Profiles and Alliances)
+                    %li Change in rank, change in leaderboard postion over the challenge (Profiles and Alliances only)
+                    %li Peak Active Members, Alliances/Teams only (Alliances only)
+                    %li New Members, Number of new members to join during the challenge (Alliances only)
+            .row-fluid
+              .span7
+                = f.input :handicap_type, collection: @challenge.handicap_type_enum
+              .span5
+                .well.well-small
+                  %p The handicap type defines if any what handicap system is used. Options include:
+                  %ul.small-font
+                    %li None (Profiles and Alliances)
+                    %li RAC, scaled by current RAC as measured at the start of the challenge (Profiles and Alliances)
+                    %li Number of members, scaled by number of current members as measured at the start of the challenge (Alliances only)
+            .control-group
+              .controls
+                = f.button :submit

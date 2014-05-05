@@ -1,0 +1,43 @@
+- my_meta :title => @profile.name,
+    :description => "#{@profile.name.possessive} freinds."
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= "#{@profile.name.possessive} freinds."
+  -@user_page=  'friends'
+  =  render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .row-fluid
+      .span12.well.well-small
+        %h3= format_breadcrumbs({@profile.name => profile_path(@profile), 'Friends' => ''})
+    .row-fluid
+      .span12.well.well-white
+        %h2= "#{@profile.name} is following:"
+        -@profile.followees_for_friends.each_slice(6) do |followees_row|
+          .row_fluid
+            %ul.thumbnails
+              -followees_row.each do |followee|
+                %li.span2
+                  .thumbnail
+                    = link_to profile_path(followee) do
+                      = image_tag followee.avatar_url(100), title: followee.name
+                    .caption
+                      %p
+                        = link_to profile_path(followee) do
+                          = followee.name
+                        = "(#{followee.alliance ? followee.alliance.name : 'Flying Solo'})"
+        %h3 And is followed by:
+        -@profile.followers_for_friends.each_slice(6) do |followees_row|
+          .row_fluid
+            %ul.thumbnails
+              -followees_row.each do |followee|
+                %li.span2
+                  .thumbnail
+                    = link_to profile_path(followee) do
+                      = image_tag followee.avatar_url(100), title: followee.name
+                    .caption
+                      %p
+                        = link_to profile_path(followee) do
+                          = followee.name
+                        = "(#{followee.alliance ? followee.alliance.name : 'Flying Solo'})"

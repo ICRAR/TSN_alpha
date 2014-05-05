@@ -1,0 +1,31 @@
+- my_meta :title => "theSkyNet Challenges: #{@challenge.name}",
+    :description => "short term challenges run by users of theSkyNet to compete for trophies"
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @challenge.name
+  - @user_page =  'challenges'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    = render :partial => 'shared/under_construction'
+    .well.well-small
+      %h3= format_breadcrumbs({'Challenges' => challenges_path, @challenge.name => ''})
+    .row-fluid
+      .span12.well.well-white
+        .well
+          %p
+            TheSkyNet challenge system is a way to create a short term ( 1 to 31 days) challenge on a
+            variety of different theSkyNet stats. Once created invite your friends to determine who will
+            reign supreme.
+        - #raise 'test'
+        = simple_form_for(@challenge, :html => {:class => 'form-horizontal' }) do |f|
+          .row-fluid
+            .span7
+              = f.input :desc, input_html: {rows: 5, class: 'input-xlarge'}
+            .span5
+              .well.well-small
+                %p= "You may use <a href=\"https://help.github.com/articles/github-flavored-markdown\">GitHub Flavored Markdown</a> for formatting.".html_safe
+
+          .control-group
+            .controls
+              = f.button :submit

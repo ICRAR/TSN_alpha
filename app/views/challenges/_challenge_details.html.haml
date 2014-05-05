@@ -1,0 +1,73 @@
+.span5.well.well-white
+  %h2= challenge.name
+  %dl.dl-horizontal
+    %dt Start Time
+    %dd= challenge.start_date
+    %dt End Time
+    %dd= challenge.end_date
+    %dt Current Status
+    %dd= challenge.status
+    %dt Challengers (#)
+    %dd= challenge.challengers.size
+    %dt Challenge Type
+    %dd= "#{challenge.challenge_system} #{challenge.challenger_type}"
+    %dt Handicap Type
+    %dd= challenge.handicap_type
+    %dt Allows late entrants
+    %dd= challenge.join_while_running? ? "Yes" : "No"
+    %dt Invite Only
+    %dd= challenge.invite_only? ? "Yes" : "No"
+  - if user_signed_in?
+    = display_join_button(challenge, current_user.profile)
+
+.span7
+  .row-fluid
+    .span12.well.well-white
+      %h2 About this challenge:
+      %blockquote.pull-right
+        - desc = markdown(challenge.desc)
+        %p= desc
+        - if challenge.manager != nil
+          %small= link_to challenge.manager.name, challenge.manager
+      .clearfix
+      - if challenge.running?
+        - random_secs = rand(0..180).seconds #random number of seconds added to prevent server overload at update time
+        - refresh_time = challenge.next_update_time + 2.minutes + random_secs
+        - end_time = challenge.end_date + 2.minutes + random_secs
+        - refresh_page = (refresh_time > 1.minutes.from_now).to_s
+        .row-fluid
+          .span6
+            %h3 Time until next update:
+            .countdown_timer{data: {countdown_to: time_to_js(refresh_time), refresh: refresh_page} }
+          .span6
+            %h3 Time remaining:
+            .countdown_timer{data: {countdown_to: time_to_js(end_time), refresh: 'false'} }
+      -elsif !challenge.started?
+        %h3 This challenge will start in:
+        - refresh_time = challenge.start_date + 2.minutes + rand(0..180).seconds
+        - refresh_page = (refresh_time > 1.minutes.from_now).to_s
+        .countdown_timer{data: {countdown_to: time_to_js(refresh_time), refresh: refresh_page} }
+      - if user_signed_in? && challenge.manager_id == current_user.profile.id
+        =link_to "Manage your challenge", edit_challenge_path(challenge)
+        - if challenge.invite_only?
+          .well.well-small
+            %h4 Invite Only Details
+            %p
+              As this challenge is an invite only challenge any one signing up will need to use the following code:
+              %b= challenge.invite_code
+            %p Or they can use this link:
+            - link = challenge_url(challenge, {:protocol => 'https', invite_code: challenge.invite_code})
+            %p= link_to link, link
+  - if user_signed_in?
+    -your_challenger = current_users_challenger(challenge,current_user.profile)
+    - unless your_challenger.nil?
+      .row-fluid
+        .span12.well.well-white
+          %h2 Your stats:
+          %dl.dl-horizontal
+            %dt Score
+            %dd= your_challenger.score
+            %dt Rank
+            %dd= your_challenger.rank
+          %p= link_to "Find me in the challenge leaderboards", challenge_path(challenge, {rank: your_challenger.rank})
+

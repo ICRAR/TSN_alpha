@@ -16,6 +16,7 @@ gem 'devise-async'
 gem 'cancan'
 
 gem 'rails_admin'
+gem 'rack-ssl-enforcer'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -52,13 +53,20 @@ gem 'tire'
 gem 'acts-as-taggable-on'
 gem 'rmagick'
 gem 'voruby'
-gem 'globalize3'
+gem 'globalize', '~> 3.0.4'
 gem 'i18n-js'
 gem 'sanitize'
 gem 'mailboxer'
 gem "messengerjs-rails", "~> 1.3.6"
 gem 'metamagic'
 gem 'talk_like_a_pirate'
+gem 'premailer-rails'
+gem 'closure_tree'
+gem 'redcarpet'
+gem 'composite_primary_keys'
+gem 'activerecord-import', '0.3.1'
+gem "socialization"
+gem 'ruby-bbcode-to-md'
 
 gem 'ember-rails'
 gem 'ember-source', '1.5.0' # or the version you need
@@ -81,7 +89,8 @@ gem 'debugger'
 gem 'turnout'
 
 group :development do
-#  gem 'rack-mini-profiler'
+  gem 'rack-mini-profiler'
+  gem 'flamegraph'
   gem 'rails-footnotes', '>= 3.7.9'
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -92,17 +101,35 @@ group :development do
   gem 'thin'
 end
 
+group :profile, :development do
+  gem 'thin'
+end
+
+group :profile do
+  gem 'ruby-prof'
+end
+
 #Gems required for testing
 group :development, :test do
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  #gem 'factory_girl_rails'
+  gem 'fabrication'
   gem 'faker'
+  gem 'debugger', "~> 1.6.2"
+  gem 'debugger-xml', "~> 0.3.3"
 end
 
 group :test do
   gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'capybara-webkit'
+  gem 'capybara-screenshot'
+  gem 'database_cleaner'
 #  gem 'guard-rspec'
   gem 'launchy'
+  gem 'zeus', '~>0.13.4.pre2'
+  gem 'simplecov', :require => false
+
 end
 
 

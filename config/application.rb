@@ -90,5 +90,7 @@ module Tsn
     config.after_initialize do |app|
       app.routes.append{match '*path', :to => 'pages#show', :format => false, :defaults => {:slug => '404'}}
     end
+
+
   end
 end

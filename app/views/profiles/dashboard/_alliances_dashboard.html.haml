@@ -1,14 +1,25 @@
-%h2 Your Alliance
--if  @profile.alliance
-  %h3.pull-left= link_to(@profile.alliance.name, @profile.alliance)
-  .row-fluid
-    .span11
-      %dl.dl-horizontal
-        %dt Total Credit
-        %dd= number_with_delimiter(@profile.alliance.credit)
-        %dt Rank
-        %dd= @profile.alliance.ranking
-        %dd=(@profile.alliance_leader_id && @profile.alliance_leader_id == @profile.alliance.id)  ? link_to('Manage', edit_alliance_path(@profile.alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
--else
-  %p="You are not part of an alliance yet click #{link_to 'here', new_alliance_path} to create one or #{link_to 'here', alliances_path} to find an existing alliance to join".html_safe
-%p= link_to "Your alliance history", alliance_history_profile_path(@profile)
+#alliance_widget
+  .pull-right
+    %a.min_link{href: '#', data: {min_id: 'alliance_widget'}}
+      %i.icon-resize-small
+  %h2 Your Alliance
+  .minimisable
+    -if  @profile.alliance
+      %h3.pull-left= link_to(@profile.alliance.name, @profile.alliance)
+      .row-fluid
+        .span11
+          %dl.dl-horizontal
+            %dt Total Credit
+            %dd= number_with_delimiter(@profile.alliance.credit)
+            %dt Rank
+            %dd= @profile.alliance.ranking
+            %dd
+              -if (@profile.alliance_leader && @profile.alliance_leader_id == @profile.alliance.id)
+                = link_to('Manage', edit_alliance_path(@profile.alliance), :class => "btn btn-warning")
+              -elsif @profile.alliance.is_boinc?
+                =link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "This will also remove you from the #{@profile.alliance.name} team on theSkyNet POGS and BOINC. Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
+              -else
+                =link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
+    -else
+      %p="You are not part of an alliance yet click #{link_to 'here', new_alliance_path} to create one or #{link_to 'here', alliances_path} to find an existing alliance to join".html_safe
+    %p= link_to "Your alliance history", alliance_history_profile_path(@profile)

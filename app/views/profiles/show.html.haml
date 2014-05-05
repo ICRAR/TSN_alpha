@@ -1,3 +1,5 @@
+- my_meta :title => @profile.name,
+    :description => "#{@profile.name.possessive} profile details."
 -content_for(:title_bar) do
   #intro-sml-wrap
     %h1.fontface= @profile.name
@@ -7,50 +9,75 @@
 -content_for(:content) do
   #content-wrap
     .row-fluid
-      .span7.well.well-white#general
-        = image_tag @profile.avatar_url(128)
-        %p
-          %b Name:
-          = @profile.name
-        %p
-          %b Country:
-          = @profile.country_name
-        %p
-          %b Total Credit:
-          = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"
-          |
-          =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank, :page=>'me')
-          |
-          %a#credit_explain{:href => "#", :data => {:toggle => "popover",
-                        :placement => "bottom",
-                        :content => credit_location(@profile),
-                        :html => 'true',
-                        :no => {:turbolink => true}},
-                       :title => "theSkyNet credit is an amalgamation from several sources: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#credit_explain&quot;).popover(&quot;hide&quot;);\">&times;</button>"} Explain
-        -if @profile.alliance
-          %p
-            %b Proud member of :
-            = link_to(@profile.alliance.name,@profile.alliance)
-        %p
-          %b Member Since:
-          = @profile.user.confirmed_at.try(:strftime, '%B %d, %Y')
+      .span7
+        .row-fluid
+          .span12.well.well-white#general
+            = image_tag @profile.avatar_url(128)
+            %dl.dl-horizontal
+              %dt Name:
+              %dd= @profile.name
+              %dt Country:
+              %dd= @profile.country_name
+              %dt Total Credit:
+              %dd
+                = number_with_delimiter(@profile.general_stats_item.total_credit.to_i) + "cr"
+                |
+                %a#credit_explain{:href => "#", :data => {:toggle => "popover",
+                              :placement => "bottom",
+                              :content => credit_location(@profile),
+                              :html => 'true',
+                              :no => {:turbolink => true}},
+                             :title => "theSkyNet credit is an amalgamation from several sources: <button type=\"button\" id=\"close\" class=\"close\" onclick=\"$(&quot;#credit_explain&quot;).popover(&quot;hide&quot;);\">&times;</button>"} Explain
+              %dt Rank:
+              %dd
+                = @profile.general_stats_item.rank
+                |
+                =  link_to "Show in leaderboard" , profiles_path(:rank => @profile.general_stats_item.rank, :page=>'me')
+              -if @profile.alliance
+                %dt Proud member of:
+                %dd= link_to(@profile.alliance.name,@profile.alliance)
+              %dt Member Since:
+              %dd= @profile.user.joined_at.try(:strftime, '%B %d, %Y')
+            %p
+              = link_to alliance_history_profile_path(@profile) do
+                = "See #{@profile.name.possessive} alliance history."
+            %p
+              = link_to challenge_history_profile_path(@profile) do
+                = "See #{@profile.name.possessive} challenge history."
+            -if user_signed_in?
+              %p= link_to "Compare #{@profile.name.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
+              - unless current_user.profile.id == @profile.id
+                - if @profile.followed_by? current_user.profile
+                  -# unfollow button
+                  = link_to "Unfollow", unfollow_social_path(id: @profile.id), class: 'btn btn-tsn'
+                - else
+                  -# follow button
+                  = link_to "Follow", follow_social_path(id: @profile.id), class: 'btn btn-tsn'
 
-        %p
-          %b Latest Achievement:
-          -if @profile.trophies.empty?
-            = @profile.name + " hasn't won any trophies yet."
-          -else
-            - @trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
-            = link_to (image_tag @trophy.image.url), @trophy
-            = link_to @trophy.title,  @trophy
-        %p
-          = link_to  trophies_profile_path(@profile) do
-            = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
-        %p
-          = link_to alliance_history_profile_path(@profile) do
-            = "See #{@profile.name.possessive} alliance history."
-        -if user_signed_in?
-          %p= link_to "Compare #{@profile.name.possessive} to me", profiles_compare_path(@profile.id,current_user.profile.id)
+        -if @profile.description.nil? || @profile.description == ''
+          -if user_signed_in? && current_user.id == @profile.id
+            .row-fluid
+              .span12.well.well-white
+                %h2 Who am I??
+                %p
+                  You haven't created a profile yet. Let people know who you are by creating one on the
+                  = link_to 'account settings page.', edit_user_registration_path
+        -else
+          .row-fluid
+            .span12.well.well-white
+              %h2 Who am I?
+              %blockquote.pull-right
+                %p= markdown(@profile.description)
+                %small= @profile.name
+              .clearfix
+              -if user_signed_in? && current_user.id == @profile.id
+                %p= link_to 'Edit my profile.', edit_user_registration_path
+
+        .row-fluid
+          .span12.well.well-white#timeline
+            %h2= "#{@profile.name.possessive} Timeline"
+            #timeline_entries
+
 
       .span5
         -if @profile.general_stats_item.nereus_stats_item != nil
@@ -63,9 +90,6 @@
               %dl.dl-horizontal
                 %dt Total Credit
                 %dd= number_with_delimiter(nereus.credit)
-                %dt
-                  %abbr{:title => "Recent Average Credit"} RAC
-                %dd= number_with_delimiter(nereus.daily_credit)
 
         -if @profile.general_stats_item.boinc_stats_item != nil
           .row-fluid
@@ -82,8 +106,60 @@
                     %dt
                       %abbr{:title => "Recent Average Credit"} RAC
                     %dd= boinc.RAC
+        .row-fluid
+          .span12.well.well-white#latest_trophy
+            %h2 Latest Achievement:
+            -if @profile.trophies.empty?
+              %p
+                = @profile.name + " hasn't won any trophies yet."
+            -else
+              - @trophy = @profile.trophies.order("profiles_trophies.created_at DESC, trophies.credits DESC").limit(1).first
+              .media
+                %a.pull-left{href: trophy_path(@trophy.id)}
+                  = image_tag @trophy.image.url(:medium), class: 'media-object'
+                .media-body
+                  %h4.media-heading
+                    = link_to @trophy.title,  @trophy
+                  .desc= @trophy.desc(@trophy_ids).html_safe
+
+            %p
+              = link_to  trophies_profile_path(@profile) do
+                = @profile.name + " has been awarded " + @profile.trophies.length.to_s + " trophy".pluralize(@profile.trophies.length) + " click here to see them all."
+        .row-fluid
+          .span12.well.well-white
+            %h2 Things I like:
+            = show_likes(Trophy, 'Trophies:', :title)
+            = show_likes(Alliance, 'Alliances:', :name)
+        .row-fluid
+          .span12.well.well-white#following
+            - friends_link = friends_profile_path(@profile)
+            %h2= "#{@profile.name} is following:"
+            - i = 0
+            - @profile.followees_for_show.limit(16).each do |followee|
+              - i += 1
+              - if i == 16
+                %span= link_to '...', friends_link
+              -else
+                = link_to profile_path(followee) do
+                  = image_tag followee.avatar_url(32), title: followee.name
+            %h3 And is followed by:
+            - i = 0
+            - @profile.followers_for_show.limit(16).each do |followee|
+              - i += 1
+              - if i == 16
+                %span= link_to '...', friends_link
+              -else
+                = link_to profile_path(followee) do
+                  = image_tag followee.avatar_url(32), title: followee.name
+            %p= link_to 'See All.', friends_link
 
 
+
+    .row-fluid
+      .span12.well.well-white.wall
+        %h2= "Leave #{@profile.name} a message"
+        %p Note: these comments are public
+        =render :partial => "comments/comments_section", :locals => {commentable: @profile}
     .row-fluid
       .span12.well.well-white.graphs
         -boinc_id= @profile.general_stats_item.boinc_stats_item.boinc_id if @profile.general_stats_item.boinc_stats_item != nil && @profile.general_stats_item.boinc_stats_item.credit > 0
@@ -93,3 +169,10 @@
         -data[:boinc_id] = boinc_id if boinc_id
         -data[:profile_id] = @profile.id
         #chart_container{:data => data}
+    .row-fluid
+      .span12.well.well-white#comments
+        %h2 Recent Comments
+        - comments = @profile.comments.for_show_index.page(params[:page]).per(10)
+        = render 'comments/comments_index', comments: comments, small:true
+        = paginate comments
+        = page_entries_info comments, :entry_name => 'Comment'

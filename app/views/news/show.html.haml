@@ -1,3 +1,6 @@
+- my_meta :title => @news_item.title,
+    :description => @news_item.short
+
 -content_for(:title_bar) do
   #intro-sml-wrap
     %h1.fontface= @news_item.title
@@ -14,4 +17,8 @@
             #news_display.media-body
               .long= @news_item.long.html_safe
               .published_date= "Published on " + @news_item.published_time.to_s
-          =  render :partial => "shared/disqus", :locals => { title: @news_item.id }
+          - if @news_item.use_disqus?
+            = render :partial => "shared/disqus", :locals => { title: @news_item.id }
+          - else
+            = render :partial => "comments/comments_section", :locals => {commentable: @news_item}
+

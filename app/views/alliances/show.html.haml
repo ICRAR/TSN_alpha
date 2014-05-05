@@ -1,3 +1,5 @@
+- my_meta :title => @alliance.name,
+    :description => "All the deatils on the #{@alliance.name} Alliance"
 -content_for(:title_bar) do
   #intro-sml-wrap
     %h1.fontface= @alliance.name
@@ -8,35 +10,42 @@
   #content-wrap
     #alliance-show
       .row-fluid
-        .span5.well.well-white
-          %h2= @alliance.name
-          %dl.dl-horizontal
-            %dt Alliance ID
-            %dd= @alliance.id
-            %dt Total Credit
-            %dd= number_with_delimiter(@alliance.credit)
-            %dt Rank
-            %dd= @alliance.ranking
-            %dt Leader
-            %dd= @alliance.leader != nil ? link_to(@alliance.leader.name, @alliance.leader) : "-"
-            %dt Total Members
-            %dd
-              =@alliance.members.size
-              %abbr{:title=>"including old members"}="(#{@total_members})"
-            %dt Founded on
-            -date_founded = Time.at(@alliance.created_at)
-            %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
-            %dt Tags
-            %dd
-              %ul.inline
-                -@alliance.tags.each do |tag|
-                  %li= link_to tag.name, search_alliances_path(:search => tag.name)
+        .span5
+          .row-fluid
+            .span12.well.well-white
+              %h2= @alliance.name
+              %dl.dl-horizontal
+                %dt Alliance ID
+                %dd= @alliance.id
+                %dt Total Credit
+                %dd= number_with_delimiter(@alliance.credit)
+                %dt Rank
+                %dd= @alliance.ranking
+                %dt Leader
+                %dd= @alliance.leader != nil ? link_to(@alliance.leader.name, @alliance.leader) : "-"
+                %dt Total Members
+                %dd
+                  =@alliance.members.size
+                  %abbr{:title=>"including old members"}="(#{@total_members})"
+                %dt Founded on
+                -date_founded = Time.at(@alliance.created_at)
+                %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
+                %dt Tags
+                %dd
+                  %ul.inline
+                    -@alliance.tags.each do |tag|
+                      %li= link_to tag.name, search_alliances_path(:search => tag.name)
+              = render 'shared/social/like', model: @alliance
+          .row-fluid
+            .span12.well.well-white#timeline
+              %h2= "#{@alliance.name.possessive} Timeline"
+              #timeline_entries
         .span7
           -if user_signed_in? && current_user.profile.alliance.try(:id) == @alliance.id
             .row-fluid
               .span12.well.well-white
                 %h2 Manage Alliance
-                -membership = current_user.profile.alliance_items.where(:leave_date => nil).first
+                -membership = current_user.profile.alliance_items.where(:leave_date => nil).last
                 %dl.dl-horizontal.dl-long
                   %dt You've been a member since
                   -date_joined = Time.at(membership.join_date)
@@ -44,11 +53,17 @@
                   %dt Credits you've contributed
                   %dd= number_with_delimiter(membership.leave_credit-membership.start_credit)
                 .pull-right
-                  =(current_user.profile.alliance_leader && current_user.profile.alliance_leader_id == @alliance.id) ? link_to('Manage', edit_alliance_path(@alliance), :class => "btn btn-warning") : link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
+                  -if (current_user.profile.alliance_leader && current_user.profile.alliance_leader_id == @alliance.id)
+                    = link_to('Manage', edit_alliance_path(@alliance), :class => "btn btn-warning")
+                  -elsif @alliance.is_boinc?
+                    =link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "This will also remove you from the #{@alliance.name} team on theSkyNet POGS and BOINC. Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
+                  -else
+                    =link_to("Leave", leave_alliances_path,:method => 'get', :confirm => "Are you sure you want to leave? This can't be undone!",:class => "btn btn-danger")
                 .pull-left#inviteBox
                   =form_tag(invite_alliance_path, :method => "post", :remote => true, :id => 'invite_form') do
                     =text_field_tag(:email,nil,:class => "search-query", :placeholder => "email")
                     =submit_tag('Invite', :class => "btn btn-success")
+
 
           .row-fluid
             .span12.well.well-white
@@ -58,9 +73,11 @@
                 %p= desc
                 %small= @alliance.leader.name if @alliance.leader != nil
               .clearfix
+              -if @alliance.is_boinc? && @alliance.pogs_team_id > 0
+                %p= link_to 'Find this alliance on theSkyNet POGS', @alliance.boinc_url
               -if user_signed_in? && current_user.profile.alliance == nil
-                -if @alliance.is_boinc?
-                  This team is managed at pogs.theskynet.org
+                -if @alliance.is_boinc? && current_user.profile.general_stats_item.boinc_stats_item.nil?
+                  This Alliance is part pogs.theskynet.org, before you can join you must also be a member of the POGS project.
                 -else
                   -if @alliance.invite_only?
                     ="#{@alliance.name} is an invite only alliance. To join you must be invited by an existing member."
@@ -70,15 +87,21 @@
                     %br
                     =link_to "Join #{@alliance.name}", join_alliance_path, :class => "btn btn-success"
               - #### all section are marked with ALLIANCE_DUP_CODE ###
-              -if user_signed_in?
-                - if @alliance.is_duplicate?
-                  %p
-                    This alliance has been marked as a duplicate alliance with
-                    = link_to @alliance.duplicate_alliance.name, @alliance.duplicate_alliance
-                - else
-                  = link_to "Mark as a Duplicate Alliance", "#", class: "btn btn-tsn", id: "duplicate_btn"
+              -#if user_signed_in?
+              -#  - if @alliance.is_duplicate?
+              -#   %p
+              -#     This alliance has been marked as a duplicate alliance with
+              -#     = link_to @alliance.duplicate_alliance.name, @alliance.duplicate_alliance
+              -# - else
+              -#   = link_to "Mark as a Duplicate Alliance", "#", class: "btn btn-tsn", id: "duplicate_btn"
 
-
+      .row-fluid
+        .span12.well.well-white
+          #alliance_graph
+      - if user_signed_in? && (current_user.profile.alliance_id == @alliance.id || current_user.is_admin?)
+        .row-fluid
+          .span12.well.well-white
+            = render :partial => "comments/comments_section", :locals => {commentable: @alliance}
       .row-fluid
         .span12.well.well-white
           %h2 All Members:
@@ -120,6 +143,5 @@
           =paginate @members
           =page_entries_info @members
           %p (*) Members that have left the alliance.
-      .row-fluid
-        .span12.well.well-white
-          #alliance_graph
+
+

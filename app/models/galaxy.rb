@@ -5,17 +5,46 @@ include VORuby
 class Galaxy < PogsModel
   self.table_name = 'galaxy'
 
+  has_many :areas, class_name: "GalaxyArea"
+  has_many :galaxy_users
+
+  has_and_belongs_to_many :tags,
+                          class_name: "GalaxyTag",
+                          foreign_key: "galaxy_id",
+                          association_foreign_key: "tag_id",
+                          join_table: "tag_galaxy"
+
+
+  def self.search_options (options)
+    search_options = []
+    search_options << "galaxy.name LIKE \"%#{Mysql2::Client.escape(options[:name])}%\"" if options[:name] != nil  && options[:name] != ''
+    search_options << "galaxy.galaxy_type = \"#{Mysql2::Client.escape(options[:galaxy_type])}\"" if options[:galaxy_type] != nil && options[:galaxy_type] != ''
+    search_options << "galaxy.galaxy_id >= \"#{Mysql2::Client.escape(options[:id_from])}\"" if options[:id_from] != nil && options[:id_from] != ''
+    search_options << "galaxy.galaxy_id <= \"#{Mysql2::Client.escape(options[:id_to])}\"" if options[:id_to] != nil && options[:id_to] != ''
+    search_options << "galaxy.ra_cent >= \"#{Mysql2::Client.escape(options[:ra_from])}\"" if options[:ra_from] != nil && options[:ra_from] != ''
+    search_options << "galaxy.ra_cent <= \"#{Mysql2::Client.escape(options[:ra_to])}\"" if options[:ra_to] != nil && options[:ra_to] != ''
+    search_options << "galaxy.dec_cent >= \"#{Mysql2::Client.escape(options[:dec_from])}\"" if options[:dec_from] != nil && options[:dec_from] != ''
+    search_options << "galaxy.dec_cent <= \"#{Mysql2::Client.escape(options[:dec_to])}\"" if options[:dec_to] != nil && options[:dec_to] != ''
+    search_options = search_options.join(' AND ')
+
+    galaxies = where(search_options)
+    if options[:tag] != nil && options[:tag] != ''
+      search_query = options[:tag]
+      galaxies = galaxies.joins{tags}.where{tag.tag_text == search_query}
+    end
+
+    galaxies
+  end
 
   def self.num_current
     where{status_id == 0}.count
   end
 
   def self.find_by_user_id(user_id)
-    uniq.joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
-            INNER JOIN area_user ON area.area_id = area_user.area_id")
-    .where("area_user.userid = ?",user_id )
+    joins{galaxy_users}.where{galaxy_users.userid == user_id}
   end
   def self.find_by_user_id_last(user_id)
+    #find_by_user_id(user_id).last
     joins("INNER JOIN area ON galaxy.galaxy_id = area.galaxy_id
             INNER JOIN area_user ON area.area_id = area_user.area_id")
     .where("area_user.userid = ?",user_id )
@@ -23,18 +52,13 @@ class Galaxy < PogsModel
     .limit(1).first
   end
 
-
   #returns an active relations object containing the profiles of all people who worked on this galaxy
   def profiles
-    db_ids = Galaxy.connection.execute("select distinct au.userid
-                from area_user au, area a
-                where au.area_id = a.area_id
-                and a.galaxy_id = #{self.id};
-                ")
-    boinc_ids = db_ids.map {|i| i[0].to_i}
-
+    boinc_ids = galaxy_users.pluck(:userid)
     profiles = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id.in boinc_ids}
   end
+
+
 
   def thumbnail_url
     APP_CONFIG['pogs_graphs_url'] + s3_name + "tn_colour_1.png"

@@ -8,9 +8,13 @@ TSN.profiles = new Object;
 TSN.profiles.show = () ->
   profile_show_graphs(false)
   $("#credit_explain").popover()
+  $('#latest_trophy .desc').dotdotdot()
+  $.ajax("/social/timeline.js?profile_id=#{$('body').data('id')}")
+
 TSN.profiles.dashboard = () ->
   profile_show_graphs(true)
   $("#credit_explain").popover()
+  $.ajax('/social/timeline.js')
 
 profile_show_graphs = (all) ->
   profile_id = $("#chart_container").data("profile-id")
@@ -38,7 +42,7 @@ profile_show_graphs = (all) ->
   total_credit_name
   total_RAC_name
   if boinc_id & nereus_id
-    total_credit_name = "sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.credit)"
+    total_credit_name = "maxSeries(sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.credit),stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id)}.credit)"
     total_RAC_name = "sumSeries(stats.gauges.TSN_dev.nereus.users.#{TSN.GRAPHITE.stats_path(nereus_id)}.daily_credit,stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.rac)"
   else if boinc_id
     total_credit_name = "stats.gauges.TSN_dev.boinc.users.#{TSN.GRAPHITE.stats_path(boinc_id)}.credit"
@@ -54,7 +58,7 @@ profile_show_graphs = (all) ->
   metrics.push(total_RAC_name)
   metrics.push(total_credit_name)
 
-  TSN.rickshaw_graph(metrics,name,$("#chart_container"),"-#{TSN.months_from_launch()}months")  if name.length != 0
+  TSN.rickshaw_graph_graphite(metrics,name,$("#chart_container"),"-#{TSN.months_from_launch()}months")  if name.length != 0
 
 TSN.profiles.compare = () ->
   profile_id1 = $("#chart_container").data("profile-id1")
@@ -115,7 +119,7 @@ TSN.profiles.compare = () ->
   metrics.push("stats.gauges.TSN_dev.general.users.#{TSN.GRAPHITE.stats_path(profile_id2)}.rank")
 
 
-  TSN.rickshaw_graph(metrics,name,$("#chart_container"),"-#{TSN.months_from_launch()}months")  if name.length != 0
+  TSN.rickshaw_graph_graphite(metrics,name,$("#chart_container"),"-#{TSN.months_from_launch()}months")  if name.length != 0
 
 TSN.profiles.trophies = () ->
   $.each($(".trophy_share_toolbox"), ->

@@ -1,0 +1,7 @@
+<% if @comment.errors.present? %>
+var comment_body = $("#comment_body_<%= @comment.id %>");
+comment_body.replaceWith("<%= escape_javascript render("form", remote: true) %>");
+<% else %>
+var comment_body = $("#comment_<%= @comment.id %>");
+comment_body.replaceWith("<%= escape_javascript render("comments/comment", comments_hash: @comment) %>");
+<% end %>

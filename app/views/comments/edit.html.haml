@@ -1,0 +1,10 @@
+- my_meta :title => "Edit Comment on #{@comment.commentable_name}"
+= content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= "Edit Comment on #{@comment.commentable_name}"
+
+
+-content_for(:content) do
+  #content-wrap
+    .well.well-white
+      = render 'form', remote: false

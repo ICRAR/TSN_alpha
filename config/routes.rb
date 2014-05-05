@@ -1,22 +1,37 @@
 Tsn::Application.routes.draw do
-
-
-
   #redirect all to host name in custom config
-  match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host_no_port']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
-        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host_no_port']) &&
+  match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
+        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host']) &&
           (request.host !='localhost') &&
           (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
         )}
-
+  if Rails.env.development?
+    mount MailPreview => 'mail_view'
+  end
   resources :hdf5_requests, :only => [:index, :create, :show, :new] do
     collection do
       get 'clear'
       get 'add'
+      get 'add_search'
       get 'remove'
     end
   end
-  resources :contact_forms
+
+  resource :social, :only => [], controller: 'social' do
+    get 'like_model'
+    get 'unlike_model'
+    get 'follow'
+    get 'unfollow'
+    get 'timeline'
+  end
+
+  resource :misc, :only => [], controller: 'misc' do
+    get 'advent'
+    get 'advent_subscribe'
+    get 'site_map'
+  end
+
+  resources :contact_forms, :only => [:new, :create]
   resources :stats, :only => [:index] do
     collection do
       get 'activities'
@@ -35,6 +50,9 @@ Tsn::Application.routes.draw do
   get "/pages/:slug" => "pages#show", :as => 'page'
 
   resources :notifications, :only => [:index, :show] do
+    collection do
+      get 'dismiss_all'
+    end
     member do
       get 'dismiss'
     end
@@ -44,11 +62,14 @@ Tsn::Application.routes.draw do
   resources :profiles, :only => [:index, :show, :update] do
     collection do
       get 'search'
+      get 'boinc_challenge'
+      get 'name_search' => 'profiles#name_search', :as => 'profile_name_search'
     end
     member do
       get 'trophies'
       get 'alliance_history'
-
+      get 'challenge_history' => 'challenges#history', as: 'challenge_history'
+      get 'friends'
     end
 
   end
@@ -69,6 +90,12 @@ Tsn::Application.routes.draw do
   post "/nereus/send_cert" => "nereus#send_cert", :as => 'send_cert_nereus'
   get "/nereus/send_cert" => "nereus#send_cert", :as => 'send_cert_nereus'
 
+  resources :comments, except: [:show] do
+    member do
+      get 'report'
+    end
+  end
+
   resources :alliances do
     member do
       get 'join'
@@ -85,7 +112,12 @@ Tsn::Application.routes.draw do
   end
   get "/alliance" => "alliances#show", :as => 'my_alliance'
 
-  resources :trophies, :only => [:show]
+  resources :trophies, :only => [:show] do
+    member do
+      get 'promote'
+      get 'demote'
+    end
+  end
 
   get "/check_auth" => "application#check_auth"
   post "/check_auth" => "application#check_auth"
@@ -98,12 +130,28 @@ Tsn::Application.routes.draw do
     end
   end
 
-  resources :galaxies, :only => [:index, :show]
+  resources :galaxies, :only => [:index, :show] do
+    collection do
+      get 'tags'
+    end
+  end
   resources :boinc, :only => [], :controller => "boinc_stats_item" do
     resources :galaxies, :only => [:index, :show]  do
       member do
         get 'send_report'
         get '/image/:colour' => "galaxies#image", :as => "image"
+      end
+    end
+  end
+
+  resources :challenges, :except => [:destroy] do
+    member do
+      get 'join'
+      get 'leave'
+    end
+    resources :challengers, :only => [:show] do
+      collection do
+        get 'compare'
       end
     end
   end

@@ -21,3 +21,17 @@ TSN.galaxies.show = () ->
     $("a#send_galaxy_report").replaceWith(new_content)
 
   )
+
+TSN.galaxies.index = () ->
+  $('form input#tag').typeahead
+    source: (query, callback) ->
+      $.get '/galaxies/tags.json',
+        search: query
+      , (data) ->
+        data_array = []
+        for tag in data.result
+          data_array.push tag.galaxy_tag.tag_text
+        callback data_array
+    valueField: "id" # field in items to be used for the value of the item
+    labelField: "label" # field in items to be used for the displayable value of the item
+

@@ -1,0 +1,22 @@
+- my_meta :title => "theSkyNet Challenges: #{@challenge.name}",
+    :description => "short term challenges run by users of theSkyNet to compete for trophies"
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= @challenge.name
+  - @user_page =  'challenges'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    = render :partial => 'shared/under_construction'
+    .well.well-small
+      %h3= format_breadcrumbs({'Challenges' => challenges_path, @challenge.name => ''})
+    .row-fluid
+      = render 'challenge_details', challenge: @challenge
+
+    .well.well-white
+      = render :partial => 'challengers_table'
+
+      = paginate @challengers
+      = page_entries_info @challengers, :entry_name => 'Challengers'
+    .well.well-white
+      =render :partial => "comments/comments_section", :locals => {commentable: @challenge}

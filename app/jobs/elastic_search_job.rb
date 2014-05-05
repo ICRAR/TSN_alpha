@@ -1,5 +1,4 @@
-class ElasticSearchJob
-  include Delayed::ScheduledJob
+class ElasticSearchJob < Delayed::BaseScheduledJob
   run_every 5.minutes
 
   def perform

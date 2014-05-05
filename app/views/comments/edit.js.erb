@@ -1,0 +1,3 @@
+var comment_body = $("#comment_body_<%= @comment.id %>");
+comment_body.replaceWith("<%= escape_javascript render("form", remote: true) %>");
+TSN.atMention('#comment_body_<%=@comment.id %>  textarea#comment_content')

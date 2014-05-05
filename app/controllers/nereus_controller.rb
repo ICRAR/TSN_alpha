@@ -12,6 +12,7 @@ class NereusController < ApplicationController
     render :run, :layout => false
   end
   def new
+    return
     #check if user is signed in
     if user_signed_in?
       @profile = current_user.profile

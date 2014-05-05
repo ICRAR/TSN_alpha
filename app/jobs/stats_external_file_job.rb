@@ -1,5 +1,4 @@
-class StatsExternalFileJob
-  include Delayed::ScheduledJob
+class StatsExternalFileJob < Delayed::BaseScheduledJob
   run_every 3.hours
   def perform
     file_name = 'profile_stats'

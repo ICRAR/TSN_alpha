@@ -1,0 +1,2 @@
+<% render_string = render('shared/social/like', model: @model) %>
+$("#<%="#{@model.class.to_s}_#{@model.id}" %>_like").replaceWith("<%= escape_javascript(render_string.html_safe)%>");

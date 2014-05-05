@@ -5,6 +5,10 @@ class BoincRemoteUser < BoincPogsModel
   scope :does_not_have_team_delta, where{id.not_in(PogsTeamMember.select(:userid).group(:userid))}
   scope :teamid_no_team_delta, does_not_have_team_delta.where{teamid != 0}
 
+  has_one :profile, class_name: BoincProfile, foreign_key: 'userid'
+
+
+
   def email_addr
     self[:email_addr].tr(" ", "_")
   end
@@ -16,9 +20,9 @@ class BoincRemoteUser < BoincPogsModel
   end
 
   #looks for a local versions of the user, if it can't find one it will create it
-  def check_local
+  def check_local(boinc_item = nil)
     #check for boinc item, if not create
-    boinc_item = BoincStatsItem.where(:boinc_id => self.id).first
+    boinc_item ||= BoincStatsItem.where(:boinc_id => self.id).first
     if boinc_item.nil?
       #create new item
       boinc_item = BoincStatsItem.new
@@ -31,15 +35,26 @@ class BoincRemoteUser < BoincPogsModel
     return true unless boinc_item.general_stats_item_id.nil?
 
     #else look for corresponding user.
-    local_user = User.where{email == my{self.email_addr}}.first
+    email_encoded = self.email_addr
+    begin
+      email_check = email_encoded.dup
+      email_check.force_encoding("UTF-8").encode("cp1252")
+    rescue ##ToDO MAKE ME BETTER PLEASE####
+      email_encoded = URI.encode(email_encoded)
+    end
+
+    local_user = User.where{email == my{email_encoded}}.first
+
 
     if local_user.nil?
       #no local user therefore create one
       self.copy_to_local(self.passwd_hash,false)
-    else
+    elsif local_user.profile.general_stats_item.boinc_stats_item.nil?
       #link users
       local_user.profile.general_stats_item.boinc_stats_item = boinc_item
       local_user.profile.general_stats_item.update_credit
+                                                    self.email_addr
+    #if user is already linked do nothing
     end
 
   end
@@ -49,14 +64,30 @@ class BoincRemoteUser < BoincPogsModel
   def copy_to_local(password, theSkyNetPassword = true)
     name = self.name
     i = nil
+
+    email_encoded = self.email_addr
+    begin
+      email_check = email_encoded.dup
+      email_check.force_encoding("UTF-8").encode("cp1252")
+    rescue ##ToDO MAKE ME BETTER PLEASE####
+      email_encoded = URI.encode(email_encoded)
+    end
+
+    begin
+      name_check = name.dup
+      name_check.force_encoding("UTF-8").encode("cp1252")
+    rescue ##ToDO MAKE ME BETTER PLEASE####
+      name = 'unknown_name'
+    end
+    base_name = name
     while !User.where{username == name}.first.nil? do
-      name =  self.name + '_pogs' + i.to_s
+      name =  base_name + '_pogs' + i.to_s
       i ||= 0
       i += 1
     end
 
     new_user = User.new(
-        :email => self.email_addr,
+        :email => email_encoded,
         :username => name,
         :password => 'password',
         :password_confirmation => 'password',
@@ -73,6 +104,7 @@ class BoincRemoteUser < BoincPogsModel
       profile.use_full_name = false
       profile.country = self[:country]
       profile.new_profile_step= 2
+      profile.description = self.profile.description unless self.profile.nil?
       profile.save
     end
     #puts new_user.to_json
@@ -92,6 +124,29 @@ class BoincRemoteUser < BoincPogsModel
     end
 
     return new_user
+  end
+
+  ###FUNCTIONS FOR WEBRPC Calls to boinc server
+  require 'httparty'
+  include HTTParty
+  format :xml
+  base_uri APP_CONFIG['boinc_url']
+  def self.join_team(boinc_id,team_id)
+    remote_user = BoincRemoteUser.find boinc_id
+    remote_user.web_rpc_update  teamid: team_id
+  end
+  def self.leave_team(boinc_id)
+    remote_user = BoincRemoteUser.find boinc_id
+    remote_user.web_rpc_update  teamid: 0
+  end
+  def web_rpc_update(updates)
+    updates.select!{|k,v| [:teamid].include? k}
+    updates.merge!({account_key: self.authenticator})
+    self.class.get('/am_set_info.php',query: updates)
+  end
+  def rpc_test(updates)
+    updates.merge!({account_key: self.authenticator})
+    self.class.get('/am_get_info.php',query: updates)
   end
 
 end

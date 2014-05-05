@@ -1,0 +1,67 @@
+- my_meta :title => "theSkyNet Challenges",
+    :description => "short term challenges run by users of theSkyNet to compete for trophies"
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Challenges
+  - @user_page =  'challenges'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    = render :partial => 'shared/under_construction'
+    .well.well-white
+      .accordion#search-accordion
+        .accordion-group
+          .accordion-heading
+            %a.accordion-toggle{:data => {:toggle=> "collapse", :parent => "#accordion2"},:href=>"#collapseSearch"} Filter
+          #collapseSearch.accordion-body.collapse
+            .accordion-inner
+              = form_tag('', :method => "get", :class => ".form-horizontal") do
+                .control-group
+                  = label_tag :name, "Name"
+                  = text_field_tag :name, params[:name]
+                  = label_tag :status, "Status"
+                  = select_tag(:status, challenge_states(params[:status]))
+
+                .control-group
+                  = form_date_range_tag 'start_date', params[:start_date_from], params[:start_date_to]
+
+
+                .control-group
+                  = form_date_range_tag 'end_date', params[:end_date_from], params[:end_date_to]
+
+                .control-group
+                  = submit_tag "Apply Filter"
+      %table#challenges.table.table-striped
+        %thead
+          %tr
+            %th= sortable "name", "Name"
+            %th= sortable "start_date", "Start Date"
+            %th= sortable "end_date", "End Date"
+            %th Number of Challengers
+            %th=  sortable "status", "Status"
+            %th Manager
+            -if user_is_admin?
+              %th Hidden?
+
+        %tbody
+          - @challenges.each do |challenge|
+            %tr
+              - link = challenge_path(challenge)
+              %td
+                %a{href: link}= challenge.name
+              %td
+                %a{href: link}= challenge.start_date.strftime '%B %d, %Y'
+              %td
+                %a{href: link}= challenge.end_date.strftime '%B %d, %Y'
+              %td
+                %a{href: link}= challenge.challengers.size
+              %td
+                %a{href: link}= challenge.status
+
+              %td= link_to(challenge.manager.name, challenge.manager, :style => "text-decoration: underline")
+              - if user_is_admin?
+                %td
+                  %a{href: link}= challenge.hidden?
+      = paginate @challenges
+      = page_entries_info @challenges, :entry_name => 'Challenges'
+      = render 'shared/per_page_selector'

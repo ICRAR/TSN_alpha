@@ -1,0 +1,14 @@
+.timeline_entry{id: "timeline_entry_#{entry.id}"}
+  %p
+    -if entry.timelineable_type == 'Profile'
+      =image_tag entry.timelineable.avatar_url(32), title: entry.timelineable.name
+    =link_to entry.timelineable_name, entry.timelineable
+    = entry.get_subject
+    = " #{distance_of_time_in_words(Time.now, entry.posted_at)} ago."
+    - if entry.has_more?
+      %button.btn.btn-link{data: {toggle: 'collapse', target: "#timeline_entry_#{entry.id} .collapse"}} More
+  - if entry.has_more?
+    .collapse.out
+      .well.well-small
+        %p= entry.get_more
+  %hr
