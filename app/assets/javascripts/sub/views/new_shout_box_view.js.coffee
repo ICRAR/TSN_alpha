@@ -3,6 +3,6 @@ TheSkyMap.NewShoutBoxView = Ember.View.extend
   tagName: 'form'
 
   submit: ->
-    @get('controller').send('addShoutBox', @get('newShoutBoxName'))
+    @get('controller').send('addShoutBox', @get('newShoutBoxMsg'))
     @set('newShoutBoxMsg', "")
     false

@@ -11,16 +11,28 @@ class Sub::ShoutBoxesController < Sub::ApplicationController
   end
 
   def create
-    new_shout_box = Sub::ShoutBox.create(params.slice(:msg))
-    post_faye_model new_shout_box, Sub::ShoutBoxSerializer
+    if params[:shout_box]
+      new_shout_box = Sub::ShoutBox.create(params[:shout_box])
+    else
+      new_shout_box = Sub::ShoutBox.create(params.slice(:msg))
+    end
+    PostToFaye.post_faye_model_delay new_shout_box, Sub::ShoutBoxSerializer
     respond_with new_shout_box
   end
 
   def update
-    respond_with Sub::ShoutBox.update(params[:id], params[:entry])
+    if params[:shout_box]
+      new_shout_box = Sub::ShoutBox.update(params[:id], params[:shout_box])
+    else
+      new_shout_box = Sub::ShoutBox.update(params[:id],params.slice(:msg))
+    end
+    PostToFaye.post_faye_model_delay new_shout_box, Sub::ShoutBoxSerializer
+    respond_with new_shout_box
   end
 
   def destroy
-    respond_with Sub::ShoutBox.destroy(params[:id])
+    destroyed = Sub::ShoutBox.destroy(params[:id])
+    PostToFaye.remove_model_delay destroyed
+    respond_with destroyed
   end
 end

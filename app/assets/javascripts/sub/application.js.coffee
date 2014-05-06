@@ -7,5 +7,8 @@
 #= require ./the_sky_map
 
 # for more details see: http://emberjs.com/guides/application/
-window.TheSkyMap = Ember.Application.create()
+window.TheSkyMap = Ember.Application.create(
+  LOG_TRANSITIONS: true
+)
+
 

@@ -1,9 +1,9 @@
 Tsn::Application.routes.draw do
   #redirect all to host name in custom config
-  match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
-        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host']) &&
-          (request.host !='localhost') &&
-          (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
+  match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host_no_port']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
+        constraints: lambda{|request| ((request.host != APP_CONFIG['site_host_no_port']) &&
+            (request.host !='localhost') &&
+            (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
         )}
   if Rails.env.development?
     mount MailPreview => 'mail_view'
@@ -157,8 +157,13 @@ Tsn::Application.routes.draw do
   end
 
   namespace :sub do
-    resources :test, :only => [:index]
+    resources :ember, :only => [:index] do
+      collection do
+        get 'current_profile'
+      end
+    end
     resources :shout_boxes
+    resources :grids, :only => [:index]
   end
   # The priority is based upon order of creation:
   # first created -> highest priority.

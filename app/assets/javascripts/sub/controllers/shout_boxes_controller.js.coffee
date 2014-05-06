@@ -1,5 +1,8 @@
-TheSkyMap.EntriesController = Ember.ArrayController.extend
+TheSkyMap.ShoutBoxesController = Ember.ArrayController.extend
+  per_page: 3
+  page: 1
   actions:
-    addShoutBox: (name) ->
-      TheSkyMap.ShoutBox.createRecord(msg: msg)
-      @get('store').commit()
+    addShoutBox: (msg) ->
+      newShoutBox = this.store.createRecord 'shout_box',
+        msg: msg
+      newShoutBox.save()

@@ -85,7 +85,7 @@ gem 'rabl'
 # Also add either `oj` or `yajl-ruby` as the JSON parser
 gem 'oj'
 
-gem 'debugger'
+
 gem 'turnout'
 
 group :development do
@@ -98,7 +98,6 @@ group :development do
   gem 'rename'
   gem "mail_view", "~> 2.0.1"
   gem 'webrick', '~> 1.3.1'
-  gem 'thin'
 end
 
 group :profile, :development do

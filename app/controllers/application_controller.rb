@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
   def store_location
     # store last url - this is needed for post-login redirect to whatever the user last visited.
     # this works a white listed regex system
-    allowed_paths = [/^\/profile/,/^\/alliance/,/^\/admin/,/^\/trophies/,/^\/misc/,/^\/news/]
+    allowed_paths = [/^\/profile/,/^\/alliance/,/^\/admin/,/^\/trophies/,/^\/misc/,/^\/news/, /^\/sub/]
     skip_paths = [/^\/pages\/denied/, /^\/users/,  /^\/social/, ]
     #only store html requests and requests that match at least one of allowed_paths
     if (request.format == 'text/html') && allowed_paths.map{|r| !request.fullpath.index(r).nil?}.include?(true)
@@ -72,7 +72,11 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     flash[:alert] = exception.message
     #redirect_to main_app.root_path
-    redirect_to :controller => "/pages", :action => "show", :slug => "denied"
+    respond_to do |format|
+      format.html  { redirect_to(:controller => "/pages", :action => "show", :slug => "denied") }
+      format.json  { render :json => {status: 401, reason: 'You do not have access to this page. Try login in.', login_path: new_user_session_path}, :status => 401 }
+    end
+
   end
 
   #simple json check authentication for current user for phpbb integration
