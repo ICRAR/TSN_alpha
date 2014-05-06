@@ -16,6 +16,10 @@ DS.RESTAdapter.reopen
   namespace: 'sub'
 
 DS.ActiveModelAdapter.reopen
+  init: ->
+    @_super()
+    token = $("meta[name=\"csrf-token\"]").attr("content")
+    @headers = "X-CSRF-Token": token
   ajaxError: (jqXHR) ->
     defaultAjaxError = @_super(jqXHR)
     if jqXHR and jqXHR.status is 401
