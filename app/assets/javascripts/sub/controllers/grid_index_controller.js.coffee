@@ -1,4 +1,6 @@
 TheSkyMap.GridIndexController = Ember.ArrayController.extend
+  init: ->
+    @.get('store').find('grid')
   x_center: 1
   y_center: 1
   z_center: 1
