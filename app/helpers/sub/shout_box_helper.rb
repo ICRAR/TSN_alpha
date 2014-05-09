@@ -1,2 +1,0 @@
-module Sub::ShoutBoxHelper
-end

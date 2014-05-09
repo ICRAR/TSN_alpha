@@ -46,7 +46,7 @@ Tsn::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( non_includes/deployJava.js mail.css)
+  config.assets.precompile += %w( non_includes/deployJava.js mail.css the_sky_map/application.js the_sky_map/application.css)
   # Add the fonts path
   config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
 
@@ -95,4 +95,5 @@ Tsn::Application.configure do
   config.middleware.use Rack::SslEnforcer, only: ['/users','/admin']
 
   config.ember.variant = :production
+  config.handlebars.templates_root = 'the_sky_map/templates'
 end

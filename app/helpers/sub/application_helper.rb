@@ -1,3 +1,0 @@
-module Sub::ApplicationHelper
-
-end

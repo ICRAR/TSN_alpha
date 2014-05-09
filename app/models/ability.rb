@@ -46,7 +46,7 @@ class Ability
     can :alliance_history, Profile
     can :compare, Challenger
     can :history, Challenge
-    cannot :manage, Sub::Grid
+    cannot :manage, TheSkyMap::Grid
 
 
     if user.id #user is not a quest user

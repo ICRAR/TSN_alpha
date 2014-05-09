@@ -1,0 +1,2 @@
+module TheSkyMap::ShoutBoxesHelper
+end

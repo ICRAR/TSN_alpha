@@ -1,0 +1,14 @@
+hello {{controllers.currentProfile.content.name}}
+<ul>
+    <li>{{#link-to 'home'}}Home{{/link-to}}</li>
+    <li>{{#link-to 'name'}}Name{{/link-to}}</li>
+    <li>{{#link-to 'grid'}}Grid test{{/link-to}}</li>
+    <li>{{#link-to 'shout_boxes'}}Shout Boxes{{/link-to}}</li>
+</ul>
+
+{{outlet}}
+
+</br >
+{{render "grid/index"}}
+
+
