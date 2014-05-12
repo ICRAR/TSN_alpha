@@ -58,6 +58,9 @@ GEM
       ember-source
       execjs
       handlebars-source
+    barber-emblem (0.1.1)
+      barber (>= 0.4.1)
+      emblem-source
     bcrypt-ruby (3.0.1)
     better_errors (0.9.0)
       coderay (>= 1.0.0)
@@ -164,6 +167,10 @@ GEM
       railties (>= 3.1)
     ember-source (1.5.0)
       handlebars-source (~> 1.0)
+    emblem-rails (0.2.1)
+      barber-emblem (~> 0.1.1)
+      ember-rails (>= 0.14.0)
+    emblem-source (0.3.15)
     erubis (2.7.0)
     eventmachine (1.0.3)
     excon (0.22.1)
@@ -498,6 +505,7 @@ DEPENDENCIES
   ember-data-source (~> 1.0.0.beta.7)
   ember-rails
   ember-source (= 1.5.0)
+  emblem-rails
   fabrication
   faker
   fancybox2-rails (~> 0.2.4)

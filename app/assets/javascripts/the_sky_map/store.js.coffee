@@ -13,7 +13,7 @@ TheSkyMap.Store = DS.Store.extend
   #revision: 12,
   adapter: '-active-model'
 DS.RESTAdapter.reopen
-  namespace: 'theSkyMap'
+  namespace: 'the_sky_map'
 
 DS.ActiveModelAdapter.reopen
   init: ->

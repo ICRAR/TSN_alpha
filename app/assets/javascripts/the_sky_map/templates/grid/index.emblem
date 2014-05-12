@@ -1,0 +1,33 @@
+.controls
+  .debug
+    |
+      x_min: {{x_min}}
+      x_max: {{x_max}}
+    |
+      y_min: {{y_min}}
+      y_max: {{y_max}}
+    |
+      z_min: {{z_min}}
+      z_max: {{z_max}}
+  .buttons
+    .x
+      button{action "scroll_x_p"} scroll_x_p
+      button{action "scroll_x_n"} scroll_x_n
+    .y
+      button{action "scroll_y_p"} scroll_y_p
+      button{action "scroll_y_n"} scroll_y_n
+    .z
+      button{action "scroll_z_p"} scroll_z_p
+      button{action "scroll_z_n"} scroll_z_n
+
+.board
+  each grids_layers
+    .layer
+      | Layer: {{z}}
+      each rows
+        .row
+          | Row: {{y}}
+          .row-fluid
+            each grids
+              .span4
+                | {{name}}::{{id}}

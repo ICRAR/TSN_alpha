@@ -156,7 +156,7 @@ Tsn::Application.routes.draw do
     end
   end
 
-  namespace :theSkyMap do
+  namespace :the_sky_map do
     resources :ember, :only => [:index] do
       collection do
         get 'current_profile'

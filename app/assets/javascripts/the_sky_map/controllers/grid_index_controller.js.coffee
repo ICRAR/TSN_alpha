@@ -1,6 +1,7 @@
 TheSkyMap.GridIndexController = Ember.ArrayController.extend
   needs: ['currentProfile']
   init: ->
+    @_super()
     @set 'x_center', @get('controllers.currentProfile.content.base_x')
     @set 'y_center', @get('controllers.currentProfile.content.base_y')
     @set 'z_center', @get('controllers.currentProfile.content.base_z')
@@ -41,11 +42,17 @@ TheSkyMap.GridIndexController = Ember.ArrayController.extend
       {
         z: z
         rows: [c.get('y_min')..c.get('y_max')].map (y) ->
+          grids = c.get('store').filter(TheSkyMap.Grid, (grid) ->
+            grid.get('y') == y && grid.get('z') == z && grid.get('x') >= c.get('x_min') && grid.get('x') <= c.get('x_max')
+          )
+          gridsArray = Ember.ArrayProxy.createWithMixins Ember.SortableMixin, {
+            sortProperties: ['x']
+            sortAscending: true
+            content: grids
+          }
           {
             y: y
-            grids: c.get('store').filter(TheSkyMap.Grid, (grid) ->
-              grid.get('y') == y && grid.get('z') == z && grid.get('x') >= c.get('x_min') && grid.get('x') <= c.get('x_max')
-            )
+            grids: gridsArray
           }
       }
   ).property('x_min','x_max','y_min','y_max','z_min','z_max')

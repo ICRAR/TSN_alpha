@@ -71,6 +71,7 @@ gem 'ruby-bbcode-to-md'
 gem 'ember-rails'
 gem 'ember-source', '1.5.0' # or the version you need
 gem 'ember-data-source', "~> 1.0.0.beta.7" # or the version you need
+gem 'emblem-rails'
 
 gem 'delayed_job_active_record'
 gem 'daemons'
