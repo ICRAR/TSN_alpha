@@ -4,7 +4,8 @@ TheSkyMap.Router.map ()->
   # @resource('posts')
   @route 'home', path: '/'
   @route 'name'
-  @resource 'grid', {path: '/grid'}, () ->
+  @resource 'quadrants', {path: '/quadrants'}, () ->
+    @route 'show', {path: '/:quadrant_id'}
   @resource 'shout_boxes', {path: '/shout_boxes'}, () ->
     @route 'show', {path: '/:shout_id'}
 
@@ -26,11 +27,14 @@ TheSkyMap.ShoutBoxesIndexRoute = TheSkyMap.WithNameRoute.extend
   model: ->
     this.store.find('shout_box')
 TheSkyMap.ShoutBoxesShowRoute =TheSkyMap.WithNameRoute.extend
-  model: ->
+  model: (params) ->
     this.store.find('shout_box', params.shout_id)
 
 
-TheSkyMap.GridIndexRoute = Ember.Route.extend
-  model: ->
-    this.store.find('grid')
+TheSkyMap.QuadrantShowRoute = Ember.Route.extend
+  model: (params)->
+    this.store.find('quadrant', params.quadrant_id)
+  setupController: (controller, model) ->
+    controller.set 'model', model
+
 

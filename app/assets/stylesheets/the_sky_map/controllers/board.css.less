@@ -1,0 +1,67 @@
+#galaxy_board {
+  .controls {
+    color: black;
+  }
+
+  .board, .key {
+    color: black;
+    .quadrant {
+      padding: 5px ;
+      margin: 5px;
+      .glyphicon {
+        margin-right: 5px;
+      }
+      //background and forground colors
+      &.blank {
+        color: white;
+        background-color: black;
+      }
+      &.planet {
+        background-color: #644436;
+        color: white;
+        a {
+          color: #E1FFFD;
+        }
+      }
+      &.empty {
+        background-color: #274257;
+        color: white;
+        a {
+          color: #C3FFFD;
+        }
+      }
+      &.star {
+        background-color: #DFC184;
+        color: black;
+        a {
+          color: #0000D9;
+        }
+      }
+      &.unknown {
+        background-color: #2A75A9;
+        color: white;
+        a {
+          color: #0000D9;
+        }
+      }
+      //boarder colors
+      border: 4px solid #000e3f; //default not owned by anyone or unknown
+      &.mine {
+        border-color: #AFEAAA;
+      }
+      &.home {
+        border-color: #41924B;
+      }
+      &.hostile {
+        border-color: #FE8402;
+      }
+      &.unowned {
+        border-color: #6BCAE2
+      }
+
+
+    }
+  }
+}
+//http://www.colorcombos.com/color-schemes/424/ColorCombo424.html
+//http://vanisoft.pl/~lopuszanski/public/colors/

@@ -2,20 +2,20 @@ module TheSkyMap
   class EmberController < TheSkyMap::ApplicationController
     def index
       @profiles = Profile.limit(10)
-      @current_profile = current_profile_json
+      @current_player = current_player_json
     end
 
-    def current_profile
+    def current_player
       respond_to do |format|
-        format.json { render json: current_profile_json }
+        format.json { render json: current_player_json }
       end
     end
 
     private
-    def current_profile_json
+    def current_player_json
       if user_signed_in?
-        profile = current_user.profile
-        TheSkyMap::CurrentProfileSerializer .new(profile).to_json
+        player = current_user.profile.the_sky_map_player
+        TheSkyMap::CurrentPlayerSerializer.new(player).to_json
       else
         {current_profile: {id: 0, user_signed_in: false, name: 'Guest'}}.to_json
       end

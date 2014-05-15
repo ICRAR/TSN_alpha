@@ -1,22 +1,18 @@
-TheSkyMap.GridIndexController = Ember.ArrayController.extend
-  needs: ['currentProfile']
+TheSkyMap.BoardController = Ember.ArrayController.extend
+  needs: ['currentPlayer']
   init: ->
     @_super()
-    @set 'x_center', @get('controllers.currentProfile.content.base_x')
-    @set 'y_center', @get('controllers.currentProfile.content.base_y')
-    @set 'z_center', @get('controllers.currentProfile.content.base_z')
-    @.get('store').find('grid',{
-      x_min: @.get('x_min')
-      x_max: @.get('x_max')
-      y_min: @.get('y_min')
-      y_max: @.get('y_max')
-      z_min: @.get('z_min')
-      z_max: @.get('z_max')
-    })
+    @set 'x_center', @get('controllers.currentPlayer.content.home_x')
+    @set 'y_center', @get('controllers.currentPlayer.content.home_y')
+    @set 'z_center', @get('controllers.currentPlayer.content.home_z')
+    @send('refresh_view')
   x_center: 1
   y_center: 1
   z_center: 1
   xy_zoom: 2
+  xy_zoomed_in: (() ->
+    @get('xy_zoom') == 2
+  ).property('xy_zoom')
   z_zoom: 2
   x_max: (() ->
     @.get('x_center') + (@.get('xy_zoom') - 1)
@@ -36,29 +32,58 @@ TheSkyMap.GridIndexController = Ember.ArrayController.extend
   z_min: (() ->
     @.get('z_center') - (@.get('z_zoom') - 1)
   ).property('z_center','z_zoom')
-  grids_layers:(() ->
+  xs: (( ->
+    [@get('x_min')..@get('x_max')]
+  )).property('x_min','x_max')
+  quadrants_layers:(() ->
     c = @
     [@.get('z_min')..@.get('z_max')].map (z) ->
       {
-        z: z
-        rows: [c.get('y_min')..c.get('y_max')].map (y) ->
-          grids = c.get('store').filter(TheSkyMap.Grid, (grid) ->
-            grid.get('y') == y && grid.get('z') == z && grid.get('x') >= c.get('x_min') && grid.get('x') <= c.get('x_max')
-          )
-          gridsArray = Ember.ArrayProxy.createWithMixins Ember.SortableMixin, {
-            sortProperties: ['x']
-            sortAscending: true
-            content: grids
-          }
-          {
-            y: y
-            grids: gridsArray
-          }
+      z: z
+      rows: [c.get('y_min')..c.get('y_max')].map (y) ->
+        {
+          y:y
+          quadrants: [c.get('x_min')..c.get('x_max')].map (x) ->
+            quadrantsArray = c.get('store').filter(TheSkyMap.Quadrant, (quadrant) ->
+              quadrant.get('y') == y && quadrant.get('z') == z && quadrant.get('x') == x
+            )
+            {
+              x: x
+              quadrant_final: quadrantsArray
+            }
+        }
       }
   ).property('x_min','x_max','y_min','y_max','z_min','z_max')
   actions:
+    refresh_view: () ->
+      @.get('store').find('quadrant',{
+        x_min: @.get('x_min')
+        x_max: @.get('x_max')
+        y_min: @.get('y_min')
+        y_max: @.get('y_max')
+        z_min: @.get('z_min')
+        z_max: @.get('z_max')
+      })
+    zoom_1: () ->
+      @.set('xy_zoom', 2)
+      @send('refresh_view')
+    zoom_2: () ->
+      @.set('xy_zoom', 3)
+      @send('refresh_view')
+    scroll_to_position: (pos) ->
+      @set 'x_center', pos.x
+      @set 'y_center', pos.y
+      @set 'z_center', pos.z
+      @send('refresh_view')
+    scroll_home: () ->
+      pos = {
+       x: @get('controllers.currentPlayer.content.home_x')
+       y: @get('controllers.currentPlayer.content.home_y')
+       z: @get('controllers.currentPlayer.content.home_z')
+      }
+      @send('scroll_to_position', pos)
     scroll_x_p: () ->
-      @.get('store').find(TheSkyMap.Grid,{
+      @.get('store').find(TheSkyMap.Quadrant,{
         x_min: @.get('x_max') + 1
         x_max: @.get('x_max') + 1
         y_min: @.get('y_min')
@@ -68,7 +93,7 @@ TheSkyMap.GridIndexController = Ember.ArrayController.extend
       })
       @.set('x_center', @.get('x_center') + 1)
     scroll_x_n: () ->
-      @.get('store').find(TheSkyMap.Grid,{
+      @.get('store').find(TheSkyMap.Quadrant,{
         x_min: @.get('x_min') - 1
         x_max: @.get('x_min') - 1
         y_min: @.get('y_min')
@@ -78,7 +103,7 @@ TheSkyMap.GridIndexController = Ember.ArrayController.extend
       })
       @.set('x_center', @.get('x_center') - 1)
     scroll_y_p: () ->
-      @.get('store').find(TheSkyMap.Grid,{
+      @.get('store').find(TheSkyMap.Quadrant,{
         x_min: @.get('x_min')
         x_max: @.get('x_max')
         y_min: @.get('y_max') + 1
@@ -88,7 +113,7 @@ TheSkyMap.GridIndexController = Ember.ArrayController.extend
       })
       @.set('y_center', @.get('y_center') + 1)
     scroll_y_n: () ->
-      @.get('store').find(TheSkyMap.Grid,{
+      @.get('store').find(TheSkyMap.Quadrant,{
         x_min: @.get('x_min')
         x_max: @.get('x_max')
         y_min: @.get('y_min') - 1
@@ -98,7 +123,7 @@ TheSkyMap.GridIndexController = Ember.ArrayController.extend
       })
       @.set('y_center', @.get('y_center') - 1)
     scroll_z_p: () ->
-      @.get('store').find(TheSkyMap.Grid,{
+      @.get('store').find(TheSkyMap.Quadrant,{
         x_min: @.get('x_min')
         x_max: @.get('x_max')
         y_min: @.get('y_min')
@@ -108,7 +133,7 @@ TheSkyMap.GridIndexController = Ember.ArrayController.extend
       })
       @.set('z_center', @.get('z_center') + 1)
     scroll_z_n: () ->
-      @.get('store').find(TheSkyMap.Grid,{
+      @.get('store').find(TheSkyMap.Quadrant,{
         x_min: @.get('x_min')
         x_max: @.get('x_max')
         y_min: @.get('y_min')

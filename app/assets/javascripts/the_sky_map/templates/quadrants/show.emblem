@@ -1,0 +1,20 @@
+.panel.panel-info
+  .panel-heading Quadrant: {{name}}
+  .panel-body
+    dl.dl-horizontal
+      dt Name
+      dd= name
+      dt Description
+      dd= desc
+      dt Explored?
+      dd= explored
+      dt Score
+      dd= base_score
+      dt x
+      dd= x
+      dt y
+      dd= y
+      dt z
+      dd= z
+    a href='#' click="scroll_to_home" Zoom to Quadrant
+

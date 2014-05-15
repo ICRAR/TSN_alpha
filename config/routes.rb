@@ -159,11 +159,11 @@ Tsn::Application.routes.draw do
   namespace :the_sky_map do
     resources :ember, :only => [:index] do
       collection do
-        get 'current_profile'
+        get 'current_player'
       end
     end
     resources :shout_boxes
-    resources :grids, :only => [:index]
+    resources :quadrants, :only => [:index, :show]
   end
   # The priority is based upon order of creation:
   # first created -> highest priority.

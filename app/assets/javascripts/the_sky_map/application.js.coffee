@@ -1,4 +1,5 @@
 #= require jquery
+#= require_tree ./vendor
 #= require ./init.js.coffee
 #= require handlebars
 #= require ember

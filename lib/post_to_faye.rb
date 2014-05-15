@@ -34,8 +34,11 @@ class PostToFaye
     broadcast_json = {remove_models: {model_name => model_id}}.to_json
     faye_broadcast "/messages/from_rails", broadcast_json
   end
-  def self.remove_model(model)
-    broadcast_json = {remove_models: {model.ember_name => model.id}}.to_json
+
+  #post to tell remote browser to update model if needed
+  def self.request_update(model_name,model_id)
+    broadcast_json = {update_models: {model_name => model_id}}.to_json
+    faye_broadcast "/messages/from_rails", broadcast_json
   end
 end
 

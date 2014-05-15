@@ -235,7 +235,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `follows` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -552,26 +552,6 @@ CREATE TABLE `special_days` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `sub_grids` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `x` int(11) DEFAULT NULL,
-  `y` int(11) DEFAULT NULL,
-  `z` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `edge` tinyint(1) DEFAULT '0',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-CREATE TABLE `sub_shout_boxes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `msg` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 CREATE TABLE `taggings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag_id` int(11) DEFAULT NULL,
@@ -592,6 +572,58 @@ CREATE TABLE `tags` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=867 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `the_sky_map_players` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `score` int(11) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
+  `total_points` int(11) DEFAULT NULL,
+  `spent_points` int(11) DEFAULT NULL,
+  `profile_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `profile_index` (`profile_id`),
+  KEY `score_index` (`score`),
+  KEY `rank_index` (`rank`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_players_quadrants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `the_sky_map_quadrant_id` int(11) DEFAULT NULL,
+  `the_sky_map_player_id` int(11) DEFAULT NULL,
+  `explored` int(11) DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `player_id_quadrant_id` (`the_sky_map_quadrant_id`,`the_sky_map_player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_quadrant_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `desc` text COLLATE utf8_unicode_ci,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `num_of_bases` int(11) DEFAULT NULL,
+  `score` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_quadrants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `z` int(11) DEFAULT NULL,
+  `the_sky_map_quadrant_types_id` int(11) DEFAULT NULL,
+  `owner_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `owner_index` (`owner_id`),
+  KEY `location_index` (`z`,`y`,`x`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `theskymap_grids` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `x` int(11) DEFAULT NULL,
@@ -610,7 +642,7 @@ CREATE TABLE `theskymap_shout_boxes` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `timeline_entries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -920,3 +952,11 @@ INSERT INTO schema_migrations (version) VALUES ('20140403032948');
 INSERT INTO schema_migrations (version) VALUES ('20140404081950');
 
 INSERT INTO schema_migrations (version) VALUES ('20140501065334');
+
+INSERT INTO schema_migrations (version) VALUES ('20140513033157');
+
+INSERT INTO schema_migrations (version) VALUES ('20140513035317');
+
+INSERT INTO schema_migrations (version) VALUES ('20140513045330');
+
+INSERT INTO schema_migrations (version) VALUES ('20140513051035');

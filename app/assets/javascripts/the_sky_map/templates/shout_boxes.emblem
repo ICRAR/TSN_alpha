@@ -1,0 +1,10 @@
+.row
+  .col-md-7
+    = render 'board'
+  .col-md-5
+    = outlet name
+    TheSkyMap.NewShoutBoxView
+    = outlet
+
+
+

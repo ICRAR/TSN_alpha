@@ -1,4 +1,4 @@
-class TheSkyMap::GridsController < TheSkyMap::ApplicationController
+class TheSkyMap::QuadrantsController < TheSkyMap::ApplicationController
 
   respond_to :json
 
@@ -11,15 +11,19 @@ class TheSkyMap::GridsController < TheSkyMap::ApplicationController
     z_min = params[:z_min] || 0
     z_max = params[:z_max] || 2
 
-    grids = TheSkyMap::Grid.
+    quadrants = TheSkyMap::Quadrant.
         where{(z >= z_min) & (z <= z_max)}.
         where{(y >= y_min) & (y <= y_max)}.
         where{(x >= x_min) & (x <= x_max)}.
-        order([:z,:y,:x])
+        order([:z,:y,:x]).for_show(current_user.profile.the_sky_map_player.id)
 
 
-    respond_with grids
+    respond_with quadrants
 
+  end
+
+  def show
+    respond_with TheSkyMap::Quadrant.for_show(current_user.profile.the_sky_map_player.id).find(params[:id])
   end
 
 end
