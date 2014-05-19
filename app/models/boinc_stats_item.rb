@@ -51,6 +51,9 @@ class BoincStatsItem < ActiveRecord::Base
     end
 
   end
+  def boinc_url
+    "#{APP_CONFIG['boinc_url']}show_user.php?userid=#{self.boinc_id}"
+  end
 
   #Creates a new boinc account
   def self.create_new_account(email, password, username)

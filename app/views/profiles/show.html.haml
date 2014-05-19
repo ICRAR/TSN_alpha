@@ -106,6 +106,7 @@
                     %dt
                       %abbr{:title => "Recent Average Credit"} RAC
                     %dd= boinc.RAC
+                  %p= link_to "Find #{@profile.name} on boinc", boinc.boinc_url
         .row-fluid
           .span12.well.well-white#latest_trophy
             %h2 Latest Achievement:
