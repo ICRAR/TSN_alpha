@@ -164,6 +164,7 @@ Tsn::Application.routes.draw do
     end
     resources :shout_boxes
     resources :quadrants, :only => [:index, :show]
+    resources :ships, :only => [:index, :show]
   end
   # The priority is based upon order of creation:
   # first created -> highest priority.

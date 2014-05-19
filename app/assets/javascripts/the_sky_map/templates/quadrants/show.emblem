@@ -16,5 +16,10 @@
       dd= y
       dt z
       dd= z
+    if has_ships
+      h5 Ships:
+      ul
+        each ship in ships
+          li:  link-to 'ships.show' ship | {{ship.name}}
     a href='#' click="scroll_to_home" Zoom to Quadrant
 

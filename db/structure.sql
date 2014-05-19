@@ -579,6 +579,7 @@ CREATE TABLE `the_sky_map_players` (
   `total_points` int(11) DEFAULT NULL,
   `spent_points` int(11) DEFAULT NULL,
   `profile_id` int(11) DEFAULT NULL,
+  `home_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -596,41 +597,55 @@ CREATE TABLE `the_sky_map_players_quadrants` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `player_id_quadrant_id` (`the_sky_map_quadrant_id`,`the_sky_map_player_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_quadrant_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `desc` text COLLATE utf8_unicode_ci,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `unexplored_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `unexplored_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `explored_color` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `feature_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `num_of_bases` int(11) DEFAULT NULL,
   `score` int(11) DEFAULT NULL,
+  `generation_chance` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_quadrants` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `x` int(11) DEFAULT NULL,
   `y` int(11) DEFAULT NULL,
   `z` int(11) DEFAULT NULL,
-  `the_sky_map_quadrant_types_id` int(11) DEFAULT NULL,
+  `the_sky_map_quadrant_type_id` int(11) DEFAULT NULL,
   `owner_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `owner_index` (`owner_id`),
-  KEY `location_index` (`z`,`y`,`x`)
+  UNIQUE KEY `location_index` (`z`,`y`,`x`),
+  KEY `owner_index` (`owner_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_ship_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `desc` text COLLATE utf8_unicode_ci,
+  `speed` int(11) DEFAULT NULL,
+  `health` int(11) DEFAULT NULL,
+  `attack` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `theskymap_grids` (
+CREATE TABLE `the_sky_map_ships` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `x` int(11) DEFAULT NULL,
-  `y` int(11) DEFAULT NULL,
-  `z` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `edge` tinyint(1) DEFAULT '0',
+  `the_sky_map_ship_type_id` int(11) DEFAULT NULL,
+  `the_sky_map_player_id` int(11) DEFAULT NULL,
+  `the_sky_map_quadrant_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -960,3 +975,7 @@ INSERT INTO schema_migrations (version) VALUES ('20140513035317');
 INSERT INTO schema_migrations (version) VALUES ('20140513045330');
 
 INSERT INTO schema_migrations (version) VALUES ('20140513051035');
+
+INSERT INTO schema_migrations (version) VALUES ('20140515075318');
+
+INSERT INTO schema_migrations (version) VALUES ('20140515080246');

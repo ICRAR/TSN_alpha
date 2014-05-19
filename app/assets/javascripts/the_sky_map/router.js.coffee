@@ -6,6 +6,8 @@ TheSkyMap.Router.map ()->
   @route 'name'
   @resource 'quadrants', {path: '/quadrants'}, () ->
     @route 'show', {path: '/:quadrant_id'}
+  @resource 'ships', {path: '/ships'}, () ->
+    @route 'show', {path: '/:ship_id'}
   @resource 'shout_boxes', {path: '/shout_boxes'}, () ->
     @route 'show', {path: '/:shout_id'}
 
@@ -34,7 +36,11 @@ TheSkyMap.ShoutBoxesShowRoute =TheSkyMap.WithNameRoute.extend
 TheSkyMap.QuadrantShowRoute = Ember.Route.extend
   model: (params)->
     this.store.find('quadrant', params.quadrant_id)
-  setupController: (controller, model) ->
-    controller.set 'model', model
+
+
+TheSkyMap.ShipShowRoute = Ember.Route.extend
+  model: (params)->
+    this.store.find('ship', params.ship_id)
+
 
 

@@ -1,0 +1,15 @@
+#show_ship
+  .panel.panel-info
+    .panel-heading= name
+    .panel-body
+      dl.dl-horizontal
+        dt Description
+        dd= desc
+        dt Power
+        dd= power
+        dt Speed
+        dd= speed
+        dt Attack
+        dd= attack
+
+

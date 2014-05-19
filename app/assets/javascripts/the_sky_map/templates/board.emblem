@@ -39,6 +39,8 @@
                             span.glyphicon.glyphicon-eye-open
                           if qf.explored_partial
                             span.glyphicon.glyphicon-eye-close
+                          if qf.has_ships
+                            span.glyphicon.glyphicon-plane
 
                     else
                       .quadrant.blank
