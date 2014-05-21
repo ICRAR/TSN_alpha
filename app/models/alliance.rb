@@ -46,7 +46,7 @@ class Alliance < ActiveRecord::Base
 
   #socil functions
   acts_as_likeable
-  has_many :timeline_entires, as: :timelineable
+  has_many :timeline_entries, as: :timelineable
   def own_timeline
     TimelineEntry.get_timeline('Alliance' => [self.id])
   end
