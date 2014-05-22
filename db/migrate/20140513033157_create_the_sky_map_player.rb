@@ -5,6 +5,7 @@ class CreateTheSkyMapPlayer < ActiveRecord::Migration
       t.integer :rank, default: 0
       t.integer :total_points, default: 0
       t.integer :spent_points, default: 0
+      t.text :options
       t.belongs_to :profile
       t.belongs_to :home
 

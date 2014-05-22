@@ -9,7 +9,7 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
   x_center: 1
   y_center: 1
   z_center: 1
-  xy_zoom: 2
+  xy_zoom: 3
   xy_zoomed_in: (() ->
     @get('xy_zoom') == 2
   ).property('xy_zoom')
@@ -70,6 +70,15 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
     zoom_2: () ->
       @.set('xy_zoom', 3)
       @send('refresh_view')
+    transistion_to_quadrant: (quadrant_id) ->
+      quad = @.get('store').getById('quadrant', quadrant_id)
+      pos = {
+        x: quad.get('x')
+        y: quad.get('y')
+        z: quad.get('z')
+      }
+      @send('scroll_to_position', pos)
+      @transitionToRoute('quadrants.show', quad)
     scroll_to_position: (pos) ->
       @set 'x_center', pos.x
       @set 'y_center', pos.y

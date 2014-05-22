@@ -17,7 +17,7 @@ module TheSkyMap
         player = current_user.profile.the_sky_map_player
         TheSkyMap::CurrentPlayerSerializer.new(player).to_json
       else
-        {current_profile: {id: 0, user_signed_in: false, name: 'Guest'}}.to_json
+        {current_player: {id: 0, user_signed_in: false, name: 'Guest'}}.to_json
       end
     end
   end

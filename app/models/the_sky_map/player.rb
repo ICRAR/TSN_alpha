@@ -41,4 +41,30 @@ class TheSkyMap::Player < ActiveRecord::Base
       rails e unless e.message == 'Validation failed: The sky map player has already been taken'
     end
   end
+
+  #options
+  def options_without_default
+    opt = self[:options] || '{}'
+    begin
+      opt_hash = JSON.parse opt
+    rescue TypeError, JSON::ParserError
+      opt_hash = {}
+    end
+  end
+  def self.options_default
+    {
+        'fog_of_war_on' => true
+    }
+  end
+  def options
+    TheSkyMap::Player.options_default.merge options_without_default
+  end
+  def set_options(hash)
+    new_hash = options_without_default.merge hash
+    self.options =  new_hash.to_json
+  end
+  def reset_option(key)
+    new_hash = options_without_default.delete key
+    self.options =  new_hash.to_json
+  end
 end

@@ -11,11 +11,7 @@ class TheSkyMap::QuadrantsController < TheSkyMap::ApplicationController
     z_min = params[:z_min] || 0
     z_max = params[:z_max] || 2
 
-    quadrants = TheSkyMap::Quadrant.
-        where{(z >= z_min) & (z <= z_max)}.
-        where{(y >= y_min) & (y <= y_max)}.
-        where{(x >= x_min) & (x <= x_max)}.
-        order([:z,:y,:x]).for_show(current_user.profile.the_sky_map_player.id)
+    quadrants = TheSkyMap::Quadrant.within_range(x_min,x_max,y_min,y_max,z_min,z_max).for_show(current_user.profile.the_sky_map_player)
 
 
     respond_with quadrants
@@ -23,7 +19,7 @@ class TheSkyMap::QuadrantsController < TheSkyMap::ApplicationController
   end
 
   def show
-    respond_with TheSkyMap::Quadrant.for_show(current_user.profile.the_sky_map_player.id).find(params[:id])
+    respond_with TheSkyMap::Quadrant.for_show(current_user.profile.the_sky_map_player).find(params[:id])
   end
 
 end

@@ -4,7 +4,7 @@ class TheSkyMap::ShipsController < TheSkyMap::ApplicationController
 
   def index
 
-    quadrants = TheSkyMap::Ship.for_index(current_user.profile.the_sky_map_player.id)
+    quadrants = TheSkyMap::Ship.for_index(current_user.profile.the_sky_map_player)
 
 
     respond_with quadrants

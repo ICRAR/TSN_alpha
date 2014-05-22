@@ -11,15 +11,27 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
 
   validates_uniqueness_of :x, scope: [:y, :z]
   validates_presence_of :the_sky_map_quadrant_type_id
-
-  def self.for_show(player_id)
-    includes(:the_sky_map_quadrant_type).
-    includes(:the_sky_map_ships).
-        joins("LEFT OUTER JOIN
-    the_sky_map_players_quadrants ON the_sky_map_players_quadrants.the_sky_map_quadrant_id = the_sky_map_quadrants.id and
-    the_sky_map_players_quadrants.the_sky_map_player_id = #{player_id}").
-        select('the_sky_map_quadrants.*').
-        select{the_sky_map_players_quadrants.explored.as('explored')}
+  def self.within_range(x_min,x_max,y_min,y_max,z_min,z_max)
+    where{(z >= z_min) & (z <= z_max)}.
+      where{(y >= y_min) & (y <= y_max)}.
+      where{(x >= x_min) & (x <= x_max)}.
+      order([:z,:y,:x])
+  end
+  def self.for_show(player)
+    if player.options['fog_of_war_on']
+      includes(:the_sky_map_quadrant_type).
+      includes(:the_sky_map_ships).
+          joins("LEFT OUTER JOIN
+      the_sky_map_players_quadrants ON the_sky_map_players_quadrants.the_sky_map_quadrant_id = the_sky_map_quadrants.id and
+      the_sky_map_players_quadrants.the_sky_map_player_id = #{player.id}").
+          select('the_sky_map_quadrants.*').
+          select{the_sky_map_players_quadrants.explored.as('explored')}
+    else
+      includes(:the_sky_map_quadrant_type).
+          includes(:the_sky_map_ships).
+          select('the_sky_map_quadrants.*').
+          select('1 as explored')
+    end
   end
   def self.at_pos(x_pos,y_pos,z_pos)
     where{(x == x_pos) & (y == y_pos) & (z == z_pos)}
