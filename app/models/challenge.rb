@@ -266,7 +266,7 @@ Finally the score value is set in the update action using the following formula:
     return false if challenger.nil?
     #delete challenger's metrics
     challenger.metrics.delete_all
-
+    ChallengeData
     #delete challenger
     challenger.destroy
     return true
