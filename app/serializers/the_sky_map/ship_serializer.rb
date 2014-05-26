@@ -1,5 +1,5 @@
 class TheSkyMap::ShipSerializer < ActiveModel::Serializer
-  attributes :id, :name, :attack, :health, :speed, :desc
+  attributes :id, :name, :attack, :health, :speed, :desc, :hostile, :mine
   embed :ids#, include: true
   has_one :the_sky_map_quadrant, key: :quadrant_id
   #def the_sky_map_quadrant
@@ -19,6 +19,12 @@ class TheSkyMap::ShipSerializer < ActiveModel::Serializer
   end
   def speed
     object.the_sky_map_ship_type.speed
+  end
+  def mine
+    object.the_sky_map_player_id == current_user.profile.the_sky_map_player.id
+  end
+  def hostile
+    !(mine)
   end
 
 end

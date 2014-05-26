@@ -34,7 +34,7 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     end
   end
   def self.at_pos(x_pos,y_pos,z_pos)
-    where{(x == x_pos) & (y == y_pos) & (z == z_pos)}
+    where{(x == x_pos) & (y == y_pos) & (z == z_pos)}.first
   end
   def surrounding_quadrants
     TheSkyMap::Quadrant.
@@ -76,5 +76,10 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     end
   end
 
-
+  def distance_to(to_x,to_y,to_z)
+    x2 = ((to_x - x).abs)**2
+    y2 = ((to_y - y).abs)**2
+    z2 = ((to_z - z).abs)**2
+    Math.sqrt(x2 + y2 + z2)
+  end
 end

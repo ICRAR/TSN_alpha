@@ -11,7 +11,7 @@
         dd= speed
         dt Location
         dd
-          | ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
+          ' ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
           a href='#' click="show_on_map" Show on map
 
 

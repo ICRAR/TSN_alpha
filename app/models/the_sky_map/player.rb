@@ -23,7 +23,6 @@ class TheSkyMap::Player < ActiveRecord::Base
       self.add_quadrant quadrant
       pq = self.the_sky_map_players_quadrants.where{the_sky_map_quadrant_id == quadrant.id}.first
     end
-
     pq.explored = true
     pq.save
 
@@ -64,7 +63,17 @@ class TheSkyMap::Player < ActiveRecord::Base
     self.options =  new_hash.to_json
   end
   def reset_option(key)
-    new_hash = options_without_default.delete key
+    new_hash = options_without_default
+    new_hash.delete key
     self.options =  new_hash.to_json
+  end
+
+  #actor methods
+  acts_as_actor
+  def currency_available
+    (total_points - spent_points)
+  end
+  def deduct_currency(value)
+    self.class.where{id == self.id}.update_all('spent_points = spent_points + 5' )
   end
 end

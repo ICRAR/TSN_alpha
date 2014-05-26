@@ -15,7 +15,8 @@ $(document).ready(
           local_model = store.getById(model_name,model_id)
           local_model.deleteRecord() unless local_model == null
         #request the ember store to update a model if it already exists
-        for model_name, model_id of data.update_models
-          local_model = store.getById(model_name,model_id)
-          local_model.reload() unless local_model == null
+        for model_name, model_ids of data.update_models
+          for i, model_id of model_ids
+            local_model = store.getById(model_name,model_id)
+            local_model.reload() unless local_model == null
 )

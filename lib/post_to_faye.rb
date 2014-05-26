@@ -36,8 +36,8 @@ class PostToFaye
   end
 
   #post to tell remote browser to update model if needed
-  def self.request_update(model_name,model_id)
-    broadcast_json = {update_models: {model_name => model_id}}.to_json
+  def self.request_update(model_name,model_ids)
+    broadcast_json = {update_models: {model_name => model_ids}}.to_json
     faye_broadcast "/messages/from_rails", broadcast_json
   end
 end

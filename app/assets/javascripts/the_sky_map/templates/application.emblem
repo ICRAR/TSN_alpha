@@ -15,6 +15,7 @@
             li: link-to 'home' | Home
             li: link-to 'name' | Name
             li: link-to 'quadrants' | Galaxy Map
+            li: link-to 'ships' | All Ships
             li: link-to 'shout_boxes' | Shout Boxes
 
     .col-md-10
