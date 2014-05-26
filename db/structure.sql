@@ -8,6 +8,7 @@ CREATE TABLE `actions` (
   `queued_at` datetime DEFAULT NULL,
   `run_at` datetime DEFAULT NULL,
   `completed_at` datetime DEFAULT NULL,
+  `lock_version` int(11) NOT NULL DEFAULT '0',
   `actor_id` int(11) DEFAULT NULL,
   `actor_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `actionable_id` int(11) DEFAULT NULL,

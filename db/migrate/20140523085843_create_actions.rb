@@ -7,9 +7,10 @@ class CreateActions < ActiveRecord::Migration
       t.integer :duration
       t.integer :state
       t.datetime :queued_at
+      t.datetime :queued_next_at
       t.datetime :run_at
       t.datetime :completed_at
-
+      t.integer :lock_version, default: 0, null: false
       t.references :actor, polymorphic: true
       t.references :actionable, polymorphic: true
 
