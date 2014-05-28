@@ -4,10 +4,10 @@ class TheSkyMap::ShipsController < TheSkyMap::ApplicationController
 
   def index
 
-    quadrants = TheSkyMap::Ship.for_index(current_user.profile.the_sky_map_player)
+    @ships = TheSkyMap::Ship.for_index(current_user.profile.the_sky_map_player)
 
 
-    respond_with quadrants
+    render :json =>  @ships, :each_serializer => TheSkyMap::ShipIndexSerializer
 
   end
 

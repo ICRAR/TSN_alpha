@@ -1,5 +1,5 @@
 Ember.Inflector.inflector.irregular('ship', 'ships');
-TheSkyMap.Ship = DS.Model.extend(
+TheSkyMap.Ship = TheSkyMap.Actionable.extend(
   name: DS.attr("string")
   desc: DS.attr("string")
   attack: DS.attr("number")
@@ -8,4 +8,5 @@ TheSkyMap.Ship = DS.Model.extend(
   mine: DS.attr("boolean")
   hostile: DS.attr("boolean")
   quadrant: DS.belongsTo('quadrant')
+  game_actions_available: DS.attr('raw')
 )

@@ -7,7 +7,7 @@ class Action < ActiveRecord::Base
   serialize :options, Hash
 
   def self.states  #do not change order
-    [:queued, :queued_next, :running, :run]
+    [:queued, :queued_next, :running, :completed]
   end
 
   validates_presence_of :action, :cost, :duration, :options, :state
@@ -34,8 +34,10 @@ class Action < ActiveRecord::Base
                               cost: action_hash[:cost],
     })
     new_action.state = :queued
-    new_action.save
-    self.queue_next(actionable)
+    if new_action.save
+      self.queue_next(actionable)
+    end
+    new_action.reload
   end
 
   #estimated time to run atin UTC
@@ -69,7 +71,7 @@ class Action < ActiveRecord::Base
         where{state.in queued_states}
     next_action = all_queued_jobs.order{id.asc}.first
     #move to the next state and ensure that this is the only process that can do that. ,
-    unless next_action = nil
+    unless next_action.nil?
       begin
         if next_action.is_queued?
           insert_job = true
@@ -117,17 +119,18 @@ class Action < ActiveRecord::Base
     end
     if can_run
       #check that action is valid action type
-      if self.actionable.actions.include? action
+      if self.actionable.actions_list.include? action
         #run action with options
         self.actionable.send("perform_#{action}".to_sym, self.options)
         #update the state
-        self.state = :run
-        self.save
-        #queue the next action if there is one
-        self.class.queue_next(actionable)
       else
         #raise some error
+
       end
+      self.state = :completed
+      self.save
+      #queue the next action if there is one
+      self.class.queue_next(actionable)
     end
   end
 

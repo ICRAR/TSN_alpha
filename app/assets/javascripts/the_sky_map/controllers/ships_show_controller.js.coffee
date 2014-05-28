@@ -1,4 +1,4 @@
-TheSkyMap.ShipsShowController = Ember.ObjectController.extend
+TheSkyMap.ShipsShowController = TheSkyMap.ActionableController.extend
   needs: ['board']
   actions:
     show_on_map: () ->

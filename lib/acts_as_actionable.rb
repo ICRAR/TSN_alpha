@@ -7,6 +7,7 @@ module ActsAsActionable
   module ClassMethods
     def acts_as_actionable(options = {})
       include ActsAsActionable::LocalInstanceMethods
+      has_many :actions, as: :actionable, class_name: 'Action'
     end
   end
 
@@ -20,9 +21,13 @@ module ActsAsActionable
     #     options: {x: 1, y: 2,z: 3},
     #     allowed: true,
     # }
+
     def perform_action(actor, action_name)
-      action_hash = actions_available(actor)[action_name]
-      return false if action_hash.nil? || action_hash[:allowed] == false
+      an = action_name.to_sym
+      action_hash = actions_available(actor)[an]
+      return 'failed' if action_hash.nil? || action_hash[:allowed] == false
+      #deduct the cost from the actor
+      actor.deduct_currency(action_hash[:cost])
       Action.queue_new(self, actor, action_hash)
     end
     def actions_available(actor)
@@ -33,9 +38,16 @@ module ActsAsActionable
       end
       actions_all
     end
+    def actions_available_array(actor)
+      array_out = []
+      actions_available(actor).each do |key,value|
+        array_out << value.merge({action_name: key, action_name_href: "##{key}"})
+      end
+      array_out
+    end
     def all_actions(actor)
       actions_all = {}
-      actions.each do |action|
+      actions_list.each do |action|
         actions_all.merge! self.send("#{action}_options".to_sym,actor)
       end
       actions_all

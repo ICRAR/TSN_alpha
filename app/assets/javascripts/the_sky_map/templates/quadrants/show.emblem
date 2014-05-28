@@ -20,6 +20,6 @@
       h5 Ships:
       ul
         each ship in ships
-          li:  link-to 'ships.show' ship | {{ship.name}}
+          li:  link-to 'ships.show' ship.id | {{ship.name}}
     a href='#' click="scroll_to_home" Zoom to Quadrant
 

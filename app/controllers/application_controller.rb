@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
   def store_location
     # store last url - this is needed for post-login redirect to whatever the user last visited.
     # this works a white listed regex system
-    allowed_paths = [/^\/profile/,/^\/alliance/,/^\/admin/,/^\/trophies/,/^\/misc/,/^\/news/, /^\/sub/]
+    allowed_paths = [/^\/profile/,/^\/alliance/,/^\/admin/,/^\/trophies/,/^\/misc/,/^\/news/, /^\/sub/,/^\/the_sky_map\/ember/]
     skip_paths = [/^\/pages\/denied/, /^\/users/,  /^\/social/, ]
     #only store html requests and requests that match at least one of allowed_paths
     if (request.format == 'text/html') && allowed_paths.map{|r| !request.fullpath.index(r).nil?}.include?(true)
@@ -122,7 +122,7 @@ class ApplicationController < ActionController::Base
   private
 
   def signed_in
-    redirect_to( root_url, notice: 'Sorry could must be signed in to do that') unless user_signed_in?
+    redirect_to( new_user_session_path, notice: 'Sorry could must be signed in to do that') unless user_signed_in?
   end
 
   def not_found

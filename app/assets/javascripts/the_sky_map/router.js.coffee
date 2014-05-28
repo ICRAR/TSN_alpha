@@ -38,12 +38,13 @@ TheSkyMap.QuadrantShowRoute = Ember.Route.extend
     this.store.find('quadrant', params.quadrant_id)
 
 
-TheSkyMap.ShipsRoute = Ember.Route.extend
+TheSkyMap.ShipsIndexRoute = Ember.Route.extend
   model: (params) ->
     @store.find('ship')
-TheSkyMap.ShipShowRoute = Ember.Route.extend
+TheSkyMap.ShipsShowRoute = Ember.Route.extend
   model: (params)->
-    this.store.find('ship', params.ship_id)
+    ship = @store.reloadRecord(@store.recordForId('ship', params.ship_id))
+
 
 
 

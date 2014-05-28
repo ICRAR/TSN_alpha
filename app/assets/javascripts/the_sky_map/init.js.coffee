@@ -19,4 +19,9 @@ $(document).ready(
           for i, model_id of model_ids
             local_model = store.getById(model_name,model_id)
             local_model.reload() unless local_model == null
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
 )

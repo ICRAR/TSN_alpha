@@ -5,7 +5,7 @@
         h1
           ' TheSkyMap
           small Conquering the galaxy one quadrant at a time.
-        | hello {{controllers.currentPlayer.content.name}}
+        | hello {{controllers.currentPlayer.content.name}}. You have {{controllers.currentPlayer.content.currency_available}} fuel units remaining.
   .row
     .col-md-2
       .panel.panel-primary
@@ -16,7 +16,6 @@
             li: link-to 'name' | Name
             li: link-to 'quadrants' | Galaxy Map
             li: link-to 'ships' | All Ships
-            li: link-to 'shout_boxes' | Shout Boxes
 
     .col-md-10
       = outlet

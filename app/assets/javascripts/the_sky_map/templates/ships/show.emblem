@@ -1,17 +1,60 @@
-#show_ship
-  .panel.panel-info
-    .panel-heading= name
-    .panel-body
-      dl.dl-horizontal
-        dt Description
-        dd= desc
-        dt Attack
-        dd= attack
-        dt Speed
-        dd= speed
-        dt Location
-        dd
-          ' ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
-          a href='#' click="show_on_map" Show on map
-
-
+.row
+  .col-md-8
+    #show_ship
+      .panel.panel-info
+        .panel-heading= name
+        .panel-body
+          dl.dl-horizontal
+            dt Description
+            dd= desc
+            dt Attack
+            dd= attack
+            dt Speed
+            dd= speed
+            dt Mine
+            dd= mine
+            dt Location
+            dd
+              ' ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
+              a href='#' click="show_on_map" Show on map
+          if mine
+            h3 Actions
+            ul#action_list
+              each a in game_actions_available
+                li
+                  a data-toggle="collapse" data-parent="#action_list" href={a.action_name_href} {{a.name}}
+                  .action_body.collapse id={a.action_name}
+                    dl.dl-horizontal
+                      dt Allowed?
+                      dd= a.allowed
+                      dt Cost
+                      dd= a.cost
+                      dt Duration
+                      dd= a.duration
+                    a href='#' click="perform_action a.action_name" Perform Action
+if mine
+  .row
+    .col-md-8
+      #ship_actions
+        .panel.panel-info
+          .panel-heading Current Actions
+          .panel-body
+            table.table.table-striped.table-hover.table-bordered
+              thead: tr
+                th Action
+                th State
+                th Options
+                th Time Remaining
+              tbody
+                each action in sorted_actions itemController="action"
+                  tr
+                    td | {{action.action}} ({{action.id}})
+                    td= action.current_state
+                    td= action.options_string
+                    td
+                      ' (
+                        s:{{action.countdown_seconds}},
+                        m:{{action.countdown_minutes}},
+                        h:{{action.countdown_hours}},
+                        d:{{action.countdown_days}}
+                        )

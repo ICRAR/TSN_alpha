@@ -26,7 +26,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
   #actions
   acts_as_actionable
-  def actions
+  def actions_list
     ['move']
   end
   def move_options(actor)

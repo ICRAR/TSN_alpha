@@ -6,5 +6,6 @@ TheSkyMap.CurrentPlayer = DS.Model.extend(
   home_x: DS.attr("number")
   home_y: DS.attr("number")
   home_z: DS.attr("number")
+  currency_available: DS.attr("number")
 )
 
