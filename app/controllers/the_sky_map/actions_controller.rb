@@ -20,9 +20,7 @@ class TheSkyMap::ActionsController < TheSkyMap::ApplicationController
     actor = current_user.profile.the_sky_map_player
     not_found unless @action.actor == actor
     @action.check_and_run
-    @action.reload
-    ids=  [@action.id]
-    @actions = @action.actionable.actions.where{(id.in ids) | (state < 3)}
+    @actions = @action.self_and_other_queued
     render :json =>  @actions, :each_serializer => ActionSerializer
   end
 

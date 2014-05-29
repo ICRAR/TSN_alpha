@@ -3,11 +3,25 @@ class Action < ActiveRecord::Base
 
   belongs_to :actor, polymorphic: true
   belongs_to :actionable, polymorphic: true
+  #returns and ActiveRecord relation containing the current action and all sibling actions that are queued_next
+  #used to update the GUI when an action completes and other actions potentially change state
+  def self_and_other_queued
+    sh = self.class.states_hash
+    interested_states = [sh[:queued_next],sh[:running]]
+    self.class.where{(actionable_id == my{self.actionable_id}) & (actionable_type == my{self.actionable_type})}.
+      where{(id == my{self.id}) |  (state == my{sh[:queued_next]})}
+  end
 
   serialize :options, Hash
 
-  def self.states  #do not change order
-    [:queued, :queued_next, :running, :completed]
+  def self.states  #do not change numbers only add new ones
+    {
+        0 => :queued,
+        1 => :queued_next,
+        2 => :running,
+        3 => :completed,
+        4 => :failed
+    }
   end
 
   validates_presence_of :action, :cost, :duration, :options, :state
@@ -61,12 +75,13 @@ class Action < ActiveRecord::Base
     #sets the next action as queued_next if its not already queued_next and inserts a delayed job
 
     insert_job = false
+    class_name = self
     queued_states = [
-      self.states_hash[:queued],
-      self.states_hash[:queued_next],
-      self.states_hash[:running],
+        class_name.states_hash[:queued],
+        class_name.states_hash[:queued_next],
+        class_name.states_hash[:running],
     ]
-    all_queued_jobs = self.
+    all_queued_jobs = class_name.
         where{(actionable_type == actionable.class.to_s) & (actionable_id == actionable.id)}.
         where{state.in queued_states}
     next_action = all_queued_jobs.order{id.asc}.first
@@ -82,7 +97,7 @@ class Action < ActiveRecord::Base
         insert_job = false
       end
       if insert_job
-        self.delay(run_at: next_action.run_at_time).background_job(next_action.id)
+        class_name.delay(run_at: next_action.run_at_time).background_job(next_action.id)
       end
     end
   end
@@ -119,15 +134,23 @@ class Action < ActiveRecord::Base
     end
     if can_run
       #check that action is valid action type
-      if self.actionable.actions_list.include? action
+      if self.actionable && self.actionable.actions_list.include?(action)
         #run action with options
-        self.actionable.send("perform_#{action}".to_sym, self.options)
+        action_success = self.actionable.send("perform_#{action}".to_sym, self.options)
         #update the state
+        if action_success
+          self.state = :completed
+        else
+          #reverse the 'payment' and cancel the action
+          self.state = :failed
+          self.actor.refund_currency(self.cost)
+        end
       else
-        #raise some error
-
+        #reverse the 'payment' and cancel the action
+        self.state = :failed
+        self.actor.refund_currency(self.cost)
       end
-      self.state = :completed
+
       self.save
       #queue the next action if there is one
       self.class.queue_next(actionable)
@@ -136,11 +159,7 @@ class Action < ActiveRecord::Base
 
   #state management
   def self.states_hash
-    h = {}
-    states.each_with_index do |s,i|
-      h[s] = i
-    end
-    h
+    states.invert
   end
   def current_state
     self.class.states[state]

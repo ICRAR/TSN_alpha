@@ -27,8 +27,34 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
   #actions
   acts_as_actionable
   def actions_list
-    ['move']
+    ['move', 'capture']
   end
+  def capture_options(actor)
+    quadrant = the_sky_map_quadrant
+    allowed = quadrant.owner_id.nil?
+    action_name = "capture_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
+    {action_name => {
+        action: 'capture',
+        name: "Capture the Quadrant (#{quadrant.x}, #{quadrant.y}, #{quadrant.z})",
+        cost: 10,
+        duration: 60,
+        options: {x: quadrant.x, y: quadrant.y, z: quadrant.z},
+        allowed: allowed
+    }}
+  end
+  def perform_capture(opts)
+    quadrant = TheSkyMap::Quadrant.at_pos(opts[:x],opts[:y], opts[:z])
+    #check if ship is still in the correct quadrant
+    return false unless quadrant == the_sky_map_quadrant
+    #check that the quadrant is still unoccupided
+    return false unless quadrant.owner_id.nil?
+    #capture quadrant
+    outcome = quadrant.capture(the_sky_map_player)
+    #push changes with faye
+    PostToFaye.request_update('quadrant',[quadrant.id])
+    return outcome
+  end
+
   def move_options(actor)
     home = the_sky_map_player.home
     surrounding_quadrants = the_sky_map_quadrant.surrounding_quadrants
@@ -52,7 +78,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     quadrant = TheSkyMap::Quadrant.at_pos(opts[:x],opts[:y], opts[:z])
     #check if the move is allowed
-
+    #ToDo return false if move is not allowed
     #move
     old_quadrant = self.the_sky_map_quadrant
     self.the_sky_map_quadrant = quadrant
@@ -66,6 +92,6 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     PostToFaye.request_update('quadrant',quadrant_ids)
     #force update to open ship
     PostToFaye.request_update('ship',[self.id])
-
+    return true
   end
 end

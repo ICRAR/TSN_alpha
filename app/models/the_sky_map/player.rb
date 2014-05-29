@@ -76,4 +76,7 @@ class TheSkyMap::Player < ActiveRecord::Base
   def deduct_currency(value)
     self.class.where{id == self.id}.update_all("spent_points = spent_points + #{value.to_i}" )
   end
+  def refund_currency(value)
+    self.class.where{id == self.id}.update_all("spent_points = spent_points - #{value.to_i}" )
+  end
 end

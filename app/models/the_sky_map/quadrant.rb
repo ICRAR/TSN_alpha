@@ -82,4 +82,13 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     z2 = ((to_z - z).abs)**2
     Math.sqrt(x2 + y2 + z2)
   end
+
+  def capture(player)
+    #check that quadrant is unowned
+    return false unless self.owner_id.nil?
+    #update owner information
+    self.owner = player
+    self.save
+    return true
+  end
 end
