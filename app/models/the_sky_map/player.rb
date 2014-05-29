@@ -5,6 +5,7 @@ class TheSkyMap::Player < ActiveRecord::Base
   has_many :the_sky_map_players_quadrants, :class_name => 'TheSkyMap::PlayersQuadrant', foreign_key: "the_sky_map_player_id"
   has_many :the_sky_map_quadrants, :class_name => 'TheSkyMap::Quadrant', :through => :the_sky_map_players_quadrants
   has_many :the_sky_map_ships, :class_name => 'TheSkyMap::Ship', foreign_key: "the_sky_map_player_id"
+  has_many :own_quadrants, :class_name => 'TheSkyMap::Quadrant', foreign_key: "owner_id"
 
   belongs_to :home, :class_name => 'TheSkyMap::Quadrant', :foreign_key => 'home_id'
 

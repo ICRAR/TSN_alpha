@@ -24,6 +24,7 @@ class Action < ActiveRecord::Base
     }
   end
 
+  scope :current_action, where{state.in [1,2]}
   validates_presence_of :action, :cost, :duration, :options, :state
 
   after_initialize :set_defaults

@@ -13,7 +13,7 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
   xy_zoomed_in: (() ->
     @get('xy_zoom') == 2
   ).property('xy_zoom')
-  z_zoom: 2
+  z_zoom: 1
   x_max: (() ->
     @.get('x_center') + (@.get('xy_zoom') - 1)
   ).property('x_center','xy_zoom')

@@ -32,7 +32,7 @@ group :assets do
   gem "asset_sync"
 end
 gem "twitter-bootstrap-rails"
-gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+gem "less-rails", '~> 2.5.0'#Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 
 
 #general use gems

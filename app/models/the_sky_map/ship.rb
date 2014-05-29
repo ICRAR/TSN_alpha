@@ -30,17 +30,21 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     ['move', 'capture']
   end
   def capture_options(actor)
+    return {} if !current_action.nil? && current_action.action == 'move'
     quadrant = the_sky_map_quadrant
-    allowed = quadrant.owner_id.nil?
-    action_name = "capture_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
-    {action_name => {
-        action: 'capture',
-        name: "Capture the Quadrant (#{quadrant.x}, #{quadrant.y}, #{quadrant.z})",
-        cost: 10,
-        duration: 60,
-        options: {x: quadrant.x, y: quadrant.y, z: quadrant.z},
-        allowed: allowed
-    }}
+    if quadrant.owner_id.nil?
+      action_name = "capture_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
+      {action_name => {
+          action: 'capture',
+          name: "Capture the Quadrant (#{quadrant.x}, #{quadrant.y}, #{quadrant.z})",
+          cost: 10,
+          duration: 60,
+          options: {x: quadrant.x, y: quadrant.y, z: quadrant.z},
+          allowed: true
+      }}
+    else
+      {}
+    end
   end
   def perform_capture(opts)
     quadrant = TheSkyMap::Quadrant.at_pos(opts[:x],opts[:y], opts[:z])
@@ -56,6 +60,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
   end
 
   def move_options(actor)
+    return {} if !current_action.nil? && current_action.action == 'move'
     home = the_sky_map_player.home
     surrounding_quadrants = the_sky_map_quadrant.surrounding_quadrants
     available_moves = {}
@@ -63,6 +68,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
       opt = "move_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
       distance_to_home = quadrant.distance_to(home.x,home.y,home.z)
       cost = 10 * distance_to_home
+      cost = cost.ceil
       available_moves[opt] = {
           action: 'move',
           name: "Move to Quadrant (#{quadrant.x}, #{quadrant.y}, #{quadrant.z})",

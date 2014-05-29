@@ -52,6 +52,9 @@ module ActsAsActionable
       end
       actions_all
     end
+    def current_action
+      actions.current_action.first
+    end
   end
 end
 

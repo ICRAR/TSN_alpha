@@ -109,7 +109,7 @@ GEM
       execjs
     coffee-script-source (1.6.2)
     columnize (0.3.6)
-    commonjs (0.2.6)
+    commonjs (0.2.7)
     composite_primary_keys (5.0.13)
       activerecord (~> 3.2.0, >= 3.2.9)
     cookiejar (0.3.0)
@@ -245,11 +245,11 @@ GEM
     json (1.8.0)
     launchy (2.3.0)
       addressable (~> 2.3)
-    less (2.3.2)
-      commonjs (~> 0.2.6)
-    less-rails (2.3.3)
+    less (2.5.0)
+      commonjs (~> 0.2.7)
+    less-rails (2.5.0)
       actionpack (>= 3.1)
-      less (~> 2.3.1)
+      less (~> 2.5.0)
     libv8 (3.11.8.17)
     libxml-ruby (2.6.0)
     linguistics (2.0.2)
@@ -520,7 +520,7 @@ DEPENDENCIES
   jquery-ui-rails
   kaminari!
   launchy
-  less-rails
+  less-rails (~> 2.5.0)
   linguistics
   mail_form
   mail_view (~> 2.0.1)

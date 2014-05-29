@@ -19,19 +19,23 @@
               a href='#' click="show_on_map" Show on map
           if mine
             h3 Actions
-            ul#action_list
+            #perform_action_list
               each a in game_actions_available
-                li
-                  a data-toggle="collapse" data-parent="#action_list" href={a.action_name_href} {{a.name}}
-                  .action_body.collapse id={a.action_name}
-                    dl.dl-horizontal
-                      dt Allowed?
-                      dd= a.allowed
-                      dt Cost
-                      dd= a.cost
-                      dt Duration
-                      dd= a.duration
-                    a href='#' click="perform_action a.action_name" Perform Action
+                .action_item class={a.allowed:enabled:disabled}
+                  .name= a.name
+                  .perform
+                    if a.allowed
+                      button click="perform_action a.action_name" Perform Now
+                    else
+                      button disabled="true" Disabled
+                  .duration
+                    span.glyphicon.glyphicon-time
+                    = a.duration
+                    ' s
+                  .cost
+                    span.glyphicon.glyphicon-tint
+                    = a.cost
+
 if mine
   .row
     .col-md-8

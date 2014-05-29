@@ -11,6 +11,5 @@
  *= require_self
  *= require_tree ./vendor
  *= require ./main
- *= require_tree ./controllers
 */
 

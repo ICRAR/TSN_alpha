@@ -1,0 +1,41 @@
+#perform_action_list {
+  .action_item {
+    display: block;
+    border:  1px solid black;
+    padding: 3px;
+    height: 30px;
+    > * {
+      height: 24px;
+      display: inline;
+      padding: 0px 3px;
+      margin: 0px 3px;
+    }
+    .cost, .duration {
+      float: right;
+      width: 50px;
+      border-left: 1px dotted black;
+    }
+    .perform {
+      width: 100px;
+      float:right;
+      padding: 0px 0px;
+      margin: 0px 0px;
+      height: auto;
+      button {
+        .btn;
+        .btn-primary;
+        .btn-xs;
+      }
+    }
+    &:hover {
+      background-color: lightblue;
+    }
+    &.disabled{
+      &:hover {
+        background-color: lightpink;
+      }
+    }
+
+  }
+
+}
