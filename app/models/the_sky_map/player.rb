@@ -1,5 +1,5 @@
 class TheSkyMap::Player < ActiveRecord::Base
-  attr_accessible :rank, :score, :spent_points, :total_points, as: [:admin]
+  attr_accessible :rank, :score, :spent_points, :total_points, :total_points_special, :spent_points_special, as: [:admin]
 
   belongs_to :profile
   has_many :the_sky_map_players_quadrants, :class_name => 'TheSkyMap::PlayersQuadrant', foreign_key: "the_sky_map_player_id"
@@ -79,5 +79,14 @@ class TheSkyMap::Player < ActiveRecord::Base
   end
   def refund_currency(value)
     self.class.where{id == self.id}.update_all("spent_points = spent_points - #{value.to_i}" )
+  end
+  def currency_available_special
+    (total_points_special - spent_points_special)
+  end
+  def deduct_currency_special(value)
+    self.class.where{id == self.id}.update_all("spent_points_special = spent_points_special + #{value.to_i}" )
+  end
+  def refund_currency_special(value)
+    self.class.where{id == self.id}.update_all("spent_points_special = spent_points_special - #{value.to_i}" )
   end
 end

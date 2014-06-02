@@ -70,7 +70,9 @@ class Action < ActiveRecord::Base
       (run_at_time - Time.now.utc )
     end
   end
-
+  def special_cost
+    is_queued_next? ? ((time_remaining / 60).ceil) : 0
+  end
   #queue the action
   def self.queue_next(actionable)
     #sets the next action as queued_next if its not already queued_next and inserts a delayed job
@@ -119,6 +121,16 @@ class Action < ActiveRecord::Base
       end
     end
   end
+  #uses special currency to force an upcoming action to run now.
+  def run_special
+    save_cost = special_cost
+    if save_cost > 0 && save_cost <= self.actor.currency_available_special
+      if self.run
+        self.actor.deduct_currency_special save_cost
+      end
+    end
+  end
+
   #runs the action, we must ensure that this is the only process that is running the action
   def run
     can_run = false
@@ -156,6 +168,7 @@ class Action < ActiveRecord::Base
       #queue the next action if there is one
       self.class.queue_next(actionable)
     end
+    can_run
   end
 
   #state management

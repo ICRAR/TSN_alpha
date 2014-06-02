@@ -23,6 +23,17 @@ class TheSkyMap::ActionsController < TheSkyMap::ApplicationController
     @actions = @action.self_and_other_queued
     render :json =>  @actions, :each_serializer => ActionSerializer
   end
+  def run_special
+    action = Action.find(params[:id])
+    actor = current_user.profile.the_sky_map_player
+    not_found unless action.actor == actor
+    action.run_special
+    @actions = action.self_and_other_queued
+    actions_json = ActiveModel::ArraySerializer.new(@actions, each_serializer: ActionSerializer)
+    current_user.profile.the_sky_map_player.reload
+    output = current_player_hash.merge({actions: actions_json })
+    render json: output.to_json
+  end
 
   private
   def actionable_type

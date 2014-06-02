@@ -164,7 +164,11 @@ Tsn::Application.routes.draw do
     end
     resources :shout_boxes
     resources :quadrants, :only => [:index, :show]
-    resources :actions, :only => [:show]
+    resources :actions, :only => [:show] do
+      member do
+        get 'run_special'
+      end
+    end
     resources :ships, :only => [:index, :show] do
       resources :actions, :only => [:index, :show, :create], :defaults => {actionable: 'TheSkyMap::Ship'}
     end

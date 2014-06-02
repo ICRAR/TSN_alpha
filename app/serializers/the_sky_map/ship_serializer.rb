@@ -8,6 +8,9 @@ class TheSkyMap::ShipSerializer < TheSkyMap::ShipIndexSerializer
     end
   end
 
+  def actions
+    object.actions.order{id.desc}.limit(10)
+  end
   def include_actions?
     current_user.profile.the_sky_map_player.id == object.the_sky_map_player_id
   end

@@ -22,7 +22,9 @@
             #perform_action_list
               each a in game_actions_available
                 .action_item class={a.allowed:enabled:disabled}
-                  .name= a.name
+                  .name
+                    span.glyphicon class=a.icon
+                    = a.name
                   .perform
                     if a.allowed
                       button click="perform_action a.action_name" Perform Now
@@ -62,3 +64,14 @@ if mine
                         h:{{action.countdown_hours}},
                         d:{{action.countdown_days}}
                         )
+                      if action.show_special_button
+                        if action.special_button_enable
+                          button.btn.btn-xs.btn-warning click="run_special"
+                            ' Run Now
+                            span.glyphicon.glyphicon-cog
+                            = action.special_cost
+                        else
+                          button.btn.btn-xs.btn-warning disabled="true"
+                            ' Run Now
+                            span.glyphicon.glyphicon-cog
+                            = action.special_cost

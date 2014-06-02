@@ -1,6 +1,6 @@
 class TheSkyMap::CurrentPlayerSerializer < ActiveModel::Serializer
   attributes :id, :name, :user_signed_in, :profile_id, :email,
-             :home_x, :home_y, :home_z, :currency_available
+             :home_x, :home_y, :home_z, :currency_available, :currency_available_special
 
   def home_x
     @object.home.x

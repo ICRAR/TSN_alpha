@@ -5,7 +5,14 @@
         h1
           ' TheSkyMap
           small Conquering the galaxy one quadrant at a time.
-        | hello {{controllers.currentPlayer.content.name}}. You have {{controllers.currentPlayer.content.currency_available}} fuel units remaining.
+        ' hello {{controllers.currentPlayer.content.name}}.
+        ' You have {{controllers.currentPlayer.content.currency_available}}
+        span.glyphicon.glyphicon-tint
+        | fuel units remaining.
+        ' You Have {{controllers.currentPlayer.content.currency_available_special}}
+        span.glyphicon.glyphicon-cog
+        | antimatter units remaining.
+
   .row
     .col-md-2
       .panel.panel-primary

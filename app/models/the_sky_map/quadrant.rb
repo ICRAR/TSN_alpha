@@ -40,7 +40,8 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     TheSkyMap::Quadrant.
         where{(x <= my{self.x+1}) & (x >= my{self.x-1})}.
         where{(y <= my{self.y+1}) & (y >= my{self.y-1})}.
-        where{(z <= my{self.z+1}) & (z >= my{self.z-1})}
+        where{(z <= my{self.z}) & (z >= my{self.z})}.
+        where{((x != my{self.x}) | (y != my{self.y}) | (z != my{self.z})) }
   end
 
   #randomly generates a new quadrant at the given loction

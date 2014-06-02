@@ -40,10 +40,11 @@
                           if qf.explored_partial
                             span.glyphicon.glyphicon-eye-close
                           each ship in qf.ships
-                            if ship.mine
-                              span.glyphicon.glyphicon-plane.mine
-                            else
-                              span.glyphicon.glyphicon-plane.enemy
+                            link-to 'ships.show' ship.id
+                              if ship.mine
+                                span.glyphicon.glyphicon-plane.mine
+                              else
+                                span.glyphicon.glyphicon-plane.enemy
 
 
                     else

@@ -10,7 +10,6 @@ TheSkyMap.ActionableController = Ember.ObjectController.extend
   actions:
     perform_action: (action_name) ->
       store = @store
-      token = $("meta[name=\"csrf-token\"]").attr("content")
       ship_path = store.adapterFor(this).buildURL('ship',@.get('id'))
       action_path = "#{ship_path}/actions"
       actionable = @get('content')

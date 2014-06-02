@@ -40,7 +40,8 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
           cost: 10,
           duration: 60,
           options: {x: quadrant.x, y: quadrant.y, z: quadrant.z},
-          allowed: true
+          allowed: true,
+          icon: 'glyphicon-screenshot'
       }}
     else
       {}
@@ -73,9 +74,10 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
           action: 'move',
           name: "Move to Quadrant (#{quadrant.x}, #{quadrant.y}, #{quadrant.z})",
           cost: cost,
-          duration: 60,
+          duration: 600,
           options: {x: quadrant.x, y: quadrant.y, z: quadrant.z},
-          allowed: true
+          allowed: true,
+          icon: 'glyphicon-send'
       }
     end
     available_moves

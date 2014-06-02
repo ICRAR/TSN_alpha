@@ -1,4 +1,5 @@
 TheSkyMap.ActionController = Ember.ObjectController.extend(TheSkyMap.Countdownable, {
+  needs: ['currentPlayer']
   options_string: (() ->
     out_array = []
     for key, value of @get('options')
@@ -11,4 +12,26 @@ TheSkyMap.ActionController = Ember.ObjectController.extend(TheSkyMap.Countdownab
     @countdown_set(rat*1000) unless rat == 0
   countdown_complete: () ->
     @.get('content').reload()
+  special_cost: (() ->
+    Math.ceil(@get('countdown_seconds_total')/60)
+  ).property('countdown_seconds_total')
+  special_button_enable: (() ->
+    (@get('special_cost') <= @get('controllers.currentPlayer.content.currency_available_special'))
+  ).property('special_cost','controllers.currentPlayer.content.currency_available_special')
+  show_special_button: (() ->
+    (@get('current_state') == 'queued_next')
+  ).property('current_state')
+  actions:
+    run_special: () ->
+      store = @store
+      action_path = store.adapterFor(this).buildURL('action',@.get('id'))
+      run_special_path = "#{action_path}/run_special"
+      action = @get('content')
+      $.get(run_special_path,
+        {},
+      (data) ->
+        store.pushPayload('action', data)
+        actionable = action.get('actionable')
+        actionable.reload()
+      )
 })
