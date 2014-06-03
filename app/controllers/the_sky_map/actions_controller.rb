@@ -37,7 +37,7 @@ class TheSkyMap::ActionsController < TheSkyMap::ApplicationController
 
   private
   def actionable_type
-    %w[TheSkyMap::Ship].include?(params[:actionable]) ? params[:actionable] : nil
+    %w[TheSkyMap::Ship TheSkyMap::Base].include?(params[:actionable]) ? params[:actionable] : nil
   end
   def actionable_class
     actionable_type.classify.constantize

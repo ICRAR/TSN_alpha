@@ -1,0 +1,75 @@
+.row
+  .col-md-8
+    #show_base
+      .panel.panel-info
+        .panel-heading= name
+        .panel-body
+          dl.dl-horizontal
+            dt Description
+            dd= desc
+            dt Type
+            dd= type
+            dt Mine
+            dd= mine
+            dt Location
+            dd
+              ' ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
+              a href='#' click="show_on_map" Show on map
+          if mine
+            h3 Actions
+            #perform_action_list
+              each a in game_actions_available
+                .action_item class={a.allowed:enabled:disabled}
+                  .name
+                    span.glyphicon class=a.icon
+                    = a.name
+                  .perform
+                    if a.allowed
+                      button click="perform_action a.action_name" Perform Now
+                    else
+                      button disabled="true" Disabled
+                  .duration
+                    span.glyphicon.glyphicon-time
+                    = a.duration
+                    ' s
+                  .cost
+                    span.glyphicon.glyphicon-tint
+                    = a.cost
+
+if mine
+  .row
+    .col-md-8
+      #base_actions
+        .panel.panel-info
+          .panel-heading Current Actions
+          .panel-body
+            table.table.table-striped.table-hover.table-bordered
+              thead: tr
+                th Action
+                th State
+                th Options
+                th Time Remaining
+              tbody
+                each action in sorted_actions itemController="action"
+                  tr
+                    td | {{action.action}} ({{action.id}})
+                    td= action.current_state
+                    td= action.options_string
+                    td
+                      ' (
+                        s:{{action.countdown_seconds}},
+                        m:{{action.countdown_minutes}},
+                        h:{{action.countdown_hours}},
+                        d:{{action.countdown_days}}
+                        )
+                      if action.show_special_button
+                        if action.special_button_enable
+                          button.btn.btn-xs.btn-warning click="run_special"
+                            ' Run Now
+                            span.glyphicon.glyphicon-cog
+                            = action.special_cost
+                        else
+                          button.btn.btn-xs.btn-warning disabled="true"
+                            ' Run Now
+                            span.glyphicon.glyphicon-cog
+                            = action.special_cost

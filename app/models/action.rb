@@ -149,7 +149,15 @@ class Action < ActiveRecord::Base
       #check that action is valid action type
       if self.actionable && self.actionable.actions_list.include?(action)
         #run action with options
-        action_success = self.actionable.send("perform_#{action}".to_sym, self.options)
+        begin
+          action_success = self.actionable.send("perform_#{action}".to_sym, self.options)
+        rescue Exception => e
+          self.state = :failed
+          self.actor.refund_currency(self.cost)
+          self.save
+          self.class.queue_next(actionable)
+          raise e
+        end
         #update the state
         if action_success
           self.state = :completed

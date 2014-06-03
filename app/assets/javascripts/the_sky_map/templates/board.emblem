@@ -45,6 +45,12 @@
                                 span.glyphicon.glyphicon-plane.mine
                               else
                                 span.glyphicon.glyphicon-plane.enemy
+                          each base in qf.bases
+                            link-to 'bases.show' base.id
+                              if base.mine
+                                span.glyphicon.glyphicon-tower.mine
+                              else
+                                span.glyphicon.glyphicon-tower.enemy
 
 
                     else

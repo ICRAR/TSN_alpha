@@ -27,7 +27,45 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
   #actions
   acts_as_actionable
   def actions_list
-    ['move', 'capture']
+    ['move', 'capture', 'build_base']
+  end
+  def build_base_options(actor)
+    return {} if !current_action.nil? && current_action.action == 'move'
+    if the_sky_map_ship_type.can_build_bases?
+      quadrant = the_sky_map_quadrant
+      bases_allowed = quadrant.bases_allowed(actor)
+      if bases_allowed.nil?
+        {}
+      else
+        available_builds = {}
+        bases_allowed.each do |base|
+          action_name = "build_base_#{base.id}_at_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
+          available_builds[action_name] = {
+                action: 'build_base',
+                name: "Build a new '#{base.name}' base on (#{quadrant.x}, #{quadrant.y}, #{quadrant.z})",
+                cost: base.cost,
+                duration: base.duration,
+                options: {base_upgrade_type_id: base.id,x: quadrant.x, y: quadrant.y, z: quadrant.z},
+                allowed: true,
+                icon: 'glyphicon-tower'
+          }
+        end
+        available_builds
+      end
+    else
+      {}
+    end
+  end
+  def perform_build_base(options)
+    return false unless the_sky_map_ship_type.can_build_bases?
+    quadrant = the_sky_map_quadrant
+    actor = the_sky_map_player
+    new_base_type = quadrant.bases_allowed(actor).find(options[:base_upgrade_type_id])
+    return false if new_base_type.nil?
+    new_base = TheSkyMap::Base.first_base(quadrant,new_base_type)
+    return false if new_base.nil?
+    true
+
   end
   def capture_options(actor)
     return {} if !current_action.nil? && current_action.action == 'move'

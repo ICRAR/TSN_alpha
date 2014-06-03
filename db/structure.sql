@@ -6,6 +6,7 @@ CREATE TABLE `actions` (
   `duration` int(11) DEFAULT NULL,
   `state` int(11) DEFAULT NULL,
   `queued_at` datetime DEFAULT NULL,
+  `queued_next_at` datetime DEFAULT NULL,
   `run_at` datetime DEFAULT NULL,
   `completed_at` datetime DEFAULT NULL,
   `lock_version` int(11) NOT NULL DEFAULT '0',
@@ -18,7 +19,7 @@ CREATE TABLE `actions` (
   PRIMARY KEY (`id`),
   KEY `actor_index` (`actor_type`,`actor_id`,`created_at`,`state`),
   KEY `actionable_index` (`actionable_type`,`actionable_id`,`created_at`,`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `activities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -257,7 +258,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `follows` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -594,12 +595,70 @@ CREATE TABLE `tags` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=867 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `the_sky_map_base_types_join` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `the_sky_map_base_id` int(11) DEFAULT NULL,
+  `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `join_index` (`the_sky_map_base_id`,`the_sky_map_base_upgrade_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_base_types_quadrant_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `the_sky_map_quadrant_type_id` int(11) DEFAULT NULL,
+  `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `join_index` (`the_sky_map_quadrant_type_id`,`the_sky_map_base_upgrade_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_base_types_ship_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `the_sky_map_ship_type_id` int(11) DEFAULT NULL,
+  `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `join_index` (`the_sky_map_base_upgrade_type_id`,`the_sky_map_ship_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_base_upgrade_type_hierarchies` (
+  `ancestor_id` int(11) NOT NULL,
+  `descendant_id` int(11) NOT NULL,
+  `generations` int(11) NOT NULL,
+  UNIQUE KEY `anc_desc_udx` (`ancestor_id`,`descendant_id`,`generations`),
+  KEY `desc_idx` (`descendant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_base_upgrade_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `desc` text COLLATE utf8_unicode_ci,
+  `cost` int(11) DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL,
+  `income` int(11) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_id` (`parent_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_bases` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `the_sky_map_quadrant_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_the_sky_map_bases_on_the_sky_map_quadrant_id` (`the_sky_map_quadrant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `the_sky_map_players` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `score` int(11) DEFAULT NULL,
   `rank` int(11) DEFAULT NULL,
   `total_points` int(11) DEFAULT NULL,
   `spent_points` int(11) DEFAULT NULL,
+  `total_points_special` int(11) DEFAULT NULL,
+  `spent_points_special` int(11) DEFAULT NULL,
   `options` text COLLATE utf8_unicode_ci,
   `profile_id` int(11) DEFAULT NULL,
   `home_id` int(11) DEFAULT NULL,
@@ -620,7 +679,7 @@ CREATE TABLE `the_sky_map_players_quadrants` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `player_id_quadrant_id` (`the_sky_map_quadrant_id`,`the_sky_map_player_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_quadrant_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1004,3 +1063,13 @@ INSERT INTO schema_migrations (version) VALUES ('20140515075318');
 INSERT INTO schema_migrations (version) VALUES ('20140515080246');
 
 INSERT INTO schema_migrations (version) VALUES ('20140523085843');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602063621');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602064253');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602064907');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602065623');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602070027');

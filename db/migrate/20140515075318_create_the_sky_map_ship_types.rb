@@ -6,6 +6,9 @@ class CreateTheSkyMapShipTypes < ActiveRecord::Migration
       t.integer :speed
       t.integer :health
       t.integer :attack
+      t.integer :cost
+      t.integer :duration
+      t.boolean :can_build_bases, null: false, default: false
 
       t.timestamps
     end

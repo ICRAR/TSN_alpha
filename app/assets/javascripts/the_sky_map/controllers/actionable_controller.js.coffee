@@ -10,8 +10,10 @@ TheSkyMap.ActionableController = Ember.ObjectController.extend
   actions:
     perform_action: (action_name) ->
       store = @store
-      ship_path = store.adapterFor(this).buildURL('ship',@.get('id'))
-      action_path = "#{ship_path}/actions"
+      actionable = @get('content')
+      model_name = actionable.get('constructor.typeKey')
+      actionable_path = store.adapterFor(this).buildURL(model_name,@.get('id'))
+      action_path = "#{actionable_path}/actions"
       actionable = @get('content')
       $.post(action_path,
         {

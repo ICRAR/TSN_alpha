@@ -19,6 +19,10 @@ TheSkyMap.Quadrant = DS.Model.extend(
   has_ships: ( ->
     @get('ships').get('length') > 0
   ).property('ships.@each.isLoaded')
+  bases: DS.hasMany('base',{ async: true })
+  has_bases: ( ->
+    @get('bases').get('length') > 0
+  ).property('bases.@each.isLoaded')
 
 )
 

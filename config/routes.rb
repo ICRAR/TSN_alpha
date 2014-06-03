@@ -172,6 +172,9 @@ Tsn::Application.routes.draw do
     resources :ships, :only => [:index, :show] do
       resources :actions, :only => [:index, :show, :create], :defaults => {actionable: 'TheSkyMap::Ship'}
     end
+    resources :bases, :only => [:index, :show] do
+      resources :actions, :only => [:index, :show, :create], :defaults => {actionable: 'TheSkyMap::Base'}
+    end
   end
   # The priority is based upon order of creation:
   # first created -> highest priority.

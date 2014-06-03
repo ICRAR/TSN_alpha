@@ -8,6 +8,8 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
   has_many :the_sky_map_players, :class_name => 'TheSkyMap::Player', through: :the_sky_map_players_quadrants
 
   has_many :the_sky_map_ships, :class_name => 'TheSkyMap::Ship', foreign_key: "the_sky_map_quadrant_id"
+  has_many :the_sky_map_bases, :class_name => 'TheSkyMap::Base', foreign_key: "the_sky_map_quadrant_id"
+
 
   validates_uniqueness_of :x, scope: [:y, :z]
   validates_presence_of :the_sky_map_quadrant_type_id
@@ -91,5 +93,16 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     self.owner = player
     self.save
     return true
+  end
+
+  def num_of_built_bases
+    the_sky_map_bases.count
+  end
+  def bases_allowed(actor)
+    if ((actor.id == owner_id) && (the_sky_map_quadrant_type.num_of_bases > num_of_built_bases))
+      the_sky_map_quadrant_type.the_sky_map_base_upgrade_types.where{parent_id == nil}
+    else
+      nil
+    end
   end
 end

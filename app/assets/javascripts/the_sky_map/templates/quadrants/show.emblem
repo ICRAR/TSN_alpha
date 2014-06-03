@@ -21,5 +21,10 @@
       ul
         each ship in ships
           li:  link-to 'ships.show' ship.id | {{ship.name}}
+    if has_bases
+      h5 Bases:
+      ul
+        each base in bases
+          li:  link-to 'bases.show' base.id | {{base.name}}
     a href='#' click="scroll_to_home" Zoom to Quadrant
 

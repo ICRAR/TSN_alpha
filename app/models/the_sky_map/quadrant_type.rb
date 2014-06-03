@@ -8,7 +8,11 @@ class TheSkyMap::QuadrantType < ActiveRecord::Base
 
   validates_presence_of :desc, :name, :unexplored_name, :num_of_bases, :score, :feature_type, :generation_chance,
                         :unexplored_color, :explored_color
-
+  has_and_belongs_to_many :the_sky_map_base_upgrade_types,
+                          :class_name => 'TheSkyMap::BaseUpgradeType',
+                          :join_table => 'the_sky_map_base_types_quadrant_types',
+                          association_foreign_key: "the_sky_map_base_upgrade_type_id",
+                          foreign_key: "the_sky_map_quadrant_type_id"
   def self.generation_chance_table
     gt = {
         min: 0,
