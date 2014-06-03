@@ -11,6 +11,10 @@
             dd= type
             dt Mine
             dd= mine
+            dt Score
+            dd= score
+            dt Income
+            dd= income
             dt Location
             dd
               ' ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})

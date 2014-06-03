@@ -1,5 +1,5 @@
 class TheSkyMap::BaseUpgradeType < ActiveRecord::Base
-  attr_accessible :cost, :desc, :duration, :income, :name
+  attr_accessible :cost, :desc, :duration, :income, :score, :name
 
   has_and_belongs_to_many :the_sky_map_quadrant_types,
                           :class_name => 'TheSkyMap::QuadrantType',

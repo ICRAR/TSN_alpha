@@ -9,7 +9,9 @@
       dt Explored?
       dd= explored
       dt Score
-      dd= base_score
+      dd= total_score
+      dt Income
+      dd= total_income
       dt x
       dd= x
       dt y

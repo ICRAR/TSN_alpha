@@ -17,6 +17,21 @@ class TheSkyMap::Player < ActiveRecord::Base
     total_points = 0
   end
 
+  def update_total_income
+    new_total= self.own_quadrants.sum("#{own_quadrants.table_name}.total_income").to_i
+    self.total_income = new_total
+    new_total
+  end
+  def update_total_score
+    new_total= self.own_quadrants.sum("#{own_quadrants.table_name}.total_score").to_i
+    self.total_score = new_total
+    new_total
+  end
+  def update_totals
+    update_total_income
+    update_total_score
+    save
+  end
   def explore_quadrant(quadrant)
     #check for current join model
     pq = self.the_sky_map_players_quadrants.where{the_sky_map_quadrant_id == quadrant.id}.first

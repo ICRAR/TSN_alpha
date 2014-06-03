@@ -5,6 +5,9 @@ class CreateTheSkyMapQuadrant < ActiveRecord::Migration
       t.integer :y
       t.integer :z
 
+      t.integer :total_score
+      t.integer :total_income
+
       t.references :the_sky_map_quadrant_type
       t.references :owner
 

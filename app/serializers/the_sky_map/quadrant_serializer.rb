@@ -1,6 +1,6 @@
 class TheSkyMap::QuadrantSerializer < ActiveModel::Serializer
   attributes :id, :x, :y, :z, :name, :explored, :explored_fully, :explored_partial,
-             :home, :mine, :hostile, :unowned
+             :home, :mine, :hostile, :unowned, :total_score, :total_income
   embed :ids#, include: true
   has_many :the_sky_map_ships, key: :ship_ids, root: :ships, serializer: TheSkyMap::ShipIndexSerializer
   has_many :the_sky_map_bases, key: :base_ids, root: :bases, serializer: TheSkyMap::BaseIndexSerializer
@@ -44,10 +44,7 @@ class TheSkyMap::QuadrantSerializer < ActiveModel::Serializer
   end
 
   #type object
-  attributes :base_score, :num_bases, :desc, :color
-  def base_score
-    explored? ? object.the_sky_map_quadrant_type.score : 0
-  end
+  attributes :num_bases, :desc, :color
   def num_bases
     explored? ? object.the_sky_map_quadrant_type.num_of_bases : 0
   end

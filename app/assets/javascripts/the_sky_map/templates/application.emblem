@@ -8,10 +8,12 @@
         ' hello {{controllers.currentPlayer.content.name}}.
         ' You have {{controllers.currentPlayer.content.currency_available}}
         span.glyphicon.glyphicon-tint
-        | fuel units remaining.
+        ' fuel units remaining.
         ' You Have {{controllers.currentPlayer.content.currency_available_special}}
         span.glyphicon.glyphicon-cog
-        | antimatter units remaining.
+        ' antimatter units remaining.
+          Your total score is: {{controllers.currentPlayer.content.total_score}}
+          and total income is: {{controllers.currentPlayer.content.total_income}}
 
   .row
     .col-md-2

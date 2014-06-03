@@ -19,6 +19,40 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
       where{(x >= x_min) & (x <= x_max)}.
       order([:z,:y,:x])
   end
+
+  def update_total_income
+    new_total= self.the_sky_map_bases.joins{the_sky_map_base_upgrade_type}.
+        sum("#{TheSkyMap::BaseUpgradeType.table_name}.income").to_i
+    self.total_income = new_total
+    new_total
+  end
+  def update_total_score_with_save
+    update_total_income
+    save
+    self.owner.update_total_income unless owner_id.nil?
+    owner.save unless owner_id.nil?
+  end
+  def update_total_score
+    new_total= self.the_sky_map_bases.joins{the_sky_map_base_upgrade_type}.
+        sum("#{TheSkyMap::BaseUpgradeType.table_name}.score").to_i
+    new_total = new_total + self.the_sky_map_quadrant_type.score
+    self.total_score = new_total
+    new_total
+  end
+  def update_total_score_with_save
+    update_total_score
+    save
+    self.owner.update_total_score unless owner_id.nil?
+    owner.save unless owner_id.nil?
+  end
+  def update_totals
+    update_total_income
+    update_total_score
+    save
+    self.owner.update_total_income unless owner_id.nil?
+    self.owner.update_total_score unless owner_id.nil?
+    owner.save unless owner_id.nil?
+  end
   def self.for_show(player)
     if player.options['fog_of_war_on']
       includes(:the_sky_map_quadrant_type).
@@ -63,7 +97,10 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
       y: y,
       z: z,
       the_sky_map_quadrant_type_id: type_id
+
     }, as: :admin)
+    new_quadrant.update_total_income
+    new_quadrant.update_total_score
     new_quadrant.save
 
   end
@@ -92,6 +129,7 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     #update owner information
     self.owner = player
     self.save
+    self.owner.update_totals
     return true
   end
 

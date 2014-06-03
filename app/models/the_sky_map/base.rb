@@ -38,6 +38,7 @@ class TheSkyMap::Base < ActiveRecord::Base
       new_base.the_sky_map_base_upgrade_type = type
     end
     new_base.save
+    quadrant.update_totals
     new_base
   end
 
@@ -78,6 +79,7 @@ class TheSkyMap::Base < ActiveRecord::Base
     return false if upgrade.nil?
     self.the_sky_map_base_upgrade_type = upgrade
     self.save
+    the_sky_map_quadrant.update_totals
     PostToFaye.request_update('base',[self.id])
     true
   end

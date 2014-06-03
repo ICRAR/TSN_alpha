@@ -6,6 +6,7 @@ class CreateTheSkyMapBaseUpgradeTypes < ActiveRecord::Migration
       t.integer :cost
       t.integer :duration
       t.integer :income
+      t.integer :score
       t.integer :parent_id
 
 
