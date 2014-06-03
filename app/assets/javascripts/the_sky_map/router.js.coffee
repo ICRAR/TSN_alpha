@@ -10,8 +10,6 @@ TheSkyMap.Router.map ()->
     @route 'show', {path: '/:ship_id'}
   @resource 'bases', {path: '/bases'}, () ->
     @route 'show', {path: '/:base_id'}
-  @resource 'shout_boxes', {path: '/shout_boxes'}, () ->
-    @route 'show', {path: '/:shout_id'}
 
 
 TheSkyMap.ApplicationRoute = Ember.Route.extend
@@ -27,12 +25,6 @@ TheSkyMap.WithNameRoute = Ember.Route.extend
       controller: 'name'
     }
     @render()
-TheSkyMap.ShoutBoxesIndexRoute = TheSkyMap.WithNameRoute.extend
-  model: ->
-    this.store.find('shout_box')
-TheSkyMap.ShoutBoxesShowRoute =TheSkyMap.WithNameRoute.extend
-  model: (params) ->
-    this.store.find('shout_box', params.shout_id)
 
 
 TheSkyMap.QuadrantShowRoute = Ember.Route.extend

@@ -162,7 +162,6 @@ Tsn::Application.routes.draw do
         get 'current_player'
       end
     end
-    resources :shout_boxes
     resources :quadrants, :only => [:index, :show]
     resources :actions, :only => [:show] do
       member do

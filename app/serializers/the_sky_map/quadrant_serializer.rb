@@ -44,7 +44,7 @@ class TheSkyMap::QuadrantSerializer < ActiveModel::Serializer
   end
 
   #type object
-  attributes :base_score, :num_bases, :desc, :color
+  attributes :num_bases, :desc, :color
   def num_bases
     explored? ? object.the_sky_map_quadrant_type.num_of_bases : 0
   end
