@@ -17,6 +17,9 @@ class TheSkyMap::Player < ActiveRecord::Base
     total_points = 0
   end
 
+  #actor methods
+  acts_as_actor
+
   def update_total_income
     new_total= self.own_quadrants.sum("#{own_quadrants.table_name}.total_income").to_i
     self.total_income = new_total
@@ -84,8 +87,7 @@ class TheSkyMap::Player < ActiveRecord::Base
     self.options =  new_hash.to_json
   end
 
-  #actor methods
-  acts_as_actor
+  #currency_methods
   def currency_available
     (total_points - spent_points)
   end
@@ -103,5 +105,39 @@ class TheSkyMap::Player < ActiveRecord::Base
   end
   def refund_currency_special(value)
     self.class.where{id == self.id}.update_all("spent_points_special = spent_points_special - #{value.to_i}" )
+  end
+
+  #updates all players currency bassed on the hourly income rate and time since last update
+  def self.update_currency
+    current_time = Time.now
+    old_time_i = SiteStat.try_get('the_sky_map/last_currency_update_time', current_time.to_i).value
+    old_time = Time.at(old_time_i)
+    time_diff = current_time - old_time
+    time_diff_in_hours = time_diff/60/60
+    self.update_all("total_points_float = total_points_float + (total_income * #{time_diff_in_hours}),"+
+                        " total_points_special_float = total_points_special_float + (total_income_special * #{time_diff_in_hours})")
+    self.update_all("total_points = total_points_float, total_points_special = total_points_special_float")
+
+
+    SiteStat.set('the_sky_map/last_currency_update_time', current_time.to_i)
+  end
+  #updates the special income from RAC
+  def self.update_special_income
+    relation = TheSkyMap::Player.joins{profile.general_stats_item}
+
+    #####
+    # RAC to special currency is done here
+    # total_income_special = LOG(recent_avg_credit)
+    #####
+    relation.update_all("#{TheSkyMap::Player.table_name}.total_income_special = LOG(#{GeneralStatsItem.table_name}.recent_avg_credit)")
+  end
+
+
+  #updates player rank
+  def self.update_rankings
+    TheSkyMap::Player.transaction do
+      TheSkyMap::Player.connection.execute 'SET @new_rank := 0'
+      TheSkyMap::Player.where{total_score > 0}.order{total_score.desc}.update_all('rank = @new_rank := @new_rank + 1')
+    end
   end
 end
