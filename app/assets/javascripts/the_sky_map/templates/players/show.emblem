@@ -1,0 +1,15 @@
+.row
+  .col-md-8
+    #show_player
+      .panel.panel-info
+        .panel-heading= name
+        .panel-body
+          dl.dl-horizontal
+            dt Name
+            dd= name
+            dt Rank
+            dd= rank
+            dt Score
+            dd= total_score
+            dd: a href=profile_link theSkyNet.org Profile
+

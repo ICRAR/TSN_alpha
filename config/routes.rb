@@ -162,12 +162,14 @@ Tsn::Application.routes.draw do
         get 'current_player'
       end
     end
+    resources :mini_quadrants, :only => [:index, :show]
     resources :quadrants, :only => [:index, :show]
     resources :actions, :only => [:show] do
       member do
         get 'run_special'
       end
     end
+    resources :players, :only => [:index, :show]
     resources :ships, :only => [:index, :show] do
       resources :actions, :only => [:index, :show, :create], :defaults => {actionable: 'TheSkyMap::Ship'}
     end

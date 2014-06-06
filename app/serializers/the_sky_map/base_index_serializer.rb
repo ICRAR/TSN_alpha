@@ -2,6 +2,10 @@ class TheSkyMap::BaseIndexSerializer < ActiveModel::Serializer
   attributes :id, :name, :desc, :hostile, :mine, :type, :score, :income
   embed :ids#, include: true
   has_one :the_sky_map_quadrant, key: :quadrant_id
+  attributes :player_id
+  def player_id
+    object.the_sky_map_player_id
+  end
   def desc
     object.the_sky_map_base_upgrade_type.desc
   end

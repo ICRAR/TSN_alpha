@@ -2,4 +2,5 @@
   .col-md-8
     = render 'board'
   .col-md-4#quadrants
+    = render 'miniMap'
     = outlet

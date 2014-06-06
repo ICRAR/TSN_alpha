@@ -95,6 +95,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     outcome = quadrant.capture(the_sky_map_player)
     #push changes with faye
     PostToFaye.request_update('quadrant',[quadrant.id])
+    PostToFaye.request_update('mini_quadrant',[quadrant.id])
     return outcome
   end
 
@@ -133,9 +134,9 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     #explore
       self.the_sky_map_player.explore_quadrant(quadrant)
     #force update to open quadrants
-    quadrant_ids = quadrant.surrounding_quadrants.pluck(:id)
-    quadrant_ids << old_quadrant.id
-    PostToFaye.request_update('quadrant',quadrant_ids)
+    PostToFaye.request_update('quadrant',[old_quadrant.id,quadrant.id])
+
+    #ToDo trigger player to update explored areas
     #force update to open ship
     PostToFaye.request_update('ship',[self.id])
     return true

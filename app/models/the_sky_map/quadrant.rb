@@ -19,7 +19,17 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
       where{(x >= x_min) & (x <= x_max)}.
       order([:z,:y,:x])
   end
+  #this function finds a new home free of enemies ready for an excited new player
+  def self.find_new_home
+    suitable_type_ids = TheSkyMap::QuadrantType.where{suitable_for_home == true}.pluck(:id)
+    suitable_relation = TheSkyMap::Quadrant.where{z==1}. #only interested in layer 1 for now
+      where{owner_id == nil}. #only interested in unowned area's
+      where{the_sky_map_quadrant_type_id.in suitable_type_ids} #only interested in certain quadrant types
 
+    suitable_with_ships_ids =   suitable_relation.joins(:the_sky_map_ships).pluck("#{TheSkyMap::Quadrant.table_name}.id")
+    suitable_quadrants = suitable_relation.where{id.not_in suitable_with_ships_ids}
+    suitable_quadrants.sample #return a random quadrant from the suitable ones
+  end
   def update_total_income
     new_total= self.the_sky_map_bases.joins{the_sky_map_base_upgrade_type}.
         sum("#{TheSkyMap::BaseUpgradeType.table_name}.income").to_i
@@ -67,6 +77,21 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
           includes(:the_sky_map_ships).
           select('the_sky_map_quadrants.*').
           select('1 as explored')
+    end
+  end
+  def self.for_show_mini(player)
+    if player.options['fog_of_war_on']
+      includes(:the_sky_map_quadrant_type).
+      joins("INNER JOIN
+  the_sky_map_players_quadrants ON the_sky_map_players_quadrants.the_sky_map_quadrant_id = the_sky_map_quadrants.id and
+  the_sky_map_players_quadrants.the_sky_map_player_id = #{player.id}").
+      select('the_sky_map_quadrants.*').
+      select{the_sky_map_players_quadrants.explored.as('explored')}
+    else
+      includes(:the_sky_map_quadrant_type).
+      includes(:the_sky_map_ships).
+      select('the_sky_map_quadrants.*').
+      select('1 as explored')
     end
   end
   def self.at_pos(x_pos,y_pos,z_pos)

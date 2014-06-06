@@ -1,6 +1,8 @@
 #galaxy_board
   .panel.panel-primary
-    .panel-heading  The Galaxy!
+    .panel-heading
+      | The Galaxy!
+      .pull-right: a href='#' click='refresh': span.glyphicon.glyphicon-refresh
 
   .board
     each layer in quadrants_layers

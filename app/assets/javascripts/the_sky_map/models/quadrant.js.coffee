@@ -16,6 +16,7 @@ TheSkyMap.Quadrant = DS.Model.extend(
   num_bases: DS.attr("number")
   desc: DS.attr("string")
   color: DS.attr("string")
+  player: DS.belongsTo('player')
   ships: DS.hasMany('ship',{ async: true })
   has_ships: ( ->
     @get('ships').get('length') > 0

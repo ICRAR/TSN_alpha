@@ -2,7 +2,7 @@ class TheSkyMap::QuadrantType < ActiveRecord::Base
   #generation chance is a scaled varible that determines the chance that the this type will appear on the map when
   # creating a new quadrant
   attr_accessible :desc, :name, :unexplored_name, :num_of_bases, :score, :feature_type, :generation_chance,
-                  :unexplored_color, :explored_color, as: [:admin]
+                  :unexplored_color, :explored_color, :suitable_for_home, as: [:admin]
 
   has_many :the_sky_map_quadrants, :class_name => 'TheSkyMap::Quadrant', foreign_key: "the_sky_map_quadrant_type_id"
 

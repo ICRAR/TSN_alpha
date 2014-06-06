@@ -1,5 +1,17 @@
 TheSkyMap.CurrentPlayerController = Ember.ObjectController.extend
   content: null
+  mini_map_x_min: (() ->
+    @.get('player_options').mini_map_x_min
+  ).property('player_options')
+  mini_map_x_max: (() ->
+    @.get('player_options').mini_map_x_max
+  ).property('player_options')
+  mini_map_y_min: (() ->
+    @.get('player_options').mini_map_y_min
+  ).property('player_options')
+  mini_map_y_max: (() ->
+    @.get('player_options').mini_map_y_max
+  ).property('player_options')
   retrieveCurrentUser: ->
     controller = this
     Ember.$.getJSON "/sub/ember/current_player", (data) ->

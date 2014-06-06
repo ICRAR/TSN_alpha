@@ -3,7 +3,7 @@ module TheSkyMap
     before_filter :signed_in
     layout "theSkyMap"
     Footnotes::Filter.notes = []
-    authorize_resource
+    #authorize_resource
     private
     def current_player_json
       if user_signed_in?

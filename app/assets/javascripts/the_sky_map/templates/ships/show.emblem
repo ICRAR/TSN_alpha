@@ -13,6 +13,8 @@
             dd= speed
             dt Mine
             dd= mine
+            dt Owner
+            dd: link-to 'players.show' player.id | {{player.name}}
             dt Location
             dd
               ' ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})

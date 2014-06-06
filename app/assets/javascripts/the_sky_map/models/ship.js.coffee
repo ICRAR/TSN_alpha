@@ -8,5 +8,6 @@ TheSkyMap.Ship = TheSkyMap.Actionable.extend(
   mine: DS.attr("boolean")
   hostile: DS.attr("boolean")
   quadrant: DS.belongsTo('quadrant')
+  player: DS.belongsTo('player')
   game_actions_available: DS.attr('raw')
 )

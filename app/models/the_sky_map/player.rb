@@ -9,13 +9,65 @@ class TheSkyMap::Player < ActiveRecord::Base
 
   belongs_to :home, :class_name => 'TheSkyMap::Quadrant', :foreign_key => 'home_id'
 
+  def self.for_index(player)
+    self.where{rank > 0}.order{rank.asc}.includes(:profile)
+  end
+  def self.for_show(player,id)
+    self.find(id)
+  end
   before_create :set_defaults
   def set_defaults
     rank = 0
     score = 0
+    spent_points_special = 0
+    total_points_special = 0
+    total_points_special_float = 0
     spent_points = 0
     total_points = 0
+    total_points_float = 0
   end
+
+  def self.build_new_player(profile)
+    #check that the profile dosn't already have a player
+    return false unless profile.the_sky_map_player.nil?
+    #creates new player object
+    new_player = self.new
+    #sets defaults
+    new_player.set_defaults
+    new_player.profile = profile
+    new_player.save
+    #find a new home & claim home
+    new_player.home = TheSkyMap::Quadrant.find_new_home
+    return false if new_player.home.nil?
+    #capture home
+    new_player.home.owner = new_player
+    new_player.home.save
+    #explore area around home
+    new_player.explore_quadrant(new_player.home)
+
+    #add base to home
+    home_base_type = TheSkyMap::BaseUpgradeType.where{name == 'Home'}.first
+    TheSkyMap::Base.first_base(new_player.home, home_base_type)
+
+    #add ship to home
+    ship_type = TheSkyMap::ShipType.where{name == 'Basic Ship'}.first
+    return false if ship_type.nil?
+    new_ship = ship_type.build_new(new_player.home,new_player)
+
+    #update score
+    new_player.update_special_income
+    new_player.update_total_income
+    new_player.update_total_score
+
+    #add initial currency
+    new_player.total_points_special = 100
+    new_player.total_points = 1000
+
+    new_player.save
+    #yay your ready to go
+    new_player
+  end
+
 
   #actor methods
   acts_as_actor
@@ -71,7 +123,12 @@ class TheSkyMap::Player < ActiveRecord::Base
   end
   def self.options_default
     {
-        'fog_of_war_on' => true
+        'fog_of_war_on' => true,
+        'mini_map_x_min' => 1,
+        'mini_map_x_max' => 6,
+        'mini_map_y_min' => 1,
+        'mini_map_y_max' => 6,
+
     }
   end
   def options
@@ -130,6 +187,9 @@ class TheSkyMap::Player < ActiveRecord::Base
     # total_income_special = LOG(recent_avg_credit)
     #####
     relation.update_all("#{TheSkyMap::Player.table_name}.total_income_special = LOG(#{GeneralStatsItem.table_name}.recent_avg_credit)")
+  end
+  def update_special_income
+    self.total_income_special = Math.log(self.profile.general_stats_item.recent_avg_credit)
   end
 
 

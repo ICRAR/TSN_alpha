@@ -1,3 +1,53 @@
+//ownership colours
+@mine: #AFEAAA;
+@home: #41924B;
+@hostile: #FE8402;
+@unowned: #6BCAE2;
+@unknown: #000e3f;
+
+#mini_map_map {
+  position: relative;
+  padding: 0px;
+  #view_window {
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    border: 1px solid red;
+    z-index: 2;
+    pointer-events:none;
+  }
+  .mini_map_row {
+    position: relative;
+    z-index:1;
+    height: 16px;
+    margin:0px;
+    padding: 0px;
+    line-height: 16px;
+    .quadrant {
+      display: inline-block;
+      height: 16px;
+      width: 16px;
+      margin:0px;
+      padding: 0px;
+      text-align: center;
+      vertical-align: middle;
+      line-height: 16px;
+      background-color: @unknown; //default not owned by anyone or unknown
+      &.mine {
+        background-color: @mine;
+      }
+      &.home {
+        background-color: @home;
+      }
+      &.hostile {
+        background-color: @hostile;
+      }
+      &.unowned {
+        background-color: @unowned;
+      }
+    }
+  }
+}
 #galaxy_board {
   .controls {
     color: black;
@@ -53,18 +103,18 @@
         }
       }
       //boarder colors
-      border: 4px solid #000e3f; //default not owned by anyone or unknown
+      border: 4px solid @unknown; //default not owned by anyone or unknown
       &.mine {
-        border-color: #AFEAAA;
+        border-color: @mine;
       }
       &.home {
-        border-color: #41924B;
+        border-color: @home;
       }
       &.hostile {
-        border-color: #FE8402;
+        border-color: @hostile;
       }
       &.unowned {
-        border-color: #6BCAE2
+        border-color: @unowned;
       }
 
 

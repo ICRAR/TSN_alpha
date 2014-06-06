@@ -55,6 +55,8 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
       }
   ).property('x_min','x_max','y_min','y_max','z_min','z_max')
   actions:
+    refresh: () ->
+      @send('refresh_view')
     refresh_view: () ->
       @.get('store').find('quadrant',{
         x_min: @.get('x_min')

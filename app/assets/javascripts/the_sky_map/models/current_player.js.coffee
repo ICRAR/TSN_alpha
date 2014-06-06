@@ -11,5 +11,6 @@ TheSkyMap.CurrentPlayer = DS.Model.extend(
   total_income_special: DS.attr("number")
   currency_available: DS.attr("number")
   currency_available_special: DS.attr("number")
+  player_options: DS.attr('raw')
 )
 

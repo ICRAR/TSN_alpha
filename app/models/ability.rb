@@ -46,7 +46,6 @@ class Ability
     can :alliance_history, Profile
     can :compare, Challenger
     can :history, Challenge
-    cannot :manage, TheSkyMap::Quadrant
 
 
     if user.id #user is not a quest user
@@ -67,6 +66,7 @@ class Ability
       can :join, Challenge
       can :create, Challenge
       can :manage, Challenge, :manager_id => user.profile.id
+      can :manage, Action
     end
     #admin users can do everything :)
     if user.is_admin?

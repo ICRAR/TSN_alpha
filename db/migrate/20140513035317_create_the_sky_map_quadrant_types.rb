@@ -11,6 +11,9 @@ class CreateTheSkyMapQuadrantTypes < ActiveRecord::Migration
       t.integer :num_of_bases
       t.integer :score
       t.integer :generation_chance
+      t.boolean :suitable_for_home, null: false, default: false
+      t.string :unexplored_symbol
+      t.string :explored_symbol
 
       t.timestamps
     end

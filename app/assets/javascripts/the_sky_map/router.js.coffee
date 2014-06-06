@@ -10,6 +10,8 @@ TheSkyMap.Router.map ()->
     @route 'show', {path: '/:ship_id'}
   @resource 'bases', {path: '/bases'}, () ->
     @route 'show', {path: '/:base_id'}
+  @resource 'players', {path: '/players'}, () ->
+    @route 'show', {path: '/:player_id'}
 
 
 TheSkyMap.ApplicationRoute = Ember.Route.extend
