@@ -80,6 +80,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     return false if new_base_type.nil?
     new_base = TheSkyMap::Base.first_base(quadrant,new_base_type)
     return false if new_base.nil?
+    PostToFaye.request_update('quadrant',[quadrant.id])
     true
 
   end
@@ -170,7 +171,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
           action: 'move',
           name: "Move to Quadrant (#{quadrant.x}, #{quadrant.y})",
           cost: cost,
-          duration: 600,
+          duration: 60,
           options: {x: quadrant.x, y: quadrant.y, z: quadrant.z},
           allowed: true,
           icon: "glyphicon-arrow-#{dir}"
