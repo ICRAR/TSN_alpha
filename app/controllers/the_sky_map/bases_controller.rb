@@ -2,11 +2,10 @@ class TheSkyMap::BasesController < TheSkyMap::ApplicationController
   respond_to :json
 
   def index
-
-    @bases = TheSkyMap::Base.for_index(current_user.profile.the_sky_map_player)
-
-
-    render :json =>  @bases, :each_serializer => TheSkyMap::BaseIndexSerializer
+    page = params[:page].to_i || 1
+    per_page = params[:per_page].to_i || 10
+    @bases = TheSkyMap::Base.page(page).per(per_page).for_index(current_user.profile.the_sky_map_player)
+    render :json =>  @bases, :each_serializer => TheSkyMap::BaseIndexSerializer, meta: pagination_meta(@bases)
 
   end
 

@@ -1,18 +1,17 @@
-.row
-  .col-md-8
-    #bases_table: .panel.panel-info
-      .panel-heading All Bases
-      .panel-body
-        table.table.table-striped.table-hover.table-bordered
-          thead: tr
-            th Name
-            th Type
-            th Mine?
-            th Location
-          tbody
-            each model
-              tr
-                td: link-to 'bases.show' id | {{name}}
-                td: link-to 'bases.show' id | {{type}}
-                td: link-to 'bases.show' id | {{mine}}
-                td: link-to 'bases.show' id | ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
+#bases_table: .panel.panel-info
+  .panel-heading All Bases
+  .panel-body
+    table.table.table-striped.table-hover.table-bordered
+      thead: tr
+        th Name
+        th Type
+        th Mine?
+        th Location
+      tbody
+        each model
+          tr
+            td: link-to 'bases.show' id | {{name}}
+            td: link-to 'bases.show' id | {{type}}
+            td: link-to 'bases.show' id | {{mine}}
+            td: link-to 'bases.show' id | ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
+    pagination-links pagesObject=pagesObject

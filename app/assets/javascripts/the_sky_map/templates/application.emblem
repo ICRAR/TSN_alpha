@@ -13,20 +13,12 @@
         span.glyphicon.glyphicon-cog
         ' antimatter units remaining.
           Your total score is: {{controllers.currentPlayer.content.total_score}}.
-
+  .row.navbar.navbar-default
+    .col-md-12
+      bs-pills contentBinding="navLinks"
+      ul.nav.bavbar-nav.navbar-right
+        li: a href='/users/sign_out' Sign Out
   .row
-    .col-md-2
-      .panel.panel-primary
-        .panel-heading Navigation
-        .panel-body
-          ul
-            li: link-to 'home' | Home
-            li: link-to 'name' | Name
-            li: link-to 'quadrants' | Galaxy Map
-            li: link-to 'ships' | All Ships
-            li: link-to 'bases' | All Bases
-
-    .col-md-10
       = outlet
 
 

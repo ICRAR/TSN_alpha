@@ -1,10 +1,10 @@
 class TheSkyMap::QuadrantSerializer < ActiveModel::Serializer
   attributes :id, :x, :y, :z, :name, :explored, :explored_fully, :explored_partial,
              :home, :mine, :hostile, :unowned, :total_score, :total_income
-  embed :ids#, include: true
+  embed :id, include: true
   has_many :the_sky_map_ships, key: :ship_ids, root: :ships, serializer: TheSkyMap::ShipIndexSerializer
   has_many :the_sky_map_bases, key: :base_ids, root: :bases, serializer: TheSkyMap::BaseIndexSerializer
-  has_one  :owner, key: :player_id
+  has_one  :owner, key: :player_id, root: :players, serializer: TheSkyMap::PlayerIndexSerializer
   def include_the_sky_map_ships?
     explored?
   end

@@ -21,6 +21,10 @@ TheSkyMap.ActionController = Ember.ObjectController.extend(TheSkyMap.Countdownab
   show_special_button: (() ->
     (@get('current_state') == 'queued_next')
   ).property('current_state')
+  actionable_link: (() ->
+    model = @get('actionable')
+    "#{Ember.Inflector.inflector.pluralize(model.constructor.toString().split('.').pop())}.show"
+  ).property('actionable')
   actions:
     run_special: () ->
       store = @store

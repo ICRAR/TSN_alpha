@@ -50,17 +50,17 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     new_total
   end
   def update_total_score_with_save
-    update_total_score
-    save
-    self.owner.update_total_score unless owner_id.nil?
-    owner.save unless owner_id.nil?
+    self.update_total_score
+    self.save
+    self.owner.update_total_score unless self.owner_id.nil?
+    self.owner.save unless self.owner_id.nil?
   end
   def update_totals
     update_total_income
     update_total_score
     save
-    self.owner.update_total_income unless owner_id.nil?
-    self.owner.update_total_score unless owner_id.nil?
+    owner.update_total_income unless owner_id.nil?
+    owner.update_total_score unless owner_id.nil?
     owner.save unless owner_id.nil?
   end
   def self.for_show(player)
@@ -97,6 +97,12 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
   def self.at_pos(x_pos,y_pos,z_pos)
     where{(x == x_pos) & (y == y_pos) & (z == z_pos)}.first
   end
+  def surrounding_quadrants_move
+    TheSkyMap::Quadrant.where{z == my{self.z}}.where{
+      ((x == my{self.x}) & ((y == my{self.y-1}) | (y == my{self.y+1}))) |
+      ((y == my{self.y}) & ((x == my{self.x-1}) | (x == my{self.x+1})))
+    }
+  end
   def surrounding_quadrants
     TheSkyMap::Quadrant.
         where{(x <= my{self.x+1}) & (x >= my{self.x-1})}.
@@ -105,11 +111,11 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
         where{((x != my{self.x}) | (y != my{self.y}) | (z != my{self.z})) }
   end
 
-  #randomly generates a new quadrant at the given loction
+  #randomly generates a new quadrant at the given location
   #if one already exisits do nothing
   def self.generate_new(x,y,z, chance_table = nil)
     #check for existing quadrant
-    return if self.at_pos(x,y,z).exists?
+    return unless self.at_pos(x,y,z).nil?
 
     #determine type table
     chance_table ||= TheSkyMap::QuadrantType.generation_chance_table
@@ -148,6 +154,7 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     Math.sqrt(x2 + y2 + z2)
   end
 
+  #performs the capture of an unowned quadrant for the player
   def capture(player)
     #check that quadrant is unowned
     return false unless self.owner_id.nil?
@@ -158,6 +165,19 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     return true
   end
 
+  #performs the stealing an owned quadrant for the player
+  def steal(player)
+    return false unless self.is_stealable?(player)
+    old_owner = self.owner
+    self.owner = player
+    self.save
+    player.update_totals
+    old_owner.update_totals
+    return true
+  end
+  def has_bases?
+    num_of_built_bases > 0
+  end
   def num_of_built_bases
     the_sky_map_bases.count
   end
@@ -167,5 +187,26 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def is_stealable?(actor)
+    #can't steal an unowned quadrant or one you allready own
+    return false if owner_id.nil? || owner_id == actor.id
+    #can't steal a quadrant if it has a base defending it
+    return false if has_bases?
+    return true
+  end
+  def has_attackable_base?(actor)
+    #can't attack an unowned quadrant or one you allready own
+    return false if owner_id.nil? || owner_id == actor.id
+    #can't attack a base if it dosn't have one
+    return false unless has_bases?
+    return true
+  end
+  def has_attackable_ships?(actor)
+    attackable_ships(actor).count > 0
+  end
+  def attackable_ships(actor)
+    self.the_sky_map_ships.where{the_sky_map_ships.the_sky_map_player_id != my{actor.id}}
   end
 end

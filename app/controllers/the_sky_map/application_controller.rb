@@ -1,6 +1,16 @@
 module TheSkyMap
   class ApplicationController < ApplicationController
     before_filter :signed_in
+    before_filter :check_player
+    def check_player
+      if user_signed_in?
+        player = current_user.profile.the_sky_map_player
+        if player.nil?
+          #redirect to theSkyMap Sign Up page
+          redirect_to the_sky_map_reg_path
+        end
+      end
+    end
     layout "theSkyMap"
     Footnotes::Filter.notes = []
     #authorize_resource
@@ -15,6 +25,20 @@ module TheSkyMap
     end
     def current_player_hash
       ActiveSupport::JSON.decode(current_player_json)
+    end
+
+    #adds kaminari pagination data if they exist to the meta tag.
+    def pagination_meta(relation, meta = {})
+      if relation.respond_to?(:total_pages) && relation.respond_to?(:current_page)
+        meta.merge({pagination:{
+            total_pages: relation.total_pages,
+            current_page: relation.current_page,
+            count: relation.count,
+            total_count: relation.total_count,
+        }})
+      else
+        meta
+      end
     end
   end
 end

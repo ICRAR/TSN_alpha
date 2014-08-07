@@ -17,14 +17,14 @@ TheSkyMap.Quadrant = DS.Model.extend(
   desc: DS.attr("string")
   color: DS.attr("string")
   player: DS.belongsTo('player')
-  ships: DS.hasMany('ship',{ async: true })
+  ships: DS.hasMany('ship')
   has_ships: ( ->
-    @get('ships').get('length') > 0
-  ).property('ships.@each.isLoaded')
-  bases: DS.hasMany('base',{ async: true })
+    @get('_data.ships.length') > 0
+  ).property('_data.ships.length')
+  bases: DS.hasMany('base')
   has_bases: ( ->
-    @get('bases').get('length') > 0
-  ).property('bases.@each.isLoaded')
+    @get('_data.bases.length') > 0
+  ).property('_data.bases.length')
 
 )
 

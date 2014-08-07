@@ -58,6 +58,7 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
     refresh: () ->
       @send('refresh_view')
     refresh_view: () ->
+      save_this = @
       @.get('store').find('quadrant',{
         x_min: @.get('x_min')
         x_max: @.get('x_max')
@@ -65,7 +66,10 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
         y_max: @.get('y_max')
         z_min: @.get('z_min')
         z_max: @.get('z_max')
-      })
+      }).then(() ->
+        model = save_this.get('target.model')
+        model.reload if model?
+      )
     zoom_1: () ->
       @.set('xy_zoom', 2)
       @send('refresh_view')
@@ -80,7 +84,7 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
         z: quad.get('z')
       }
       @send('scroll_to_position', pos)
-      @transitionToRoute('quadrants.show', quad)
+      #@transitionToRoute('quadrants.show', quad)
     scroll_to_position: (pos) ->
       @set 'x_center', pos.x
       @set 'y_center', pos.y

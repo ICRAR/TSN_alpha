@@ -14,7 +14,7 @@ class Action < ActiveRecord::Base
 
   serialize :options, Hash
 
-  def self.states  #do not change numbers only add new ones
+  def self.states  #do not change numbers only add new ones, order of numbers has no meaning
     {
         0 => :queued,
         1 => :queued_next,
@@ -105,8 +105,12 @@ class Action < ActiveRecord::Base
     end
   end
   def self.background_job(action_id)
-    action = self.find(action_id)
-    action.run
+    begin
+      action = self.find(action_id)
+      action.run
+    rescue ActiveRecord::RecordNotFound
+      #do nothing this action no longer exists
+    end
   end
   #checks if the action has run or not yet
   def check_action
@@ -146,30 +150,37 @@ class Action < ActiveRecord::Base
       can_run = false
     end
     if can_run
-      #check that action is valid action type
-      if self.actionable && self.actionable.actions_list.include?(action)
-        #run action with options
-        begin
-          action_success = self.actionable.send("perform_#{action}".to_sym, self.options)
-        rescue Exception => e
-          self.state = :failed
-          self.actor.refund_currency(self.cost)
-          self.save
-          self.class.queue_next(actionable)
-          raise e
-        end
-        #update the state
-        if action_success
-          self.state = :completed
+      #check that actionable still exists
+      if self.actionable
+        #check that action is valid action type
+        if self.actionable.actions_list.include?(action)
+          #run action with options
+          begin
+            action_success = self.actionable.send("perform_#{action}".to_sym, self.options)
+          rescue Exception => e
+            self.state = :failed
+            self.actor.refund_currency(self.cost)
+            self.save
+            self.class.queue_next(actionable)
+            raise e
+          end
+          #update the state
+          if action_success
+            self.state = :completed
+          else
+            #reverse the 'payment' and cancel the action
+            self.state = :failed
+            self.actor.refund_currency(self.cost)
+          end
         else
           #reverse the 'payment' and cancel the action
           self.state = :failed
           self.actor.refund_currency(self.cost)
         end
       else
-        #reverse the 'payment' and cancel the action
-        self.state = :failed
+        #reverse the 'payment' and delete the action
         self.actor.refund_currency(self.cost)
+        self.destroy
       end
 
       self.save
@@ -210,5 +221,15 @@ class Action < ActiveRecord::Base
     define_method "is_#{k.to_s}?" do
       (state == v)
     end
+  end
+
+  def self.refund_all_pending_actions(actionable,actor)
+    #take all pending actions and sum total currency
+    queued_states = [
+        self.states_hash[:queued],
+        self.states_hash[:queued_next],
+    ]
+    total_refund = actionable.actions.where{state.in queued_states}.sum(:cost)
+    actionable.actions.destroy
   end
 end

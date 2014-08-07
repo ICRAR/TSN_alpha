@@ -6,6 +6,13 @@ class TheSkyMap::ActionsController < TheSkyMap::ApplicationController
     not_found unless actionable.the_sky_map_player_id == current_user.profile.the_sky_map_player.id
     render :json =>  @actions, :each_serializer => ActionSerializer
   end
+  def player_index
+    page = params[:page].to_i || 1
+    per_page = params[:per_page].to_i || 10
+    actor = current_user.profile.the_sky_map_player
+    @actions = actor.actions.page(page).per(per_page).includes(:actionable, :actor).order{updated_at.desc}
+    render :json =>  @actions, :each_serializer => ActionSerializer, meta: pagination_meta(@actions)
+  end
   def create
     actor = current_user.profile.the_sky_map_player
     @action = actionable.perform_action(actor, params[:action_name])

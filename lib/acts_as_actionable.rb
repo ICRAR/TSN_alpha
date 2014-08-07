@@ -8,6 +8,7 @@ module ActsAsActionable
     def acts_as_actionable(options = {})
       include ActsAsActionable::LocalInstanceMethods
       has_many :actions, as: :actionable, class_name: 'Action'
+      before_destroy :refund_all_pending_actions
     end
   end
 
@@ -54,6 +55,9 @@ module ActsAsActionable
     end
     def current_action
       actions.current_action.first
+    end
+    def refund_all_pending_actions
+      Action.refund_all_pending_actions(self,self.default_actor)
     end
   end
 end

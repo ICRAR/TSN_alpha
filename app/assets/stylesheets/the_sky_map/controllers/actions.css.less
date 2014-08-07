@@ -3,28 +3,39 @@
     display: block;
     border:  1px solid black;
     padding: 3px;
-    height: 30px;
-    > * {
+    height: auto;
+    .name {
       height: 24px;
-      display: inline;
       padding: 0px 3px;
       margin: 0px 3px;
+      display: inline;
     }
-    .cost, .duration {
-      float: right;
-      width: 70px;
-      border-left: 1px dotted black;
-    }
-    .perform {
-      width: 100px;
+    .costs {
       float:right;
-      padding: 0px 0px;
-      margin: 0px 0px;
-      height: auto;
-      button {
-        .btn;
-        .btn-primary;
-        .btn-xs;
+      display: block;
+      > * {
+        height: 24px;
+        display: inline;
+        padding: 0px 3px;
+        margin: 0px 3px;
+      }
+
+      .cost, .duration {
+        //float: right;
+        width: 70px;
+        border-right: 1px dotted black;
+      }
+      .perform {
+        width: 100px;
+        //float:right;
+        padding: 0px 0px;
+        margin: 0px 0px;
+        height: auto;
+        button {
+          .btn;
+          .btn-primary;
+          .btn-xs;
+        }
       }
     }
     &:hover {

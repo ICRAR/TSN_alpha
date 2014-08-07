@@ -70,8 +70,8 @@ gem 'ruby-bbcode-to-md'
 gem 'active_model_serializers', '~> 0.8.0'
 
 gem 'ember-rails'
-gem 'ember-source', '1.5.0' # or the version you need
-gem 'ember-data-source', "~> 1.0.0.beta.7" # or the version you need
+gem 'ember-source', '~> 1.7.0.beta.4'# or the version you need
+gem 'ember-data-source', "= 1.0.0.beta.7" # or the version you need
 gem 'emblem-rails'
 
 gem 'delayed_job_active_record'

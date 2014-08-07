@@ -8,6 +8,8 @@ class CreateTheSkyMapBaseUpgradeTypes < ActiveRecord::Migration
       t.integer :income
       t.integer :score
       t.integer :parent_id
+      t.health :health, default: 0
+      t.health :attack, default: 0
 
 
       t.timestamps

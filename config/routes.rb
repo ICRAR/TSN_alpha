@@ -155,7 +155,7 @@ Tsn::Application.routes.draw do
       end
     end
   end
-
+  get "/profile/the_sky_map_reg" => "profiles#tsm_reg", :as => 'the_sky_map_reg'
   namespace :the_sky_map do
     resources :ember, :only => [:index] do
       collection do
@@ -164,6 +164,7 @@ Tsn::Application.routes.draw do
     end
     resources :mini_quadrants, :only => [:index, :show]
     resources :quadrants, :only => [:index, :show]
+    get 'actions' => "actions#player_index", :as => 'all_actions'
     resources :actions, :only => [:show] do
       member do
         get 'run_special'

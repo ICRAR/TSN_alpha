@@ -17,14 +17,14 @@ class TheSkyMap::Player < ActiveRecord::Base
   end
   before_create :set_defaults
   def set_defaults
-    rank = 0
-    score = 0
-    spent_points_special = 0
-    total_points_special = 0
-    total_points_special_float = 0
-    spent_points = 0
-    total_points = 0
-    total_points_float = 0
+    self.rank = 0
+    self.score = 0
+    self.spent_points_special = 0
+    self.total_points_special = 0
+    self.total_points_special_float = 0
+    self.spent_points = 0
+    self.total_points = 0
+    self.total_points_float = 0
   end
 
   def self.build_new_player(profile)
@@ -64,8 +64,13 @@ class TheSkyMap::Player < ActiveRecord::Base
     new_player.total_points = 1000
 
     new_player.save
+
+
+    #update all player rankings
+    self.update_rankings
     #yay your ready to go
     new_player
+
   end
 
 
@@ -125,9 +130,9 @@ class TheSkyMap::Player < ActiveRecord::Base
     {
         'fog_of_war_on' => true,
         'mini_map_x_min' => 1,
-        'mini_map_x_max' => 6,
+        'mini_map_x_max' => 12,
         'mini_map_y_min' => 1,
-        'mini_map_y_max' => 6,
+        'mini_map_y_max' => 12,
 
     }
   end
@@ -149,20 +154,34 @@ class TheSkyMap::Player < ActiveRecord::Base
     (total_points - spent_points)
   end
   def deduct_currency(value)
-    self.class.where{id == self.id}.update_all("spent_points = spent_points + #{value.to_i}" )
+    self.class.where{id == my{self.id}}.update_all("spent_points = spent_points + #{value.to_i}" )
   end
   def refund_currency(value)
-    self.class.where{id == self.id}.update_all("spent_points = spent_points - #{value.to_i}" )
+    self.class.where{id == my{self.id}}.update_all("spent_points = spent_points - #{value.to_i}" )
   end
   def currency_available_special
     (total_points_special - spent_points_special)
   end
   def deduct_currency_special(value)
-    self.class.where{id == self.id}.update_all("spent_points_special = spent_points_special + #{value.to_i}" )
+    self.class.where{id == my{self.id}}.update_all("spent_points_special = spent_points_special + #{value.to_i}" )
   end
   def refund_currency_special(value)
-    self.class.where{id == self.id}.update_all("spent_points_special = spent_points_special - #{value.to_i}" )
+    self.class.where{id == my{self.id}}.update_all("spent_points_special = spent_points_special - #{value.to_i}" )
   end
+
+  def award_currency(value)
+    self.class.where{id == my{self.id}}.update_all(
+        "total_points_float = total_points_float + #{value.to_i},"+
+            "total_points = total_points + #{value.to_i}"
+    )
+  end
+  def award_currency_special(value)
+    self.class.where{id == my{self.id}}.update_all(
+        "total_points_special_float = total_points_special_float + #{value.to_i},"+
+            "total_points_special = total_points_special + #{value.to_i}"
+    )
+  end
+
 
   #updates all players currency bassed on the hourly income rate and time since last update
   def self.update_currency
@@ -186,10 +205,11 @@ class TheSkyMap::Player < ActiveRecord::Base
     # RAC to special currency is done here
     # total_income_special = LOG(recent_avg_credit)
     #####
-    relation.update_all("#{TheSkyMap::Player.table_name}.total_income_special = LOG(#{GeneralStatsItem.table_name}.recent_avg_credit)")
+    relation.update_all("#{TheSkyMap::Player.table_name}.total_income_special = LOG(GREATEST(COALESCE(#{GeneralStatsItem.table_name}.recent_avg_credit,0),1))")
   end
   def update_special_income
-    self.total_income_special = Math.log(self.profile.general_stats_item.recent_avg_credit)
+    rac = self.profile.general_stats_item.recent_avg_credit || 0
+    self.total_income_special = Math.log([rac,1].max)
   end
 
 

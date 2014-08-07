@@ -4,6 +4,11 @@ class ProfilesController < ApplicationController
   authorize_resource
   helper_method :sort_column, :sort_direction
   skip_before_filter :check_announcement, only: [:name_search]
+  ### static page for theSkyMap signup
+  def tsm_reg
+
+  end
+
   def index #main leaderboard
     @search = false
     per_page = [params[:per_page].to_i,1000].min

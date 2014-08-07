@@ -72,7 +72,7 @@
 
       .buttons.row
         .xy.col-md-4
-          .row: .col-md-12: h4 Navigate in the X/Y Plane
+          .row: .col-md-12: h4 Navigate the map
           .row
             .col-md-4.col-md-offset-4
               button.btn.btn-default{action "scroll_y_n"}
@@ -91,18 +91,18 @@
             .col-md-4.col-md-offset-4
               button.btn.btn-default{action "scroll_y_p"}
                 span.glyphicon.glyphicon-arrow-down
-        .z.col-md-4
-          .row
-            .col-md-12
-              h4 Navigate in the Z direction
-          .row
-            .col-md-12
-              button.btn.btn-default{action "scroll_z_n"}
-                span.glyphicon.glyphicon-chevron-up
-          .row
-            .col-md-12
-              button.btn.btn-default{action "scroll_z_p"}
-                span.glyphicon.glyphicon-chevron-down
+        /.z.col-md-4
+        /  .row
+        /    .col-md-12
+        /      h4 Navigate in the Z direction
+        /  .row
+        /    .col-md-12
+        /      button.btn.btn-default{action "scroll_z_n"}
+        /        span.glyphicon.glyphicon-chevron-up
+        /  .row
+        /    .col-md-12
+        /      button.btn.btn-default{action "scroll_z_p"}
+        /        span.glyphicon.glyphicon-chevron-down
         .z.col-md-4
           .row
             .col-md-12

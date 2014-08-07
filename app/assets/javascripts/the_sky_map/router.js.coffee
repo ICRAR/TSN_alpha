@@ -12,6 +12,7 @@ TheSkyMap.Router.map ()->
     @route 'show', {path: '/:base_id'}
   @resource 'players', {path: '/players'}, () ->
     @route 'show', {path: '/:player_id'}
+  @route 'actions', path: '/actions'
 
 
 TheSkyMap.ApplicationRoute = Ember.Route.extend
@@ -29,26 +30,52 @@ TheSkyMap.WithNameRoute = Ember.Route.extend
     @render()
 
 
-TheSkyMap.QuadrantShowRoute = Ember.Route.extend
+TheSkyMap.LoadingRoute = Ember.Route.extend
+  viewName: 'full_map_plus_side'
+
+TheSkyMap.HomeRoute = Ember.Route.extend
+  viewName: 'full_map_plus_side'
+
+TheSkyMap.QuadrantsIndexRoute = Ember.Route.extend
+  viewName: 'full_map_plus_side'
+
+TheSkyMap.QuadrantsShowRoute = Ember.Route.extend
+  viewName: 'full_map_plus_side'
   model: (params)->
     this.store.find('quadrant', params.quadrant_id)
 
 
-TheSkyMap.ShipsIndexRoute = Ember.Route.extend
+TheSkyMap.ShipsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
+  viewName: 'plus_mini_map'
   model: (params) ->
-    @store.find('ship')
+    @store.find('ship', params)
+
 TheSkyMap.ShipsShowRoute = Ember.Route.extend
+  viewName: 'full_map_plus_side'
   model: (params)->
     ship = @store.reloadRecord(@store.recordForId('ship', params.ship_id))
 
 
-TheSkyMap.BasesIndexRoute = Ember.Route.extend
+TheSkyMap.BasesIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
+  viewName: 'plus_mini_map'
   model: (params) ->
-    @store.find('base')
+    @store.find('base', params)
 TheSkyMap.BasesShowRoute = Ember.Route.extend
+  viewName: 'full_map_plus_side'
   model: (params)->
-    ship = @store.reloadRecord(@store.recordForId('base', params.base_id))
+    base = @store.reloadRecord(@store.recordForId('base', params.base_id))
 
+TheSkyMap.PlayersIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
+  viewName: 'plus_mini_map'
+  model: (params) ->
+    @store.find('player', params)
+TheSkyMap.PlayersShowRoute = Ember.Route.extend
+  viewName: 'full_map_plus_side'
+  model: (params)->
+    player = @store.reloadRecord(@store.recordForId('player', params.player_id))
 
-
+TheSkyMap.ActionsRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
+  viewName: 'plus_mini_map'
+  model: (params) ->
+    @store.find('action', params)
 

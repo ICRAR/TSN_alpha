@@ -1,5 +1,5 @@
 class TheSkyMap::Base < ActiveRecord::Base
-  attr_accessible :name
+  attr_accessible :name, :damage
   belongs_to :the_sky_map_base_upgrade_type,
                           :class_name => 'TheSkyMap::BaseUpgradeType',
                           foreign_key: "the_sky_map_base_upgrade_type_id"
@@ -8,13 +8,15 @@ class TheSkyMap::Base < ActiveRecord::Base
   def the_sky_map_player_id
     the_sky_map_quadrant.owner_id
   end
-
+  def remaining_health
+    self.the_sky_map_base_upgrade_type.health - self.damage
+  end
   def self.for_show(player,base_id)
     self.fog_of_war(player).find(base_id)
   end
 
   def self.for_index(player)
-    TheSkyMap::Base.fog_of_war(player).all
+    TheSkyMap::Base.fog_of_war(player).scoped
   end
   has_many :the_sky_map_players_quadrants, :class_name => 'TheSkyMap::PlayersQuadrant', foreign_key: "the_sky_map_quadrant_id", primary_key: "the_sky_map_quadrant_id"
   def self.fog_of_war(player)
@@ -53,8 +55,11 @@ class TheSkyMap::Base < ActiveRecord::Base
 
   #actions
   acts_as_actionable
+  def default_actor
+    the_sky_map_quadrant.owner
+  end
   def actions_list
-    ['upgrade','build_ship']
+    ['upgrade','build_ship', 'attack_ship']
   end
   def upgrade_options(actor)
     return {} if !current_action.nil? && current_action.action == 'upgrade'
@@ -110,5 +115,58 @@ class TheSkyMap::Base < ActiveRecord::Base
     return true
   end
 
+  def attack_ship_options(actor)
+    quadrant = the_sky_map_quadrant
+
+    if quadrant.has_attackable_ships?(quadrant.owner)
+      available_ships = {}
+      quadrant.attackable_ships(quadrant.owner).each do |attacked_ship|
+        action_name = "attack_ship_#{attacked_ship.id}".to_sym
+        available_ships[action_name] = {
+            action: 'attack_ship',
+            name: "Attack the Ship: #{attacked_ship.id}",
+            cost: 100,
+            duration: 60,
+            options: {ship_id: attacked_ship.id},
+            allowed: true,
+            icon: 'glyphicon-screenshot'
+        }
+      end
+      available_ships
+    else
+      {}
+    end
+  end
+  def perform_attack_ship(opts)
+    attacked_ship = TheSkyMap::Ship.find(opts[:ship_id])
+    quadrant = the_sky_map_quadrant
+
+    #check if attacked ship is in the your quadrant
+    #if not return true as you missed and thus forfeit your resources
+    return true unless quadrant == attacked_ship.the_sky_map_quadrant
+
+    #attack the base
+    outcome = attacked_ship.attacked(quadrant.owner,the_sky_map_base_upgrade_type.attack)
+    #push changes with faye
+    if attacked_ship.destroyed?
+      PostToFaye.request_update('quadrant',[quadrant.id])
+      PostToFaye.remove_model_delayed(attacked_ship.id,'ship')
+    else
+      PostToFaye.request_update('ship',[attacked_ship.id])
+    end
+    return outcome
+  end
+
+  def attacked(actor,damage)
+    #update damage
+    self.class.where{id == my{self.id}}.update_all("damage = damage + #{damage.to_i}" )
+    self.reload
+    #check if base is destroyed
+    if self.damage >= self.the_sky_map_base_upgrade_type.health
+      #destroy base
+      self.destroy
+    end
+    true
+  end
 
 end
