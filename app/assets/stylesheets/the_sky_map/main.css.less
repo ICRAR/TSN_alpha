@@ -34,7 +34,12 @@ body {
     }
   }
 }
-
+.row-no-padding {
+  [class*="col-"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
 @import "./controllers/actions.css.less";
 @import "./controllers/board.css.less";
 @import "./controllers/quadrants.css.less";

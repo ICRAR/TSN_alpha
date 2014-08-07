@@ -4,26 +4,25 @@
       | The Galaxy!
       .pull-right: a href='#' click='refresh': span.glyphicon.glyphicon-refresh
 
-  .board
+  .board class={xy_zoom_class}
     each layer in quadrants_layers
       .layer.panel.panel-info
         .panel-heading Layer: {{layer.z}}
         .panel-body
           unless xy_zoomed_in
-            .grid-row.row
+            .grid-row.row.row-no-padding
               .col-md-1
                 p y\x
               each x_val in xs
-                .col-md-2
+                div class={xy_col_size}
                   p= x_val
-              .col-md-1
           each row in layer.rows
-            .grid-row.row
+            .grid-row.row.row-no-padding
                 unless xy_zoomed_in
                   .col-md-1
                     p= row.y
                 each quadrant in row.quadrants
-                  div class={xy_zoomed_in:col-md-4:col-md-2}
+                  div class={xy_col_size}
                     each qf in quadrant.quadrant_final
                       .quadrant class={qf.home:home qf.explored:explored:unexplored qf.color qf.mine:mine qf.hostile:hostile qf.unowned:unowned}
                         if xy_zoomed_in
@@ -59,8 +58,6 @@
                       .quadrant.blank
                         if xy_zoomed_in
                           p Theres nothing here
-                unless xy_zoomed_in
-                  .col-md-1
 
   .controls.panel.panel-default
     .panel-heading Navigation Controls
@@ -111,6 +108,7 @@
             .col-md-12
               button.btn.btn-default{action "zoom_1"} Zoom 1
               button.btn.btn-default{action "zoom_2"} Zoom 2
+              button.btn.btn-default{action "zoom_3"} Zoom 3
 
 
   .key.panel.panel-default
