@@ -189,11 +189,15 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     self.save
 
     #explore
-      self.the_sky_map_player.explore_quadrant(quadrant)
+    explored_quadrants =  self.the_sky_map_player.explore_quadrant(quadrant)
     #force update to open quadrants
-    PostToFaye.request_update('quadrant',[old_quadrant.id,quadrant.id])
+    full_update_quadrants =  [old_quadrant.id,quadrant.id]
+    PostToFaye.request_update('quadrant',full_update_quadrants)
 
-    #ToDo trigger player to update explored areas
+    player_id = self.the_sky_map_player_id
+    PostToFaye.request_update_player_only('quadrant',(explored_quadrants - full_update_quadrants),[player_id])
+    PostToFaye.request_update_player_only('mini_quadrant',explored_quadrants,[player_id])
+
     #force update to open ship
     PostToFaye.request_update('ship',[self.id])
     return true

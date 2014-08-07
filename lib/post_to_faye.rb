@@ -43,5 +43,17 @@ class PostToFaye
     broadcast_json = {update_models: {model_name => model_ids}}.to_json
     faye_broadcast "/messages/from_rails", broadcast_json
   end
+  #post to tell remote browser to update a model or load if the player id matchs
+  def self.request_update_player_only(model_name,model_ids,player_ids)
+    broadcast_json = {
+        update_models_player_only: {
+          models: {
+              model_name => model_ids
+          },
+          player_ids: player_ids
+        }
+    }.to_json
+    faye_broadcast "/messages/from_rails", broadcast_json
+  end
 end
 

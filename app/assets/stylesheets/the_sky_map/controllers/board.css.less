@@ -4,6 +4,8 @@
 @hostile: #FE8402;
 @unowned: #6BCAE2;
 @unknown: #000e3f;
+@mini_map_font_dark:#428bca;
+@mini_map_font_light: #87cdff;
 
 #mini_map_map {
   position: relative;
@@ -33,17 +35,22 @@
       vertical-align: middle;
       line-height: 16px;
       background-color: @unknown; //default not owned by anyone or unknown
+      a {color: @mini_map_font_dark;} //default not owned by anyone or unknown
       &.mine {
         background-color: @mine;
+        a {color: @mini_map_font_dark; }
       }
       &.home {
         background-color: @home;
+        a {color: @mini_map_font_light;}
       }
       &.hostile {
         background-color: @hostile;
+        a {color: @mini_map_font_light; }
       }
       &.unowned {
         background-color: @unowned;
+        a {color: @mini_map_font_dark;}
       }
     }
   }

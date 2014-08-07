@@ -107,6 +107,7 @@ class TheSkyMap::Player < ActiveRecord::Base
       self.add_quadrant q
     end
 
+    new.pluck(:id) << quadrant.id
   end
 
   def add_quadrant(quadrant)

@@ -190,14 +190,16 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
   end
 
   def is_stealable?(actor)
-    #can't steal an unowned quadrant or one you allready own
+    #can't steal an unowned quadrant or one you already own
     return false if owner_id.nil? || owner_id == actor.id
     #can't steal a quadrant if it has a base defending it
     return false if has_bases?
+    #can't steal someones home base. home bases are protected by magic
+    return false if owner.home_id == self.id
     return true
   end
   def has_attackable_base?(actor)
-    #can't attack an unowned quadrant or one you allready own
+    #can't attack an unowned quadrant or one you already own
     return false if owner_id.nil? || owner_id == actor.id
     #can't attack a base if it dosn't have one
     return false unless has_bases?
