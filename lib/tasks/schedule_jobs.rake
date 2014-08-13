@@ -11,6 +11,8 @@ namespace :schedule_jobs do
     TrophiesJob.schedule Time.now
     puts 'starting elastic search check'
     ElasticSearchJob.schedule Time.now
+    puts 'starting theSkyMap background job'
+    TheSkyMapUpdateJob.schedule Time.now
     end
   desc "stops up all scheduled jobs"
   task :stop => :environment do
@@ -29,7 +31,9 @@ namespace :schedule_jobs do
     StatsAlliancesJob.unschedule
     puts 'stopping Main job Update'
     MainStatsJob.unschedule
-    puts 'starting elastic search check'
+    puts 'stopping elastic search check'
     ElasticSearchJob.unschedule
+    puts 'stopping theSkyMap background job'
+    TheSkyMapUpdateJob.unschedule
   end
 end

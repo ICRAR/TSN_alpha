@@ -147,6 +147,7 @@ class TheSkyMap::Player < ActiveRecord::Base
   def reset_option(key)
     new_hash = options_without_default
     new_hash.delete key
+    new_hash.delete key.to_s
     self.options =  new_hash.to_json
   end
 

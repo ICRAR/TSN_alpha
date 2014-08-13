@@ -6,6 +6,13 @@ $(document).ready(
         store = TheSkyMap.__container__.lookup('store:main')
         current_player = TheSkyMap.__container__.lookup('controller:currentPlayer')
         data = jQuery.parseJSON( json_data )
+        #sends a simple alert
+        if data.alert?
+          alert(data.alert.msg)
+        #sends a simple alert and the resets the page
+        if data.request_refresh?
+          alert(data.request_refresh.msg)
+          location.reload(true)
         #insert or update a model in ember
         for model_name, model of data.models
           payload = {}

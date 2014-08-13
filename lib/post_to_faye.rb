@@ -8,7 +8,17 @@ class PostToFaye
     end
   end
 
-
+  #general methods
+  #sends an alert to all open connections
+  def self.alert(msg)
+    broadcast_json = {alert: {msg: msg}}.to_json
+    faye_broadcast "/messages/from_rails", broadcast_json
+  end
+  #request the user to refresh their browser window
+  def self.request_refresh(msg = "Apologies for the inconvenience but the browser window needs to refresh. Click Ok when you are ready.")
+    broadcast_json = {request_refresh: {msg: msg}}.to_json
+    faye_broadcast "/messages/from_rails", broadcast_json
+end
   #post new or updated models
   def self.post_faye_model_delay(model,serializer)
     PostToFaye.delay.post_faye_model_delayed(model.id,model.class.to_s, serializer.to_s)
