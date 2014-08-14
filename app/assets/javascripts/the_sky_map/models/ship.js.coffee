@@ -11,4 +11,5 @@ TheSkyMap.Ship = TheSkyMap.Actionable.extend(
   quadrant: DS.belongsTo('quadrant')
   player: DS.belongsTo('player')
   game_actions_available: DS.attr('raw')
+  location: DS.attr('raw')
 )

@@ -1,0 +1,30 @@
+.quadrant class={home:home explored:explored:unexplored color mine:mine hostile:hostile unowned:unowned} click="click_me"
+  if xy_zoomed_in
+    .title
+      link-to 'quadrants.show' id | {{name}}
+      p
+        ' (x: {{x}},
+        ' y: {{y}},
+        ' z: {{z}})
+  else
+    .quadrant-link: link-to 'quadrants.show' id | #
+  //.explored
+    if explored_fully
+      span.glyphicon.glyphicon-eye-open
+    if explored_partial
+      span.glyphicon.glyphicon-eye-close
+  .details
+    if home
+      span.glyphicon.glyphicon-home
+    each ship in ships
+      link-to 'ships.show' ship.id
+        if ship.mine
+          span.glyphicon.glyphicon-plane.mine
+        else
+          span.glyphicon.glyphicon-plane.enemy
+    each base in bases
+      link-to 'bases.show' base.id
+        if base.mine
+          span.glyphicon.glyphicon-tower.mine
+        else
+          span.glyphicon.glyphicon-tower.enemy

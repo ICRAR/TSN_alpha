@@ -13,4 +13,5 @@ TheSkyMap.Base = TheSkyMap.Actionable.extend(
   quadrant: DS.belongsTo('quadrant')
   game_actions_available: DS.attr('raw')
   player: DS.belongsTo('player')
+  location: DS.attr('raw')
 )

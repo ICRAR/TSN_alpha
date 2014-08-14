@@ -39,10 +39,10 @@ TheSkyMap.HomeRoute = Ember.Route.extend
 TheSkyMap.QuadrantsIndexRoute = Ember.Route.extend
   viewName: 'full_map_plus_side'
 
-TheSkyMap.QuadrantsShowRoute = Ember.Route.extend
+TheSkyMap.QuadrantsShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   viewName: 'full_map_plus_side'
   model: (params)->
-    this.store.find('quadrant', params.quadrant_id)
+    quadrant = @store.reloadRecord(@store.recordForId('quadrant', params.quadrant_id))
 
 
 TheSkyMap.ShipsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
@@ -50,7 +50,7 @@ TheSkyMap.ShipsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   model: (params) ->
     @store.find('ship', params)
 
-TheSkyMap.ShipsShowRoute = Ember.Route.extend
+TheSkyMap.ShipsShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   viewName: 'full_map_plus_side'
   model: (params)->
     ship = @store.reloadRecord(@store.recordForId('ship', params.ship_id))
@@ -60,7 +60,7 @@ TheSkyMap.BasesIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   viewName: 'plus_mini_map'
   model: (params) ->
     @store.find('base', params)
-TheSkyMap.BasesShowRoute = Ember.Route.extend
+TheSkyMap.BasesShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   viewName: 'full_map_plus_side'
   model: (params)->
     base = @store.reloadRecord(@store.recordForId('base', params.base_id))

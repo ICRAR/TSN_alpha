@@ -47,6 +47,7 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
   xs: (( ->
     [@get('x_min')..@get('x_max')]
   )).property('x_min','x_max')
+  selected_quadrant: {x:-1,y:-1,z:-1}
   quadrants_layers:(() ->
     c = @
     [@.get('z_min')..@.get('z_max')].map (z) ->
@@ -59,13 +60,16 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
             quadrantsArray = c.get('store').filter(TheSkyMap.Quadrant, (quadrant) ->
               quadrant.get('y') == y && quadrant.get('z') == z && quadrant.get('x') == x
             )
+            selected_quadrant = c.get('selected_quadrant')
+            is_selected = (x == selected_quadrant.x && y == selected_quadrant.y && z == selected_quadrant.z)
             {
               x: x
               quadrant_final: quadrantsArray
+              selected: is_selected
             }
         }
       }
-  ).property('x_min','x_max','y_min','y_max','z_min','z_max')
+  ).property('x_min','x_max','y_min','y_max','z_min','z_max','selected_quadrant')
   actions:
     refresh: () ->
       @send('refresh_view')
@@ -80,7 +84,7 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
         z_max: @.get('z_max')
       }).then(() ->
         model = save_this.get('target.model')
-        model.reload if model?
+        model.reload() if model?
       )
     zoom_1: () ->
       @.set('xy_zoom', 2)

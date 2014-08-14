@@ -59,12 +59,75 @@
   .controls {
     color: black;
   }
+  .board {
+    @grid-gutter-width: 0px;
+    .board-all{
+      .make-row(@grid-gutter-width);
 
+      .y-labels-column {
+        .make-md-column(1,@grid-gutter-width);
+      }
+      .xy-label-column {
+        .make-md-column(12,@grid-gutter-width);
+      }
+      .board-row {
+        .make-row();
+      }
+      .quadrants {
+        .make-md-column(11,@grid-gutter-width);
+      }
+      .board-row, .x-labels-row {
+        .make-row();
+      }
+    }
+    &.zoom_2 {
+      .board-row, .quadrant {
+        height: 10em;
+      }
+      .quadrants {
+        .x-labels-column, .board-column {
+          .make-md-column(12/3,@grid-gutter-width)
+        }
+      }
+    }
+    &.zoom_3 {
+      .board-row, .quadrant {
+        height: 8em;
+      }
+      .quadrants {
+        .x-labels-column, .board-column {
+          .make-md-column(12/5,@grid-gutter-width)
+        }
+      }
+    }
+    &.zoom_6 {
+      .board-row, .quadrant {
+        height: 6em;
+      }
+      .quadrants {
+        .x-labels-column, .board-column {
+          .make-md-column(12/11,@grid-gutter-width)
+        }
+      }
+    }
+  }
   .board, .key {
     color: black;
-    .quadrant {
+    .board-column.selected{
+      .quadrant {
+        .quadrant_styling(true);
+      }
+    }
+    .board-column.not_selected{
+      .quadrant {
+        .quadrant_styling(false);
+      }
+    }
+
+    .quadrant_styling(@selected) {
       padding: 5px ;
-      margin: 5px;
+      margin: 0px;
+      cursor: pointer;
       .glyphicon {
         margin-right: 5px;
         &.glyphicon {
@@ -77,33 +140,39 @@
         }
       }
       //background and forground colors
+      .background_style(@colour) when (@selected = true) {
+        #gradient > .radial(lighten(@colour,50%), @colour);
+      }
+      .background_style(@colour) when not (@selected = true) {
+        background-color: @colour;
+      }
       &.blank {
         color: white;
-        background-color: black;
+        .background_style(black);
       }
       &.planet {
-        background-color: #644436;
+        .background_style(#644436);
         color: white;
         a {
           color: #E1FFFD;
         }
       }
       &.empty {
-        background-color: #274257;
+        .background_style(#274257);
         color: white;
         a {
           color: #C3FFFD;
         }
       }
       &.star {
-        background-color: #DFC184;
+        .background_style(#DFC184);
         color: black;
         a {
           color: #0000D9;
         }
       }
       &.unknown {
-        background-color: #2A75A9;
+        .background_style(#2A75A9);
         color: white;
         a {
           color: #0000D9;

@@ -9,55 +9,26 @@
       .layer.panel.panel-info
         .panel-heading Layer: {{layer.z}}
         .panel-body
-          unless xy_zoomed_in
-            .grid-row.row.row-no-padding
-              .col-md-1
-                p y\x
-              each x_val in xs
-                div class={xy_col_size}
-                  p= x_val
-          each row in layer.rows
-            .grid-row.row.row-no-padding
-                unless xy_zoomed_in
-                  .col-md-1
-                    p= row.y
-                each quadrant in row.quadrants
-                  div class={xy_col_size}
-                    each qf in quadrant.quadrant_final
-                      .quadrant class={qf.home:home qf.explored:explored:unexplored qf.color qf.mine:mine qf.hostile:hostile qf.unowned:unowned}
-                        if xy_zoomed_in
-                          link-to 'quadrants.show' qf | {{qf.name}}
-                          p
-                            ' (x: {{qf.x}},
-                            ' y: {{qf.y}},
-                            ' z: {{qf.z}})
-                        else
-                          link-to 'quadrants.show' qf | #
-                        p
-                          if qf.home
-                            span.glyphicon.glyphicon-home
-                          if qf.explored_fully
-                            span.glyphicon.glyphicon-eye-open
-                          if qf.explored_partial
-                            span.glyphicon.glyphicon-eye-close
-                          each ship in qf.ships
-                            link-to 'ships.show' ship.id
-                              if ship.mine
-                                span.glyphicon.glyphicon-plane.mine
-                              else
-                                span.glyphicon.glyphicon-plane.enemy
-                          each base in qf.bases
-                            link-to 'bases.show' base.id
-                              if base.mine
-                                span.glyphicon.glyphicon-tower.mine
-                              else
-                                span.glyphicon.glyphicon-tower.enemy
-
-
-                    else
-                      .quadrant.blank
-                        if xy_zoomed_in
-                          p Theres nothing here
+          .board-all
+            .y-labels-column
+              .board-row: .xy-label-column | y\x
+              each row in layer.rows
+                .board-row: .xy-label-column = row.y
+            .quadrants
+              .x-labels-row
+                each x_val in xs
+                  .x-labels-column = x_val
+              each row in layer.rows
+                .board-row
+                  each quadrant in row.quadrants
+                    .board-column class={quadrant.selected:selected:not_selected}
+                      each qf in quadrant.quadrant_final
+                        render "board_quadrant" qf
+                      else
+                        .quadrant.blank
+                          if xy_zoomed_in
+                            .title
+                              p Your off the edge of the map. Here there be space dragons.
 
   .controls.panel.panel-default
     .panel-heading Navigation Controls
