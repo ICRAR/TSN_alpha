@@ -122,7 +122,12 @@ class ApplicationController < ActionController::Base
   private
 
   def signed_in
-    redirect_to( new_user_session_path, notice: 'Sorry could must be signed in to do that') unless user_signed_in?
+    if user_signed_in?
+      true
+    else
+      redirect_to( new_user_session_path, notice: 'Sorry could must be signed in to do that')
+      false
+    end
   end
 
   def not_found

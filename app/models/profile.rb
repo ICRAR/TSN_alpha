@@ -160,7 +160,7 @@ class Profile < ActiveRecord::Base
     ProfileNotification.aggrigate_by_class(Comment.to_s,aggregation_subject,aggregation_body,'mention')
   end
 
-  has_many :timeline_entires, as: :timelineable
+  has_many :timeline_entries, as: :timelineable
   def own_timeline
     TimelineEntry.get_timeline('Profile' => [self.id])
   end

@@ -55,7 +55,7 @@ class SocialController < ApplicationController
       alliance = Alliance.find params[:alliance_id]
       @timeline = alliance.own_timeline.page(page).per(3)
     else
-      signed_in
+      return unless signed_in
       @timeline = current_user.profile.followees_timeline.page(page).per(3)
     end
 
