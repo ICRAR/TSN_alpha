@@ -11,7 +11,7 @@
         .panel-body
           .board-all
             .y-labels-column
-              .board-row: .xy-label-column | y\x
+              .x-labels-row: .xy-label-column | y\x
               each row in layer.rows
                 .board-row: .xy-label-column = row.y
             .quadrants
@@ -84,7 +84,7 @@
 
   .key.panel.panel-default
     .panel-heading Map Key
-    .panel-body
+    .panel-body.quadrant_key
       h3 Border Types (Information on who ownes this quadrant):
       .grid-row.row
         .col-md-4: .quadrant

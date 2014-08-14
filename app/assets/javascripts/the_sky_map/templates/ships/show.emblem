@@ -33,22 +33,22 @@ if mine
       .panel-body
         table.table.table-striped.table-hover.table-bordered
           thead: tr
-            th Action
+            th Action + Options
             th State
-            th Options
             th Time Remaining
           tbody
             each action in sorted_actions itemController="action"
               tr
-                td | {{action.action}} ({{action.id}})
+                td
+                  p {{action.action}} ({{action.id}})
+                  p= action.options_string
                 td= action.current_state
-                td= action.options_string
                 td
                   ' (
                     s:{{action.countdown_seconds}},
-                    m:{{action.countdown_minutes}},
-                    h:{{action.countdown_hours}},
-                    d:{{action.countdown_days}}
+                  ' m:{{action.countdown_minutes}},
+                  ' h:{{action.countdown_hours}},
+                  ' d:{{action.countdown_days}}
                     )
                   if action.show_special_button
                     if action.special_button_enable

@@ -27,7 +27,8 @@ class TheSkyMap::Player < ActiveRecord::Base
     self.total_points_float = 0
   end
 
-  def self.build_new_player(profile)
+  #accepts a location in the form of {x:1,y:1,z:1} that the system will try to award as the home
+  def self.build_new_player(profile,loc = nil)
     #check that the profile dosn't already have a player
     return false unless profile.the_sky_map_player.nil?
     #creates new player object
@@ -37,7 +38,7 @@ class TheSkyMap::Player < ActiveRecord::Base
     new_player.profile = profile
     new_player.save
     #find a new home & claim home
-    new_player.home = TheSkyMap::Quadrant.find_new_home
+    new_player.home = TheSkyMap::Quadrant.find_new_home(loc)
     return false if new_player.home.nil?
     #capture home
     new_player.home.owner = new_player

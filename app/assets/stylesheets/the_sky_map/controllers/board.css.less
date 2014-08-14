@@ -63,11 +63,13 @@
     @grid-gutter-width: 0px;
     .board-all{
       .make-row(@grid-gutter-width);
+      padding: 10px;
 
       .y-labels-column {
         .make-md-column(1,@grid-gutter-width);
       }
       .xy-label-column {
+
         .make-md-column(12,@grid-gutter-width);
       }
       .board-row {
@@ -118,7 +120,7 @@
         .quadrant_styling(true);
       }
     }
-    .board-column.not_selected{
+    .board-column.not_selected, .quadrant_key{
       .quadrant {
         .quadrant_styling(false);
       }

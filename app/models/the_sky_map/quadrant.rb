@@ -20,15 +20,26 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
       order([:z,:y,:x])
   end
   #this function finds a new home free of enemies ready for an excited new player
-  def self.find_new_home
+  #accepts a location in the form of {x:1,y:1,z:1} that the system will try to award as the home
+  def self.find_new_home(location = nil)
+    if location
+      quadrant_pool =  TheSkyMap::Quadrant.where{(x==location[:x]) && (y==location[:y]) && (z==location[:z])}
+    else
+      quadrant_pool = TheSkyMap::Quadrant.where{z==1}
+    end
     suitable_type_ids = TheSkyMap::QuadrantType.where{suitable_for_home == true}.pluck(:id)
-    suitable_relation = TheSkyMap::Quadrant.where{z==1}. #only interested in layer 1 for now
+    suitable_relation = quadrant_pool. #only interested in layer 1 for now
       where{owner_id == nil}. #only interested in unowned area's
       where{the_sky_map_quadrant_type_id.in suitable_type_ids} #only interested in certain quadrant types
 
     suitable_with_ships_ids =   suitable_relation.joins(:the_sky_map_ships).pluck("#{TheSkyMap::Quadrant.table_name}.id")
     suitable_quadrants = suitable_relation.where{id.not_in suitable_with_ships_ids}
-    suitable_quadrants.sample #return a random quadrant from the suitable ones
+    quadrant = suitable_quadrants.sample #return a random quadrant from the suitable ones
+
+    if quadrant.nil? && location
+      quadrant = self.find_new_home(nil)
+    end
+    quadrant
   end
   def update_total_income
     new_total= self.the_sky_map_bases.joins{the_sky_map_base_upgrade_type}.
