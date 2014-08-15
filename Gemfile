@@ -31,7 +31,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
   gem "asset_sync"
 end
-gem "twitter-bootstrap-rails"
+gem 'twitter-bootstrap-rails', "~> 2.2.8"
 gem "less-rails", '~> 2.5.0'#Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 
 
