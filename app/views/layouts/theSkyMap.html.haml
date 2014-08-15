@@ -1,0 +1,13 @@
+!!!
+%html{}
+  %head
+    =metamagic :title => "theSkyNet", :description => "Want to help astronomers make awesome discoveries and understand our Universe? Then theSkyNet needs you!"
+    =favicon_link_tag('favicon.ico')
+    =stylesheet_link_tag    "the_sky_map/application", :media => "all"
+    =javascript_include_tag "the_sky_map/application"
+    =javascript_include_tag "#{APP_CONFIG['faye_url']}/faye.js"
+    =csrf_meta_tags
+
+
+  %body
+    =yield

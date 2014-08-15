@@ -1,0 +1,15 @@
+#players_table: .panel.panel-info
+  .panel-heading All Players
+  .panel-body
+    table.table.table-striped.table-hover.table-bordered
+      thead: tr
+        th Name
+        th Rank
+        th Total Score
+      tbody
+        each model
+          tr
+            td: link-to 'players.show' id | {{name}}
+            td: link-to 'players.show' id | {{rank}}
+            td: link-to 'players.show' id | {{total_score}}
+    pagination-links pagesObject=pagesObject

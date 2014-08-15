@@ -1,0 +1,1 @@
+TheSkyMap.ApplicationView = Ember.View.extend()

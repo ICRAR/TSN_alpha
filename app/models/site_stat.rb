@@ -64,7 +64,9 @@ class SiteStat < ActiveRecord::Base
   def value
     current_value.to_i
   end
-
+  def value_s
+    current_value
+  end
   def desc
     s = self.description
     if s.include?("%value")

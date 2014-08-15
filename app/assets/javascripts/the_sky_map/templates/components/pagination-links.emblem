@@ -1,0 +1,10 @@
+ul.pagination
+  li: link-to (query-params page=1) | First
+  each pageItem in pageItems
+    if pageItem.ellipses
+      li.disabled: a ..
+    else
+      li class={pageItem.active:active}
+        link-to (query-params page=pageItem.page) | {{pageItem.page}}
+  li: link-to (query-params page=pagesObject.totalPages) | Last
+p Showing {{pagesObject.count}} of {{pagesObject.totalCount}} {{pagesObject.name}}.

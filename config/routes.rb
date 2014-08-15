@@ -2,8 +2,8 @@ Tsn::Application.routes.draw do
   #redirect all to host name in custom config
   match "/(*path)" => redirect {|params, req| "#{req.protocol}#{APP_CONFIG['site_host_no_port']}:#{req.port}#{req.env['ORIGINAL_FULLPATH']}"},
         constraints: lambda{|request| ((request.host != APP_CONFIG['site_host_no_port']) &&
-          (request.host !='localhost') &&
-          (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
+            (request.host !='localhost') &&
+            (!request.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/))
         )}
   if Rails.env.development?
     mount MailPreview => 'mail_view'
@@ -155,7 +155,29 @@ Tsn::Application.routes.draw do
       end
     end
   end
-
+  get "/profile/the_sky_map_reg" => "profiles#tsm_reg", :as => 'the_sky_map_reg'
+  namespace :the_sky_map do
+    resources :ember, :only => [:index] do
+      collection do
+        get 'current_player'
+      end
+    end
+    resources :mini_quadrants, :only => [:index, :show]
+    resources :quadrants, :only => [:index, :show]
+    get 'actions' => "actions#player_index", :as => 'all_actions'
+    resources :actions, :only => [:show] do
+      member do
+        get 'run_special'
+      end
+    end
+    resources :players, :only => [:index, :show]
+    resources :ships, :only => [:index, :show] do
+      resources :actions, :only => [:index, :show, :create], :defaults => {actionable: 'TheSkyMap::Ship'}
+    end
+    resources :bases, :only => [:index, :show] do
+      resources :actions, :only => [:index, :show, :create], :defaults => {actionable: 'TheSkyMap::Base'}
+    end
+  end
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

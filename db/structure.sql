@@ -1,3 +1,26 @@
+CREATE TABLE `actions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `action` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `options` text COLLATE utf8_unicode_ci,
+  `cost` int(11) DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL,
+  `state` int(11) DEFAULT NULL,
+  `queued_at` datetime DEFAULT NULL,
+  `queued_next_at` datetime DEFAULT NULL,
+  `run_at` datetime DEFAULT NULL,
+  `completed_at` datetime DEFAULT NULL,
+  `lock_version` int(11) NOT NULL DEFAULT '0',
+  `actor_id` int(11) DEFAULT NULL,
+  `actor_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `actionable_id` int(11) DEFAULT NULL,
+  `actionable_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `actor_index` (`actor_type`,`actor_id`,`created_at`,`state`),
+  KEY `actionable_index` (`actionable_type`,`actionable_id`,`created_at`,`state`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `activities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `profile_id` int(11) DEFAULT NULL,
@@ -198,7 +221,7 @@ CREATE TABLE `comments` (
   KEY `comment_parent_id` (`parent_id`),
   KEY `comment_profile_id` (`profile_id`),
   KEY `comment_commentable` (`commentable_type`,`commentable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=483 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=488 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `conversations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -235,7 +258,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `follows` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -247,7 +270,7 @@ CREATE TABLE `follows` (
   PRIMARY KEY (`id`),
   KEY `fk_follows` (`follower_id`,`follower_type`),
   KEY `fk_followables` (`followable_id`,`followable_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `general_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -283,7 +306,7 @@ CREATE TABLE `likes` (
   PRIMARY KEY (`id`),
   KEY `fk_likes` (`liker_id`,`liker_type`),
   KEY `fk_likeables` (`likeable_id`,`likeable_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `members_science_portals` (
   `member_id` int(11) DEFAULT NULL,
@@ -301,7 +324,7 @@ CREATE TABLE `mentions` (
   PRIMARY KEY (`id`),
   KEY `fk_mentions` (`mentioner_id`,`mentioner_type`),
   KEY `fk_mentionables` (`mentionable_id`,`mentionable_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `nereus_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -413,7 +436,7 @@ CREATE TABLE `profile_notifications` (
   PRIMARY KEY (`id`),
   KEY `profile_aggrigate_index` (`profile_id`,`read`,`aggregatable`,`notifier_type`,`notifier_id`,`aggregation_type`),
   KEY `profile_read_index` (`profile_id`,`read`,`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=93648 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=93677 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -552,14 +575,6 @@ CREATE TABLE `special_days` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `sub_shout_boxes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `msg` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 CREATE TABLE `taggings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag_id` int(11) DEFAULT NULL,
@@ -580,6 +595,152 @@ CREATE TABLE `tags` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=867 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `the_sky_map_base_types_join` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `the_sky_map_base_id` int(11) DEFAULT NULL,
+  `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `join_index` (`the_sky_map_base_id`,`the_sky_map_base_upgrade_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_base_types_quadrant_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `the_sky_map_quadrant_type_id` int(11) DEFAULT NULL,
+  `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `join_index` (`the_sky_map_quadrant_type_id`,`the_sky_map_base_upgrade_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_base_types_ship_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `the_sky_map_ship_type_id` int(11) DEFAULT NULL,
+  `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `join_index` (`the_sky_map_base_upgrade_type_id`,`the_sky_map_ship_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_base_upgrade_type_hierarchies` (
+  `ancestor_id` int(11) NOT NULL,
+  `descendant_id` int(11) NOT NULL,
+  `generations` int(11) NOT NULL,
+  UNIQUE KEY `anc_desc_udx` (`ancestor_id`,`descendant_id`,`generations`),
+  KEY `desc_idx` (`descendant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_base_upgrade_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `desc` text COLLATE utf8_unicode_ci,
+  `cost` int(11) DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL,
+  `income` int(11) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_id` (`parent_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_bases` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `the_sky_map_quadrant_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_the_sky_map_bases_on_the_sky_map_quadrant_id` (`the_sky_map_quadrant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_players` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `score` int(11) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
+  `total_points` int(11) DEFAULT NULL,
+  `spent_points` int(11) DEFAULT NULL,
+  `total_points_special` int(11) DEFAULT NULL,
+  `spent_points_special` int(11) DEFAULT NULL,
+  `options` text COLLATE utf8_unicode_ci,
+  `profile_id` int(11) DEFAULT NULL,
+  `home_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `profile_index` (`profile_id`),
+  KEY `score_index` (`score`),
+  KEY `rank_index` (`rank`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_players_quadrants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `the_sky_map_quadrant_id` int(11) DEFAULT NULL,
+  `the_sky_map_player_id` int(11) DEFAULT NULL,
+  `explored` int(11) DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `player_id_quadrant_id` (`the_sky_map_quadrant_id`,`the_sky_map_player_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_quadrant_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `desc` text COLLATE utf8_unicode_ci,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `unexplored_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `unexplored_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `explored_color` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `feature_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `num_of_bases` int(11) DEFAULT NULL,
+  `score` int(11) DEFAULT NULL,
+  `generation_chance` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_quadrants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `z` int(11) DEFAULT NULL,
+  `the_sky_map_quadrant_type_id` int(11) DEFAULT NULL,
+  `owner_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `location_index` (`z`,`y`,`x`),
+  KEY `owner_index` (`owner_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_ship_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `desc` text COLLATE utf8_unicode_ci,
+  `speed` int(11) DEFAULT NULL,
+  `health` int(11) DEFAULT NULL,
+  `attack` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_ships` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `the_sky_map_ship_type_id` int(11) DEFAULT NULL,
+  `the_sky_map_player_id` int(11) DEFAULT NULL,
+  `the_sky_map_quadrant_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `theskymap_shout_boxes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `msg` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `timeline_entries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `subject` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -596,7 +757,7 @@ CREATE TABLE `timeline_entries` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `agg_timeline_index` (`timelineable_id`,`timelineable_type`,`posted_at`,`aggregate_type`,`aggregate_type_2`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -886,3 +1047,29 @@ INSERT INTO schema_migrations (version) VALUES ('20140324032411');
 INSERT INTO schema_migrations (version) VALUES ('20140403032948');
 
 INSERT INTO schema_migrations (version) VALUES ('20140404081950');
+
+INSERT INTO schema_migrations (version) VALUES ('20140501065334');
+
+INSERT INTO schema_migrations (version) VALUES ('20140513033157');
+
+INSERT INTO schema_migrations (version) VALUES ('20140513035317');
+
+INSERT INTO schema_migrations (version) VALUES ('20140513045330');
+
+INSERT INTO schema_migrations (version) VALUES ('20140513051035');
+
+INSERT INTO schema_migrations (version) VALUES ('20140515075318');
+
+INSERT INTO schema_migrations (version) VALUES ('20140515080246');
+
+INSERT INTO schema_migrations (version) VALUES ('20140523085843');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602063621');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602064253');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602064907');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602065623');
+
+INSERT INTO schema_migrations (version) VALUES ('20140602070027');

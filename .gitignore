@@ -34,8 +34,8 @@ public/system/*
 !/vendor/cache*
 
 #ignore asset files but not the manifests files
-public/assets*
+public/assets/*
+!public/assets/manifest.yml
 public/assets_dev/*
 
-#ignore code coverage reports
 coverage*

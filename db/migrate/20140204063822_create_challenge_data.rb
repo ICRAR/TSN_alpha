@@ -1,4 +1,4 @@
-class CreateChallengeData < ActiveRecord::Migration
+class CreateChallengeData < ActiveRecord::Migration                             , unique: true
   def change
     create_table :challenge_data, {:id => false}  do |t|
       t.belongs_to  :measurable, polymorphic: true

@@ -66,6 +66,7 @@ class Ability
       can :join, Challenge
       can :create, Challenge
       can :manage, Challenge, :manager_id => user.profile.id
+      can :manage, Action
     end
     #admin users can do everything :)
     if user.is_admin?

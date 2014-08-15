@@ -45,4 +45,6 @@ Tsn::Application.configure do
 
   #speed up devise in testing
   config.stretches = Rails.env.test? ? 1 : 10
+
+  config.ember.variant = :development
 end

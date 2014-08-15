@@ -1,0 +1,135 @@
+#galaxy_board
+  .panel.panel-primary
+    .panel-heading
+      | The Galaxy!
+      .pull-right: a href='#' click='refresh': span.glyphicon.glyphicon-refresh
+
+  .board class={xy_zoom_class}
+    each layer in quadrants_layers
+      .layer.panel.panel-info
+        .panel-heading Layer: {{layer.z}}
+        .panel-body
+          .board-all
+            .y-labels-column
+              .x-labels-row: .xy-label-column | y\x
+              each row in layer.rows
+                .board-row: .xy-label-column = row.y
+            .quadrants
+              .x-labels-row
+                each x_val in xs
+                  .x-labels-column = x_val
+              each row in layer.rows
+                .board-row
+                  each quadrant in row.quadrants
+                    .board-column class={quadrant.selected:selected:not_selected}
+                      each qf in quadrant.quadrant_final
+                        render "board_quadrant" qf
+                      else
+                        .quadrant.blank
+                          if xy_zoomed_in
+                            .title
+                              p Your off the edge of the map. Here there be space dragons.
+
+  .controls.panel.panel-default
+    .panel-heading Navigation Controls
+    .panel-body
+      .debug
+        ' x: {{x_center}},
+        ' y: {{y_center}},
+        ' z: {{z_center}},
+
+      .buttons.row
+        .xy.col-md-4
+          .row: .col-md-12: h4 Navigate the map
+          .row
+            .col-md-4.col-md-offset-4
+              button.btn.btn-default{action "scroll_y_n"}
+                span.glyphicon.glyphicon-arrow-up
+          .row
+            .col-md-4
+              button.btn.btn-default{action "scroll_x_n"}
+                span.glyphicon.glyphicon-arrow-left
+            .col-md-4
+              button.btn.btn-default{action "scroll_home"}
+                span.glyphicon.glyphicon-home
+            .col-md-4
+              button.btn.btn-default{action "scroll_x_p"}
+                span.glyphicon.glyphicon-arrow-right
+          .row
+            .col-md-4.col-md-offset-4
+              button.btn.btn-default{action "scroll_y_p"}
+                span.glyphicon.glyphicon-arrow-down
+        /.z.col-md-4
+        /  .row
+        /    .col-md-12
+        /      h4 Navigate in the Z direction
+        /  .row
+        /    .col-md-12
+        /      button.btn.btn-default{action "scroll_z_n"}
+        /        span.glyphicon.glyphicon-chevron-up
+        /  .row
+        /    .col-md-12
+        /      button.btn.btn-default{action "scroll_z_p"}
+        /        span.glyphicon.glyphicon-chevron-down
+        .z.col-md-4
+          .row
+            .col-md-12
+              h4 Zoom Level
+          .row
+            .col-md-12
+              button.btn.btn-default{action "zoom_1"} Zoom 1
+              button.btn.btn-default{action "zoom_2"} Zoom 2
+              button.btn.btn-default{action "zoom_3"} Zoom 3
+
+
+  .key.panel.panel-default
+    .panel-heading Map Key
+    .panel-body.quadrant_key
+      h3 Border Types (Information on who ownes this quadrant):
+      .grid-row.row
+        .col-md-4: .quadrant
+          a Unexplored
+          p The owner status of this quadrant is unknown.
+        .col-md-4: .quadrant.home
+          a Home
+          p This is your home base
+        .col-md-4: .quadrant.mine
+          a Yours
+          p You own this quadrant
+      .grid-row.row
+        .col-md-4: .quadrant.hostile
+          a Hostile
+          p Someone else owns this quadrant
+        .col-md-4: .quadrant.unowned
+          a Unowned
+          p This is quadrant is currently unowned
+      h3 Background colors (Information on what is in this quadrant)
+      .grid-row.row
+        .col-md-4: .quadrant.star
+          a Star
+          p This quadrant contains a Star
+        .col-md-4: .quadrant.blank
+          a Blank
+          p This if off the edge of the map, there is nothing here.
+        .col-md-4: .quadrant.empty
+          a An empty quadrant
+          p There is nothing of value here
+      .grid-row.row
+        .col-md-4: .quadrant.planet
+          a Plantary System
+          p There is a planet here
+        .col-md-4: .quadrant.unknown
+          a Completly Unexplored
+          p You don't know anything about this quadrant yet
+      h3 Symobols
+      dl.dl-horizontal
+        dt: span.glyphicon.glyphicon-home
+        dd Contains your home base
+        dt: span.glyphicon.glyphicon-eye-open
+        dd You've fully explored this quadrant
+        dt: span.glyphicon.glyphicon-eye-close
+        dd You've partially explored this quadrant
+        dt: span.glyphicon.glyphicon-plane
+        dd You have a ship in this quadrant
+        dt: span.glyphicon.glyphicon-tower
+        dd You have a base in this quadrant

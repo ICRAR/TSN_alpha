@@ -1,0 +1,2 @@
+module TheSkyMap::TestHelper
+end

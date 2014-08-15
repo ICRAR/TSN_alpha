@@ -32,7 +32,7 @@ group :assets do
   gem "asset_sync"
 end
 gem "twitter-bootstrap-rails"
-gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+gem "less-rails", '~> 2.5.0'#Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 
 
 #general use gems
@@ -67,6 +67,12 @@ gem 'composite_primary_keys'
 gem 'activerecord-import', '0.3.1'
 gem "socialization"
 gem 'ruby-bbcode-to-md'
+gem 'active_model_serializers', '~> 0.8.0'
+
+gem 'ember-rails'
+gem 'ember-source', '~> 1.7.0.beta.4'# or the version you need
+gem 'ember-data-source', "= 1.0.0.beta.7" # or the version you need
+gem 'emblem-rails'
 
 gem 'delayed_job_active_record'
 gem 'daemons'
@@ -156,3 +162,5 @@ gem 'google-analytics-rails'
 
 #not loaded when running rails used to make generating cron jobs easy
 gem 'whenever', :require => false
+
+gem 'faye'

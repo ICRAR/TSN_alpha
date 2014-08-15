@@ -49,4 +49,7 @@ Tsn::Application.configure do
 
   # fallback to what's specified in config.i18n.default_locale
   config.i18n.fallbacks = true
+
+  config.ember.variant = :development
+  config.handlebars.templates_root = 'the_sky_map/templates'
 end

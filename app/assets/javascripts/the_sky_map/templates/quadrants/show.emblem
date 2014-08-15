@@ -1,0 +1,34 @@
+.panel.panel-info
+  .panel-heading Quadrant: {{name}}
+  .panel-body
+    dl.dl-horizontal
+      dt Name
+      dd= name
+      dt Description
+      dd= desc
+      dt Explored?
+      dd= explored
+      dt Score
+      dd= total_score
+      dt Income
+      dd= total_income
+      dt x
+      dd= x
+      dt y
+      dd= y
+      dt z
+      dd= z
+      dt Owner
+      dd: link-to 'players.show' player.id | {{player.name}}
+    if has_ships
+      h5 Ships:
+      ul
+        each ship in ships
+          li:  link-to 'ships.show' ship.id | {{ship.name}}
+    if has_bases
+      h5 Bases:
+      ul
+        each base in bases
+          li:  link-to 'bases.show' base.id | {{base.name}}
+    a href='#' click="scroll_to_home" Zoom to Quadrant
+

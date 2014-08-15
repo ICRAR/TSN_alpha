@@ -1,0 +1,11 @@
+- my_meta :title => "TheSkyMap SignUp",
+    :description => "Sign up page for the new TheSkyMap game"
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface TheSkyMap SignUp
+  - @user_page =  'profile'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %p Sorry signup's are currently closed for TheSkyMap

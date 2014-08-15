@@ -1,0 +1,1 @@
+TheSkyMap.ApplicationRoute = Ember.Route.extend()

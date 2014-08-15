@@ -1,0 +1,25 @@
+.container-fluid
+  .row
+    .col-md-12
+      .page-header
+        h1
+          ' TheSkyMap
+          small Conquering the galaxy one quadrant at a time.
+        ' hello {{controllers.currentPlayer.content.name}}.
+        ' You have {{controllers.currentPlayer.content.currency_available}} (+{{controllers.currentPlayer.content.total_income}}/hour)
+        span.glyphicon.glyphicon-tint
+        ' fuel units remaining.
+        ' You Have {{controllers.currentPlayer.content.currency_available_special}}(+{{controllers.currentPlayer.content.total_income_special}}/hour)
+        span.glyphicon.glyphicon-cog
+        ' antimatter units remaining.
+          Your total score is: {{controllers.currentPlayer.content.total_score}}.
+  .row.navbar.navbar-default
+    .col-md-12
+      bs-pills contentBinding="navLinks"
+      ul.nav.bavbar-nav.navbar-right
+        li: a href='/users/sign_out' Sign Out
+  .row
+      = outlet
+
+
+

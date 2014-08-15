@@ -1,0 +1,3 @@
+module TheSkyMap::ApplicationHelper
+
+end

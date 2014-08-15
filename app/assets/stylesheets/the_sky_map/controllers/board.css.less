@@ -1,0 +1,203 @@
+//ownership colours
+@mine: #AFEAAA;
+@home: #41924B;
+@hostile: #FE8402;
+@unowned: #6BCAE2;
+@unknown: #000e3f;
+@mini_map_font_dark:#428bca;
+@mini_map_font_light: #87cdff;
+
+#mini_map_map {
+  position: relative;
+  padding: 0px;
+  #view_window {
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    border: 1px solid red;
+    z-index: 2;
+    pointer-events:none;
+  }
+  .mini_map_row {
+    position: relative;
+    z-index:1;
+    height: 16px;
+    margin:0px;
+    padding: 0px;
+    line-height: 16px;
+    .quadrant {
+      display: inline-block;
+      height: 16px;
+      width: 16px;
+      margin:0px;
+      padding: 0px;
+      text-align: center;
+      vertical-align: middle;
+      line-height: 16px;
+      background-color: @unknown; //default not owned by anyone or unknown
+      a {color: @mini_map_font_dark;} //default not owned by anyone or unknown
+      &.mine {
+        background-color: @mine;
+        a {color: @mini_map_font_dark; }
+      }
+      &.home {
+        background-color: @home;
+        a {color: @mini_map_font_light;}
+      }
+      &.hostile {
+        background-color: @hostile;
+        a {color: @mini_map_font_light; }
+      }
+      &.unowned {
+        background-color: @unowned;
+        a {color: @mini_map_font_dark;}
+      }
+    }
+  }
+}
+#galaxy_board {
+  .controls {
+    color: black;
+  }
+  .board {
+    @grid-gutter-width: 0px;
+    .board-all{
+      .make-row(@grid-gutter-width);
+      padding: 10px;
+
+      .y-labels-column {
+        .make-md-column(1,@grid-gutter-width);
+      }
+      .xy-label-column {
+
+        .make-md-column(12,@grid-gutter-width);
+      }
+      .board-row {
+        .make-row();
+      }
+      .quadrants {
+        .make-md-column(11,@grid-gutter-width);
+      }
+      .board-row, .x-labels-row {
+        .make-row();
+      }
+    }
+    &.zoom_2 {
+      .board-row, .quadrant {
+        height: 10em;
+      }
+      .quadrants {
+        .x-labels-column, .board-column {
+          .make-md-column(12/3,@grid-gutter-width)
+        }
+      }
+    }
+    &.zoom_3 {
+      .board-row, .quadrant {
+        height: 8em;
+      }
+      .quadrants {
+        .x-labels-column, .board-column {
+          .make-md-column(12/5,@grid-gutter-width)
+        }
+      }
+    }
+    &.zoom_6 {
+      .board-row, .quadrant {
+        height: 6em;
+      }
+      .quadrants {
+        .x-labels-column, .board-column {
+          .make-md-column(12/11,@grid-gutter-width)
+        }
+      }
+    }
+  }
+  .board, .key {
+    color: black;
+    .board-column.selected{
+      .quadrant {
+        .quadrant_styling(true);
+      }
+    }
+    .board-column.not_selected, .quadrant_key{
+      .quadrant {
+        .quadrant_styling(false);
+      }
+    }
+
+    .quadrant_styling(@selected) {
+      padding: 5px ;
+      margin: 0px;
+      cursor: pointer;
+      .glyphicon {
+        margin-right: 5px;
+        &.glyphicon {
+          &.enemy {
+            color: #FE8402;
+          }
+          &.mine {
+            color: #AFEAAA;
+          }
+        }
+      }
+      //background and forground colors
+      .background_style(@colour) when (@selected = true) {
+        #gradient > .radial(lighten(@colour,50%), @colour);
+      }
+      .background_style(@colour) when not (@selected = true) {
+        background-color: @colour;
+      }
+      &.blank {
+        color: white;
+        .background_style(black);
+      }
+      &.planet {
+        .background_style(#644436);
+        color: white;
+        a {
+          color: #E1FFFD;
+        }
+      }
+      &.empty {
+        .background_style(#274257);
+        color: white;
+        a {
+          color: #C3FFFD;
+        }
+      }
+      &.star {
+        .background_style(#DFC184);
+        color: black;
+        a {
+          color: #0000D9;
+        }
+      }
+      &.unknown {
+        .background_style(#2A75A9);
+        color: white;
+        a {
+          color: #0000D9;
+        }
+      }
+      //boarder colors
+      border: 4px solid @unknown; //default not owned by anyone or unknown
+      &.mine {
+        border-color: @mine;
+      }
+      &.home {
+        border-color: @home;
+      }
+      &.hostile {
+        border-color: @hostile;
+      }
+      &.unowned {
+        border-color: @unowned;
+      }
+
+
+    }
+  }
+}
+//http://www.colorcombos.com/color-schemes/424/ColorCombo424.html
+//http://vanisoft.pl/~lopuszanski/public/colors/

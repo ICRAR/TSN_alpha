@@ -27,4 +27,3 @@
 //= require messenger
 //= require messenger-theme-future
 //= require ckeditor/init
-
