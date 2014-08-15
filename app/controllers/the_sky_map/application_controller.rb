@@ -13,8 +13,9 @@ module TheSkyMap
     end
     layout "theSkyMap"
     #remove footnotes from dev
-    if Footnotes
+    begin
       Footnotes::Filter.notes = []
+    rescue NameError
     end
     #authorize_resource
     private
