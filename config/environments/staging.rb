@@ -47,6 +47,7 @@ Tsn::Application.configure do
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   config.assets.precompile += %w( non_includes/deployJava.js mail.css)
+  config.assets.precompile += %w( the_sky_map/application.js the_sky_map/application.css)
   # Add the fonts path
   config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
 
