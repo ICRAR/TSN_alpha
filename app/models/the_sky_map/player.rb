@@ -132,9 +132,9 @@ class TheSkyMap::Player < ActiveRecord::Base
     {
         'fog_of_war_on' => true,
         'mini_map_x_min' => 1,
-        'mini_map_x_max' => 12,
+        'mini_map_x_max' => 20,
         'mini_map_y_min' => 1,
-        'mini_map_y_max' => 12,
+        'mini_map_y_max' => 20,
 
     }
   end
