@@ -87,4 +87,5 @@ Tsn::Application.configure do
   config.assets.prefix = "/assets"
 
   config.ember.variant = :production
+  config.handlebars.templates_root = 'the_sky_map/templates'
 end
