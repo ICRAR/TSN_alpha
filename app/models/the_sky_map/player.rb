@@ -62,7 +62,9 @@ class TheSkyMap::Player < ActiveRecord::Base
 
     #add initial currency
     new_player.total_points_special = 100
+    new_player.total_points_special_float = 100
     new_player.total_points = 1000
+    new_player.total_points_float = 1000
 
     new_player.save
 

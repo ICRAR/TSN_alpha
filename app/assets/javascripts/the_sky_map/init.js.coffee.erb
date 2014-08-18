@@ -24,7 +24,7 @@ $(document).ready(
           local_model.deleteRecord() unless local_model == null
         #request the ember store to update a model if it already exists
         for model_name, model_ids of data.update_models
-          for i, model_id of model_ids
+          for model_id, i in model_ids
             local_model = store.getById(model_name,model_id)
             local_model.reload() unless local_model == null
         #request the ember store to update a model or load if the player id matchs
@@ -32,9 +32,12 @@ $(document).ready(
         if data.update_models_player_only?
           if current_player_id in data.update_models_player_only.player_ids
             for model_name, model_ids of data.update_models_player_only.models
-              for i, model_id of model_ids
+              for model_id, i in model_ids
                 local_model = store.getById(model_name,model_id)
-                local_model.reload()
+                if local_model?
+                  local_model.reload()
+                else
+                  store.find(model_name,model_id)
     $.ajaxSetup({
       headers: {
         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
