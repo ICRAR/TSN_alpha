@@ -33,12 +33,15 @@ TheSkyMap.Countdownable = Ember.Mixin.create({
     @update_countdown()
     @start_countdown()
   update_countdown: () ->
-    current_date = new Date()
-    seconds_remaining = Math.floor((@get('countdown_date')-current_date)/1000)
-    @set('countdown_seconds_total',seconds_remaining)
-    if seconds_remaining < 1
+    if @isDestroyed
       @stop_countdown()
-      @countdown_complete()
+    else
+      current_date = new Date()
+      seconds_remaining = Math.floor((@get('countdown_date')-current_date)/1000)
+      @set('countdown_seconds_total',seconds_remaining)
+      if seconds_remaining < 1
+        @stop_countdown()
+        @countdown_complete()
   start_countdown: () ->
     @get('countdown_object').play(false)
   stop_countdown: () ->

@@ -3,7 +3,12 @@ class TheSkyMap::MiniQuadrantsController < TheSkyMap::ApplicationController
   respond_to :json
 
   def index
-    quadrants = TheSkyMap::Quadrant.where{z == 1}.for_show_mini(current_user.profile.the_sky_map_player)
+    if params[:ids]
+      relation = TheSkyMap::Quadrant.where{id.in my{params[:ids]}}
+    else
+      relation = TheSkyMap::Quadrant
+    end
+    quadrants = relation.where{z == 1}.for_show_mini(current_user.profile.the_sky_map_player)
 
 
     render :json =>  quadrants, :each_serializer => TheSkyMap::MiniQuadrantSerializer
