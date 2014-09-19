@@ -39,7 +39,7 @@ class BoincRemoteUser < BoincPogsModel
     begin
       email_check = email_encoded.dup
       email_check.force_encoding("UTF-8").encode("cp1252")
-    rescue ##ToDO MAKE ME BETTER PLEASE####
+    rescue ##ToDO MAKE ME BETTER PLEASE####         n
       email_encoded = URI.encode(email_encoded)
     end
 

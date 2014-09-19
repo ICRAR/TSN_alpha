@@ -13,9 +13,9 @@ class PogsTeam < BoincPogsModel
       local.pogs_team_id = self.id
       check_local = Alliance.where{name == my{self.name}}.first #check to see if an alliance already exists with the same name
       if check_local.nil?
-        local.name = self.name
+        local.name = self.name.force_encoding("UTF-8")
       else
-        local.name = self.name + " (POGS)"
+        local.name = self.name.force_encoding("UTF-8") + " (POGS)"
       end
       local.desc = self.description
       local.credit = 0
