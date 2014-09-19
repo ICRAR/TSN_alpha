@@ -62,7 +62,7 @@ class PogsTeam < BoincPogsModel
         boinc_item = boinc_stats_item_hash[pogs_id]
         profile = boinc_item.general_stats_item.profile unless boinc_item.nil?
       end
-      if profile.nil?
+      unless profile.nil?
         last = nil
         #if local user is found
         #iterate through each membership to be updated
