@@ -11,13 +11,13 @@ class PogsTeam < BoincPogsModel
       local.is_boinc = true
       local.invite_only = (self.joinable == 0)
       local.pogs_team_id = self.id
-      check_local = Alliance.where{name == my{self.name}}.first #check to see if an alliance already exists with the same name
+      check_local = Alliance.where{name == my{self.name.force_encoding("UTF-8")}}.first #check to see if an alliance already exists with the same name
       if check_local.nil?
         local.name = self.name.force_encoding("UTF-8")
       else
         local.name = self.name.force_encoding("UTF-8") + " (POGS)"
       end
-      local.desc = self.description
+      local.desc = self.description.force_encoding("UTF-8")
       local.credit = 0
       local.ranking = nil
       local.pogs_update_time = 0
