@@ -57,7 +57,7 @@ class PogsTeam < BoincPogsModel
       #find local user
       profile = nil
       if boinc_stats_item_hash.nil?
-        profile = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id == pogs_id}.first
+        profile = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id == pogs_id}.select('profiles.*').first
       else
         boinc_item = boinc_stats_item_hash[pogs_id]
         profile = boinc_item.general_stats_item.profile unless boinc_item.nil?

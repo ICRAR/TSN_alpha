@@ -17,8 +17,8 @@ class BoincCopyJob < Delayed::BaseScheduledJob
         }
         bench.report('alliances') {
           begin
-            alliance_local_items = Alliance.where{pogs_team_id > 0}
-            alliance_hash = Hash[*alliance_local_items.map{|a| [a.pogs_team_id, a]}.flatten]
+            alliance_local_items = Alliance.where{pogs_team_id > 0} ;
+            alliance_hash = Hash[*alliance_local_items.map{|a| [a.pogs_team_id, a]}.flatten];
             PogsTeam.where{total_credit > 0}.each {|t| t.copy_to_local(alliance_hash[t.id])}
           rescue ArgumentError  => e
             msg =  "Error in BOINC Job whilst updating teams\n\n"
