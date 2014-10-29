@@ -11,7 +11,6 @@ TheSkyMap.MiniQuadrant = DS.Model.extend(
   explored: DS.attr("boolean")
   explored_fully: DS.attr("boolean")
   explored_partial: DS.attr("boolean")
-  color: DS.attr("string")
   symbol: DS.attr("string")
   player_id: DS.attr("number")
 )

@@ -13,6 +13,8 @@ TheSkyMap.Router.map ()->
   @resource 'players', {path: '/players'}, () ->
     @route 'show', {path: '/:player_id'}
   @route 'actions', path: '/actions'
+  @resource 'messages', {path: '/messages'}, () -> {}
+
 
 
 TheSkyMap.ApplicationRoute = Ember.Route.extend
@@ -31,7 +33,7 @@ TheSkyMap.WithNameRoute = Ember.Route.extend
 
 
 TheSkyMap.LoadingRoute = Ember.Route.extend
-  viewName: 'full_map_plus_side'
+  viewName: 'fullWidth'
 
 TheSkyMap.HomeRoute = Ember.Route.extend
   viewName: 'full_map_plus_side'
@@ -44,6 +46,8 @@ TheSkyMap.QuadrantsShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   model: (params)->
     quadrant = @store.reloadRecord(@store.recordForId('quadrant', params.quadrant_id))
 
+TheSkyMap.ShipsShowLoadingRoute = Ember.Route.extend
+  viewName: 'full_map_plus_side'
 
 TheSkyMap.ShipsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   viewName: 'plus_mini_map'
@@ -51,19 +55,19 @@ TheSkyMap.ShipsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
     @store.find('ship', params)
 
 TheSkyMap.ShipsShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
-  viewName: 'full_map_plus_side'
+  viewName: 'actionable_show'
   model: (params)->
     ship = @store.reloadRecord(@store.recordForId('ship', params.ship_id))
-
 
 TheSkyMap.BasesIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   viewName: 'plus_mini_map'
   model: (params) ->
     @store.find('base', params)
 TheSkyMap.BasesShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
-  viewName: 'full_map_plus_side'
+  viewName: 'actionable_show'
   model: (params)->
     base = @store.reloadRecord(@store.recordForId('base', params.base_id))
+
 
 TheSkyMap.PlayersIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   viewName: 'plus_mini_map'
@@ -78,4 +82,9 @@ TheSkyMap.ActionsRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   viewName: 'plus_mini_map'
   model: (params) ->
     @store.find('action', params)
+
+TheSkyMap.MessagesIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
+  viewName: 'plus_mini_map'
+  model: (params) ->
+    @store.find('message', params)
 

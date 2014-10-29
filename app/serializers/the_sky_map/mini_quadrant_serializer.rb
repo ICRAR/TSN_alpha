@@ -1,9 +1,10 @@
 class TheSkyMap::MiniQuadrantSerializer < ActiveModel::Serializer
   attributes :id, :x, :y, :z, :explored, :explored_fully, :explored_partial,
-             :home, :mine, :hostile, :unowned, :color, :symbol
-  embed :ids#, include: true
-  has_one  :owner, key: :player_id
-  def include_owner
+             :home, :mine, :hostile, :unowned, :symbol
+  #embed :ids#, include: true
+  #has_one  :owner, key: :player_id
+  attributes owner_id: :player_id
+  def include_player_id
     explored?
   end
   def symbol
@@ -37,15 +38,5 @@ class TheSkyMap::MiniQuadrantSerializer < ActiveModel::Serializer
   end
   def explored?
     object.explored == 1
-  end
-
-  def color
-    if object.explored.nil?
-      'unknown'
-    elsif object.explored == 0
-      object.the_sky_map_quadrant_type.unexplored_color
-    else
-      object.the_sky_map_quadrant_type.explored_color
-    end
   end
 end

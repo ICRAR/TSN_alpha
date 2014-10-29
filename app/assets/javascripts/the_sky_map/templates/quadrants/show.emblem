@@ -30,5 +30,8 @@
       ul
         each base in bases
           li:  link-to 'bases.show' base.id | {{base.name}}
+    if has_galaxy
+      h5 Galaxy:
+      p: a href=galaxy_link Link to galaxy on main theSkyNet POGS site.
     a href='#' click="scroll_to_home" Zoom to Quadrant
 

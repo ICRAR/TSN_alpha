@@ -1,4 +1,10 @@
-.quadrant class={home:home explored:explored:unexplored color mine:mine hostile:hostile unowned:unowned} click="click_me"
+.quadrant-background
+  if explored_partial
+    pixelated-img src=thumbnail_src height="80" width="80" value="0.25"
+  else
+    img src=thumbnail_src height="80" width="80"
+
+.quadrant class={home:home explored:explored:unexplored mine:mine hostile:hostile unowned:unowned has_galaxy:has_galaxy:does_not_have_galaxy} click="click_me"
   if xy_zoomed_in
     .title
       link-to 'quadrants.show' id | {{name}}

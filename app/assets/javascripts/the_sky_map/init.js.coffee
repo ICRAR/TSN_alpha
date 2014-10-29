@@ -24,7 +24,7 @@ $(document).ready(
           local_model.deleteRecord() unless local_model == null
         #request the ember store to update a model if it already exists
         for model_name, model_ids of data.update_models
-          for i, model_id of model_ids
+          for model_id in model_ids
             local_model = store.getById(model_name,model_id)
             local_model.reload() unless local_model == null
         #request the ember store to update a model or load if the player id matchs
@@ -32,9 +32,28 @@ $(document).ready(
         if data.update_models_player_only?
           if current_player_id in data.update_models_player_only.player_ids
             for model_name, model_ids of data.update_models_player_only.models
-              for i, model_id of model_ids
+              for model_id in model_ids
                 local_model = store.getById(model_name,model_id)
-                local_model.reload()
+                if local_model == null
+                  store.find(model_name,model_id)
+                else
+                  local_model.reload()
+        #methods for new messages or ack'd messages
+        #new message
+        if data.new_message?
+          if current_player_id == data.new_message.player_id
+            store.find('message',data.new_message.msg_id).then(() ->
+              #update controller
+              msg_cnt = TheSkyMap.__container__.lookup('controller:messagesIndex')
+              msg_cnt.get('model').set('content',store.all('message').content)
+            )
+            current_player.set('unread_msg_count',data.new_message.new_count)
+        if data.ack_msg?
+          if current_player_id == data.ack_msg.player_id
+            local_model = store.getById('message',data.ack_msg.msg_id)
+            local_model.set('ack',true) unless local_model == null
+            current_player.set('unread_msg_count',data.ack_msg.new_count)
+
     $.ajaxSetup({
       headers: {
         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')

@@ -68,6 +68,8 @@ gem 'activerecord-import', '0.3.1'
 gem "socialization"
 gem 'ruby-bbcode-to-md'
 gem 'active_model_serializers', '~> 0.8.0'
+gem 'memoist'
+gem "paranoia", "~> 1.0"
 
 gem 'ember-rails'
 gem 'ember-source', '~> 1.7.0.beta.4'# or the version you need

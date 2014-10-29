@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery :except => [:check_auth, :ping, :facebook_channel]
+  protect_from_forgery :except => [:check_auth, :ping, :facebook_channel]  unless ENV["RAILS_ENV"] == 'development'
   helper :json_api
   require 'act_as_taggable_on'
 
@@ -125,7 +125,7 @@ class ApplicationController < ActionController::Base
     if user_signed_in?
       true
     else
-      redirect_to( new_user_session_path, notice: 'Sorry could must be signed in to do that')
+      redirect_to( new_user_session_path, notice: 'Sorry you must be signed in to do that')
       false
     end
   end

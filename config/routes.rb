@@ -163,6 +163,7 @@ Tsn::Application.routes.draw do
       end
     end
     resources :mini_quadrants, :only => [:index, :show]
+    resources :messages, :only => [:index,:show, :update]
     resources :quadrants, :only => [:index, :show]
     get 'actions' => "actions#player_index", :as => 'all_actions'
     resources :actions, :only => [:show] do
@@ -173,9 +174,15 @@ Tsn::Application.routes.draw do
     resources :players, :only => [:index, :show]
     resources :ships, :only => [:index, :show] do
       resources :actions, :only => [:index, :show, :create], :defaults => {actionable: 'TheSkyMap::Ship'}
+      member do
+        get 'game_actions_available'
+      end
     end
     resources :bases, :only => [:index, :show] do
       resources :actions, :only => [:index, :show, :create], :defaults => {actionable: 'TheSkyMap::Base'}
+      member do
+        get 'game_actions_available'
+      end
     end
   end
   # The priority is based upon order of creation:

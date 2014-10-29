@@ -1,7 +1,7 @@
 class TheSkyMap::CurrentPlayerSerializer < ActiveModel::Serializer
   attributes :id, :name, :user_signed_in, :profile_id, :email,
              :home_x, :home_y, :home_z, :currency_available, :currency_available_special,
-             :total_score, :total_income, :total_income_special, :player_options
+             :total_score, :total_income, :total_income_special, :player_options, :unread_msg_count
   def player_options
     @object.options
   end

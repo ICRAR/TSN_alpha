@@ -1,4 +1,5 @@
 class TheSkyMap::Player < ActiveRecord::Base
+  extend Memoist
   attr_accessible :rank, :score, :spent_points, :total_points, :total_points_special, :spent_points_special, as: [:admin]
 
   belongs_to :profile
@@ -6,6 +7,7 @@ class TheSkyMap::Player < ActiveRecord::Base
   has_many :the_sky_map_quadrants, :class_name => 'TheSkyMap::Quadrant', :through => :the_sky_map_players_quadrants
   has_many :the_sky_map_ships, :class_name => 'TheSkyMap::Ship', foreign_key: "the_sky_map_player_id"
   has_many :own_quadrants, :class_name => 'TheSkyMap::Quadrant', foreign_key: "owner_id"
+  has_many :messages, :class_name => 'TheSkyMap::Message', foreign_key: "the_sky_map_player_id"
 
   belongs_to :home, :class_name => 'TheSkyMap::Quadrant', :foreign_key => 'home_id'
 
@@ -25,6 +27,19 @@ class TheSkyMap::Player < ActiveRecord::Base
     self.spent_points = 0
     self.total_points = 0
     self.total_points_float = 0
+  end
+
+  #sends the player a msg and links to the quadrant
+  def send_msg(msg,quadrant = nil)
+    new_msg = TheSkyMap::Message.new_message(self,msg,quadrant)
+    #push to open windows
+    PostToFaye.new_msg(self.id,new_msg.id,self.unread_msg_count)
+  end
+  def unread_msg_count
+    self.messages.where{ack==false}.count
+  end
+  def has_unread_msgs
+    self.unread_msg_count > 0
   end
 
   #accepts a location in the form of {x:1,y:1,z:1} that the system will try to award as the home
@@ -93,7 +108,7 @@ class TheSkyMap::Player < ActiveRecord::Base
     update_total_score
     save
   end
-  def explore_quadrant(quadrant)
+  def explore_quadrant(quadrant,distance = 1)
     #check for current join model
     pq = self.the_sky_map_players_quadrants.where{the_sky_map_quadrant_id == quadrant.id}.first
     if pq.nil?
@@ -103,7 +118,7 @@ class TheSkyMap::Player < ActiveRecord::Base
     pq.explored = true
     pq.save
 
-    new = quadrant.surrounding_quadrants
+    new = quadrant.surrounding_quadrants(distance)
     new.each do |q|
       self.add_quadrant q
     end
@@ -131,10 +146,10 @@ class TheSkyMap::Player < ActiveRecord::Base
   def self.options_default
     {
         'fog_of_war_on' => true,
-        'mini_map_x_min' => 1,
-        'mini_map_x_max' => 12,
-        'mini_map_y_min' => 1,
-        'mini_map_y_max' => 12,
+        'mini_map_x_min' => 0,
+        'mini_map_x_max' => 20,
+        'mini_map_y_min' => 0,
+        'mini_map_y_max' => 20,
 
     }
   end
@@ -223,4 +238,6 @@ class TheSkyMap::Player < ActiveRecord::Base
       TheSkyMap::Player.where{total_score > 0}.order{total_score.desc}.update_all('rank = @new_rank := @new_rank + 1')
     end
   end
+
+
 end

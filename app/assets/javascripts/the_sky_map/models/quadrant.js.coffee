@@ -15,14 +15,15 @@ TheSkyMap.Quadrant = DS.Model.extend(
   total_income: DS.attr("number")
   num_bases: DS.attr("number")
   desc: DS.attr("string")
-  color: DS.attr("string")
   player: DS.belongsTo('player')
-  ships: DS.hasMany('ship')
+  ships: DS.hasMany('ship', { async: true })
   location: DS.attr('raw')
+  galaxy_id: DS.attr("number")
+  thumbnail_src: DS.attr("string")
   has_ships: ( ->
     @get('_data.ships.length') > 0
   ).property('_data.ships.length')
-  bases: DS.hasMany('base')
+  bases: DS.hasMany('base', { async: true })
   has_bases: ( ->
     @get('_data.bases.length') > 0
   ).property('_data.bases.length')

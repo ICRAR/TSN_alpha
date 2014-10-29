@@ -1,8 +1,10 @@
 class TheSkyMap::ShipIndexSerializer < ActiveModel::Serializer
   attributes :id, :name, :attack, :speed, :desc, :hostile, :mine, :remaining_health, :max_health
   embed :ids#, include: true
-  has_one :the_sky_map_quadrant, key: :quadrant_id
-  has_one :the_sky_map_player, key: :player_id
+  #has_one :the_sky_map_quadrant, key: :quadrant_id
+  #has_one :the_sky_map_player, key: :player_id
+  attributes the_sky_map_quadrant_id: :quadrant_id
+  attributes the_sky_map_player_id: :player_id
   def name
     "#{object.the_sky_map_ship_type.name}:#{object.id}"
   end

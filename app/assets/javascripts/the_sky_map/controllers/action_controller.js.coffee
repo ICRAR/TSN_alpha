@@ -27,6 +27,7 @@ TheSkyMap.ActionController = Ember.ObjectController.extend(TheSkyMap.Countdownab
   ).property('actionable')
   actions:
     run_special: () ->
+      @stop_countdown()
       store = @store
       action_path = store.adapterFor(this).buildURL('action',@.get('id'))
       run_special_path = "#{action_path}/run_special"

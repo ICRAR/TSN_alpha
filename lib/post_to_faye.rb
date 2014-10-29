@@ -65,5 +65,17 @@ end
     }.to_json
     faye_broadcast "/messages/from_rails", broadcast_json
   end
+
+  #update messages
+  #new_msg
+  def self.new_msg(player_id,msg_id,new_count)
+    broadcast_json = {new_message: {player_id: player_id, msg_id: msg_id, new_count: new_count}}.to_json
+    faye_broadcast "/messages/from_rails", broadcast_json
+  end
+  #ack_msg
+  def self.ack_msg(player_id,msg_id,new_count)
+    broadcast_json = {ack_msg: {player_id: player_id, msg_id: msg_id, new_count: new_count}}.to_json
+    faye_broadcast "/messages/from_rails", broadcast_json
+  end
 end
 

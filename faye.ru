@@ -3,9 +3,11 @@ require 'yaml'
 env_string = ENV['FAYE_ENV']
 env_string = ENV['RAILS_ENV'] if env_string.nil? || env_string == ''
 env_string = 'development' if env_string.nil? || env_string == ''
-APP_CONFIG = YAML.load_file('./config/custom_config.yml')[env_string]
+FAYE_ENV = env_string
+APP_CONFIG = YAML.load_file('./config/custom_config.yml')[FAYE_ENV]
 class ServerAuth
   def incoming(message, callback)
+    puts(message) if FAYE_ENV == 'development'
     if message['channel'] !~ %r{^/meta/}
       if message['ext'].nil? || message['ext']['auth_token'] != APP_CONFIG['faye_token']
         message['error'] = 'Invalid authentication token'

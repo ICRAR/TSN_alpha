@@ -1,8 +1,9 @@
 class TheSkyMap::Quadrant < ActiveRecord::Base
-  attr_accessible :x, :y, :z, :the_sky_map_quadrant_type_id, as: [:admin]
+  attr_accessible :x, :y, :z, :the_sky_map_quadrant_type_id, :galaxy_id, :thumbnail_link, as: [:admin]
 
   belongs_to :the_sky_map_quadrant_type, :class_name => 'TheSkyMap::QuadrantType', foreign_key: "the_sky_map_quadrant_type_id"
   belongs_to :owner, :class_name => 'TheSkyMap::Player', :foreign_key => 'owner_id'
+  belongs_to :galaxy, :class_name => 'Galaxy', :foreign_key => 'galaxy_id'
 
   has_many :the_sky_map_players_quadrants, :class_name => 'TheSkyMap::PlayersQuadrant', foreign_key: "the_sky_map_quadrant_id"
   has_many :the_sky_map_players, :class_name => 'TheSkyMap::Player', through: :the_sky_map_players_quadrants
@@ -75,18 +76,20 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     owner.save unless owner_id.nil?
   end
   def self.for_show(player)
+    base_relation = includes(:the_sky_map_quadrant_type).
+        includes(:the_sky_map_ships).
+        includes(:the_sky_map_bases).
+        includes(owner: :profile).
+        select('the_sky_map_quadrants.*')
     if player.options['fog_of_war_on']
-      includes(:the_sky_map_quadrant_type).
-      includes(:the_sky_map_ships).
+      base_relation.
           joins("LEFT OUTER JOIN
       the_sky_map_players_quadrants ON the_sky_map_players_quadrants.the_sky_map_quadrant_id = the_sky_map_quadrants.id and
       the_sky_map_players_quadrants.the_sky_map_player_id = #{player.id}").
-          select('the_sky_map_quadrants.*').
           select{the_sky_map_players_quadrants.explored.as('explored')}
     else
       includes(:the_sky_map_quadrant_type).
-          includes(:the_sky_map_ships).
-          select('the_sky_map_quadrants.*').
+          base_relation.
           select('1 as explored')
     end
   end
@@ -114,10 +117,10 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
       ((y == my{self.y}) & ((x == my{self.x-1}) | (x == my{self.x+1})))
     }
   end
-  def surrounding_quadrants
+  def surrounding_quadrants(distance = 1)
     TheSkyMap::Quadrant.
-        where{(x <= my{self.x+1}) & (x >= my{self.x-1})}.
-        where{(y <= my{self.y+1}) & (y >= my{self.y-1})}.
+        where{(x <= my{self.x+distance}) & (x >= my{self.x-distance})}.
+        where{(y <= my{self.y+distance}) & (y >= my{self.y-distance})}.
         where{(z <= my{self.z}) & (z >= my{self.z})}.
         where{((x != my{self.x}) | (y != my{self.y}) | (z != my{self.z})) }
   end
@@ -141,6 +144,11 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
       the_sky_map_quadrant_type_id: type_id
 
     }, as: :admin)
+
+    #find a galaxy for the new quadrant
+    galaxy_id = TheSkyMap::QuadrantType.find(type_id).find_galaxy_id
+    new_quadrant.galaxy_id = galaxy_id
+    new_quadrant.update_galaxy_link
     new_quadrant.update_total_income
     new_quadrant.update_total_score
     new_quadrant.save
@@ -221,5 +229,14 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
   end
   def attackable_ships(actor)
     self.the_sky_map_ships.where{the_sky_map_ships.the_sky_map_player_id != my{actor.id}}
+  end
+
+
+  #connects with a POGS galaxy
+  def update_galaxy_link
+    g = self.galaxy
+    return if g.nil?
+    link = g.thumbnail_url
+    self.thumbnail_link = link
   end
 end

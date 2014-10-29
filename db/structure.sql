@@ -19,7 +19,7 @@ CREATE TABLE `actions` (
   PRIMARY KEY (`id`),
   KEY `actor_index` (`actor_type`,`actor_id`,`created_at`,`state`),
   KEY `actionable_index` (`actionable_type`,`actionable_id`,`created_at`,`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=180 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `activities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -96,6 +96,43 @@ CREATE TABLE `alliances` (
   KEY `ranking_asc` (`ranking`),
   KEY `id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2145 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `boinc_rails_profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `boinc_id` int(11) DEFAULT NULL,
+  `cross_project_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `member_since` datetime DEFAULT NULL,
+  `total_credit` int(11) DEFAULT NULL,
+  `exp_avg_credit` int(11) DEFAULT NULL,
+  `exp_avg_time` int(11) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `project_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_boinc_rails_profiles_on_boinc_id` (`boinc_id`),
+  KEY `index_boinc_rails_profiles_on_parent_id` (`parent_id`),
+  KEY `index_boinc_rails_profiles_on_project_id` (`project_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25591 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `boinc_rails_projects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `database` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `desc` text COLLATE utf8_unicode_ci,
+  `new_users` tinyint(1) DEFAULT NULL,
+  `sync_active` tinyint(4) DEFAULT NULL,
+  `remote_sign_in` tinyint(1) DEFAULT NULL,
+  `sync_meta` tinyint(1) DEFAULT NULL,
+  `sync_teams_to_rails` tinyint(1) DEFAULT NULL,
+  `sync_teams_to_boinc` tinyint(1) DEFAULT NULL,
+  `team_sync_priority` tinyint(1) DEFAULT NULL,
+  `last_boinc_id_synced` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `boinc_stats_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -258,7 +295,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `follows` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -288,7 +325,7 @@ CREATE TABLE `general_stats_items` (
   KEY `total_credit_index_desc` (`total_credit`),
   KEY `rank_asc` (`rank`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22997 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22998 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `leaders_science_portals` (
   `leader_id` int(11) DEFAULT NULL,
@@ -462,7 +499,7 @@ CREATE TABLE `profiles` (
   KEY `user_id_index` (`user_id`),
   KEY `alliance_leader_id_index` (`alliance_leader_id`),
   KEY `id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22997 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22998 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `profiles_trophies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -550,7 +587,7 @@ CREATE TABLE `site_stats` (
   PRIMARY KEY (`id`),
   KEY `show_index` (`show_in_list`),
   KEY `name_index` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `special_days` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -575,6 +612,18 @@ CREATE TABLE `special_days` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `stats_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `measurable_id` int(11) DEFAULT NULL,
+  `measurable_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `metric_key` int(11) NOT NULL DEFAULT '0',
+  `value` int(11) NOT NULL,
+  `datetime` datetime NOT NULL,
+  `resolution` int(11) NOT NULL DEFAULT '86400',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `stats_data_primary_index` (`measurable_type`,`measurable_id`,`metric_key`,`datetime`,`resolution`)
+) ENGINE=InnoDB AUTO_INCREMENT=12710118 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `taggings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag_id` int(11) DEFAULT NULL,
@@ -595,21 +644,13 @@ CREATE TABLE `tags` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=867 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `the_sky_map_base_types_join` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `the_sky_map_base_id` int(11) DEFAULT NULL,
-  `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `join_index` (`the_sky_map_base_id`,`the_sky_map_base_upgrade_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 CREATE TABLE `the_sky_map_base_types_quadrant_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `the_sky_map_quadrant_type_id` int(11) DEFAULT NULL,
   `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `join_index` (`the_sky_map_quadrant_type_id`,`the_sky_map_base_upgrade_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=172 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_base_types_ship_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -617,7 +658,7 @@ CREATE TABLE `the_sky_map_base_types_ship_types` (
   `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `join_index` (`the_sky_map_base_upgrade_type_id`,`the_sky_map_ship_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_base_upgrade_type_hierarchies` (
   `ancestor_id` int(11) NOT NULL,
@@ -634,22 +675,41 @@ CREATE TABLE `the_sky_map_base_upgrade_types` (
   `cost` int(11) DEFAULT NULL,
   `duration` int(11) DEFAULT NULL,
   `income` int(11) DEFAULT NULL,
+  `score` int(11) DEFAULT NULL,
   `parent_id` int(11) DEFAULT NULL,
+  `health` int(11) DEFAULT NULL,
+  `attack` int(11) DEFAULT '0',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `parent_id` (`parent_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_bases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `damage` int(11) DEFAULT '0',
   `the_sky_map_quadrant_id` int(11) DEFAULT NULL,
+  `the_sky_map_base_upgrade_type_id` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_the_sky_map_bases_on_the_sky_map_quadrant_id` (`the_sky_map_quadrant_id`),
+  KEY `index_the_sky_map_bases_on_deleted_at` (`deleted_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `the_sky_map_messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `msg` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `the_sky_map_player_id` int(11) DEFAULT NULL,
+  `the_sky_map_quadrant_id` int(11) DEFAULT NULL,
+  `ack` tinyint(1) DEFAULT '0',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `index_the_sky_map_bases_on_the_sky_map_quadrant_id` (`the_sky_map_quadrant_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `the_sky_map_messages_player_index` (`the_sky_map_player_id`,`created_at`,`ack`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_players` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -659,16 +719,21 @@ CREATE TABLE `the_sky_map_players` (
   `spent_points` int(11) DEFAULT NULL,
   `total_points_special` int(11) DEFAULT NULL,
   `spent_points_special` int(11) DEFAULT NULL,
+  `total_income` int(11) DEFAULT '0',
+  `total_income_special` int(11) DEFAULT '0',
+  `total_score` int(11) DEFAULT '0',
+  `total_points_float` double DEFAULT NULL,
+  `total_points_special_float` double DEFAULT NULL,
   `options` text COLLATE utf8_unicode_ci,
   `profile_id` int(11) DEFAULT NULL,
   `home_id` int(11) DEFAULT NULL,
-  `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `profile_index` (`profile_id`),
   KEY `score_index` (`score`),
   KEY `rank_index` (`rank`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_players_quadrants` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -679,37 +744,47 @@ CREATE TABLE `the_sky_map_players_quadrants` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `player_id_quadrant_id` (`the_sky_map_quadrant_id`,`the_sky_map_player_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_quadrant_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `desc` text COLLATE utf8_unicode_ci,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `unexplored_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `unexplored_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `explored_color` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `feature_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `num_of_bases` int(11) DEFAULT NULL,
   `score` int(11) DEFAULT NULL,
   `generation_chance` int(11) DEFAULT NULL,
+  `suitable_for_home` tinyint(4) NOT NULL,
+  `unexplored_symbol` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `explored_symbol` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `gen_x_min` int(11) DEFAULT NULL,
+  `gen_x_max` int(11) DEFAULT NULL,
+  `gen_y_min` int(11) DEFAULT NULL,
+  `gen_y_max` int(11) DEFAULT NULL,
+  `thumbnail_path` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_quadrants` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `x` int(11) DEFAULT NULL,
   `y` int(11) DEFAULT NULL,
   `z` int(11) DEFAULT NULL,
+  `total_score` int(11) DEFAULT NULL,
+  `total_income` int(11) DEFAULT NULL,
   `the_sky_map_quadrant_type_id` int(11) DEFAULT NULL,
   `owner_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `galaxy_id` int(11) DEFAULT NULL,
+  `thumbnail_link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `location_index` (`z`,`y`,`x`),
   KEY `owner_index` (`owner_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=883 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_ship_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -718,28 +793,27 @@ CREATE TABLE `the_sky_map_ship_types` (
   `speed` int(11) DEFAULT NULL,
   `health` int(11) DEFAULT NULL,
   `attack` int(11) DEFAULT NULL,
+  `cost` int(11) DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL,
+  `can_build_bases` tinyint(4) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `sensor_range` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_ships` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `damage` int(11) DEFAULT '0',
   `the_sky_map_ship_type_id` int(11) DEFAULT NULL,
   `the_sky_map_player_id` int(11) DEFAULT NULL,
   `the_sky_map_quadrant_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-CREATE TABLE `theskymap_shout_boxes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `msg` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_the_sky_map_ships_on_deleted_at` (`deleted_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `timeline_entries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -829,7 +903,7 @@ CREATE TABLE `users` (
   KEY `index_users_on_invited_by_id` (`invited_by_id`),
   KEY `id_index` (`id`),
   KEY `index_joined_at` (`joined_at`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=22998 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22999 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `versions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1073,3 +1147,23 @@ INSERT INTO schema_migrations (version) VALUES ('20140602064907');
 INSERT INTO schema_migrations (version) VALUES ('20140602065623');
 
 INSERT INTO schema_migrations (version) VALUES ('20140602070027');
+
+INSERT INTO schema_migrations (version) VALUES ('20140829013518');
+
+INSERT INTO schema_migrations (version) VALUES ('20140901062015');
+
+INSERT INTO schema_migrations (version) VALUES ('20140923054821');
+
+INSERT INTO schema_migrations (version) VALUES ('20141013013322');
+
+INSERT INTO schema_migrations (version) VALUES ('20141015012426');
+
+INSERT INTO schema_migrations (version) VALUES ('20141016014517');
+
+INSERT INTO schema_migrations (version) VALUES ('20141017050323');
+
+INSERT INTO schema_migrations (version) VALUES ('20141021063253');
+
+INSERT INTO schema_migrations (version) VALUES ('20141027022851');
+
+INSERT INTO schema_migrations (version) VALUES ('20141027022945');

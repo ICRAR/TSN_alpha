@@ -1,4 +1,6 @@
 class TheSkyMap::Ship < TheSkyMap::BaseModel
+  extend Memoist
+  acts_as_paranoid
   attr_accessible :the_sky_map_quadrant_id, :the_sky_map_player_id, :the_sky_map_ship_type_id, as: [:admin]
 
   belongs_to :the_sky_map_quadrant, :class_name => 'TheSkyMap::Quadrant', foreign_key: "the_sky_map_quadrant_id"
@@ -15,7 +17,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
   end
 
   def self.for_index(player)
-    TheSkyMap::Ship.fog_of_war(player).scoped
+    TheSkyMap::Ship.fog_of_war(player).scoped.includes(:the_sky_map_ship_type)
   end
   def self.fog_of_war(player)
     if player.options['fog_of_war_on']
@@ -45,8 +47,12 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
   def actions_list
     ['move', 'capture', 'build_base', 'steal', 'attack_base', 'attack_ship']
   end
+  def moving?
+    !current_action.nil? && current_action.action == 'move'
+  end
+  memoize :moving?
   def build_base_options(actor)
-    return {} if !current_action.nil? && current_action.action == 'move'
+    return {} if moving?
     if the_sky_map_ship_type.can_build_bases?
       quadrant = the_sky_map_quadrant
       bases_allowed = quadrant.bases_allowed(actor)
@@ -87,7 +93,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
   def steal_options(actor)
     #can't queue a steal action if the ship is currenly moving
-    return {} if !current_action.nil? && current_action.action == 'move'
+    return {} if moving?
     quadrant = the_sky_map_quadrant
     if quadrant.is_stealable?(actor)
       action_name = "steal_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
@@ -117,7 +123,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
   end
 
   def capture_options(actor)
-    return {} if !current_action.nil? && current_action.action == 'move'
+    return {} if moving?
     quadrant = the_sky_map_quadrant
     if quadrant.owner_id.nil?
       action_name = "capture_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
@@ -149,7 +155,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
   end
 
   def move_options(actor)
-    return {} if !current_action.nil? && current_action.action == 'move'
+    return {} if moving?
     home = the_sky_map_player.home
 
     surrounding_quadrants = the_sky_map_quadrant.surrounding_quadrants_move
@@ -190,7 +196,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     self.save
 
     #explore
-    explored_quadrants =  self.the_sky_map_player.explore_quadrant(quadrant)
+    explored_quadrants =  self.the_sky_map_player.explore_quadrant(quadrant,self.the_sky_map_ship_type.sensor_range)
     #force update to open quadrants
     full_update_quadrants =  [old_quadrant.id,quadrant.id]
     PostToFaye.request_update('quadrant',full_update_quadrants)
@@ -205,7 +211,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
   end
 
   def attack_base_options(actor)
-    return {} if !current_action.nil? && current_action.action == 'move'
+    return {} if moving?
     quadrant = the_sky_map_quadrant
 
     if quadrant.has_attackable_base?(the_sky_map_player)
@@ -234,18 +240,11 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     return false unless quadrant == the_sky_map_quadrant
 
     #attack the base
-    outcome = base.attacked(the_sky_map_player,the_sky_map_ship_type.attack)
-    #push changes with faye
-    if base.destroyed?
-      PostToFaye.request_update('quadrant',[quadrant.id])
-      PostToFaye.remove_model_delayed(base.id,'base')
-    else
-      PostToFaye.request_update('base',[base.id])
-    end
+    outcome = self.attack(base)
     return outcome
   end
   def attack_ship_options(actor)
-    return {} if !current_action.nil? && current_action.action == 'move'
+    return {} if moving?
     quadrant = the_sky_map_quadrant
 
     if quadrant.has_attackable_ships?(the_sky_map_player)
@@ -275,29 +274,23 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     #if not return true as you missed and thus forfeit your resources
     return true unless quadrant == attacked_ship.the_sky_map_quadrant
 
-    #attack the base
-    outcome = attacked_ship.attacked(the_sky_map_player,the_sky_map_ship_type.attack)
-    #push changes with faye
-    if attacked_ship.destroyed?
-      PostToFaye.request_update('quadrant',[quadrant.id])
-      PostToFaye.remove_model_delayed(attacked_ship.id,'ship')
-    else
-      PostToFaye.request_update('ship',[attacked_ship.id])
-    end
+    #attack the ship
+    outcome = self.attack(attacked_ship)
     return outcome
   end
 
 
 
-  def attacked(actor,damage)
-    #update damage
-    self.class.where{id == my{self.id}}.update_all("damage = damage + #{damage.to_i}" )
-    self.reload
-    #check if base is destroyed
-    if self.damage >= self.the_sky_map_ship_type.health
-      #destroy base
-      self.destroy
-    end
-    true
+  def attack_value
+    self.the_sky_map_ship_type.attack
   end
+  def health_value
+    self.the_sky_map_ship_type.health
+  end
+  def model_name
+    'ship'
+  end
+
+  acts_as_combatant
+
 end

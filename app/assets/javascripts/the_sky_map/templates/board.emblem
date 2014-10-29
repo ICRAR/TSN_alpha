@@ -10,25 +10,23 @@
         .panel-heading Layer: {{layer.z}}
         .panel-body
           .board-all
-            .y-labels-column
-              .x-labels-row: .xy-label-column | y\x
-              each row in layer.rows
-                .board-row: .xy-label-column = row.y
-            .quadrants
-              .x-labels-row
-                each x_val in xs
-                  .x-labels-column = x_val
-              each row in layer.rows
-                .board-row
-                  each quadrant in row.quadrants
-                    .board-column class={quadrant.selected:selected:not_selected}
-                      each qf in quadrant.quadrant_final
-                        render "board_quadrant" qf
-                      else
-                        .quadrant.blank
-                          if xy_zoomed_in
-                            .title
-                              p Your off the edge of the map. Here there be space dragons.
+            .x-labels-row
+              .xy-label-column | y\x
+              each x_val in xs
+                .x-labels-column = x_val
+
+            each row in layer.rows
+              .board-row
+                .y-label-column = row.y
+                each quadrant in row.quadrants
+                  .board-column class={quadrant.selected:selected:not_selected}
+                    each qf in quadrant.quadrant_final
+                      render "board_quadrant" qf
+                    else
+                      .quadrant.blank
+                        if xy_zoomed_in
+                          .title
+                            p Your off the edge of the map. Here there be space dragons.
 
   .controls.panel.panel-default
     .panel-heading Navigation Controls
