@@ -111,8 +111,9 @@ class TheSkyMap::Player < ActiveRecord::Base
   def explore_quadrant(quadrant,distance = 1)
     #check for current join model
     pq = self.the_sky_map_players_quadrants.where{the_sky_map_quadrant_id == quadrant.id}.first
+    newly_explored = []
     if pq.nil?
-      self.add_quadrant quadrant
+      newly_explored << quadrant.id if self.add_quadrant(quadrant)
       pq = self.the_sky_map_players_quadrants.where{the_sky_map_quadrant_id == quadrant.id}.first
     end
     pq.explored = true
@@ -120,17 +121,19 @@ class TheSkyMap::Player < ActiveRecord::Base
 
     new = quadrant.surrounding_quadrants(distance)
     new.each do |q|
-      self.add_quadrant q
+      newly_explored << q.id if self.add_quadrant(q)
     end
 
-    new.pluck(:id) << quadrant.id
+    newly_explored
   end
 
   def add_quadrant(quadrant)
     begin
       self.the_sky_map_quadrants << quadrant
+      return true
     rescue ActiveRecord::RecordInvalid => e
       rails e unless e.message == 'Validation failed: The sky map player has already been taken'
+      return false
     end
   end
 

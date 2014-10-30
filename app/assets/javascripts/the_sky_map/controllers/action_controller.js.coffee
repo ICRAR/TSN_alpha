@@ -31,12 +31,11 @@ TheSkyMap.ActionController = Ember.ObjectController.extend(TheSkyMap.Countdownab
       store = @store
       action_path = store.adapterFor(this).buildURL('action',@.get('id'))
       run_special_path = "#{action_path}/run_special"
-      action = @get('content')
+      actionable_controller = @get('target')
       $.get(run_special_path,
         {},
       (data) ->
         store.pushPayload('action', data)
-        actionable = action.get('actionable')
-        actionable.reload()
+        actionable_controller.send('update_actions')if $.isFunction(actionable_controller._actions['update_actions'])
       )
 })

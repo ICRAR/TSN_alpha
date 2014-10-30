@@ -10,6 +10,7 @@ TheSkyMap.ActionableController = Ember.ObjectController.extend
   actions:
     perform_action: (action_name) ->
       store = @store
+      save_this = this
       actionable = @get('content')
       model_name = actionable.get('constructor.typeKey')
       actionable_path = store.adapterFor(this).buildURL(model_name,@.get('id'))
@@ -22,7 +23,8 @@ TheSkyMap.ActionableController = Ember.ObjectController.extend
           store.pushPayload('action', data)
           new_action = store.getById('action', data.action.id)
           actionable.get('actions').addObject(new_action)
-          actionable.reload()
+          save_this.send('update_actions')
+
       )
     update_actions: () ->
       store = @store

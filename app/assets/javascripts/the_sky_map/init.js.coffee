@@ -24,20 +24,17 @@ $(document).ready(
           local_model.deleteRecord() unless local_model == null
         #request the ember store to update a model if it already exists
         for model_name, model_ids of data.update_models
+          ids = []
           for model_id in model_ids
             local_model = store.getById(model_name,model_id)
-            local_model.reload() unless local_model == null
+            ids.push(model_id) unless local_model == null
+          store.find(model_name, {ids: ids}) unless ids == []
         #request the ember store to update a model or load if the player id matchs
         current_player_id = parseInt(current_player.get('id'))
         if data.update_models_player_only?
           if current_player_id in data.update_models_player_only.player_ids
             for model_name, model_ids of data.update_models_player_only.models
-              for model_id in model_ids
-                local_model = store.getById(model_name,model_id)
-                if local_model == null
-                  store.find(model_name,model_id)
-                else
-                  local_model.reload()
+              store.find(model_name, {ids: model_ids}) unless ids == []
         #methods for new messages or ack'd messages
         #new message
         if data.new_message?
