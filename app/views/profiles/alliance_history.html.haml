@@ -44,7 +44,7 @@
                 =@alliance.members.count
                 %abbr{:title=>"including old members"}="(#{@total_members})"
               %dt Founded on
-              -date_founded = Time.at(@alliance.created_at)
+              -date_founded = @alliance.created_at.to_time
               %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
             -if user_signed_in? && current_user.profile.alliance == nil
               ="#{@alliance.name} is currently accepting members, would you like to join?"
@@ -67,10 +67,10 @@
               -@memberships.each do |member|
                 %tr
                   %td= link_to member.alliance.name, member.alliance
-                  -date_joined = Time.at(member.join_date)
+                  -date_joined = member.join_date.to_time
                   %td= link_to date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y"), member.alliance
                   -if member.leave_date
-                    -date_left = Time.at(member.leave_date)
+                    -date_left = member.leave_date.to_time
                     %td= link_to date_left.strftime("#{date_left.day.ordinalize} of %B, %Y"), member.alliance
                   -else
                     %td Still a member
