@@ -139,11 +139,11 @@ class GalaxyMosaic < ActiveRecord::Base
     draw.stroke_width(1)
     draw.fill_opacity(0)
     #add cols
-    (1..(self.options[:cols]-1)).each do |col|
+    (0..(self.options[:cols])).each do |col|
       draw.line(col*dim,0,col*dim,self.options[:rows]*dim)
     end
     #add rows
-    (1..(self.options[:rows])).each do |row|
+    (0..(self.options[:rows])).each do |row|
       draw.line(0,row*dim,self.options[:cols]*dim,row*dim)
     end
     draw.draw(mosaic)
