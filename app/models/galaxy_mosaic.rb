@@ -54,8 +54,6 @@ class GalaxyMosaic < ActiveRecord::Base
     new_image.write(tmp_img_file.path)
     self.image = tmp_img_file
 
-
-    self.display = true
     self.save
 
     tmp_img_file.close
@@ -71,7 +69,7 @@ class GalaxyMosaic < ActiveRecord::Base
     galaxy_image.resize_to_fit!(dim)
 
     #add text to image
-    text = "#{galaxy.name} (#{param})"
+    text = "#{galaxy.name[0..15]} (#{param})"
     draw = Magick::Draw.new
     draw.fill = 'White'
     draw.font_family = 'helvetica'
