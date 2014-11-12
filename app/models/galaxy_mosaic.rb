@@ -43,7 +43,6 @@ class GalaxyMosaic < ActiveRecord::Base
   def build_image
     if self.image.exists?
       self.image = nil
-      self.image_thumbnail = nil
       self.save
     end
     self.set_info if self.options[:info_text_line_1].nil?
