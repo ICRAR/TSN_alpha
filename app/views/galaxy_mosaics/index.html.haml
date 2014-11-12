@@ -1,0 +1,30 @@
+- my_meta :title => "Galaxy Mosaics for TheSkyNet POGS",
+    :description => "Representations of some fo the galaxies processed by volunteers for theSkyNet POGS"
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface Galaxy Mosaics
+  -@user_page=  'news'
+  =  render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %table#mosaics.table.table-striped
+        %thead
+          %tr
+            %th ID
+            %th Date Created
+
+
+        %tbody
+          - @mosaics.each do |mosaic|
+            %tr
+              - link = galaxy_mosaic_path(mosaic)
+              %td
+                %a{href: link}= mosaic.id
+              %td
+                %a{href: link}= mosaic.image_updated_at.strftime '%B %d, %Y'
+
+      = paginate @mosaics
+      = page_entries_info @mosaics, :entry_name => 'Mosaics'
+      = render 'shared/per_page_selector'

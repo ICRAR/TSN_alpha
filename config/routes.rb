@@ -30,7 +30,7 @@ Tsn::Application.routes.draw do
     get 'advent_subscribe'
     get 'site_map'
   end
-
+  resources :galaxy_mosaics, :only => [:index, :show]
   resources :contact_forms, :only => [:new, :create]
   resources :stats, :only => [:index] do
     collection do
