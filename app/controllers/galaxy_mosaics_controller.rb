@@ -11,6 +11,6 @@ class GalaxyMosaicsController < ApplicationController
     if user_signed_in? && !current_user.profile.general_stats_item.boinc_stats_item.nil?
       @boinc_id = current_user.profile.general_stats_item.boinc_stats_item.boinc_id
     end
-    @mosaic = GalaxyMosaic.find(params[:id])
+    @mosaic = GalaxyMosaic.for_show.find(params[:id])
   end
 end

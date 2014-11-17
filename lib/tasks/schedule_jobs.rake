@@ -11,6 +11,9 @@ namespace :schedule_jobs do
     TrophiesJob.schedule Time.now
     puts 'starting elastic search check'
     ElasticSearchJob.schedule Time.now
+    puts 'starting galaxy mosaic job'
+    #sechudle for 7 days after the last mosaic or now
+    last_mosaic = GalaxyMosaic.maximum(:created_at) || (Time.now - 7.days)
     end
   desc "stops up all scheduled jobs"
   task :stop => :environment do

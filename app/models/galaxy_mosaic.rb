@@ -80,8 +80,8 @@ class GalaxyMosaic < ActiveRecord::Base
       self.image = nil
       self.save
     end
-    self.set_info if self.options[:info_text_line_1].nil?
     self.generate_hash if self.galaxy_hash == {}
+    self.set_info if self.options[:info_text].nil?
 
     new_image = self.generate_mosaic_image
     tmp_img_file = Tempfile.new(['tmp_mosaic_image', '.png'])
