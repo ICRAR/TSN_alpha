@@ -67,6 +67,8 @@ gem 'composite_primary_keys'
 gem 'activerecord-import', '0.3.1'
 gem "socialization"
 gem 'ruby-bbcode-to-md'
+gem 'rqrcode-rails3'
+gem 'mini_magick'
 
 gem 'delayed_job_active_record'
 gem 'daemons'

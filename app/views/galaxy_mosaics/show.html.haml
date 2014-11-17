@@ -1,4 +1,4 @@
-- my_meta :title => "Galaxy Mosaics for TheSkyNet POGS",
+- my_meta :title => "Galaxy Mosaic: #{@mosaic.id}  for TheSkyNet POGS",
     :description => "Representations of some fo the galaxies processed by volunteers for theSkyNet POGS"
 -content_for(:title_bar) do
   #intro-sml-wrap
@@ -11,11 +11,21 @@
     .well.well-white
       .row-fluid
         .span6
-          %dl.dl-vertical
-            %dt Created Time:
-            %dd= @mosaic.image_updated_at.strftime '%B %d, %Y'
-            %dt Number of Users who contributed to this image:
-            %dd= @mosaic.options[:number_of_users]
+          .row-fluid
+            .span12
+              %dl.dl-vertical
+                %dt Created Time:
+                %dd= @mosaic.image_updated_at.strftime '%B %d, %Y'
+                %dt Number of Users who contributed to this image:
+                %dd= @mosaic.options[:number_of_users]
+          .row-fluid
+            .span12
+              .mosaic_share_links
+                Share your success!
+                %span.mosaic_share_toolbox.addthis_default_style.addthis_32x32_style{:id => "mosaic_share_toolbox_#{@mosaic.id}_#{Time.now.to_i}",
+                  :data => {:image =>@mosaic.image.url(),
+                            :url => galaxy_mosaic_url(@mosaic),
+                            :title => "Galaxy Mosaic: #{@mosaic.id}"}}
         .span6
           %h3 Thumbnail:
           = link_to @mosaic.image.url do
@@ -24,7 +34,11 @@
             = link_to  "Link to full size image.", @mosaic.image.url
       .row-fluid
         .span12
-          %h3 This image includes the following galaxies:
+          %h3= t"galaxy_mosacis.show.helped_by"
+          %p= profile_list(@mosaic.profiles.select_name)
+      .row-fluid
+        .span12
+          %h3 And includes the following galaxies:
           %table#galaxies.table.table-striped
             %thead
               %tr

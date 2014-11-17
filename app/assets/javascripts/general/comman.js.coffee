@@ -17,6 +17,24 @@ TSN.trophy_share = (obj_id,trophy_name, trophy_url) ->
       twitter: "I just earned '#{trophy_name}' from @_theSkyNet for playing my part in discovering our Universe! {{url}}"
   }
 #**************************************
+#**** share box for mosaics
+TSN.mosaic_share = (obj_id,mosaic) ->
+  tbx = document.getElementById(obj_id)
+  $("##{obj_id}").empty()
+  svcs = [1..4]
+
+  for s of svcs
+    tbx.innerHTML += "<a class=\"addthis_button_preferred_" + s + "\"></a>"
+  tbx.innerHTML += "<a class=\"addthis_button_compact\"></a>"
+  tbx.innerHTML += "<a class=\"addthis_counter addthis_bubble_style\"></a>"
+
+  addthis.toolbox "##{obj_id}", {ui_cobrand: "theSkyNet"}, {
+    url: mosaic.url,
+    title: "I helped complete the '#{mosaic.title}' from theSkyNet whilst playing my part in discovering our Universe! ",
+    templates:
+      twitter: "I helped complete the '#{mosaic.title}' from theSkyNet whilst playing my part in discovering our Universe!  {{url}}"
+  }
+#**************************************
 
 #******* minimise widget on dashboard
 init_minimise_button = () ->
