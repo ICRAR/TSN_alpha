@@ -30,7 +30,7 @@ Tsn::Application.routes.draw do
     get 'advent_subscribe'
     get 'site_map'
   end
-
+  resources :galaxy_mosaics, :only => [:index, :show]
   resources :contact_forms, :only => [:new, :create]
   resources :stats, :only => [:index] do
     collection do
@@ -160,6 +160,7 @@ Tsn::Application.routes.draw do
     resources :ember, :only => [:index] do
       collection do
         get 'current_player'
+        get 'trigger_refresh', defaults: { format: 'text' }
       end
     end
     resources :mini_quadrants, :only => [:index, :show]

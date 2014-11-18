@@ -28,7 +28,7 @@
                   =@alliance.members.size
                   %abbr{:title=>"including old members"}="(#{@total_members})"
                 %dt Founded on
-                -date_founded = Time.at(@alliance.created_at)
+                -date_founded = @alliance.created_at.to_time
                 %dd= date_founded.strftime("#{date_founded.day.ordinalize} of %B, %Y")
                 %dt Tags
                 %dd
@@ -48,7 +48,7 @@
                 -membership = current_user.profile.alliance_items.where(:leave_date => nil).last
                 %dl.dl-horizontal.dl-long
                   %dt You've been a member since
-                  -date_joined = Time.at(membership.join_date)
+                  -date_joined = membership.join_date.to_time
                   %dd= date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y")
                   %dt Credits you've contributed
                   %dd= number_with_delimiter(membership.leave_credit-membership.start_credit)
@@ -126,7 +126,7 @@
                         = "(*)" if member.leave_date != nil
                     %td= link_to number_with_delimiter(member.credits), member.profile
                     %td= link_to number_with_delimiter(member.credit_contributed), member.profile
-                    -date_joined = Time.at(member.join_date)
+                    -date_joined = member.join_date.to_time
                     %td= link_to date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y"), member.profile
                     %td= link_to rank, member.profile
                     %td=link_to  member.rank, member.profile
@@ -135,7 +135,7 @@
                     %td Unknown
                     %td= number_with_delimiter(member.credits)
                     %td= number_with_delimiter(member.credit_contributed)
-                    -date_joined = Time.at(member.join_date)
+                    -date_joined = member.join_date.to_time
                     %td= date_joined.strftime("#{date_joined.day.ordinalize} of %B, %Y")
                     %td= rank
                     %td -

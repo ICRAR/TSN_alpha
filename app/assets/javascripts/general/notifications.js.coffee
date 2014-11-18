@@ -53,7 +53,7 @@ Notifications.display = (note) ->
             note = data['result']['profile_notification']
           )
       dismiss_all:
-        label: "Dimsiss All"
+        label: "Dismiss All"
         action: ->
           Messenger().hideAll()
           Notifications.dismiss_all((data) ->

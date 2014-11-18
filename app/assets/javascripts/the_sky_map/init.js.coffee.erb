@@ -1,7 +1,7 @@
 $(document).ready(
   jQuery ->
     if (typeof Faye != "undefined" )
-      window.faye = new Faye.Client("http://localhost:9292/faye")
+      window.faye = new Faye.Client("http://<%= APP_CONFIG['faye_host']%>:9292/faye")
       window.faye.subscribe "/messages/from_rails", (json_data) ->
         store = TheSkyMap.__container__.lookup('store:main')
         current_player = TheSkyMap.__container__.lookup('controller:currentPlayer')

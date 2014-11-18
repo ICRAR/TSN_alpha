@@ -1,5 +1,5 @@
 #= require jquery
-#= require ./init.js.coffee
+#= require ./init.js.coffee.erb
 #= require handlebars
 #= require ember
 #= require ember-data

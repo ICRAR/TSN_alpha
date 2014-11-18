@@ -12,7 +12,11 @@ module TheSkyMap
       end
     end
     layout "theSkyMap"
-    Footnotes::Filter.notes = []
+    #remove footnotes from dev
+    begin
+      Footnotes::Filter.notes = []
+    rescue NameError
+    end
     #authorize_resource
     private
     def current_player_json

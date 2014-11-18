@@ -11,13 +11,13 @@ class PogsTeam < BoincPogsModel
       local.is_boinc = true
       local.invite_only = (self.joinable == 0)
       local.pogs_team_id = self.id
-      check_local = Alliance.where{name == my{self.name}}.first #check to see if an alliance already exists with the same name
+      check_local = Alliance.where{name == my{self.name.force_encoding("UTF-8")}}.first #check to see if an alliance already exists with the same name
       if check_local.nil?
-        local.name = self.name
+        local.name = self.name.force_encoding("UTF-8")
       else
-        local.name = self.name + " (POGS)"
+        local.name = self.name.force_encoding("UTF-8") + " (POGS)"
       end
-      local.desc = self.description
+      local.desc = self.description.force_encoding("UTF-8")
       local.credit = 0
       local.ranking = nil
       local.pogs_update_time = 0
@@ -57,12 +57,12 @@ class PogsTeam < BoincPogsModel
       #find local user
       profile = nil
       if boinc_stats_item_hash.nil?
-        profile = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id == pogs_id}.first
+        profile = Profile.joins{general_stats_item.boinc_stats_item}.where{boinc_stats_items.boinc_id == pogs_id}.select('profiles.*').first
       else
         boinc_item = boinc_stats_item_hash[pogs_id]
         profile = boinc_item.general_stats_item.profile unless boinc_item.nil?
       end
-      if profile.nil?
+      unless profile.nil?
         last = nil
         #if local user is found
         #iterate through each membership to be updated

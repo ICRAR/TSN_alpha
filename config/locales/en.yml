@@ -34,6 +34,9 @@ en:
         password_tsn: "theSKyNet password:"
   helpers:
 
+  galaxy_mosacis:
+    show:
+      helped_by: "This mosaic was made with the help of the following users:"
   stats:
     index:
       title: "Site Statistics"

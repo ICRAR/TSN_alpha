@@ -77,7 +77,9 @@ class TheSkyMap::Player < ActiveRecord::Base
 
     #add initial currency
     new_player.total_points_special = 100
+    new_player.total_points_special_float = 100
     new_player.total_points = 1000
+    new_player.total_points_float = 1000
 
     new_player.save
 
@@ -149,9 +151,9 @@ class TheSkyMap::Player < ActiveRecord::Base
   def self.options_default
     {
         'fog_of_war_on' => true,
-        'mini_map_x_min' => 0,
+        'mini_map_x_min' => 1,
         'mini_map_x_max' => 20,
-        'mini_map_y_min' => 0,
+        'mini_map_y_min' => 1,
         'mini_map_y_max' => 20,
 
     }
@@ -241,6 +243,4 @@ class TheSkyMap::Player < ActiveRecord::Base
       TheSkyMap::Player.where{total_score > 0}.order{total_score.desc}.update_all('rank = @new_rank := @new_rank + 1')
     end
   end
-
-
 end

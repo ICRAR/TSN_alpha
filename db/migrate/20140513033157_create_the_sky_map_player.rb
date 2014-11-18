@@ -10,8 +10,8 @@ class CreateTheSkyMapPlayer < ActiveRecord::Migration
       t.integer :total_income, default: 0
       t.integer :total_income_special, default: 0
       t.integer :total_score, default: 0
-      t.double :total_points_float
-      t.double :total_points_special_float, default: 0
+      t.float :total_points_float, :precision=>64, :scale=>12
+      t.float :total_points_special_float, default: 0, :precision=>64, :scale=>12
       t.text :options
       t.belongs_to :profile
       t.belongs_to :home

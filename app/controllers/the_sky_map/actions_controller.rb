@@ -2,7 +2,11 @@ class TheSkyMap::ActionsController < TheSkyMap::ApplicationController
 
   respond_to :json
   def index
-    @actions = actionable.actions
+    if params[:ids]
+      @actions = actionable.actions.where{id.in my{params[:ids]}}
+    else
+      @actions = actionable.actions
+    end
     not_found unless actionable.the_sky_map_player_id == current_user.profile.the_sky_map_player.id
     render :json =>  @actions, :each_serializer => ActionSerializer
   end

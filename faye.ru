@@ -3,8 +3,9 @@ require 'yaml'
 env_string = ENV['FAYE_ENV']
 env_string = ENV['RAILS_ENV'] if env_string.nil? || env_string == ''
 env_string = 'development' if env_string.nil? || env_string == ''
+root_dir = File.dirname(__FILE__)
 FAYE_ENV = env_string
-APP_CONFIG = YAML.load_file('./config/custom_config.yml')[FAYE_ENV]
+APP_CONFIG = YAML.load_file("#{root_dir}/config/custom_config.yml")[FAYE_ENV]
 class ServerAuth
   def incoming(message, callback)
     puts(message) if FAYE_ENV == 'development'

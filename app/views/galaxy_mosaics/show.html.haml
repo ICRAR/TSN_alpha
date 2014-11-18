@@ -1,0 +1,73 @@
+- my_meta :title => "Galaxy Mosaic: #{@mosaic.id}  for TheSkyNet POGS",
+    :description => "Representations of some fo the galaxies processed by volunteers for theSkyNet POGS"
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= "Galaxy Mosaic: #{@mosaic.id}"
+  -@user_page=  'news'
+  =  render 'layouts/user_nav'
+
+-content_for(:content) do
+  #content-wrap
+    .well.well-white
+      .row-fluid
+        .span6
+          .row-fluid
+            .span12
+              %dl.dl-vertical
+                %dt Created Time:
+                %dd= @mosaic.image_updated_at.strftime '%B %d, %Y'
+                %dt Number of Users who contributed to this image:
+                %dd= @mosaic.options[:number_of_users]
+          .row-fluid
+            .span12
+              .mosaic_share_links
+                Share your success!
+                %span.mosaic_share_toolbox.addthis_default_style.addthis_32x32_style{:id => "mosaic_share_toolbox_#{@mosaic.id}_#{Time.now.to_i}",
+                  :data => {:image =>@mosaic.image.url(),
+                            :url => galaxy_mosaic_url(@mosaic),
+                            :title => "Galaxy Mosaic: #{@mosaic.id}"}}
+        .span6
+          %h3 Thumbnail:
+          = link_to @mosaic.image.url do
+            =image_tag  @mosaic.image.url(:thumb)
+          %p
+            = link_to  "Link to full size image.", @mosaic.image.url
+      .row-fluid
+        .span12
+          %h3= t"galaxy_mosacis.show.helped_by"
+          %p= profile_list(@mosaic.profiles.select_name)
+      .row-fluid
+        .span12
+          %h3 And includes the following galaxies:
+          %table#galaxies.table.table-striped
+            %thead
+              %tr
+                %th= 'Name'
+                %th= 'Type'
+                %th= 'Redshift'
+                %th
+                  %abbr{:title => "Dimensions"}= 'Dim'
+                %th
+                  %abbr{:title => "Right Ascension"}= 'RA'
+                %th
+                  %abbr{:title => "Declination"}= 'Dec'
+                %th
+                  %abbr{:title => "Percentage Complete"}= '%'
+                %th More
+            %tbody
+              -@mosaic.galaxies.each do |galaxy|
+                %tr
+                  - link = @boinc_id == nil ? galaxy : boinc_galaxy_path(@boinc_id,galaxy.id)
+                  %td
+                    = link_to link do
+                      =galaxy.name
+                      = image_tag galaxy.thumbnail_url
+                  %td= link_to galaxy.galaxy_type, link
+                  %td= link_to galaxy.redshift.to_s, link
+                  %td= link_to "#{galaxy.dimension_x} x #{galaxy.dimension_y}", link
+                  %td= link_to galaxy.ra_cent, link
+                  %td= link_to galaxy.dec_cent, link
+                  %td= link_to "#{galaxy.per_complete}%", link
+                  %td
+                    = link_to "More Galaxy details", galaxy.more_info_url
+
