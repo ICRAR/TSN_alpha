@@ -34,7 +34,9 @@ namespace :schedule_jobs do
     StatsAlliancesJob.unschedule
     puts 'stopping Main job Update'
     MainStatsJob.unschedule
-    puts 'starting elastic search check'
+    puts 'stopping elastic search check'
     ElasticSearchJob.unschedule
+    puts 'stopping theSkyMap background job'
+    TheSkyMapUpdateJob.unschedule
   end
 end
