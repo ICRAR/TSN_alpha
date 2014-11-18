@@ -7,6 +7,7 @@
     =javascript_include_tag "application"
     =auto_discovery_link_tag(:atom, news_index_url(format: "atom"), title: "theSkyNet news feed")
     =auto_discovery_link_tag(:atom, comments_url(format: "atom"), title: "theSkyNet Recent Comments")
+    =auto_discovery_link_tag(:atom, galaxy_mosaics_url(format: "atom"), title: "theSkyNet Galaxy Mosaics")
     %script{:type=>"text/javascript"}
       I18n.defaultLocale = "#{I18n.default_locale}";
       I18n.locale = "#{I18n.locale}";

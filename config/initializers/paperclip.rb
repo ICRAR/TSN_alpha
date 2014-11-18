@@ -13,10 +13,11 @@ if Rails.env == 'production'
       :path => '/:class/:attachment/:id_partition/_:timestamp.:style.:extension'
   )
 elsif Rails.env == 'development'
+  base_url = 'paperclip/:class/:attachment/:id_partition/_:timestamp.:style.:extension'
   Paperclip::Attachment.default_options.merge!(
       :storage => :filesystem,
-      :url => 'paperclip/:class/:attachment/:id_partition/_:timestamp.:style.:extension',
-      :path => ":rails_root/public/assets_dev/:url"
+      :url => "http://#{APP_CONFIG['site_host']}/assets_dev/#{base_url}",
+      :path => ":rails_root/public/assets_dev/#{base_url}"
   )
 end
 

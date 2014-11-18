@@ -14,6 +14,9 @@ class Profile < ActiveRecord::Base
   attr_readonly :comments_count
   has_many :profile_notifications
   before_destroy :remove_trophies
+
+  scope :select_name, select{[:id, :user_id, :first_name, :second_name, :nickname, :use_full_name]}.preload(:user)
+
   def remove_trophies
     self.profiles_trophies.delete_all
   end
