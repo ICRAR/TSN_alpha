@@ -21,17 +21,17 @@
       dt Owner
       dd: link-to 'players.show' player.id | {{player.name}}
     if has_ships
-      h5 Ships:
+      h4 Ships:
       ul
         each ship in ships
           li:  link-to 'ships.show' ship.id | {{ship.name}}
     if has_bases
-      h5 Bases:
+      h4 Bases:
       ul
         each base in bases
           li:  link-to 'bases.show' base.id | {{base.name}}
     if has_galaxy
-      h5 Galaxy:
+      h4 Galaxy:
       p: a href=galaxy_link Link to galaxy on main theSkyNet POGS site.
     a href='#' click="scroll_to_home" Zoom to Quadrant
 

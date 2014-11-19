@@ -27,7 +27,7 @@ class TheSkyMap::Base < ActiveRecord::Base
           where{the_sky_map_players_quadrants.the_sky_map_player_id == player.id}.
           where{the_sky_map_players_quadrants.explored == true}
     else
-      TheSkyMap::Base
+      TheSkyMap::Base.joins{the_sky_map_quadrant}.where{the_sky_map_quadrant.game_map_id == my{player.game_map_id}}
     end
   end
 

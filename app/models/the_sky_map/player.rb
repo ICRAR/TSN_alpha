@@ -1,6 +1,6 @@
 class TheSkyMap::Player < ActiveRecord::Base
   extend Memoist
-  attr_accessible :rank, :score, :spent_points, :total_points, :total_points_special, :spent_points_special, as: [:admin]
+  attr_accessible :rank, :score, :spent_points, :total_points, :game_map_id, :total_points_special, :spent_points_special, as: [:admin]
 
   belongs_to :profile
   has_many :the_sky_map_players_quadrants, :class_name => 'TheSkyMap::PlayersQuadrant', foreign_key: "the_sky_map_player_id"
@@ -10,12 +10,13 @@ class TheSkyMap::Player < ActiveRecord::Base
   has_many :messages, :class_name => 'TheSkyMap::Message', foreign_key: "the_sky_map_player_id"
 
   belongs_to :home, :class_name => 'TheSkyMap::Quadrant', :foreign_key => 'home_id'
+  belongs_to :game_map, :class_name => 'TheSkyMap::GameMap', :foreign_key => 'game_map_id'
 
   def self.for_index(player)
-    self.where{rank > 0}.order{rank.asc}.includes(:profile)
+    self.where{rank > 0}.order{rank.asc}.includes(:profile).where{game_map_id == my{player.game_map_id}}
   end
   def self.for_show(player,id)
-    self.find(id)
+    self.where{game_map_id == my{player.game_map_id}}.find(id)
   end
   before_create :set_defaults
   def set_defaults
@@ -42,8 +43,8 @@ class TheSkyMap::Player < ActiveRecord::Base
     self.unread_msg_count > 0
   end
 
-  #accepts a location in the form of {x:1,y:1,z:1} that the system will try to award as the home
-  def self.build_new_player(profile,loc = nil)
+  #accepts a location in the form of {x:1,y:1} that the system will try to award as the home
+  def self.build_new_player(game_map_id,profile,loc = nil)
     #check that the profile dosn't already have a player
     return false unless profile.the_sky_map_player.nil?
     #creates new player object
@@ -51,9 +52,10 @@ class TheSkyMap::Player < ActiveRecord::Base
     #sets defaults
     new_player.set_defaults
     new_player.profile = profile
+    new_player.game_map_id = game_map_id
     new_player.save
     #find a new home & claim home
-    new_player.home = TheSkyMap::Quadrant.find_new_home(loc)
+    new_player.home = TheSkyMap::Quadrant.find_new_home(game_map_id,loc)
     return false if new_player.home.nil?
     #capture home
     new_player.home.owner = new_player

@@ -1,9 +1,10 @@
 class TheSkyMap::Quadrant < ActiveRecord::Base
-  attr_accessible :x, :y, :z, :the_sky_map_quadrant_type_id, :galaxy_id, :thumbnail_link, as: [:admin]
+  attr_accessible :x, :y, :game_map_id, :the_sky_map_quadrant_type_id, :galaxy_id, :thumbnail_link, as: [:admin]
 
   belongs_to :the_sky_map_quadrant_type, :class_name => 'TheSkyMap::QuadrantType', foreign_key: "the_sky_map_quadrant_type_id"
   belongs_to :owner, :class_name => 'TheSkyMap::Player', :foreign_key => 'owner_id'
   belongs_to :galaxy, :class_name => 'Galaxy', :foreign_key => 'galaxy_id'
+  belongs_to :game_map, :class_name => 'TheSkyMap::GameMap', :foreign_key => 'game_map_id'
 
   has_many :the_sky_map_players_quadrants, :class_name => 'TheSkyMap::PlayersQuadrant', foreign_key: "the_sky_map_quadrant_id"
   has_many :the_sky_map_players, :class_name => 'TheSkyMap::Player', through: :the_sky_map_players_quadrants
@@ -12,21 +13,21 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
   has_many :the_sky_map_bases, :class_name => 'TheSkyMap::Base', foreign_key: "the_sky_map_quadrant_id"
 
 
-  validates_uniqueness_of :x, scope: [:y, :z]
+  validates_uniqueness_of :x, scope: [:y, :game_map_id]
   validates_presence_of :the_sky_map_quadrant_type_id
-  def self.within_range(x_min,x_max,y_min,y_max,z_min,z_max)
-    where{(z >= z_min) & (z <= z_max)}.
+  def self.within_range(x_min,x_max,y_min,y_max,game_map_id_set)
+    where{game_map_id == game_map_id_set}.
       where{(y >= y_min) & (y <= y_max)}.
       where{(x >= x_min) & (x <= x_max)}.
-      order([:z,:y,:x])
+      order([:y,:x])
   end
   #this function finds a new home free of enemies ready for an excited new player
-  #accepts a location in the form of {x:1,y:1,z:1} that the system will try to award as the home
-  def self.find_new_home(location = nil)
+  #accepts a location in the form of {x:1,y:1} that the system will try to award as the home
+  def self.find_new_home(game_map_id_set, location = nil)
     if location
-      quadrant_pool =  TheSkyMap::Quadrant.where{(x==location[:x]) && (y==location[:y]) && (z==location[:z])}
+      quadrant_pool =  TheSkyMap::Quadrant.where{(x==location[:x]) && (y==location[:y]) && (game_map_id==game_map_id_set)}
     else
-      quadrant_pool = TheSkyMap::Quadrant.where{z==1}
+      quadrant_pool = TheSkyMap::Quadrant.where{game_map_id==game_map_id_set}
     end
     suitable_type_ids = TheSkyMap::QuadrantType.where{suitable_for_home == true}.pluck(:id)
     suitable_relation = quadrant_pool. #only interested in layer 1 for now
@@ -88,8 +89,7 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
       the_sky_map_players_quadrants.the_sky_map_player_id = #{player.id}").
           select{the_sky_map_players_quadrants.explored.as('explored')}
     else
-      includes(:the_sky_map_quadrant_type).
-          base_relation.
+          base_relation.where{game_map_id == my{player.game_map_id}}
           select('1 as explored')
     end
   end
@@ -104,15 +104,16 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     else
       includes(:the_sky_map_quadrant_type).
       includes(:the_sky_map_ships).
+      where{game_map_id == my{player.game_map_id}}.
       select('the_sky_map_quadrants.*').
       select('1 as explored')
     end
   end
-  def self.at_pos(x_pos,y_pos,z_pos)
-    where{(x == x_pos) & (y == y_pos) & (z == z_pos)}.first
+  def self.at_pos(x_pos,y_pos,game_map_id_pos)
+    where{(x == x_pos) & (y == y_pos) & (game_map_id == game_map_id_pos)}.first
   end
   def surrounding_quadrants_move
-    TheSkyMap::Quadrant.where{z == my{self.z}}.where{
+    TheSkyMap::Quadrant.where{game_map_id == my{self.game_map_id}}.where{
       ((x == my{self.x}) & ((y == my{self.y-1}) | (y == my{self.y+1}))) |
       ((y == my{self.y}) & ((x == my{self.x-1}) | (x == my{self.x+1})))
     }
@@ -121,15 +122,15 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     TheSkyMap::Quadrant.
         where{(x <= my{self.x+distance}) & (x >= my{self.x-distance})}.
         where{(y <= my{self.y+distance}) & (y >= my{self.y-distance})}.
-        where{(z <= my{self.z}) & (z >= my{self.z})}.
-        where{((x != my{self.x}) | (y != my{self.y}) | (z != my{self.z})) }
+        where{game_map_id == my{self.game_map_id}}.
+        where{((x != my{self.x}) | (y != my{self.y}))}
   end
 
   #randomly generates a new quadrant at the given location
   #if one already exisits do nothing
-  def self.generate_new(x,y,z, chance_table = nil)
+  def self.generate_new(x,y,game_map_id, chance_table = nil)
     #check for existing quadrant
-    return unless self.at_pos(x,y,z).nil?
+    return unless self.at_pos(x,y,game_map_id).nil?
 
     #determine type table
     chance_table ||= TheSkyMap::QuadrantType.generation_chance_table
@@ -140,7 +141,7 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     new_quadrant = self.new({
       x: x,
       y: y,
-      z: z,
+      game_map_id: game_map_id,
       the_sky_map_quadrant_type_id: type_id
 
     }, as: :admin)
@@ -154,23 +155,20 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     new_quadrant.save
 
   end
-  def self.generate_new_area(x_range, y_range, z_range, chance_table = nil)
+  def self.generate_new_area(x_range, y_range, game_map_id, chance_table = nil)
     #determine type table
     chance_table ||= TheSkyMap::QuadrantType.generation_chance_table
     x_range.each do |x|
       y_range.each do |y|
-        z_range.each do |z|
-          self.generate_new(x,y,z, chance_table)
-        end
+        self.generate_new(x,y,game_map_id, chance_table)
       end
     end
   end
 
-  def distance_to(to_x,to_y,to_z)
+  def distance_to(to_x,to_y)
     x2 = ((to_x - x).abs)**2
     y2 = ((to_y - y).abs)**2
-    z2 = ((to_z - z).abs)**2
-    Math.sqrt(x2 + y2 + z2)
+    Math.sqrt(x2 + y2)
   end
 
   #performs the capture of an unowned quadrant for the player

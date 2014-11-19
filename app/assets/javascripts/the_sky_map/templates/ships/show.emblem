@@ -19,7 +19,7 @@
         dd: link-to 'players.show' player.id | {{player.name}}
         dt Location
         dd
-          ' ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
+          ' ({{quadrant.x}},{{quadrant.y}})
           a href='#' click="show_on_map" Show on map
       if mine
         h3 Actions

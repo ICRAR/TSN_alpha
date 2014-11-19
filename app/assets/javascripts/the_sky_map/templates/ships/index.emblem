@@ -15,6 +15,6 @@
             td: link-to 'ships.show' id | {{attack}}
             td: link-to 'ships.show' id | {{speed}}
             td: link-to 'ships.show' id | {{mine}}
-            td: link-to 'ships.show' id | ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
+            td: link-to 'ships.show' id | ({{quadrant.x}},{{quadrant.y}})
     pagination-links pagesObject=pagesObject
     p= testVar

@@ -1,5 +1,5 @@
 class TheSkyMap::QuadrantSerializer < ActiveModel::Serializer
-  attributes :id, :x, :y, :z, :name, :explored, :explored_fully, :explored_partial,
+  attributes :id, :x, :y, :name, :explored, :explored_fully, :explored_partial,
              :home, :mine, :hostile, :unowned, :total_score, :total_income, :location, :galaxy_id, :thumbnail_src
   embed :id, include: true
   has_many :the_sky_map_ships, key: :ship_ids, root: :ships, include: false
@@ -72,8 +72,7 @@ class TheSkyMap::QuadrantSerializer < ActiveModel::Serializer
   def location
     {
         x: object.x,
-        y: object.y,
-        z: object.z,
+        y: object.y
     }
   end
 end

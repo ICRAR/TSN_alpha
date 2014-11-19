@@ -25,7 +25,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
           where{the_sky_map_players_quadrants.the_sky_map_player_id == player.id}.
           where{the_sky_map_players_quadrants.explored == true}
     else
-      TheSkyMap::Ship
+      TheSkyMap::Ship.joins{the_sky_map_quadrant}.where{the_sky_map_quadrant.game_map_id == my{player.game_map_id}}
     end
   end
 
@@ -61,13 +61,13 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
       else
         available_builds = {}
         bases_allowed.each do |base|
-          action_name = "build_base_#{base.id}_at_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
+          action_name = "build_base_#{base.id}_at_#{quadrant.x}_#{quadrant.y}_map#{quadrant.game_map_id}".to_sym
           available_builds[action_name] = {
                 action: 'build_base',
-                name: "Build a new '#{base.name}' base on (#{quadrant.x}, #{quadrant.y}, #{quadrant.z})",
+                name: "Build a new '#{base.name}' base on (#{quadrant.x}, #{quadrant.y}",
                 cost: base.cost,
                 duration: base.duration,
-                options: {base_upgrade_type_id: base.id,x: quadrant.x, y: quadrant.y, z: quadrant.z},
+                options: {base_upgrade_type_id: base.id,x: quadrant.x, y: quadrant.y},
                 allowed: true,
                 icon: 'glyphicon-tower'
           }
@@ -96,13 +96,13 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     return {} if moving?
     quadrant = the_sky_map_quadrant
     if quadrant.is_stealable?(actor)
-      action_name = "steal_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
+      action_name = "steal_#{quadrant.x}_#{quadrant.y}_map#{quadrant.game_map_id}".to_sym
       {action_name => {
           action: 'steal',
           name: "Steal the Quadrant (#{quadrant.x}, #{quadrant.y})",
           cost: 500,
           duration: 1200,
-          options: {x: quadrant.x, y: quadrant.y, z: quadrant.z},
+          options: {x: quadrant.x, y: quadrant.y},
           allowed: true,
           icon: 'glyphicon-remove-circle'
       }}
@@ -111,8 +111,10 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     end
   end
   def perform_steal(opts)
-    quadrant = TheSkyMap::Quadrant.at_pos(opts[:x],opts[:y], opts[:z])
+    current_quadrant = self.the_sky_map_quadrant
+    quadrant = TheSkyMap::Quadrant.at_pos(opts[:x],opts[:y], current_quadrant.game_map_id)
     #check if ship is still in the correct quadrant
+    return false unless current_quadrant.id == quadrant.id
     return false unless quadrant.is_stealable?(the_sky_map_player)
     #capture quadrant
     outcome = quadrant.steal(the_sky_map_player)
@@ -126,13 +128,13 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     return {} if moving?
     quadrant = the_sky_map_quadrant
     if quadrant.owner_id.nil?
-      action_name = "capture_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
+      action_name = "capture_#{quadrant.x}_#{quadrant.y}_map#{quadrant.game_map_id}".to_sym
       {action_name => {
           action: 'capture',
           name: "Capture the Quadrant (#{quadrant.x}, #{quadrant.y})",
           cost: 10,
           duration: 60,
-          options: {x: quadrant.x, y: quadrant.y, z: quadrant.z},
+          options: {x: quadrant.x, y: quadrant.y},
           allowed: true,
           icon: 'glyphicon-log-in'
       }}
@@ -141,9 +143,10 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     end
   end
   def perform_capture(opts)
-    quadrant = TheSkyMap::Quadrant.at_pos(opts[:x],opts[:y], opts[:z])
+    current_quadrant = self.the_sky_map_quadrant
+    quadrant = TheSkyMap::Quadrant.at_pos(opts[:x],opts[:y], current_quadrant.game_map_id)
     #check if ship is still in the correct quadrant
-    return false unless quadrant == the_sky_map_quadrant
+    return false unless current_quadrant.id == quadrant.id
     #check that the quadrant is still unoccupided
     return false unless quadrant.owner_id.nil?
     #capture quadrant
@@ -164,8 +167,8 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     end
     available_moves = {}
     surrounding_quadrants.each do |quadrant|
-      opt = "move_#{quadrant.x}_#{quadrant.y}_#{quadrant.z}".to_sym
-      distance_to_home = quadrant.distance_to(home.x,home.y,home.z)
+      opt = "move_#{quadrant.x}_#{quadrant.y}_map#{quadrant.game_map_id}".to_sym
+      distance_to_home = quadrant.distance_to(home.x,home.y)
       cost = 10 * distance_to_home
       cost = cost.ceil
       dir = if quadrant.x == the_sky_map_quadrant.x
@@ -178,7 +181,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
           name: "Move to Quadrant (#{quadrant.x}, #{quadrant.y})",
           cost: cost,
           duration: 60,
-          options: {x: quadrant.x, y: quadrant.y, z: quadrant.z},
+          options: {x: quadrant.x, y: quadrant.y},
           allowed: true,
           icon: "glyphicon-arrow-#{dir}"
       }
@@ -186,8 +189,8 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     available_moves
   end
   def perform_move(opts)
-
-    quadrant = TheSkyMap::Quadrant.at_pos(opts[:x],opts[:y], opts[:z])
+    current_quadrant = self.the_sky_map_quadrant
+    quadrant = TheSkyMap::Quadrant.at_pos(opts[:x],opts[:y], current_quadrant.game_map_id)
     #check if the move is allowed
     #ToDo return false if move is not allowed
     #move
@@ -202,8 +205,8 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     PostToFaye.request_update('quadrant',full_update_quadrants)
 
     player_id = self.the_sky_map_player_id
-    PostToFaye.request_update_player_only('quadrant',(explored_quadrants - full_update_quadrants),[player_id])
-    PostToFaye.request_update_player_only('mini_quadrant',explored_quadrants,[player_id])
+    PostToFaye.request_update_player_only('quadrant',(explored_quadrants - full_update_quadrants),[player_id])  unless (explored_quadrants - full_update_quadrants) == []
+    PostToFaye.request_update_player_only('mini_quadrant',(explored_quadrants + [quadrant.id]),[player_id])
 
     #force update to open ship
     PostToFaye.request_update('ship',[self.id])

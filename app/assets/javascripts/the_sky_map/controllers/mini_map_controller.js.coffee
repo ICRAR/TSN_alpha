@@ -3,7 +3,6 @@ TheSkyMap.MiniMapController = Ember.ArrayController.extend
   init: ->
     @_super()
     @send('refresh_view')
-  layer: 1
   view_widow_style: (() ->
 
     map_x_min = @get('controllers.currentPlayer.mini_map_x_min')
@@ -28,13 +27,12 @@ TheSkyMap.MiniMapController = Ember.ArrayController.extend
     x_max = @get('controllers.currentPlayer.mini_map_x_max')
     y_min = @get('controllers.currentPlayer.mini_map_y_min')
     y_max = @get('controllers.currentPlayer.mini_map_y_max')
-    z = @get('layer')
     [y_min..y_max].map (y) ->
       {
         y:y
         quadrants: [x_min..x_max].map (x) ->
           quadrantsArray = c.get('store').filter(TheSkyMap.MiniQuadrant, (quadrant) ->
-            quadrant.get('y') == y && quadrant.get('z') == z && quadrant.get('x') == x
+            quadrant.get('y') == y && quadrant.get('x') == x
           )
           {
             x: x
@@ -47,7 +45,6 @@ TheSkyMap.MiniMapController = Ember.ArrayController.extend
       pos = {
         x: x
         y: y
-        z: @get('layer')
       }
       @get('controllers.board').send('scroll_to_position', pos)
     refresh_view: () ->

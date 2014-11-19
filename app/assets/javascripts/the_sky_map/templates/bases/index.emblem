@@ -13,5 +13,5 @@
             td: link-to 'bases.show' id | {{name}}
             td: link-to 'bases.show' id | {{type}}
             td: link-to 'bases.show' id | {{mine}}
-            td: link-to 'bases.show' id | ({{quadrant.x}},{{quadrant.y}},{{quadrant.z}})
+            td: link-to 'bases.show' id | ({{quadrant.x}},{{quadrant.y}})
     pagination-links pagesObject=pagesObject

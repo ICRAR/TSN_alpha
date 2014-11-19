@@ -1,7 +1,6 @@
 module TheSkyMap
   class EmberController < TheSkyMap::ApplicationController
     def index
-      @profiles = Profile.limit(10)
       @current_player = current_player_json
     end
 
