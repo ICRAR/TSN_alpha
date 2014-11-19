@@ -3,6 +3,7 @@ TheSkyMap.Ship = TheSkyMap.Actionable.extend(
   name: DS.attr("string")
   desc: DS.attr("string")
   attack: DS.attr("number")
+  heal: DS.attr("number")
   speed: DS.attr("number")
   remaining_health: DS.attr("number")
   max_health: DS.attr("number")

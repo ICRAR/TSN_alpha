@@ -5,6 +5,7 @@
       thead: tr
         th Name
         th Attack
+        th Heal
         th Speed
         th Mine?
         th Location
@@ -13,6 +14,7 @@
           tr
             td: link-to 'ships.show' id | {{name}}
             td: link-to 'ships.show' id | {{attack}}
+            td: link-to 'ships.show' id | {{heal}}
             td: link-to 'ships.show' id | {{speed}}
             td: link-to 'ships.show' id | {{mine}}
             td: link-to 'ships.show' id | ({{quadrant.x}},{{quadrant.y}})

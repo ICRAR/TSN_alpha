@@ -20,8 +20,8 @@ TheSkyMap.MiniMapController = Ember.ArrayController.extend
     left = (x_min - 1) * 16
     "width: #{width}px; height: #{height}px; top: #{top}px; left: #{left}px;"
   ).property('controllers.board.x_min','controllers.board.x_max',
-    'controllers.board.y_min','controllers.board.y_max', 'controllers.currentPlayer.player_options')
-  mini_map_rows:(() ->
+    'controllers.board.y_min','controllers.board.y_max')
+  mini_map_rows: (() ->
     c = @
     x_min = @get('controllers.currentPlayer.mini_map_x_min')
     x_max = @get('controllers.currentPlayer.mini_map_x_max')
@@ -39,7 +39,7 @@ TheSkyMap.MiniMapController = Ember.ArrayController.extend
             quadrant_final: quadrantsArray
           }
       }
-  ).property('controllers.currentPlayer.player_options')
+  ).property()
   actions:
     move_view: (x,y) ->
       pos = {

@@ -1,6 +1,6 @@
 class TheSkyMap::ShipType < ActiveRecord::Base
-  attr_accessible :attack, :desc, :health, :name, :speed, :cost, :duration, :can_build_bases, :sensor_range, as: [:admin, :default]
-  validates_presence_of :attack, :desc, :health, :name, :cost, :duration, :speed, :sensor_range
+  attr_accessible :attack, :desc, :health, :name, :speed, :cost, :duration, :can_build_bases, :sensor_range, :heal, as: [:admin, :default]
+  validates_presence_of :attack, :desc, :health, :name, :cost, :duration, :speed, :sensor_range, :heal
   validates_uniqueness_of :name
 
   has_many :the_sky_map_ships,

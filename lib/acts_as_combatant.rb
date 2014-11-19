@@ -25,6 +25,15 @@ module ActsAsCombatant
     def is_healthy?
       self.damage < self.health_value
     end
+    def is_healable?
+      self.damage > 0 && self.is_healthy?
+    end
+    def heal(amount)
+      new_damage = [self.damage - amount,0].max
+      self.class.where{id == my{self.id}}.update_all("damage = #{new_damage}" )
+      self.reload
+      true
+    end
     def attack(defender)
       attacker = self
       quadrant = self.the_sky_map_quadrant

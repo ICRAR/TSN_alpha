@@ -228,6 +228,20 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
   def attackable_ships(actor)
     self.the_sky_map_ships.where{the_sky_map_ships.the_sky_map_player_id != my{actor.id}}
   end
+  def has_healable_ships?(actor)
+    healable_ships(actor).count > 0
+  end
+  def healable_ships(actor)
+    self.the_sky_map_ships.where{((the_sky_map_ships.the_sky_map_player_id == my{actor.id}) & (the_sky_map_ships.damage > 0))}
+  end
+  def has_healable_bases?(actor)
+    return false unless owner_id == actor.id
+    healable_bases(actor).count > 0
+  end
+  def healable_bases(actor)
+
+    self.the_sky_map_bases.where{the_sky_map_bases.damage > 0}
+  end
 
 
   #connects with a POGS galaxy

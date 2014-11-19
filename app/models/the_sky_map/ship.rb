@@ -45,7 +45,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     the_sky_map_player
   end
   def actions_list
-    ['move', 'capture', 'build_base', 'steal', 'attack_base', 'attack_ship']
+    ['move', 'capture', 'build_base', 'steal', 'attack_base', 'attack_ship','heal_ship','heal_base']
   end
   def moving?
     !current_action.nil? && current_action.action == 'move'
@@ -279,6 +279,80 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     #attack the ship
     outcome = self.attack(attacked_ship)
+    return outcome
+  end
+
+
+  def heal_ship_options(actor)
+    return {} if moving?
+    return {} if the_sky_map_ship_type.heal < 1
+    quadrant = the_sky_map_quadrant
+
+    if quadrant.has_healable_ships?(the_sky_map_player)
+      available_ships = {}
+      quadrant.healable_ships(the_sky_map_player).each do |healed_ship|
+        action_name = "heal_ship_#{healed_ship.id}".to_sym
+        available_ships[action_name] = {
+            action: 'heal_ship',
+            name: "Heal the Ship: #{healed_ship.id}",
+            cost: 100,
+            duration: 60,
+            options: {ship_id: healed_ship.id},
+            allowed: true,
+            icon: 'glyphicon-header'
+        }
+      end
+      available_ships
+    else
+      {}
+    end
+  end
+  def perform_heal_ship(opts)
+    healed_ship = TheSkyMap::Ship.find(opts[:ship_id])
+    quadrant = the_sky_map_quadrant
+
+    #check if healed ship is in the your quadrant
+    #if not return true as you missed and thus forfeit your resources
+    return true unless quadrant == healed_ship.the_sky_map_quadrant
+
+    #heal the ship
+    outcome = healed_ship.heal(the_sky_map_ship_type.heal)
+    return outcome
+  end
+  def heal_base_options(actor)
+    return {} if moving?
+    return {} if the_sky_map_ship_type.heal < 1
+    quadrant = the_sky_map_quadrant
+
+    if quadrant.has_healable_bases?(the_sky_map_player)
+      available_bases = {}
+      quadrant.healable_bases(the_sky_map_player).each do |healed_base|
+        action_name = "heal_base_#{healed_base.id}".to_sym
+        available_bases[action_name] = {
+            action: 'heal_base',
+            name: "Heal the Base: #{healed_base.id}",
+            cost: 100,
+            duration: 60,
+            options: {base_id: healed_base.id},
+            allowed: true,
+            icon: 'glyphicon-header'
+        }
+      end
+      available_bases
+    else
+      {}
+    end
+  end
+  def perform_heal_base(opts)
+    healed_base = TheSkyMap::Base.find(opts[:base_id])
+    quadrant = the_sky_map_quadrant
+
+    #check if healed ship is in the your quadrant
+    #if not return true as you missed and thus forfeit your resources
+    return true unless quadrant == healed_base.the_sky_map_quadrant
+
+    #heal the ship
+    outcome = healed_base.heal(the_sky_map_ship_type.heal)
     return outcome
   end
 

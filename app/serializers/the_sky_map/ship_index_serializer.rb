@@ -1,5 +1,5 @@
 class TheSkyMap::ShipIndexSerializer < ActiveModel::Serializer
-  attributes :id, :name, :attack, :speed, :desc, :hostile, :mine, :remaining_health, :max_health
+  attributes :id, :name, :attack, :heal, :speed, :desc, :hostile, :mine, :remaining_health, :max_health
   embed :ids#, include: true
   #has_one :the_sky_map_quadrant, key: :quadrant_id
   #has_one :the_sky_map_player, key: :player_id
@@ -10,6 +10,9 @@ class TheSkyMap::ShipIndexSerializer < ActiveModel::Serializer
   end
   def attack
     object.the_sky_map_ship_type.attack
+  end
+  def heal
+    object.the_sky_map_ship_type.heal
   end
   def desc
     object.the_sky_map_ship_type.desc

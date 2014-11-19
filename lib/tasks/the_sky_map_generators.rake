@@ -152,6 +152,7 @@ namespace :the_sky_map_generators do
             attack: 1,
             health: 1,
             speed: 1,
+            heal: 0,
             sensor_range: 1,
             cost_m: 1,
             duration_m: 1,
@@ -162,6 +163,7 @@ namespace :the_sky_map_generators do
             attack: 2,
             health: 2,
             speed: 1,
+            heal: 1,
             sensor_range: 2,
             cost_m: 10,
             duration_m: 2,
@@ -172,16 +174,29 @@ namespace :the_sky_map_generators do
             attack: 2,
             health: 2,
             speed: 4,
+            heal: 1,
             sensor_range: 2,
             cost_m: 30,
             duration_m: 3,
             can_build_bases: false
+        },
+        'Engineer Ship' => {
+            desc: 'Good at healing',
+            attack: 1,
+            health: 2,
+            speed: 2,
+            heal: 3,
+            sensor_range: 2,
+            cost_m: 30,
+            duration_m: 3,
+            can_build_bases: true
         },
         'Ultra Attack ship' => {
             desc: '-',
             attack: 4,
             health: 4,
             speed: 1,
+            heal: 1,
             sensor_range: 2,
             cost_m: 50,
             duration_m: 5,
@@ -192,6 +207,7 @@ namespace :the_sky_map_generators do
             attack: 2,
             health: 3,
             speed: 2,
+            heal: 1,
             sensor_range: 5,
             cost_m: 50,
             duration_m: 5,
@@ -202,6 +218,7 @@ namespace :the_sky_map_generators do
             attack: 6,
             health: 6,
             speed: 3,
+            heal: 3,
             sensor_range: 5,
             cost_m: 1000,
             duration_m: 60,
@@ -394,7 +411,7 @@ namespace :the_sky_map_generators do
             income_m: 3,
             score_m: 5,
             upgrade_from: 'Engineering Base',
-            builds_ships: ['Basic Ship','Manned Ship','Fast Ship']
+            builds_ships: ['Basic Ship','Manned Ship','Fast Ship','Engineer Ship']
         },
         'Galactic Mine' => {
             desc: 'Awesome mining',
@@ -442,7 +459,7 @@ namespace :the_sky_map_generators do
             income_m: 3,
             score_m: 6,
             upgrade_from: 'Engineering Lab',
-            builds_ships: ['Basic Ship','Manned Ship','Fast Ship','Ultra Attack ship']
+            builds_ships: ['Basic Ship','Manned Ship','Fast Ship','Engineer Ship','Ultra Attack ship']
         },
         'Cluster Mine' => {
             desc: 'Amazing Mining',
@@ -478,7 +495,7 @@ namespace :the_sky_map_generators do
             income_m: 3,
             score_m: 7,
             upgrade_from: 'SKA',
-            builds_ships: ['Basic Ship','Manned Ship','Fast Ship','Ultra Attack ship','Long Range Sensor Ship']
+            builds_ships: ['Basic Ship','Manned Ship','Fast Ship','Engineer Ship','Ultra Attack ship','Long Range Sensor Ship']
         },
         'Supercluster Mine' => {
             desc: 'The best Mine',
