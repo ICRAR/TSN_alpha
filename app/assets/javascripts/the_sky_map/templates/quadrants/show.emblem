@@ -16,8 +16,6 @@
       dd= x
       dt y
       dd= y
-      dt z
-      dd= z
       dt Owner
       dd: link-to 'players.show' player.id | {{player.name}}
     if has_ships

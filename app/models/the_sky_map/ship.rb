@@ -28,7 +28,9 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
       TheSkyMap::Ship.joins{the_sky_map_quadrant}.where{the_sky_map_quadrant.game_map_id == my{player.game_map_id}}
     end
   end
-
+  def name
+    "#{self.the_sky_map_ship_type.name}:#{self.id}"
+  end
   def on_own_quadrant?
     the_sky_map_quadrant.owner_id == the_sky_map_player_id
   end
@@ -64,7 +66,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
           action_name = "build_base_#{base.id}_at_#{quadrant.x}_#{quadrant.y}_map#{quadrant.game_map_id}".to_sym
           available_builds[action_name] = {
                 action: 'build_base',
-                name: "Build a new '#{base.name}' base on (#{quadrant.x}, #{quadrant.y}",
+                name: "Build a new '#{base.name}' base on (#{quadrant.x}, #{quadrant.y})",
                 cost: base.cost,
                 duration: base.duration,
                 options: {base_upgrade_type_id: base.id,x: quadrant.x, y: quadrant.y},
@@ -87,6 +89,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     new_base = TheSkyMap::Base.first_base(quadrant,new_base_type)
     return false if new_base.nil?
     PostToFaye.request_update('quadrant',[quadrant.id])
+    the_sky_map_player.send_msg("You base (#{new_base.id}) at (#{quadrant.x},#{quadrant.y}) has been completed")
     true
 
   end
@@ -121,6 +124,11 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     #push changes with faye
     PostToFaye.request_update('quadrant',[quadrant.id])
     PostToFaye.request_update('mini_quadrant',[quadrant.id])
+    if outcome == true
+      the_sky_map_player.send_msg("You have successfully stolen the quadrant (#{quadrant.x},#{quadrant.y})",quadrant)
+    else
+      the_sky_map_player.send_msg("You have failed to steal the quadrant (#{quadrant.x},#{quadrant.y})",quadrant)
+    end
     return outcome
   end
 
@@ -154,6 +162,11 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     #push changes with faye
     PostToFaye.request_update('quadrant',[quadrant.id])
     PostToFaye.request_update('mini_quadrant',[quadrant.id])
+    if outcome == true
+      the_sky_map_player.send_msg("You have successfully captured the quadrant (#{quadrant.x},#{quadrant.y})",quadrant)
+    else
+      the_sky_map_player.send_msg("You have failed to capture the quadrant (#{quadrant.x},#{quadrant.y})",quadrant)
+    end
     return outcome
   end
 
@@ -166,6 +179,9 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
       surrounding_quadrants = surrounding_quadrants.where{(owner_id == nil) | (owner_id == my{the_sky_map_player_id})}
     end
     available_moves = {}
+    base_time = 5.minutes
+    ships_speed = the_sky_map_ship_type.speed
+    move_time = (base_time / ships_speed).to_i
     surrounding_quadrants.each do |quadrant|
       opt = "move_#{quadrant.x}_#{quadrant.y}_map#{quadrant.game_map_id}".to_sym
       distance_to_home = quadrant.distance_to(home.x,home.y)
@@ -180,7 +196,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
           action: 'move',
           name: "Move to Quadrant (#{quadrant.x}, #{quadrant.y})",
           cost: cost,
-          duration: 60,
+          duration: move_time,
           options: {x: quadrant.x, y: quadrant.y},
           allowed: true,
           icon: "glyphicon-arrow-#{dir}"
@@ -208,8 +224,12 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     PostToFaye.request_update_player_only('quadrant',(explored_quadrants - full_update_quadrants),[player_id])  unless (explored_quadrants - full_update_quadrants) == []
     PostToFaye.request_update_player_only('mini_quadrant',(explored_quadrants + [quadrant.id]),[player_id])
 
+    #if there are enemy bases they should automatically initiate an attack on the new ship
+    quadrant.auto_attack_incoming_ship self
+
     #force update to open ship
     PostToFaye.request_update('ship',[self.id])
+    self.the_sky_map_player.send_msg("Your ship #{self.name} has arrived at Quadrant (#{quadrant.x},#{quadrant.y})",quadrant)
     return true
   end
 
@@ -244,7 +264,21 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     #attack the base
     outcome = self.attack(base)
-    return outcome
+
+    #send messages
+    if outcome[:defender_killed] == true
+      msg_to_attacker = "Your ship (#{self.id}) attacked the base (#{base.id}) for #{outcome[:attack_damage]} damage and destroyed the base."
+      msg_to_defender = "Your base (#{base.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and was destroyed."
+    elsif outcome[:attacker_killed] == true
+      msg_to_attacker = "Your ship (#{self.id}) attacked the base (#{base.id}) for #{outcome[:attack_damage]} damage however the base retaliated for #{outcome[:defend_damage]} damage killing your ship."
+      msg_to_defender = "Your base (#{base.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage killing the ship."
+    else
+      msg_to_attacker = "Your ship (#{self.id}) attacked the base (#{base.id}) for #{outcome[:attack_damage]} damage and the base retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_defender = "Your base (#{base.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
+    end
+    the_sky_map_player.send_msg(msg_to_attacker,quadrant)
+    base.the_sky_map_player.send_msg(msg_to_defender,quadrant)
+    return outcome[:action_outcome]
   end
   def attack_ship_options(actor)
     return {} if moving?
@@ -279,7 +313,21 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     #attack the ship
     outcome = self.attack(attacked_ship)
-    return outcome
+
+    #send messages
+    if outcome[:defender_killed] == true
+      msg_to_attacker = "Your ship (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage and destroyed the ship."
+      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and was destroyed."
+    elsif outcome[:attacker_killed] == true
+      msg_to_attacker = "Your ship (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage however the ship retaliated for #{outcome[:defend_damage]} damage killing your ship."
+      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage killing the ship."
+    else
+      msg_to_attacker = "Your ship (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage and the ship retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
+    end
+    the_sky_map_player.send_msg(msg_to_attacker,quadrant)
+    attacked_ship.the_sky_map_player.send_msg(msg_to_defender,quadrant)
+    return outcome[:action_outcome]
   end
 
 
@@ -317,6 +365,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     #heal the ship
     outcome = healed_ship.heal(the_sky_map_ship_type.heal)
+    the_sky_map_player.send_msg("Your ship (#{healed_ship.id}) was healed #{the_sky_map_ship_type.heal} points by the ship #{id}")
     return outcome
   end
   def heal_base_options(actor)
@@ -353,6 +402,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     #heal the ship
     outcome = healed_base.heal(the_sky_map_ship_type.heal)
+    the_sky_map_player.send_msg("Your base (#{healed_base.id}) was healed #{the_sky_map_ship_type.heal} points by the ship #{id}")
     return outcome
   end
 

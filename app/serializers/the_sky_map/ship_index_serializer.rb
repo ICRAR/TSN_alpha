@@ -5,9 +5,7 @@ class TheSkyMap::ShipIndexSerializer < ActiveModel::Serializer
   #has_one :the_sky_map_player, key: :player_id
   attributes the_sky_map_quadrant_id: :quadrant_id
   attributes the_sky_map_player_id: :player_id
-  def name
-    "#{object.the_sky_map_ship_type.name}:#{object.id}"
-  end
+
   def attack
     object.the_sky_map_ship_type.attack
   end

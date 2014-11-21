@@ -10,6 +10,9 @@
  *
  *= require_self
  *= require_tree ./vendor
+ *= require messenger
+ *= require messenger-spinner
+ *= require messenger-theme-future
  *= require ./main
 */
 

@@ -124,7 +124,7 @@ namespace :the_sky_map_generators do
         num_of_bases: 0,
         score: 10,
         feature_type: '-',
-        generation_chance: 40,
+        generation_chance: 60,
         unexplored_symbol: '-',
         explored_symbol: '=',
         suitable_for_home: false,

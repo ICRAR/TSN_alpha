@@ -7,8 +7,8 @@ module ActsAsActionable
   module ClassMethods
     def acts_as_actionable(options = {})
       include ActsAsActionable::LocalInstanceMethods
-      has_many :actions, as: :actionable, class_name: 'Action'
       before_destroy :refund_all_pending_actions
+      has_many :actions, as: :actionable, class_name: 'Action', :dependent => :destroy
     end
   end
 

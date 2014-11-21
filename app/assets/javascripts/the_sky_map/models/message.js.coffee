@@ -1,5 +1,5 @@
 Ember.Inflector.inflector.irregular('message', 'messages');
-TheSkyMap.Message = TheSkyMap.Actionable.extend(
+TheSkyMap.Message = DS.Model.extend(
   msg: DS.attr("string")
   created_at: DS.attr("string")
   created_at_int: DS.attr("number")

@@ -13,7 +13,7 @@ each a in game_actions_available
         ' s
       .perform
         if a.allowed
-          button click="perform_action a.action_name" Perform Now
+          button click="perform_action a.action_name" Schedule Action
         else
           button disabled="true" Disabled
     .clearfix

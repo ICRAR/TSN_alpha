@@ -55,6 +55,11 @@ class TheSkyMap::Base < ActiveRecord::Base
     self.the_sky_map_base_upgrade_type.the_sky_map_ship_types
   end
 
+  #check that ships is attackable and then add the action
+  def auto_attack(ship)
+    self.perform_action(the_sky_map_quadrant.owner,"attack_ship_#{ship.id}")
+  end
+
   #actions
   acts_as_actionable
   def default_actor
@@ -92,7 +97,7 @@ class TheSkyMap::Base < ActiveRecord::Base
     self.save
     the_sky_map_quadrant.update_totals
     PostToFaye.request_update('base',[self.id])
-    the_sky_map_quadrant.owner.send_msg("Your base has upgraded :)",the_sky_map_quadrant)
+    the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has upgraded to a #{upgrade.name}",the_sky_map_quadrant)
     true
   end
 
@@ -130,6 +135,8 @@ class TheSkyMap::Base < ActiveRecord::Base
     PostToFaye.request_update_player_only('quadrant',update_quadrants,[player_id])
     PostToFaye.request_update_player_only('mini_quadrant',update_quadrants,[player_id])
     PostToFaye.request_update('quadrant',[quadrant.id])
+
+    the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has finished building a new #{ship_type.name} ship.",the_sky_map_quadrant)
     return true
   end
 
@@ -165,7 +172,20 @@ class TheSkyMap::Base < ActiveRecord::Base
 
     #attack the ship
     outcome = self.attack(attacked_ship)
-    return outcome
+    #send messages
+    if outcome[:defender_killed] == true
+      msg_to_attacker = "Your base (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage and destroyed the ship."
+      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the base (#{self.id}) for #{outcome[:attack_damage]} damage and was destroyed."
+    elsif outcome[:attacker_killed] == true
+      msg_to_attacker = "Your base (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage however the ship retaliated for #{outcome[:defend_damage]} damage destroying your base."
+      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the base (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage destroying the base."
+    else
+      msg_to_attacker = "Your base (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage and the ship retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the base (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
+    end
+    the_sky_map_player.send_msg(msg_to_attacker,quadrant)
+    attacked_ship.the_sky_map_player.send_msg(msg_to_defender,quadrant)
+    return outcome[:action_outcome]
   end
 
 

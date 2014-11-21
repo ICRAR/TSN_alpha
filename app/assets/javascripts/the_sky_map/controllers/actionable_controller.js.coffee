@@ -35,7 +35,9 @@ TheSkyMap.ActionableController = Ember.ObjectController.extend
       $.get(action_update_path,
         {},
       (data) ->
-        store.pushPayload('action', {actions: data['actions']})
+        for action in data['actions']
+          store.update('action',action)
+        #store.pushPayload('action', {actions: data['actions']})
         store.update(model_name,data[model_name])
         #store.pushPayload('action', data)
         #actionable = action.get('actionable')

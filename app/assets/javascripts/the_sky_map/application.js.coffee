@@ -1,9 +1,12 @@
 #= require jquery
-#= require ./init.js.coffee.erb
+#= require ./init.js.coffee
+#= require ./faye.js.coffee.erb
 #= require handlebars
 #= require ember
 #= require ember-data
 #= require_tree ./vendor
+#= require messenger
+#= require messenger-theme-future
 #= require_self
 #= require ./the_sky_map
 

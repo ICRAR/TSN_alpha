@@ -1,4 +1,5 @@
 class Action < ActiveRecord::Base
+  acts_as_paranoid
   attr_accessible :action, :actor, :actionable,  :cost, :duration, :options, :queued_at, :queued_next_at, :run_at, :completed_at, :lock_version
 
   belongs_to :actor, polymorphic: true

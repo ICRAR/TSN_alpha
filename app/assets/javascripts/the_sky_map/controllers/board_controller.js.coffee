@@ -85,9 +85,11 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
       @send('scroll_to_position', pos)
       #@transitionToRoute('quadrants.show', quad)
     scroll_to_position: (pos) ->
-      @set 'x_center', pos.x
-      @set 'y_center', pos.y
-      @send('refresh_view')
+      #check if we are already at the correct postion
+      unless (pos.x == @get('x_center') && pos.y == @get('y_center'))
+        @set 'x_center', pos.x
+        @set 'y_center', pos.y
+        @send('refresh_view')
     scroll_home: () ->
       pos = {
        x: @get('controllers.currentPlayer.content.home_x')

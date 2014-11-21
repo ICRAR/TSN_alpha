@@ -243,6 +243,18 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     self.the_sky_map_bases.where{the_sky_map_bases.damage > 0}
   end
 
+  #if the ship has enemy bases in this quadrant then iinitiatean attack against the ship
+  def auto_attack_incoming_ship(ship)
+    #check if this is an enemy quadrant
+    if ship.the_sky_map_player_id != self.owner_id
+      #get all the bases
+      self.the_sky_map_bases.each do |base|
+        base.auto_attack ship
+      end
+    end
+  end
+
+
 
   #connects with a POGS galaxy
   def update_galaxy_link

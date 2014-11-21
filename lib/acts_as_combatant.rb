@@ -16,9 +16,6 @@ module ActsAsCombatant
       self.reload
     end
     def killed_by(killer)
-      #create message
-      msg = "Your #{self.model_name}:#{self.id} has been destroyed by #{killer.the_sky_map_player.profile.name}"
-      self.the_sky_map_player.send_msg(msg,self.the_sky_map_quadrant)
       #destroy self
       self.destroy
     end
@@ -42,11 +39,13 @@ module ActsAsCombatant
       defender.take_damage(attack_damage)
       #check if defender if still alive
       if defender.is_healthy?
+        defender_killed = false
         #defender retaliates
         defend_chance = 25..75
         defend_damage = ((rand(defend_chance) * defender.attack_value) / 100.0).round
         attacker.take_damage(defend_damage)
         if attacker.is_healthy?
+          attacked_killed = false
           if attacker.model_name == defender.model_name
             PostToFaye.request_update(attacker.model_name,[attacker.id, defender.id])
           else
@@ -54,18 +53,28 @@ module ActsAsCombatant
             PostToFaye.request_update(defender.model_name,[defender.id])
           end
         else
-          #destroy defender
+          #destroy attacker
+          attacked_killed = true
           attacker.killed_by(defender)
           PostToFaye.request_update('quadrant',[quadrant.id])
           PostToFaye.remove_model_delayed(attacker.id,attacker.model_name)
         end
       else
+        defender
+        defend_damage = 0
         #destroy defender
         defender.killed_by(attacker)
+        defender_killed = true
         PostToFaye.request_update('quadrant',[quadrant.id])
         PostToFaye.remove_model_delayed(defender.id,defender.model_name)
       end
-      true
+      return {
+        action_outcome: true,
+        attack_damage: attack_damage,
+        defend_damge: defend_damage,
+        defender_killed: defender_killed,
+        attacked_killed: attacked_killed,
+      }
     end
   end
 end

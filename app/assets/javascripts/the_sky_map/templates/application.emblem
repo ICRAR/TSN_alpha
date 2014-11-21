@@ -8,10 +8,10 @@
         ' hello {{controllers.currentPlayer.content.name}}.
         ' You have {{controllers.currentPlayer.content.currency_available}} (+{{controllers.currentPlayer.content.total_income}}/hour)
         span.glyphicon.glyphicon-tint
-        ' fuel units remaining.
+        ' Hydrogen units remaining.
         ' You Have {{controllers.currentPlayer.content.currency_available_special}}(+{{controllers.currentPlayer.content.total_income_special}}/hour)
         span.glyphicon.glyphicon-cog
-        ' antimatter units remaining.
+        ' Dark Energy units remaining.
           Your total score is: {{controllers.currentPlayer.content.total_score}}.
   .row.navbar.navbar-default
     .col-md-12
