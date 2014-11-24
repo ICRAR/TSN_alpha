@@ -21,7 +21,7 @@ CREATE TABLE `actions` (
   KEY `actor_index` (`actor_type`,`actor_id`,`created_at`,`state`),
   KEY `actionable_index` (`actionable_type`,`actionable_id`,`created_at`,`state`),
   KEY `index_actions_on_deleted_at` (`deleted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=274 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `activities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -297,7 +297,7 @@ CREATE TABLE `delayed_jobs` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `delayed_jobs_priority` (`priority`,`run_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=153 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `follows` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -713,7 +713,7 @@ CREATE TABLE `the_sky_map_bases` (
   PRIMARY KEY (`id`),
   KEY `index_the_sky_map_bases_on_the_sky_map_quadrant_id` (`the_sky_map_quadrant_id`),
   KEY `index_the_sky_map_bases_on_deleted_at` (`deleted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_game_maps` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -736,7 +736,7 @@ CREATE TABLE `the_sky_map_messages` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `the_sky_map_messages_player_index` (`the_sky_map_player_id`,`created_at`,`ack`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_players` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -757,11 +757,12 @@ CREATE TABLE `the_sky_map_players` (
   `updated_at` datetime NOT NULL,
   `created_at` datetime NOT NULL,
   `game_map_id` int(11) DEFAULT NULL,
+  `current` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `profile_index` (`profile_id`),
   KEY `score_index` (`score`),
   KEY `rank_index` (`rank`),
-  KEY `index_the_sky_map_players_on_game_map_id` (`game_map_id`)
+  KEY `index_the_sky_map_players_on_game_map_id` (`game_map_id`),
+  KEY `profile_index` (`profile_id`,`current`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_players_quadrants` (
@@ -773,7 +774,7 @@ CREATE TABLE `the_sky_map_players_quadrants` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `player_id_quadrant_id` (`the_sky_map_quadrant_id`,`the_sky_map_player_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=301 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=354 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `the_sky_map_quadrant_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -843,7 +844,7 @@ CREATE TABLE `the_sky_map_ships` (
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_the_sky_map_ships_on_deleted_at` (`deleted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `timeline_entries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1207,3 +1208,5 @@ INSERT INTO schema_migrations (version) VALUES ('20141119002120');
 INSERT INTO schema_migrations (version) VALUES ('20141119032957');
 
 INSERT INTO schema_migrations (version) VALUES ('20141120022833');
+
+INSERT INTO schema_migrations (version) VALUES ('20141124012333');

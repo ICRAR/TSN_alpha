@@ -27,7 +27,7 @@ class Profile < ActiveRecord::Base
   attr_accessible :trophy_ids, :new_profile_step, as: :admin
 
   #THESKYMAP functions
-  has_one :the_sky_map_player, :class_name => 'TheSkyMap::Player'
+  has_many :the_sky_map_player, :class_name => 'TheSkyMap::Player'
 
   #validates :nickname, :uniqueness => true
 

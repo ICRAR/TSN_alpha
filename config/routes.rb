@@ -157,6 +157,7 @@ Tsn::Application.routes.draw do
   end
   get "/profile/the_sky_map_reg" => "profiles#tsm_reg", :as => 'the_sky_map_reg'
   namespace :the_sky_map do
+    root to: "ember#index"
     resources :ember, :only => [:index] do
       collection do
         get 'current_player'

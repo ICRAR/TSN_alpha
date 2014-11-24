@@ -3,6 +3,7 @@ class TheSkyMap::Player < ActiveRecord::Base
   attr_accessible :rank, :score, :spent_points, :total_points, :game_map_id, :total_points_special, :spent_points_special, as: [:admin]
 
   belongs_to :profile
+  scope :current, where{current == true}.first
   has_many :the_sky_map_players_quadrants, :class_name => 'TheSkyMap::PlayersQuadrant', foreign_key: "the_sky_map_player_id"
   has_many :the_sky_map_quadrants, :class_name => 'TheSkyMap::Quadrant', :through => :the_sky_map_players_quadrants
   has_many :the_sky_map_ships, :class_name => 'TheSkyMap::Ship', foreign_key: "the_sky_map_player_id"
