@@ -9,13 +9,13 @@ class TheSkyMap::PlayersController < TheSkyMap::ApplicationController
     end
     page = params[:page].to_i || 1
     per_page = params[:per_page].to_i || 10
-    @players = relation.page(page).per(per_page).for_index(current_user.profile.the_sky_map_player)
+    @players = relation.page(page).per(per_page).for_index(current_player_object)
     render :json =>  @players, :each_serializer => TheSkyMap::PlayerIndexSerializer, meta: pagination_meta(@players)
 
   end
 
   def show
-    respond_with TheSkyMap::Player.for_show(current_user.profile.the_sky_map_player,params[:id])
+    respond_with TheSkyMap::Player.for_show(current_player_object,params[:id])
   end
 
 end

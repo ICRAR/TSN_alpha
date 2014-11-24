@@ -2,7 +2,8 @@ $(document).ready(
     jQuery ->
       if (typeof Faye != "undefined" )
         window.faye = new Faye.Client("http://<%= APP_CONFIG['faye_host']%>:9292/faye")
-        window.faye.subscribe "/messages/from_rails", (json_data) ->
+        game_map_id = $('#data').data('currentPlayer').current_player.game_map_id
+        window.faye.subscribe "/messages/from_rails/#{game_map_id}", (json_data) ->
           Ember.run () ->
             store = TheSkyMap.__container__.lookup('store:main')
             current_player = TheSkyMap.__container__.lookup('controller:currentPlayer')

@@ -1,4 +1,4 @@
-class TheSkyMap::ShipIndexSerializer < ActiveModel::Serializer
+class TheSkyMap::ShipIndexSerializer < TheSkyMap::TheSkyMapSerializer
   attributes :id, :name, :attack, :heal, :speed, :desc, :hostile, :mine, :remaining_health, :max_health
   embed :ids#, include: true
   #has_one :the_sky_map_quadrant, key: :quadrant_id
@@ -19,7 +19,7 @@ class TheSkyMap::ShipIndexSerializer < ActiveModel::Serializer
     object.the_sky_map_ship_type.speed
   end
   def mine
-    object.the_sky_map_player_id == current_user.profile.the_sky_map_player.id
+    object.the_sky_map_player_id == current_player.id
   end
   def hostile
     !(mine)

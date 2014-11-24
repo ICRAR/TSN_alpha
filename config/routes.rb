@@ -155,13 +155,17 @@ Tsn::Application.routes.draw do
       end
     end
   end
-  get "/profile/the_sky_map_reg" => "profiles#tsm_reg", :as => 'the_sky_map_reg'
   namespace :the_sky_map do
-    root to: "ember#index"
-    resources :ember, :only => [:index] do
+    root to: "map#index"
+    resources :map, :only => [:index] do
       collection do
+        get 'manage'
+        get 'tsm_reg'
         get 'current_player'
         get 'trigger_refresh', defaults: { format: 'text' }
+      end
+      member do
+        get 'select'
       end
     end
     resources :mini_quadrants, :only => [:index, :show]

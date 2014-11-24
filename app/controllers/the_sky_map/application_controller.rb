@@ -4,10 +4,10 @@ module TheSkyMap
     before_filter :check_player
     def check_player
       if user_signed_in?
-        player = current_user.profile.the_sky_map_player
+        player = current_player_object
         if player.nil?
           #redirect to theSkyMap Sign Up page
-          redirect_to the_sky_map_reg_path
+          redirect_to tsm_reg_the_sky_map_map_index
         end
       end
     end
@@ -20,7 +20,10 @@ module TheSkyMap
     #authorize_resource
     private
     def current_player_object
-      current_user.profile.the_sky_map_player
+      current_user.profile.the_sky_map_current_player
+    end
+    def current_player_id
+      current_player_object.id
     end
     def current_map_id
       current_player_object.game_map_id

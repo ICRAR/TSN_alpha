@@ -13,7 +13,7 @@ class TheSkyMap::QuadrantsController < TheSkyMap::ApplicationController
       relation = TheSkyMap::Quadrant.within_range(x_min,x_max,y_min,y_max,current_map_id)
     end
 
-    quadrants = relation.for_show(current_user.profile.the_sky_map_player)
+    quadrants = relation.for_show(current_player_object)
 
 
     respond_with quadrants
@@ -21,7 +21,7 @@ class TheSkyMap::QuadrantsController < TheSkyMap::ApplicationController
   end
 
   def show
-    respond_with TheSkyMap::Quadrant.for_show(current_user.profile.the_sky_map_player).find(params[:id])
+    respond_with TheSkyMap::Quadrant.for_show(current_player_object).find(params[:id])
   end
 
 end

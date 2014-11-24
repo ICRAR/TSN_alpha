@@ -9,17 +9,17 @@ class TheSkyMap::BasesController < TheSkyMap::ApplicationController
     end
     page = params[:page].to_i || 1
     per_page = params[:per_page].to_i || 10
-    @bases = relation.page(page).per(per_page).for_index(current_user.profile.the_sky_map_player)
+    @bases = relation.page(page).per(per_page).for_index(current_player_object)
     render :json =>  @bases, :each_serializer => TheSkyMap::BaseIndexSerializer, meta: pagination_meta(@bases)
 
   end
 
   def show
-    respond_with TheSkyMap::Base.for_show(current_user.profile.the_sky_map_player,params[:id])
+    respond_with TheSkyMap::Base.for_show(current_player_object,params[:id])
   end
 
   def game_actions_available
-    @base = TheSkyMap::Base.for_show(current_user.profile.the_sky_map_player,params[:id])
+    @base = TheSkyMap::Base.for_show(current_player_object,params[:id])
     render :json =>  @base, serializer: TheSkyMap::ActionableSerializer, root: 'base'
 
   end

@@ -96,7 +96,7 @@ class TheSkyMap::Base < ActiveRecord::Base
     self.the_sky_map_base_upgrade_type = upgrade
     self.save
     the_sky_map_quadrant.update_totals
-    PostToFaye.request_update('base',[self.id])
+    PostToFaye.request_update('base',[self.id],self.the_sky_map_quadrant.game_map_id)
     the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has upgraded to a #{upgrade.name}",the_sky_map_quadrant)
     true
   end
@@ -132,9 +132,9 @@ class TheSkyMap::Base < ActiveRecord::Base
     #force update to open quadrants
     player_id = player.id
     update_quadrants = explored_quadrants - [quadrant.id]
-    PostToFaye.request_update_player_only('quadrant',update_quadrants,[player_id])
-    PostToFaye.request_update_player_only('mini_quadrant',update_quadrants,[player_id])
-    PostToFaye.request_update('quadrant',[quadrant.id])
+    PostToFaye.request_update_player_only('quadrant',update_quadrants,[player_id],self.the_sky_map_quadrant.game_map_id)
+    PostToFaye.request_update_player_only('mini_quadrant',update_quadrants,[player_id],self.the_sky_map_quadrant.game_map_id)
+    PostToFaye.request_update('quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
 
     the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has finished building a new #{ship_type.name} ship.",the_sky_map_quadrant)
     return true

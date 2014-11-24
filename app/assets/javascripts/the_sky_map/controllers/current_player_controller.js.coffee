@@ -2,7 +2,7 @@ TheSkyMap.CurrentPlayerController = Ember.ObjectController.extend
   content: null
   retrieveCurrentUser: ->
     controller = this
-    Ember.$.getJSON "/sub/ember/current_player", (data) ->
+    Ember.$.getJSON "/the_sky_map/map/current_player", (data) ->
       controller.get('store').pushPayload 'currentPlayer', data
       currentProfile =  controller.get('store').find(data.current_player.id)
       controller.set "content", currentProfile

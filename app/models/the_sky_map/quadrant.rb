@@ -89,7 +89,7 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
       the_sky_map_players_quadrants.the_sky_map_player_id = #{player.id}").
           select{the_sky_map_players_quadrants.explored.as('explored')}
     else
-          base_relation.where{game_map_id == my{player.game_map_id}}
+          base_relation.where{game_map_id == my{player.game_map_id}}.
           select('1 as explored')
     end
   end

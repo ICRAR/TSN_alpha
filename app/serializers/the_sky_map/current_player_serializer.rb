@@ -1,4 +1,4 @@
-class TheSkyMap::CurrentPlayerSerializer < ActiveModel::Serializer
+class TheSkyMap::CurrentPlayerSerializer < TheSkyMap::TheSkyMapSerializer
   attributes :id, :name, :user_signed_in, :profile_id, :email, :game_map_id,
              :home_x, :home_y, :currency_available, :currency_available_special,
              :total_score, :total_income, :total_income_special, :player_options, :unread_msg_count,

@@ -8,7 +8,7 @@ class TheSkyMap::MiniQuadrantsController < TheSkyMap::ApplicationController
     else
       relation = TheSkyMap::Quadrant
     end
-    quadrants = relation.where{game_map_id == my{current_map_id}}.for_show_mini(current_user.profile.the_sky_map_player)
+    quadrants = relation.where{game_map_id == my{current_map_id}}.for_show_mini(current_player_object)
 
 
     render :json =>  quadrants, :each_serializer => TheSkyMap::MiniQuadrantSerializer
@@ -16,7 +16,7 @@ class TheSkyMap::MiniQuadrantsController < TheSkyMap::ApplicationController
   end
 
   def show
-    quadrant =  TheSkyMap::Quadrant.for_show_mini(current_user.profile.the_sky_map_player).find(params[:id])
+    quadrant =  TheSkyMap::Quadrant.for_show_mini(current_player_object).find(params[:id])
     render :json =>  quadrant, :serializer => TheSkyMap::MiniQuadrantSerializer
   end
 

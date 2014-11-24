@@ -1,0 +1,35 @@
+- my_meta :title => "TheSkyMap",
+    :description => "Manage your TheSkyMap games"
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface TheSkyMap
+  - @user_page =  'profile'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    .well.well-white
+      %h3 Current Games
+      %table#the_sky_map_games.table.table-striped
+        %thead
+          %tr
+            %th Map ID
+            %th Map size
+            %th Is current?
+            %th= ''
+        %tbody
+          - @players.each do |player|
+            %tr{ :class => ('selected' if (params[:rank] and profile.rank == params[:rank].to_i))}
+              %td
+                = player.game_map.id
+              %td
+                = "#{player.game_map.x_size}x#{player.game_map.y_size}"
+              %td
+                = player.current?
+              %td
+                - if player.current?
+                  = link_to "Open Game", the_sky_map_root_path
+                - else
+                  = link_to "Select Game", select_the_sky_map_map_path(player.game_map)
+      = paginate @players
+      = page_entries_info @players, :entry_name => 'Players'
+      = render 'shared/per_page_selector'

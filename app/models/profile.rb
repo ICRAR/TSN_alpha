@@ -1,4 +1,5 @@
 class Profile < ActiveRecord::Base
+  extend Memoist
   include Rails.application.routes.url_helpers
   belongs_to :user
   belongs_to :alliance_leader, :class_name => 'Alliance', inverse_of: :leader
@@ -27,7 +28,38 @@ class Profile < ActiveRecord::Base
   attr_accessible :trophy_ids, :new_profile_step, as: :admin
 
   #THESKYMAP functions
-  has_many :the_sky_map_player, :class_name => 'TheSkyMap::Player'
+  has_many :the_sky_map_players, :class_name => 'TheSkyMap::Player' do
+    def current
+      only_current.first
+    end
+    def for_show
+      includes(:game_map).order{id.asc}
+    end
+  end
+  def the_sky_map_current_player
+    self.the_sky_map_players.current
+  end
+  memoize :the_sky_map_current_player
+  def the_sky_map_select_game(game_id)
+    new_player = the_sky_map_players.where{game_map_id == game_id}.first
+    current_player = the_sky_map_current_player
+    if new_player.nil? #no new player return false
+      return false
+    elsif !current_player.nil? && new_player.id == current_player.id #player already selected so do nothing
+      return true
+    else
+      #update
+      unless current_player.nil?
+        current_player.current = false
+        current_player.save
+      end
+      new_player.current = true
+      new_player.save
+      return true
+    end
+  end
+
+
 
   #validates :nickname, :uniqueness => true
 

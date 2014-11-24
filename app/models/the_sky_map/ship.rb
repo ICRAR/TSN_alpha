@@ -88,7 +88,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     return false if new_base_type.nil?
     new_base = TheSkyMap::Base.first_base(quadrant,new_base_type)
     return false if new_base.nil?
-    PostToFaye.request_update('quadrant',[quadrant.id])
+    PostToFaye.request_update('quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
     the_sky_map_player.send_msg("You base (#{new_base.id}) at (#{quadrant.x},#{quadrant.y}) has been completed")
     true
 
@@ -122,8 +122,8 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     #capture quadrant
     outcome = quadrant.steal(the_sky_map_player)
     #push changes with faye
-    PostToFaye.request_update('quadrant',[quadrant.id])
-    PostToFaye.request_update('mini_quadrant',[quadrant.id])
+    PostToFaye.request_update('quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
+    PostToFaye.request_update('mini_quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
     if outcome == true
       the_sky_map_player.send_msg("You have successfully stolen the quadrant (#{quadrant.x},#{quadrant.y})",quadrant)
     else
@@ -160,8 +160,8 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     #capture quadrant
     outcome = quadrant.capture(the_sky_map_player)
     #push changes with faye
-    PostToFaye.request_update('quadrant',[quadrant.id])
-    PostToFaye.request_update('mini_quadrant',[quadrant.id])
+    PostToFaye.request_update('quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
+    PostToFaye.request_update('mini_quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
     if outcome == true
       the_sky_map_player.send_msg("You have successfully captured the quadrant (#{quadrant.x},#{quadrant.y})",quadrant)
     else
@@ -218,17 +218,17 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     explored_quadrants =  self.the_sky_map_player.explore_quadrant(quadrant,self.the_sky_map_ship_type.sensor_range)
     #force update to open quadrants
     full_update_quadrants =  [old_quadrant.id,quadrant.id]
-    PostToFaye.request_update('quadrant',full_update_quadrants)
+    PostToFaye.request_update('quadrant',full_update_quadrants,self.the_sky_map_quadrant.game_map_id)
 
     player_id = self.the_sky_map_player_id
-    PostToFaye.request_update_player_only('quadrant',(explored_quadrants - full_update_quadrants),[player_id])  unless (explored_quadrants - full_update_quadrants) == []
-    PostToFaye.request_update_player_only('mini_quadrant',(explored_quadrants + [quadrant.id]),[player_id])
+    PostToFaye.request_update_player_only('quadrant',(explored_quadrants - full_update_quadrants),[player_id],self.the_sky_map_quadrant.game_map_id)  unless (explored_quadrants - full_update_quadrants) == []
+    PostToFaye.request_update_player_only('mini_quadrant',(explored_quadrants + [quadrant.id]),[player_id],self.the_sky_map_quadrant.game_map_id)
 
     #if there are enemy bases they should automatically initiate an attack on the new ship
     quadrant.auto_attack_incoming_ship self
 
     #force update to open ship
-    PostToFaye.request_update('ship',[self.id])
+    PostToFaye.request_update('ship',[self.id],self.the_sky_map_quadrant.game_map_id)
     self.the_sky_map_player.send_msg("Your ship #{self.name} has arrived at Quadrant (#{quadrant.x},#{quadrant.y})",quadrant)
     return true
   end

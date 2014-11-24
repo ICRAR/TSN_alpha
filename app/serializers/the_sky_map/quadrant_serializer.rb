@@ -1,4 +1,4 @@
-class TheSkyMap::QuadrantSerializer < ActiveModel::Serializer
+class TheSkyMap::QuadrantSerializer < TheSkyMap::TheSkyMapSerializer
   attributes :id, :x, :y, :name, :explored, :explored_fully, :explored_partial,
              :home, :mine, :hostile, :unowned, :total_score, :total_income, :location, :galaxy_id, :thumbnail_src
   embed :id, include: true
@@ -16,11 +16,11 @@ class TheSkyMap::QuadrantSerializer < ActiveModel::Serializer
   end
 
   def home
-    home_id = scope.profile.the_sky_map_player.home_id
+    home_id = current_player.home_id
     home_id == object.id
   end
   def mine
-    object.owner_id == scope.profile.the_sky_map_player.id
+    object.owner_id == current_player.id
   end
   def hostile
     explored? && !object.owner_id.nil? && !mine
