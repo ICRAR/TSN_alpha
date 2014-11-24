@@ -522,6 +522,7 @@ DEPENDENCIES
   flamegraph
   globalize (~> 3.0.4)
   google-analytics-rails
+  httparty
   i18n-js
   jquery-rails
   jquery-turbolinks
