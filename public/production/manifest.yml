@@ -563,6 +563,8 @@ logo_alpha_white.png: logo_alpha_white-65bfac2610ab8ef014f0e34372c68bcc.png
 logo_alpha_white/index.png: logo_alpha_white-65bfac2610ab8ef014f0e34372c68bcc.png
 logo_beta_purple.png: logo_beta_purple-4a1d22bc072c59a28e36a3bc3732e356.png
 logo_beta_purple/index.png: logo_beta_purple-4a1d22bc072c59a28e36a3bc3732e356.png
+logo_for_mosaic.png: logo_for_mosaic-7e2d35579cc001a6776fac1725424e78.png
+logo_for_mosaic/index.png: logo_for_mosaic-7e2d35579cc001a6776fac1725424e78.png
 logo_halloween.png: logo_halloween-1fc3e0702a58a9df7e35bb08fac0ea0d.png
 logo_halloween/index.png: logo_halloween-1fc3e0702a58a9df7e35bb08fac0ea0d.png
 logo_new_years_2013.png: logo_new_years_2013-59aca2456e1f9efc8c80f093fba96b5c.png
@@ -917,8 +919,8 @@ windowbg.jpg: windowbg-ee45828b57ed42422471253d53fcdc1d.jpg
 windowbg/index.jpg: windowbg-ee45828b57ed42422471253d53fcdc1d.jpg
 windowbg.jpg.LCK: windowbg.jpg-9950989e21859e7402ff6aa4d5ab9019.LCK
 windowbg/index.jpg.LCK: windowbg.jpg-9950989e21859e7402ff6aa4d5ab9019.LCK
-application.js: application-906f83aafd406d7f1f0df39ebc7064a8.js
-application/index.js: application-906f83aafd406d7f1f0df39ebc7064a8.js
+application.js: application-4ebc26b3534392d8c3fc6ab647837d07.js
+application/index.js: application-4ebc26b3534392d8c3fc6ab647837d07.js
 ckeditor/config.js: ckeditor/config-6bbc7abb3a877c6e1f2abf0aa6cac18f.js
 ckeditor/config/index.js: ckeditor/config-6bbc7abb3a877c6e1f2abf0aa6cac18f.js
 non_includes/deployJava.js: non_includes/deployJava-7294810f62c1484173c3e711483e0f00.js
