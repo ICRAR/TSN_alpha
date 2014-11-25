@@ -56,7 +56,6 @@ class TheSkyMap::QuadrantSerializer < TheSkyMap::TheSkyMapSerializer
       end
     else
       #return unexplored image
-      raise 'test'
      image_path('the_sky_map/unexplored.jpg')
     end
   end
