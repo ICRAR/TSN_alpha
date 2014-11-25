@@ -26,7 +26,7 @@ module TheSkyMap
       end
     end
     ### static page for theSkyMap signup
-    skip_before_filter :check_player, only: :manage
+    skip_before_filter :check_player, only: [:manage, :select, :tsm_reg]
     def manage
       page = params[:page].to_i || 1
       per_page = params[:per_page].to_i || 10
@@ -42,7 +42,6 @@ module TheSkyMap
       render action: "manage", layout: 'application'
     end
     ### static page for theSkyMap signup
-    skip_before_filter :check_player, only: :tsm_reg
     def tsm_reg
       render layout: 'application'
     end
