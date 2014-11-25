@@ -15,4 +15,4 @@
               else
                 .quadrant.blank
                   a href='#' click="move_view quadrant.x row.y"
-                    | -
+                    | .
