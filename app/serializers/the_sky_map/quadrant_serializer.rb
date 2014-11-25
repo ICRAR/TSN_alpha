@@ -50,13 +50,14 @@ class TheSkyMap::QuadrantSerializer < TheSkyMap::TheSkyMapSerializer
     if explored? || explored_partial
       #return either galaxy thumbnail or url to quadrant type image
       if object.thumbnail_link.nil? || object.thumbnail_link == ''
-        ActionController::Base.helpers.asset_path(object.the_sky_map_quadrant_type.thumbnail_path)
+        image_path(object.the_sky_map_quadrant_type.thumbnail_path)
       else
         return object.thumbnail_link
       end
     else
       #return unexplored image
-      ActionController::Base.helpers.asset_path('the_sky_map/unexplored.jpg')
+      raise 'test'
+     image_path('the_sky_map/unexplored.jpg')
     end
   end
 
