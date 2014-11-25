@@ -41,7 +41,9 @@ module TheSkyMap
       render action: "manage", layout: 'application'
     end
     ### static page for theSkyMap signup
+    skip_before_filter :check_player, only: :tsm_reg
     def tsm_reg
+      render layout: 'application'
     end
   end
 end

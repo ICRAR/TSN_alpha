@@ -6,8 +6,12 @@ module TheSkyMap
       if user_signed_in?
         player = current_player_object
         if player.nil?
-          #redirect to theSkyMap Sign Up page
-          redirect_to tsm_reg_the_sky_map_map_index
+          #redirect to theSkyMap Sign Up page or theSkyMap manage page
+          if current_user.profile.the_sky_map_players.empty?
+            redirect_to tsm_reg_the_sky_map_map_index_path
+          else
+            redirect_to manage_the_sky_map_map_index_path
+          end
         end
       end
     end
