@@ -26,6 +26,7 @@ module TheSkyMap
       end
     end
     ### static page for theSkyMap signup
+    skip_before_filter :check_player, only: :manage
     def manage
       page = params[:page].to_i || 1
       per_page = params[:per_page].to_i || 10
