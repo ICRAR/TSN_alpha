@@ -1,6 +1,6 @@
 require 'faye'
 require 'yaml'
-env_string = ENV['FAYE_ENV']
+env_string = ENV['RACK_ENV ']
 env_string = ENV['RAILS_ENV'] if env_string.nil? || env_string == ''
 env_string = 'development' if env_string.nil? || env_string == ''
 root_dir = File.dirname(__FILE__)
