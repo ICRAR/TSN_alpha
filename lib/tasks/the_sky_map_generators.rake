@@ -7,8 +7,8 @@ namespace :the_sky_map_generators do
     axis_x = {
         'A' => {
             score:          0,
-            bases:          0,
-            max_base_level: 0,
+            bases:          1,
+            max_base_level: 1,
             gen_x_min:      0,
             gen_x_max:      239,
             suitable_for_home: false,
@@ -17,7 +17,7 @@ namespace :the_sky_map_generators do
         'B' => {
             score:          50,
             bases:          1,
-            max_base_level: 1,
+            max_base_level: 2,
             gen_x_min:      239,
             gen_x_max:      241,
             suitable_for_home: false,
@@ -26,7 +26,7 @@ namespace :the_sky_map_generators do
         'C' => {
             score:          100,
             bases:          1,
-            max_base_level: 2,
+            max_base_level: 3,
             gen_x_min:      241,
             gen_x_max:      404,
             suitable_for_home: false,
@@ -35,7 +35,7 @@ namespace :the_sky_map_generators do
         'D' => {
             score:          150,
             bases:          2,
-            max_base_level: 3,
+            max_base_level: 4,
             gen_x_min:      404,
             gen_x_max:      500,
             suitable_for_home: true,
@@ -44,7 +44,7 @@ namespace :the_sky_map_generators do
         'E' => {
             score:          200,
             bases:          3,
-            max_base_level: 4,
+            max_base_level: 5,
             gen_x_min:      500,
             gen_x_max:      10000,
             suitable_for_home: true,
