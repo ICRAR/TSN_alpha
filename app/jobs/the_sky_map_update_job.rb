@@ -9,7 +9,7 @@ class TheSkyMapUpdateJob < Delayed::BaseScheduledJob
       puts "checking http://www.theskynet.org/profiles/#{player.profile_id}.json"
       unless remote.parsed_response['result']['profile'].nil?
         rac = remote.parsed_response['result']['profile']['boinc_stats_item']['RAC']
-        income = Math.log rac
+        income = Math.log([rac,1].max)
         player.total_income_special = income
         player.save
       end
