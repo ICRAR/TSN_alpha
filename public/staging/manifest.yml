@@ -943,8 +943,8 @@ ckeditor/config.js: ckeditor/config-71b5fe79fd8bc2a446432f710f0d6b1a.js
 ckeditor/config/index.js: ckeditor/config-71b5fe79fd8bc2a446432f710f0d6b1a.js
 non_includes/deployJava.js: non_includes/deployJava-87f278f2f37972c4aa79a614745aa635.js
 non_includes/deployJava/index.js: non_includes/deployJava-87f278f2f37972c4aa79a614745aa635.js
-the_sky_map/application.js: the_sky_map/application-4ca4ec33d0787dee5783481022961dbe.js
-the_sky_map/application/index.js: the_sky_map/application-4ca4ec33d0787dee5783481022961dbe.js
+the_sky_map/application.js: the_sky_map/application-f345583c53479a4d188fe9428aa4c9c3.js
+the_sky_map/application/index.js: the_sky_map/application-f345583c53479a4d188fe9428aa4c9c3.js
 the_sky_map/templates/application.js: the_sky_map/templates/application-b81f596d37aa36e9bb7e476fde2970ce.js
 the_sky_map/templates/application/index.js: the_sky_map/templates/application-b81f596d37aa36e9bb7e476fde2970ce.js
 application.css: application-00ffde9559fdcd1eb764b06501bfea6b.css
