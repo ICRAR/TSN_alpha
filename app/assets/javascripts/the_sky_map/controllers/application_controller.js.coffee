@@ -17,3 +17,6 @@ TheSkyMap.ApplicationController = Ember.Controller.extend
       Ember.Object.create({linkTo: 'messages', title: msg_title})
     ]
   ).property('controllers.currentPlayer.content.unread_msg_count')
+  actions:
+    update_current_player_details: () ->
+      @.get('controllers.currentPlayer').send('update_details')
