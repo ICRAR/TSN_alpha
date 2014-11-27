@@ -2,8 +2,8 @@ class PostToFaye
   def self.faye_broadcast(channel, msg)
     begin
       message = {:channel => channel, :data => msg, :ext => {:auth_token => APP_CONFIG['faye_token']}}
-      uri = URI.parse(APP_CONFIG['faye_url'])
-      Net::HTTP.post_form(uri, :message => message.to_json)
+      url = "#{APP_CONFIG['faye_protocol']}://#{APP_CONFIG['faye_host']}:#{APP_CONFIG['faye_port']}/faye"
+      HTTParty.post(url,{body: {message: message.to_json}})
     rescue  Errno::ECONNREFUSED
     end
   end
