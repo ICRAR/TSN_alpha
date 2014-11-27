@@ -17,5 +17,6 @@ TheSkyMap.CurrentPlayer = DS.Model.extend(
   currency_available: DS.attr("number")
   currency_available_special: DS.attr("number")
   player_options: DS.attr('raw')
+  next_update_time: DS.attr('number')
 )
 

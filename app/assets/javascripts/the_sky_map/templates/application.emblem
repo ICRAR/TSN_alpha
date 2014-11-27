@@ -13,6 +13,7 @@
         span.glyphicon.glyphicon-cog
         ' Dark Energy units remaining.
           Your total score is: {{controllers.currentPlayer.content.total_score}}.
+        ' Time to next update: ({{controllers.currentPlayer.countdown_hours}}:{{controllers.currentPlayer.countdown_minutes}}:{{controllers.currentPlayer.countdown_seconds}})
         a href='#' click="update_current_player_details" title="Refresh Stats": span.glyphicon.glyphicon-refresh
   .row.navbar.navbar-default
     .col-md-12
