@@ -17,6 +17,16 @@ class TheSkyMap::MessagesController < TheSkyMap::ApplicationController
     render json:  @message, serializer: TheSkyMap::MessageIndexSerializer, root: 'message'
   end
 
+  def ack_all
+    player = current_player_object
+    messages = player.messages.where{ack == false}
+    msg_ids = messages.pluck(:id)
+    messages.update_all(ack: true)
+    @messages = player.messages.where{id.in msg_ids}
+    PostToFaye.ack_all_msgs(player.id, player.game_map_id)
+    render :json =>  @messages.for_show, :each_serializer => TheSkyMap::MessageIndexSerializer, meta: pagination_meta(@messages)
+  end
+
   def show
     @message = current_player_object.messages.find(params[:id])
     render json:  @message, serializer: TheSkyMap::MessageIndexSerializer, root: 'message'

@@ -77,5 +77,9 @@ class PostToFaye
     broadcast_json = {ack_msg: {player_id: player_id, msg_id: msg_id, new_count: new_count}}.to_json
     faye_broadcast "/messages/from_rails/#{channel_id}", broadcast_json
   end
+  def self.ack_all_msgs(player_id,channel_id)
+    broadcast_json = {ack_all_msgs: {player_id: player_id}}.to_json
+    faye_broadcast "/messages/from_rails/#{channel_id}", broadcast_json
+  end
 end
 

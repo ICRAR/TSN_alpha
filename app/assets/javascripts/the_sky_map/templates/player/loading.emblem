@@ -1,0 +1,6 @@
+#show_player
+  .panel.panel-info
+    .panel-heading
+      | Player:
+      .loading Loading...
+    .panel-body

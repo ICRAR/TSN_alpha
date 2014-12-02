@@ -1,0 +1,4 @@
+#ships_table: .panel.panel-info
+  .panel-heading All ships
+  .panel-body
+    .loading Loading...

@@ -154,12 +154,15 @@
   }
   .board, .key {
     color: black;
-    .board-column.selected{
-      .quadrant {
+    .board-column{
+      .quadrant.selected {
         .quadrant_styling(true);
       }
+      .quadrant.not_selected {
+        .quadrant_styling(false);
+      }
     }
-    .board-column.not_selected, .quadrant_key{
+    .quadrant_key{
       .quadrant {
         .quadrant_styling(false);
       }

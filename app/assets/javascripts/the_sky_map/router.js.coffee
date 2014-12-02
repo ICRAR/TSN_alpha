@@ -4,16 +4,22 @@ TheSkyMap.Router.map ()->
   # @resource('posts')
   @route 'home', path: '/'
   @route 'name'
-  @resource 'quadrants', {path: '/quadrants'}, () ->
-    @route 'show', {path: '/:quadrant_id'}
-  @resource 'ships', {path: '/ships'}, () ->
-    @route 'show', {path: '/:ship_id'}
-  @resource 'bases', {path: '/bases'}, () ->
-    @route 'show', {path: '/:base_id'}
-  @resource 'players', {path: '/players'}, () ->
-    @route 'show', {path: '/:player_id'}
-  @route 'actions', path: '/actions'
-  @resource 'messages', {path: '/messages'}, () -> {}
+  @route 'fmps', {path: '/fmps'}, () ->
+    @resource 'quadrants', {path: '/quadrants'}, () ->
+    @resource 'quadrant', {path: '/quadrant'}, () ->
+      @route 'show', {path: '/:quadrant_id'}
+    @resource 'ship', {path: '/ship'}, () ->
+      @route 'show', {path: '/:ship_id'}
+    @resource 'base', {path: '/base'}, () ->
+      @route 'show', {path: '/:base_id'}
+    @resource 'player', {path: '/player'}, () ->
+      @route 'show', {path: '/:player_id'}
+  @route 'pmm', {path: '/pmm'}, () ->
+    @resource 'ships', {path: '/ships'}, () -> {}
+    @resource 'bases', {path: '/bases'}, () -> {}
+    @resource 'players', {path: '/players'}, () -> {}
+    @resource 'actions', {path: '/actions'}, () -> {}
+    @resource 'messages', {path: '/messages'}, () -> {}
 
 
 
@@ -32,59 +38,54 @@ TheSkyMap.WithNameRoute = Ember.Route.extend
     @render()
 
 
-TheSkyMap.LoadingRoute = Ember.Route.extend
-  viewName: 'fullWidth'
-
 TheSkyMap.HomeRoute = Ember.Route.extend
-  viewName: 'full_map_plus_side'
+  redirect: () ->
+    @transitionTo('quadrants')
 
-TheSkyMap.QuadrantsIndexRoute = Ember.Route.extend
-  viewName: 'full_map_plus_side'
 
-TheSkyMap.QuadrantsShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
+TheSkyMap.FmpsRoute = Ember.Route.extend
   viewName: 'full_map_plus_side'
+  templateName: 'blank'
+
+TheSkyMap.PmmRoute = Ember.Route.extend
+  viewName: 'plus_mini_map'
+  templateName: 'blank'
+
+TheSkyMap.QuadrantShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   model: (params)->
     quadrant = @store.reloadRecord(@store.recordForId('quadrant', params.quadrant_id))
 
-TheSkyMap.ShipsShowLoadingRoute = Ember.Route.extend
-  viewName: 'full_map_plus_side'
 
 TheSkyMap.ShipsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
-  viewName: 'plus_mini_map'
   model: (params) ->
     @store.find('ship', params)
 
-TheSkyMap.ShipsShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
+TheSkyMap.ShipShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   viewName: 'actionable_show'
   model: (params)->
     ship = @store.reloadRecord(@store.recordForId('ship', params.ship_id))
 
 TheSkyMap.BasesIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
-  viewName: 'plus_mini_map'
   model: (params) ->
     @store.find('base', params)
-TheSkyMap.BasesShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
+TheSkyMap.BaseShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   viewName: 'actionable_show'
   model: (params)->
     base = @store.reloadRecord(@store.recordForId('base', params.base_id))
 
 
 TheSkyMap.PlayersIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
-  viewName: 'plus_mini_map'
   model: (params) ->
     @store.find('player', params)
-TheSkyMap.PlayersShowRoute = Ember.Route.extend
-  viewName: 'full_map_plus_side'
+TheSkyMap.PlayerShowRoute = Ember.Route.extend
   model: (params)->
     player = @store.reloadRecord(@store.recordForId('player', params.player_id))
 
-TheSkyMap.ActionsRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
-  viewName: 'plus_mini_map'
+TheSkyMap.ActionsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   model: (params) ->
     @store.find('action', params)
 
 TheSkyMap.MessagesIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
-  viewName: 'plus_mini_map'
   model: (params) ->
     @store.find('message', params)
 

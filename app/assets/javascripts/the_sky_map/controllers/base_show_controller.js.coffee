@@ -1,4 +1,4 @@
-TheSkyMap.BasesShowController = TheSkyMap.ActionableController.extend
+TheSkyMap.BaseShowController = TheSkyMap.ActionableController.extend
   needs: ['board']
   actions:
     show_on_map: () ->

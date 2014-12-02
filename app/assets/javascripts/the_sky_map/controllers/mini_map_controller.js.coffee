@@ -1,4 +1,4 @@
-TheSkyMap.MiniMapController = Ember.ArrayController.extend
+TheSkyMap.MiniMapController = Ember.ArrayController.extend TheSkyMap.isLoadedable,
   needs: ['currentPlayer','board']
   init: ->
     @_super()
@@ -48,7 +48,10 @@ TheSkyMap.MiniMapController = Ember.ArrayController.extend
       }
       @get('controllers.board').send('scroll_to_position', pos)
     refresh_view: () ->
-      @.get('store').find('mini_quadrant')
+      save_this = @
+      @.set('isLoaded', false)
+      @.get('store').find('mini_quadrant').then () ->
+        save_this.set('isLoaded',true)
 
 TheSkyMap.MiniMapObjectController = Ember.ObjectController.extend
   needs: ['board']

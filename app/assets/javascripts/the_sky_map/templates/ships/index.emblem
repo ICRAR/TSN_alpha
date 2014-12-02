@@ -12,11 +12,11 @@
       tbody
         each model
           tr
-            td: link-to 'ships.show' id | {{name}}
-            td: link-to 'ships.show' id | {{attack}}
-            td: link-to 'ships.show' id | {{heal}}
-            td: link-to 'ships.show' id | {{speed}}
-            td: link-to 'ships.show' id | {{mine}}
-            td: link-to 'ships.show' id | ({{quadrant.x}},{{quadrant.y}})
+            td: link-to 'ship.show' id | {{name}}
+            td: link-to 'ship.show' id | {{attack}}
+            td: link-to 'ship.show' id | {{heal}}
+            td: link-to 'ship.show' id | {{speed}}
+            td: link-to 'ship.show' id | {{mine}}
+            td: link-to 'ship.show' id | ({{quadrant.x}},{{quadrant.y}})
     pagination-links pagesObject=pagesObject
     p= testVar

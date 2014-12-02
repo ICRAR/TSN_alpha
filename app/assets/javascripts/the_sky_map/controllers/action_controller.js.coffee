@@ -23,7 +23,7 @@ TheSkyMap.ActionController = Ember.ObjectController.extend(TheSkyMap.Countdownab
   ).property('current_state')
   actionable_link: (() ->
     model = @get('actionable')
-    "#{Ember.Inflector.inflector.pluralize(model.constructor.toString().split('.').pop())}.show"
+    "#{model.constructor.toString().split('.').pop().toLowerCase()}.show"
   ).property('actionable')
   actions:
     run_special: () ->

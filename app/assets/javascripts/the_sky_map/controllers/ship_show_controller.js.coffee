@@ -1,4 +1,4 @@
-TheSkyMap.ShipsShowController = TheSkyMap.ActionableController.extend
+TheSkyMap.ShipShowController = TheSkyMap.ActionableController.extend
   needs: ['board']
   actions:
     show_on_map: () ->

@@ -8,4 +8,4 @@ TheSkyMap.BoardQuadrantController = Ember.ObjectController.extend
   ).property('galaxy_id')
   actions:
     click_me: () ->
-      @transitionToRoute('quadrants.show', @get('id'))
+      @transitionToRoute('quadrant.show', @get('id'))

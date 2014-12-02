@@ -56,4 +56,10 @@ $(document).ready(
                 local_model = store.getById('message',data.ack_msg.msg_id)
                 local_model.set('ack',true) unless local_model == null
                 current_player.set('unread_msg_count',data.ack_msg.new_count)
+            if data.ack_all_msgs?
+              if current_player_id == data.ack_all_msgs.player_id
+                local_msgs = store.all('message')
+                for msg in local_msgs
+                  msg.set('ack',true)
+                current_player.set('unread_msg_count',0)
 )

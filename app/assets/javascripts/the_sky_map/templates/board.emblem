@@ -4,28 +4,33 @@
       | The Galaxy!
       .pull-right: a href='#' click='refresh': span.glyphicon.glyphicon-refresh
 
+
   .board class={xy_zoom_class}
     .layer.panel.panel-info
-      .panel-heading Game Map
+      .panel-heading
+        | Game Map
+        if isLoading
+          .loading Loading...
       .panel-body
-        .board-all
-          .x-labels-row
-            .xy-label-column | y\x
-            each x_val in xs
-              .x-labels-column = x_val
+        if isLoadedFirst
+          .board-all
+            .x-labels-row
+              .xy-label-column | y\x
+              each x_val in xs
+                .x-labels-column = x_val
 
-          each row in quadrants_rows
-            .board-row
-              .y-label-column = row.y
-              each quadrant in row.quadrants
-                .board-column class={quadrant.selected:selected:not_selected}
-                  each qf in quadrant.quadrant_final
-                    render "board_quadrant" qf
-                  else
-                    .quadrant.blank
-                      if xy_zoomed_in
-                        .title
-                          p Your off the edge of the map. Here there be space dragons.
+            each row in quadrants_rows
+              .board-row
+                .y-label-column = row.y
+                each quadrant in row.quadrants
+                  .board-column
+                    each qf in quadrant.quadrant_final
+                      render "board_quadrant" qf
+                    else
+                      .quadrant.blank
+                        if xy_zoomed_in
+                          .title
+                            p Your off the edge of the map. Here there be space dragons.
 
   .controls.panel.panel-default
     .panel-heading Navigation Controls

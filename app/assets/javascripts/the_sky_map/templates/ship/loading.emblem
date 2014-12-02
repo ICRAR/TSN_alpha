@@ -1,0 +1,7 @@
+.panel.panel-info
+  .panel-heading
+    | Ships:
+    .loading Loading...
+  .panel-body
+
+

@@ -1,26 +1,24 @@
-#show_base
+#show_ship
   .panel.panel-info
     .panel-heading= name
     .panel-body
       dl.dl-horizontal
         dt Description
         dd= desc
-        dt Type
-        dd= type
         dt Attack
         dd= attack
+        dt Heal
+        dd= heal
+        dt Speed
+        dd= speed
         dt Max Health
         dd= max_health
         dt Remaining Health
         dd= remaining_health
         dt Mine
         dd= mine
-        dt Score
-        dd= score
-        dt Income
-        dd= income
         dt Owner
-        dd: link-to 'players.show' player.id | {{player.name}}
+        dd: link-to 'player.show' player.id | {{player.name}}
         dt Location
         dd
           ' ({{quadrant.x}},{{quadrant.y}})
@@ -31,7 +29,7 @@
           partial 'actions_list'
 
 if mine
-  #base_actions
+  #ship_actions
     .panel.panel-info
       .panel-heading Current Actions
       .panel-body

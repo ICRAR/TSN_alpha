@@ -1,0 +1,4 @@
+#bases_table: .panel.panel-info
+  .panel-heading All Bases
+  .panel-body
+    .loading Loading...

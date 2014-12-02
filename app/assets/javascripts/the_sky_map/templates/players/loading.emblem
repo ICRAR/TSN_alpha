@@ -1,0 +1,4 @@
+#players_table: .panel.panel-info
+  .panel-heading All Players
+  .panel-body
+    .loading Loading...

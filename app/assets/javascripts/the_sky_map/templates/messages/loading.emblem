@@ -1,0 +1,4 @@
+#messages: .panel.panel-info
+  .panel-heading All Messages
+  .panel-body
+    .loading Loading...

@@ -169,7 +169,11 @@ Tsn::Application.routes.draw do
       end
     end
     resources :mini_quadrants, :only => [:index, :show]
-    resources :messages, :only => [:index,:show, :update]
+    resources :messages, :only => [:index,:show, :update] do
+      collection do
+        get 'ack_all'
+      end
+    end
     resources :quadrants, :only => [:index, :show]
     get 'actions' => "actions#player_index", :as => 'all_actions'
     resources :actions, :only => [:show] do

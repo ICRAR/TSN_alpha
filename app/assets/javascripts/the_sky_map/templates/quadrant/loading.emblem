@@ -1,0 +1,7 @@
+.panel.panel-info
+  .panel-heading
+    | Quadrant:
+    .loading Loading...
+  .panel-body
+
+

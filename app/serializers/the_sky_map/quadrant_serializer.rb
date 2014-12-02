@@ -72,7 +72,8 @@ class TheSkyMap::QuadrantSerializer < TheSkyMap::TheSkyMapSerializer
   def location
     {
         x: object.x,
-        y: object.y
+        y: object.y,
+        quadrant_id: object.id
     }
   end
 end

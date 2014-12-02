@@ -12,6 +12,6 @@
             td
               ' {{msg}}
               ' |
-              link-to 'quadrants.show' quadrant_id | Locate
+              link-to 'quadrant.show' quadrant_id | Locate
             td= created_at
     pagination-links pagesObject=pagesObject

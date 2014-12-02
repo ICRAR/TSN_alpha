@@ -10,8 +10,8 @@
       tbody
         each model
           tr
-            td: link-to 'bases.show' id | {{name}}
-            td: link-to 'bases.show' id | {{type}}
-            td: link-to 'bases.show' id | {{mine}}
-            td: link-to 'bases.show' id | ({{quadrant.x}},{{quadrant.y}})
+            td: link-to 'base.show' id | {{name}}
+            td: link-to 'base.show' id | {{type}}
+            td: link-to 'base.show' id | {{mine}}
+            td: link-to 'base.show' id | ({{quadrant.x}},{{quadrant.y}})
     pagination-links pagesObject=pagesObject

@@ -1,4 +1,4 @@
-TheSkyMap.QuadrantsShowController = Ember.ObjectController.extend
+TheSkyMap.QuadrantShowController = Ember.ObjectController.extend
   needs: ['board']
   has_galaxy: (() ->
       @get('galaxy_id') > 0

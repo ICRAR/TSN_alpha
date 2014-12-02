@@ -1,5 +1,6 @@
-TheSkyMap.BoardController = Ember.ArrayController.extend
+TheSkyMap.BoardController = Ember.ArrayController.extend  TheSkyMap.isLoadedable,
   needs: ['currentPlayer']
+  isLoadedFirst: false
   init: ->
     @_super()
     @set 'x_center', @get('controllers.currentPlayer.content.home_x')
@@ -38,7 +39,7 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
   xs: (( ->
     [@get('x_min')..@get('x_max')]
   )).property('x_min','x_max')
-  selected_quadrant: {x:-1,y:-1}
+  selected_quadrant_id: 0
   quadrants_rows:(() ->
     c = @
     [c.get('y_min')..c.get('y_max')].map (y) ->
@@ -48,25 +49,26 @@ TheSkyMap.BoardController = Ember.ArrayController.extend
           quadrantsArray = c.get('store').filter(TheSkyMap.Quadrant, (quadrant) ->
             quadrant.get('y') == y && quadrant.get('x') == x
           )
-          selected_quadrant = c.get('selected_quadrant')
-          is_selected = (x == selected_quadrant.x && y == selected_quadrant.y)
           {
             x: x
             quadrant_final: quadrantsArray
-            selected: is_selected
           }
       }
-  ).property('x_min','x_max','y_min','y_max','selected_quadrant')
+  ).property('x_min','x_max','y_min','y_max')
   actions:
     refresh: () ->
       @send('refresh_view')
     refresh_view: () ->
+      @set('isLoaded', false)
+      save_this = @
       @.get('store').find('quadrant',{
         x_min: @.get('x_min')
         x_max: @.get('x_max')
         y_min: @.get('y_min')
         y_max: @.get('y_max')
-      })
+      }).then ()->
+        save_this.set('isLoaded', true)
+        save_this.set('isLoadedFirst', true)
     zoom_1: () ->
       @.set('xy_zoom', 2)
       @send('refresh_view')

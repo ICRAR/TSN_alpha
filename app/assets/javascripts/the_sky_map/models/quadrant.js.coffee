@@ -27,6 +27,7 @@ TheSkyMap.Quadrant = DS.Model.extend(
   has_bases: ( ->
     @get('_data.bases.length') > 0
   ).property('_data.bases.length')
+  is_selected: false
 
 )
 

@@ -1,0 +1,7 @@
+.panel.panel-info
+  .panel-heading
+    | Bases:
+    .loading Loading...
+  .panel-body
+
+

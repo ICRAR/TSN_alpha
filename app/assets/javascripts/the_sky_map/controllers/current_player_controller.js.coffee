@@ -11,7 +11,7 @@ TheSkyMap.CurrentPlayerController = Ember.ObjectController.extend(TheSkyMap.Coun
     rat = @get('next_update_time')
     @countdown_set(rat*1000) unless rat == 0
   countdown_complete: () ->
-    @send('update_details').reload()
+    @send('update_details')
   actions:
     update_details: () ->
       controller = this

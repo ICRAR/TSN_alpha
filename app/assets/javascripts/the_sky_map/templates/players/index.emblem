@@ -9,7 +9,7 @@
       tbody
         each model
           tr
-            td: link-to 'players.show' id | {{name}}
-            td: link-to 'players.show' id | {{rank}}
-            td: link-to 'players.show' id | {{total_score}}
+            td: link-to 'player.show' id | {{name}}
+            td: link-to 'player.show' id | {{rank}}
+            td: link-to 'player.show' id | {{total_score}}
     pagination-links pagesObject=pagesObject

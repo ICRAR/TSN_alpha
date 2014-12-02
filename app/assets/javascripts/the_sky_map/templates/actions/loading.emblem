@@ -1,0 +1,4 @@
+#actions_table: .panel.panel-info
+  .panel-heading All Actions
+  .panel-body
+    .loading Loading...

@@ -3,16 +3,19 @@
     .panel-heading  MiniMap
     .panel-body
       #mini_map_map
-        #view_window style=view_widow_style
-          '
-        each row in mini_map_rows
-          .mini_map_row
-            each quadrant in row.quadrants
-              each qf in quadrant.quadrant_final
-                .quadrant class={qf.home:home qf.explored:explored:unexplored qf.mine:mine qf.hostile:hostile qf.unowned:unowned}
-                  a href='#' click="move_view quadrant.x row.y"
-                    = qf.symbol
-              else
-                .quadrant.blank
-                  a href='#' click="move_view quadrant.x row.y"
-                    | .
+        if isLoading
+          .loading Loading...
+        else
+          #view_window style=view_widow_style
+            '
+          each row in mini_map_rows
+            .mini_map_row
+              each quadrant in row.quadrants
+                each qf in quadrant.quadrant_final
+                  .quadrant class={qf.home:home qf.explored:explored:unexplored qf.mine:mine qf.hostile:hostile qf.unowned:unowned}
+                    a href='#' click="move_view quadrant.x row.y"
+                      = qf.symbol
+                else
+                  .quadrant.blank
+                    a href='#' click="move_view quadrant.x row.y"
+                      | .
