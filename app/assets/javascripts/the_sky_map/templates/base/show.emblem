@@ -1,6 +1,8 @@
 #show_base
   .panel.panel-info
-    .panel-heading= name
+    .panel-heading
+      ' name
+      .pull-right: a href='#' click='reload': span.glyphicon.glyphicon-refresh
     .panel-body
       dl.dl-horizontal
         dt Description

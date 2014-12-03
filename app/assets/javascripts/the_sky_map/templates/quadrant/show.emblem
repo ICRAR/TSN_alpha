@@ -1,5 +1,7 @@
 .panel.panel-info
-  .panel-heading Quadrant: {{name}}
+  .panel-heading
+    ' Quadrant: {{name}}
+    .pull-right: a href='#' click='reload': span.glyphicon.glyphicon-refresh
   .panel-body
     dl.dl-horizontal
       dt Name

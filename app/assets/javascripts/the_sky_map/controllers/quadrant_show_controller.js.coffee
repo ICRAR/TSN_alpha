@@ -14,3 +14,5 @@ TheSkyMap.QuadrantShowController = Ember.ObjectController.extend
         z: @get('z')
       }
       @get('controllers.board').send('scroll_to_position', pos)
+    reload: () ->
+      @.get('model').reload()
