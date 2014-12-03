@@ -1,7 +1,10 @@
 TheSkyMap.MessagesIndexController = Ember.ArrayController.extend(TheSkyMap.Paginateble,{
   needs: ['board']
-  sortProperties: ['created_at_int'],
+  sortProperties: ['created_at_int']
   sortAscending: false
+  actions:
+    ack_all: () ->
+      Ember.$.getJSON "/the_sky_map/messages/ack_all"
 })
 
 TheSkyMap.MessageController = Ember.ObjectController.extend

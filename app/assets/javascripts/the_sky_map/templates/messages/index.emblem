@@ -2,6 +2,8 @@
   .panel-heading All Messages
   .panel-body
     table.table.table-striped.table-hover.table-bordered
+      .well
+        .btn.btn-success click='ack_all' Acknowledge All Messages
       thead: tr
         th Message:
         th DateTime:

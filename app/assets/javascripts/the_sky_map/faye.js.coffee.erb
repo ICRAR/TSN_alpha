@@ -59,7 +59,7 @@ $(document).ready(
             if data.ack_all_msgs?
               if current_player_id == data.ack_all_msgs.player_id
                 local_msgs = store.all('message')
-                for msg in local_msgs
+                for msg in local_msgs.content
                   msg.set('ack',true)
                 current_player.set('unread_msg_count',0)
 )
