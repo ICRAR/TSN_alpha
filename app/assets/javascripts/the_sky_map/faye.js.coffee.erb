@@ -49,6 +49,13 @@ $(document).ready(
                   new_msg = store.getById('message',msg_id)
                   Messenger().post
                     message: new_msg.get('msg')
+                    actions:
+                      ack:
+                        label: 'Acknowledge Message'
+                        action: () ->
+                          new_msg.set('ack',true)
+                          new_msg.save()
+                          @cancel()
                 )
                 current_player.set('unread_msg_count',data.new_message.new_count)
             if data.ack_msg?
