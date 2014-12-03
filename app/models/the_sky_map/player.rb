@@ -32,8 +32,8 @@ class TheSkyMap::Player < ActiveRecord::Base
   end
 
   #sends the player a msg and links to the quadrant
-  def send_msg(msg,quadrant = nil)
-    new_msg = TheSkyMap::Message.new_message(self,msg,quadrant)
+  def send_msg(msg,opts = {})
+    new_msg = TheSkyMap::Message.new_message(self,msg, opts)
     #push to open windows
     PostToFaye.new_msg(self.id,new_msg.id,self.unread_msg_count,self.game_map_id)
   end

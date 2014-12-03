@@ -41,8 +41,8 @@ GEM
     activesupport (3.2.11)
       i18n (~> 0.6)
       multi_json (~> 1.0)
-    acts-as-taggable-on (2.4.1)
-      rails (>= 3, < 5)
+    acts-as-taggable-on (3.4.2)
+      activerecord (>= 3.2, < 5)
     addressable (2.3.4)
     ansi (1.4.3)
     arel (3.0.2)
@@ -489,7 +489,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (~> 0.8.0)
   activerecord-import (= 0.3.1)
-  acts-as-taggable-on
+  acts-as-taggable-on (~> 3.4)
   asset_sync
   aws-sdk (~> 1.5.7)
   better_errors

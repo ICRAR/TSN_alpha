@@ -4,16 +4,28 @@
     table.table.table-striped.table-hover.table-bordered
       .well
         .btn.btn-success click='ack_all' Acknowledge All Messages
+        .filters
+          h3 Filter by:
+          button.btn.btn-default click="filter_by ''" All
+          button.btn.btn-default click="filter_by 'unread'" Unread Only
+
+          each tag in tag_filter_list
+            button.btn.btn-default class={tag.is_selected:disabled} click="filter_by tag.name"
+              = tag.name
       thead: tr
         th Message:
         th DateTime:
+        th Tags:
 
       tbody
-        each arrangedContent itemController="message"
+        each filteredContent itemController="message"
           tr class={ack:read:unread} click="ack_msg"
             td
               ' {{msg}}
               ' |
               link-to 'quadrant.show' quadrant_id | Locate
             td= created_at
+            td
+              each tag in tag_list
+                ' {{tag}}
     pagination-links pagesObject=pagesObject

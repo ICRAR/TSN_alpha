@@ -6,7 +6,17 @@ class TheSkyMap::MessagesController < TheSkyMap::ApplicationController
     page = params[:page].to_i || 1
     per_page = params[:per_page].to_i || 10
     @messages = current_player_object.messages.page(page).per(per_page).for_show
-    render :json =>  @messages, :each_serializer => TheSkyMap::MessageIndexSerializer, meta: pagination_meta(@messages)
+    meta = pagination_meta(@messages).merge(tag_list: TheSkyMap::Message.tag_list)
+    if params[:tag_filter] && params[:tag_filter] != ''
+      if params[:tag_filter] == 'unread'
+        @messages = @messages.where{ack == false}
+      else
+        @messages = @messages.tagged_with(params[:tag_filter])
+      end
+      meta[:pagination][:count] = @messages.count
+    end
+
+    render :json =>  @messages, :each_serializer => TheSkyMap::MessageIndexSerializer, meta: meta
   end
 
   def update

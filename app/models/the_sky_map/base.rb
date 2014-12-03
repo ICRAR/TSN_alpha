@@ -97,7 +97,7 @@ class TheSkyMap::Base < ActiveRecord::Base
     self.save
     the_sky_map_quadrant.update_totals
     PostToFaye.request_update('base',[self.id],self.the_sky_map_quadrant.game_map_id)
-    the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has upgraded to a #{upgrade.name}",the_sky_map_quadrant)
+    the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has upgraded to a #{upgrade.name}",quadrant: the_sky_map_quadrant, tags: ['base','upgrade'])
     true
   end
 
@@ -136,7 +136,7 @@ class TheSkyMap::Base < ActiveRecord::Base
     PostToFaye.request_update_player_only('mini_quadrant',update_quadrants,[player_id],self.the_sky_map_quadrant.game_map_id)
     PostToFaye.request_update('quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
 
-    the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has finished building a new #{ship_type.name} ship.",the_sky_map_quadrant)
+    the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has finished building a new #{ship_type.name} ship.",quadrant: the_sky_map_quadrant, tags: ['base','build ship', 'ship'])
     return true
   end
 
@@ -183,8 +183,8 @@ class TheSkyMap::Base < ActiveRecord::Base
       msg_to_attacker = "Your base (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage and the ship retaliated for #{outcome[:defend_damage]} damage."
       msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the base (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
     end
-    the_sky_map_player.send_msg(msg_to_attacker,quadrant)
-    attacked_ship.the_sky_map_player.send_msg(msg_to_defender,quadrant)
+    the_sky_map_player.send_msg(msg_to_attacker,quadrant: quadrant, tags: ['base','attack'])
+    attacked_ship.the_sky_map_player.send_msg(msg_to_defender,quadrant: quadrant, tags: ['ship','attack'])
     return outcome[:action_outcome]
   end
 

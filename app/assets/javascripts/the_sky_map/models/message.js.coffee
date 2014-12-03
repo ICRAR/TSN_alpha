@@ -5,5 +5,6 @@ TheSkyMap.Message = DS.Model.extend(
   created_at_int: DS.attr("number")
   quadrant_id: DS.attr("number")
   ack: DS.attr("boolean")
+  tag_list: DS.attr('raw')
   #quadrant: DS.belongsTo('quadrant')
 )
