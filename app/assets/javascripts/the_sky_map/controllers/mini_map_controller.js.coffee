@@ -53,7 +53,5 @@ TheSkyMap.MiniMapController = Ember.ArrayController.extend TheSkyMap.isLoadedabl
       @.get('store').find('mini_quadrant').then () ->
         save_this.set('isLoaded',true)
 
-TheSkyMap.MiniMapObjectController = Ember.ObjectController.extend
-  needs: ['board']
 
 

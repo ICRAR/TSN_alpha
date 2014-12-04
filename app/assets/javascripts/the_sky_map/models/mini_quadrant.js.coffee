@@ -14,5 +14,8 @@ TheSkyMap.MiniQuadrant = DS.Model.extend(
   explored_partial: DS.attr("boolean")
   symbol: DS.attr("string")
   player_id: DS.attr("number")
+  style: (() ->
+      "background-color: #{@.get('colour')};"
+    ).property('colour')
 )
 
