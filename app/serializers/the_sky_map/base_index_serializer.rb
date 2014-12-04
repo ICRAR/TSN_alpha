@@ -29,4 +29,9 @@ class TheSkyMap::BaseIndexSerializer < TheSkyMap::TheSkyMapSerializer
   def hostile
     !(mine)
   end
+
+  attributes :colour
+  def colour
+    object.the_sky_map_quadrant.owner.colour
+  end
 end

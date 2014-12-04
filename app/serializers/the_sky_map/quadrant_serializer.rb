@@ -1,10 +1,10 @@
 class TheSkyMap::QuadrantSerializer < TheSkyMap::TheSkyMapSerializer
-  attributes :id, :x, :y, :name, :explored, :explored_fully, :explored_partial,
-             :home, :mine, :hostile, :unowned, :total_score, :total_income, :location, :galaxy_id, :thumbnail_src
+  attributes :id, :x, :y, :name, :explored, :explored_fully, :explored_partial, :colour,
+             :home, :mine, :hostile, :unowned, :total_score, :total_income, :location, :galaxy_id, :thumbnail_src, :game_map_id
   embed :id, include: true
   has_many :the_sky_map_ships, key: :ship_ids, root: :ships, include: false
   has_many :the_sky_map_bases, key: :base_ids, root: :bases, include: false
-  has_one  :owner, key: :player_id, root: :players, serializer: TheSkyMap::PlayerIndexSerializer
+  has_one  :owner, key: :player_id, root: :players, include: false
   def include_the_sky_map_ships?
     explored?
   end
@@ -14,7 +14,6 @@ class TheSkyMap::QuadrantSerializer < TheSkyMap::TheSkyMapSerializer
   def include_owner
     explored?
   end
-
   def home
     home_id = current_player.home_id
     home_id == object.id

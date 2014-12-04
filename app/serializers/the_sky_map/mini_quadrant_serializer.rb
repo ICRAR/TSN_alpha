@@ -1,6 +1,6 @@
 class TheSkyMap::MiniQuadrantSerializer < TheSkyMap::TheSkyMapSerializer
   attributes :id, :x, :y, :explored, :explored_fully, :explored_partial,
-             :home, :mine, :hostile, :unowned, :symbol, :game_map_id
+             :home, :mine, :hostile, :unowned, :symbol, :game_map_id, :colour
   #embed :ids#, include: true
   #has_one  :owner, key: :player_id
   attributes owner_id: :player_id

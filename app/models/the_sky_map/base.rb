@@ -18,7 +18,7 @@ class TheSkyMap::Base < ActiveRecord::Base
   end
 
   def self.for_index(player)
-    TheSkyMap::Base.fog_of_war(player).scoped.includes(:the_sky_map_base_upgrade_type).select("`#{self.table_name}`.*").select{the_sky_map_quadrant.owner_id.as('the_sky_map_player_id_sql')}.joins(:the_sky_map_quadrant)
+    TheSkyMap::Base.fog_of_war(player).scoped.includes(:the_sky_map_base_upgrade_type).select("`#{self.table_name}`.*").includes(the_sky_map_quadrant: :owner)
   end
   has_many :the_sky_map_players_quadrants, :class_name => 'TheSkyMap::PlayersQuadrant', foreign_key: "the_sky_map_quadrant_id", primary_key: "the_sky_map_quadrant_id"
   def self.fog_of_war(player)

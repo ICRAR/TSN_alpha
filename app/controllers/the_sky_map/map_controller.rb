@@ -45,5 +45,9 @@ module TheSkyMap
     def tsm_reg
       render layout: 'application'
     end
+
+    def test
+      render layout: 'application'
+    end
   end
 end

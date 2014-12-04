@@ -4,7 +4,7 @@
   else
     img src=thumbnail_src height="80" width="80"
 
-.quadrant class={home:home explored:explored:unexplored mine:mine hostile:hostile unowned:unowned has_galaxy:has_galaxy:does_not_have_galaxy is_selected:selected:not_selected} click="click_me"
+.quadrant class={home:home explored:explored:unexplored mine:mine hostile:hostile unowned:unowned has_galaxy:has_galaxy:does_not_have_galaxy is_selected:selected:not_selected} click="click_me" style="border-color: {{unbound colour}};"
   if xy_zoomed_in
     .title
       link-to 'quadrant.show' id | {{name}}
@@ -25,12 +25,12 @@
     each ship in ships
       link-to 'ship.show' ship.id bubbles=false
         if ship.mine
-          span.glyphicon.glyphicon-plane.mine
+          span.glyphicon.glyphicon-plane.mine style="color: {{unbound colour}};"
         else
-          span.glyphicon.glyphicon-plane.enemy
+          span.glyphicon.glyphicon-plane.enemy style="color: {{unbound colour}};"
     each base in bases
       link-to 'base.show' base.id bubbles=false
         if base.mine
-          span.glyphicon.glyphicon-tower.mine
+          span.glyphicon.glyphicon-tower.mine style="color: {{unbound colour}};"
         else
-          span.glyphicon.glyphicon-tower.enemy
+          span.glyphicon.glyphicon-tower.enemy style="color: {{unbound colour}};"

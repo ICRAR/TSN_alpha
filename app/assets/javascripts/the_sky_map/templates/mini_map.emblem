@@ -12,7 +12,7 @@
             .mini_map_row
               each quadrant in row.quadrants
                 each qf in quadrant.quadrant_final
-                  .quadrant class={qf.home:home qf.explored:explored:unexplored qf.mine:mine qf.hostile:hostile qf.unowned:unowned}
+                  .quadrant class={qf.home:home qf.explored:explored:unexplored qf.mine:mine qf.hostile:hostile qf.unowned:unowned} style="background-color: {{unbound qf.colour}};"
                     a href='#' click="move_view quadrant.x row.y"
                       = qf.symbol
                 else

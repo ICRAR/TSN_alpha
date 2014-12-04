@@ -28,6 +28,19 @@ class TheSkyMap::GameMap < ActiveRecord::Base
   end
   #adds a new player to the map
   def add_player(profile)
-    TheSkyMap::Player.build_new_player(self.id,profile)
+    new_player = TheSkyMap::Player.build_new_player(self.id,profile)
+    self.set_player_colour new_player
+
+  end
+  def set_player_colour(player)
+    new_id = self.the_sky_map_players.maximum(:colour_id) || -1
+    player.colour_id = new_id + 1
+    player.save
+  end
+  def reset_all_player_colours
+    self.the_sky_map_players.update_all(colour_id: nil)
+    self.the_sky_map_players.each do |player|
+      self.set_player_colour player
+    end
   end
 end

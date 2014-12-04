@@ -1,6 +1,7 @@
 class TheSkyMap::Player < ActiveRecord::Base
   extend Memoist
-  attr_accessible :rank, :score, :spent_points, :total_points, :game_map_id, :total_points_special, :spent_points_special, :current, as: [:admin]
+  attr_accessible :rank, :score, :spent_points, :total_points, :game_map_id, :total_points_special,
+                  :colour_id, :spent_points_special, :current, as: [:admin]
 
   belongs_to :profile
   scope :only_current, where{current == true}
@@ -13,6 +14,18 @@ class TheSkyMap::Player < ActiveRecord::Base
   belongs_to :home, :class_name => 'TheSkyMap::Quadrant', :foreign_key => 'home_id'
   belongs_to :game_map, :class_name => 'TheSkyMap::GameMap', :foreign_key => 'game_map_id'
 
+  def self.colours
+    ['Brown','Coral','DarkGoldenRod','DarkGreen','DeepPink','DarkOrchid ','Gold','LightGreen','Cyan','PaleVioletRed']
+  end
+  def self.colour_from_id(c_id)
+    num_colours = colours.size
+    c_id = c_id % num_colours
+    colours[c_id]
+  end
+  def colour
+    c_id = colour_id || 0
+    self.class.colour_from_id c_id
+  end
   def self.for_index(player)
     self.where{rank > 0}.order{rank.asc}.includes(:profile).where{game_map_id == my{player.game_map_id}}
   end

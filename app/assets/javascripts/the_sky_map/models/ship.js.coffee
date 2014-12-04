@@ -2,6 +2,7 @@ Ember.Inflector.inflector.irregular('ship', 'ships');
 TheSkyMap.Ship = TheSkyMap.Actionable.extend(
   name: DS.attr("string")
   desc: DS.attr("string")
+  colour: DS.attr("string")
   attack: DS.attr("number")
   heal: DS.attr("number")
   speed: DS.attr("number")

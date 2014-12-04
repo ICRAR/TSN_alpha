@@ -163,6 +163,7 @@ Tsn::Application.routes.draw do
         get 'tsm_reg'
         get 'current_player'
         get 'trigger_refresh', defaults: { format: 'text' }
+        get 'test'
       end
       member do
         get 'select'

@@ -80,7 +80,7 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     base_relation = includes(:the_sky_map_quadrant_type).
         includes(:the_sky_map_ships).
         includes(:the_sky_map_bases).
-        includes(owner: :profile).
+        includes(:owner).
         select('the_sky_map_quadrants.*')
     if player.options['fog_of_war_on']
       base_relation.
@@ -254,6 +254,14 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     end
   end
 
+
+  def colour
+    if explored?
+      owner_id.nil? ? '#6BCAE2' : owner.colour
+    else
+      '#000e3f'
+    end
+  end
 
 
   #connects with a POGS galaxy

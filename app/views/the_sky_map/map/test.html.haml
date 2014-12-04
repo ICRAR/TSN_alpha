@@ -1,0 +1,12 @@
+- my_meta :title => "TheSkyMap",
+    :description => ""
+- content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface TheSkyMap
+  - @user_page =  'profile'
+  = render 'layouts/user_nav'
+- content_for(:content) do
+  #content-wrap
+    .well.well-white
+      - TheSkyMap::Player.colours.each do |colour|
+        %p{style: "background-color: #{colour}"}= colour

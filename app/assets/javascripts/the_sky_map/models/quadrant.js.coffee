@@ -1,6 +1,7 @@
 Ember.Inflector.inflector.irregular('quadrant', 'quadrants');
-TheSkyMap.Quadrant = DS.Model.extend(
+TheSkyMap.Quadrant = DS.Model.extend({
   name: DS.attr("string")
+  colour: DS.attr("string")
   x: DS.attr("number")
   y: DS.attr("number")
   game_map_id: DS.attr("number")
@@ -15,7 +16,7 @@ TheSkyMap.Quadrant = DS.Model.extend(
   total_income: DS.attr("number")
   num_bases: DS.attr("number")
   desc: DS.attr("string")
-  player: DS.belongsTo('player')
+  player: DS.belongsTo('player', { async: true })
   ships: DS.hasMany('ship', { async: true })
   location: DS.attr('raw')
   galaxy_id: DS.attr("number")
@@ -28,6 +29,5 @@ TheSkyMap.Quadrant = DS.Model.extend(
     @get('_data.bases.length') > 0
   ).property('_data.bases.length')
   is_selected: false
-
-)
+})
 

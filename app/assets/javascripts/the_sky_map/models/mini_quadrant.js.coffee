@@ -1,6 +1,7 @@
 Ember.Inflector.inflector.irregular('mini_quadrant', 'mini_quadrants');
 TheSkyMap.MiniQuadrant = DS.Model.extend(
   name: DS.attr("string")
+  colour: DS.attr("string")
   x: DS.attr("number")
   y: DS.attr("number")
   game_map_id: DS.attr("number")

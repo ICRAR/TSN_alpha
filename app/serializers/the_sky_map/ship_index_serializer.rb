@@ -28,4 +28,10 @@ class TheSkyMap::ShipIndexSerializer < TheSkyMap::TheSkyMapSerializer
   def max_health
     object.the_sky_map_ship_type.health
   end
+
+  attributes :colour
+  def colour
+    object.the_sky_map_player.colour
+  end
+
 end

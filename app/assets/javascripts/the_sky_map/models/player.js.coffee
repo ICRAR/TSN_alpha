@@ -4,6 +4,7 @@ TheSkyMap.Player = TheSkyMap.Actionable.extend(
   rank: DS.attr("number")
   total_score: DS.attr("number")
   profile_id: DS.attr("number")
+  colour: DS.attr('string')
   bases: DS.hasMany('base',{ async: true })
   ships: DS.hasMany('ship',{ async: true })
   quadrants: DS.hasMany('quadrant',{ async: true })

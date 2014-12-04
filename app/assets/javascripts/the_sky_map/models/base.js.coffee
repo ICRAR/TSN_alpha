@@ -2,6 +2,7 @@ Ember.Inflector.inflector.irregular('base', 'bases');
 TheSkyMap.Base = TheSkyMap.Actionable.extend(
   name: DS.attr("string")
   desc: DS.attr("string")
+  colour: DS.attr("string")
   type: DS.attr("string")
   mine: DS.attr("boolean")
   score: DS.attr("number")

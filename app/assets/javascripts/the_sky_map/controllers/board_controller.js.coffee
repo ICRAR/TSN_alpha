@@ -70,13 +70,13 @@ TheSkyMap.BoardController = Ember.ArrayController.extend  TheSkyMap.isLoadedable
         save_this.set('isLoaded', true)
         save_this.set('isLoadedFirst', true)
     zoom_1: () ->
-      @.set('xy_zoom', 2)
-      @send('refresh_view')
-    zoom_2: () ->
       @.set('xy_zoom', 3)
       @send('refresh_view')
+    zoom_2: () ->
+      @.set('xy_zoom', 4)
+      @send('refresh_view')
     zoom_3: () ->
-      @.set('xy_zoom', 6)
+      @.set('xy_zoom', 5)
       @send('refresh_view')
     transistion_to_quadrant: (quadrant_id) ->
       quad = @.get('store').getById('quadrant', quadrant_id)

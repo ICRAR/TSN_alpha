@@ -17,7 +17,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
   end
 
   def self.for_index(player)
-    TheSkyMap::Ship.fog_of_war(player).scoped.includes(:the_sky_map_ship_type)
+    TheSkyMap::Ship.fog_of_war(player).scoped.includes(:the_sky_map_ship_type, :the_sky_map_player)
   end
   def self.fog_of_war(player)
     if player.options['fog_of_war_on']
