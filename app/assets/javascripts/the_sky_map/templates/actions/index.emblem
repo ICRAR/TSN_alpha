@@ -7,7 +7,9 @@
         th Action
         th State
         th Options
+        th Completed At
         th Time Remaining
+
       tbody
         each action in model itemController="action"
           tr
@@ -15,6 +17,7 @@
             td | {{action.action}} ({{action.id}})
             td= action.current_state
             td= action.options_string
+            td= action.completed_at
             td
               ' (
                 s:{{action.countdown_seconds}},

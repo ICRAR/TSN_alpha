@@ -1,6 +1,6 @@
 class ActionSerializer < ActiveModel::Serializer
   attributes :id, :current_state, :action, :time_remaining, :valid, :options,
-             :run_at_time, :queued_at_time
+             :run_at_time, :queued_at_time, :completed_at
   embed :ids
   #has_one :actionable, polymorphic: true
   #has_one :actor, polymorphic: true
@@ -29,5 +29,6 @@ class ActionSerializer < ActiveModel::Serializer
   def queued_at_time
     object.queued_at.to_i
   end
+
 
 end
