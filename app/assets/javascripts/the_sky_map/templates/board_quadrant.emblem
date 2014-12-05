@@ -23,13 +23,13 @@
     if home
       span.glyphicon.glyphicon-home
     each ship in ships
-      link-to 'ship.show' ship.id bubbles=false
+      link-to 'ship.show' ship.id title=ship.name bubbles=false
         if ship.mine
           span.glyphicon.glyphicon-plane.mine style="color: {{unbound ship.colour}};"
         else
           span.glyphicon.glyphicon-plane.enemy style="color: {{unbound ship.colour}};"
     each base in bases
-      link-to 'base.show' base.id bubbles=false
+      link-to 'base.show' base.id title=base.name  bubbles=false
         if base.mine
           span.glyphicon.glyphicon-tower.mine style="color: {{unbound base.colour}};"
         else

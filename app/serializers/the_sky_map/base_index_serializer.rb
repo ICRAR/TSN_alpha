@@ -1,9 +1,10 @@
 class TheSkyMap::BaseIndexSerializer < TheSkyMap::TheSkyMapSerializer
-  attributes :id, :name, :desc, :hostile, :mine, :type, :score, :income, :attack, :remaining_health, :max_health
+  attributes :id, :desc, :hostile, :mine, :type, :score, :income, :attack, :remaining_health, :max_health
   embed :ids#, include: true
   #has_one :the_sky_map_quadrant, key: :quadrant_id
   attributes the_sky_map_quadrant_id: :quadrant_id
   attributes the_sky_map_player_id: :player_id
+  attributes display_name: :name
 
   def desc
     object.the_sky_map_base_upgrade_type.desc

@@ -7,6 +7,9 @@ class TheSkyMap::Base < ActiveRecord::Base
                           foreign_key: "the_sky_map_base_upgrade_type_id"
 
   belongs_to :the_sky_map_quadrant, :class_name => 'TheSkyMap::Quadrant', foreign_key: "the_sky_map_quadrant_id"
+  def display_name
+    "#{the_sky_map_base_upgrade_type.name} (#{id})"
+  end
   def the_sky_map_player_id
     respond_to?(:the_sky_map_player_id_sql) ? the_sky_map_player_id_sql : the_sky_map_quadrant.owner_id
   end

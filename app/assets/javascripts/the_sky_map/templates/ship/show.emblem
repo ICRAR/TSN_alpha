@@ -1,7 +1,7 @@
 #show_ship
   .panel.panel-info
     .panel-heading
-      ' name
+      = name
       .pull-right: a href='#' click='reload': span.glyphicon.glyphicon-refresh
     .panel-body
       dl.dl-horizontal
