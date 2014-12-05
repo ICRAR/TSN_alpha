@@ -16,22 +16,35 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
   validates_uniqueness_of :x, scope: [:y, :game_map_id]
   validates_presence_of :the_sky_map_quadrant_type_id
   def self.within_range(x_min,x_max,y_min,y_max,game_map_id_set)
-    where{game_map_id == game_map_id_set}.
-      where{(y >= y_min) & (y <= y_max)}.
-      where{(x >= x_min) & (x <= x_max)}.
+    within_range_no_order(x_min,x_max,y_min,y_max,game_map_id_set).
       order([:y,:x])
+  end
+  def self.within_range_no_order(x_min,x_max,y_min,y_max,game_map_id_set)
+    where{game_map_id == game_map_id_set}.
+        where{(y >= y_min) & (y <= y_max)}.
+        where{(x >= x_min) & (x <= x_max)}
   end
   #this function finds a new home free of enemies ready for an excited new player
   #accepts a location in the form of {x:1,y:1} that the system will try to award as the home
-  def self.find_new_home(game_map_id_set, location = nil)
-    if location
-      quadrant_pool =  TheSkyMap::Quadrant.where{(x==location[:x]) && (y==location[:y]) && (game_map_id==game_map_id_set)}
-    else
+  def self.find_new_home(game_map_id_set, opts)
+    opts.compile_options(
+        defaults: {location: nil, range: 0},
+        asserts: [:location, :range]
+    )
+    puts opts
+    location = opts[:location]
+    range = opts[:range]
+    if location.nil?
       quadrant_pool = TheSkyMap::Quadrant.where{game_map_id==game_map_id_set}
+    else
+      x_min = location[:x] - range
+      x_max = location[:x] + range
+      y_min = location[:y] - range
+      y_max = location[:y] + range
+      quadrant_pool =  TheSkyMap::Quadrant.within_range_no_order(x_min,x_max,y_min,y_max,game_map_id_set)
     end
     suitable_type_ids = TheSkyMap::QuadrantType.where{suitable_for_home == true}.pluck(:id)
-    suitable_relation = quadrant_pool. #only interested in layer 1 for now
-      where{owner_id == nil}. #only interested in unowned area's
+    suitable_relation = quadrant_pool.where{owner_id == nil}. #only interested in unowned area's
       where{the_sky_map_quadrant_type_id.in suitable_type_ids} #only interested in certain quadrant types
 
     suitable_with_ships_ids =   suitable_relation.joins(:the_sky_map_ships).pluck("#{TheSkyMap::Quadrant.table_name}.id")
@@ -39,7 +52,7 @@ class TheSkyMap::Quadrant < ActiveRecord::Base
     quadrant = suitable_quadrants.sample #return a random quadrant from the suitable ones
 
     if quadrant.nil? && location
-      quadrant = self.find_new_home(nil)
+      quadrant = self.find_new_home(game_map_id_set, {location: location, range: range + 1})
     end
     quadrant
   end

@@ -69,7 +69,7 @@ class TheSkyMap::Player < ActiveRecord::Base
     new_player.game_map_id = game_map_id_set
     new_player.save
     #find a new home & claim home
-    new_player.home = TheSkyMap::Quadrant.find_new_home(game_map_id_set,loc)
+    new_player.home = TheSkyMap::Quadrant.find_new_home(game_map_id_set,{location: loc})
     return false if new_player.home.nil?
     #capture home
     new_player.home.owner = new_player
