@@ -89,7 +89,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     new_base = TheSkyMap::Base.first_base(quadrant,new_base_type)
     return false if new_base.nil?
     PostToFaye.request_update('quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
-    the_sky_map_player.send_msg("You base (#{new_base.id}) at (#{quadrant.x},#{quadrant.y}) has been completed", quadrant: quadrant, tags: ['ship','build base'])
+    the_sky_map_player.send_msg("You #{new_base.display_name} at (#{quadrant.x},#{quadrant.y}) has been completed", quadrant: quadrant, tags: ['ship','build base'])
     true
 
   end
@@ -229,7 +229,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     #force update to open ship
     PostToFaye.request_update('ship',[self.id],self.the_sky_map_quadrant.game_map_id)
-    self.the_sky_map_player.send_msg("Your ship #{self.name} has arrived at Quadrant (#{quadrant.x},#{quadrant.y})",quadrant: quadrant, tags: ['ship','movement'])
+    self.the_sky_map_player.send_msg("Your #{self.name} has arrived at Quadrant (#{quadrant.x},#{quadrant.y})",quadrant: quadrant, tags: ['ship','movement'])
     return true
   end
 
@@ -260,21 +260,24 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     base = TheSkyMap::Base.find(opts[:base_id])
     quadrant = base.the_sky_map_quadrant
     #check if ship is still in the correct quadrant
-    return false unless quadrant == the_sky_map_quadrant
+    unless quadrant == the_sky_map_quadrant
+      the_sky_map_player.send_msg("Your #{self.name} missed an attack on a #{base.display_name}",quadrant: quadrant, tags: ['ship','attack'])
+      return true
+    end
 
     #attack the base
     outcome = self.attack(base)
 
     #send messages
     if outcome[:defender_killed] == true
-      msg_to_attacker = "Your ship (#{self.id}) attacked the base (#{base.id}) for #{outcome[:attack_damage]} damage and destroyed the base."
-      msg_to_defender = "Your base (#{base.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and was destroyed."
+      msg_to_attacker = "Your #{self.name} attacked the #{base.display_name} for #{outcome[:attack_damage]} damage and destroyed the base."
+      msg_to_defender = "Your #{base.display_name} was attacked by the #{self.name} for #{outcome[:attack_damage]} damage and was destroyed."
     elsif outcome[:attacker_killed] == true
-      msg_to_attacker = "Your ship (#{self.id}) attacked the base (#{base.id}) for #{outcome[:attack_damage]} damage however the base retaliated for #{outcome[:defend_damage]} damage killing your ship."
-      msg_to_defender = "Your base (#{base.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage killing the ship."
+      msg_to_attacker = "Your #{self.name} attacked the #{base.display_name} for #{outcome[:attack_damage]} damage however the base retaliated for #{outcome[:defend_damage]} damage killing your ship."
+      msg_to_defender = "Your #{base.display_name} was attacked by the #{self.name} for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage killing the ship."
     else
-      msg_to_attacker = "Your ship (#{self.id}) attacked the base (#{base.id}) for #{outcome[:attack_damage]} damage and the base retaliated for #{outcome[:defend_damage]} damage."
-      msg_to_defender = "Your base (#{base.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_attacker = "Your #{self.name} attacked the #{base.display_name} for #{outcome[:attack_damage]} damage and the base retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_defender = "Your #{base.display_name} was attacked by the #{self.name} for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
     end
     the_sky_map_player.send_msg(msg_to_attacker,quadrant: quadrant, tags: ['ship','attack'])
     base.the_sky_map_player.send_msg(msg_to_defender,quadrant: quadrant, tags: ['base','attack'])
@@ -309,21 +312,24 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     #check if attacked ship is in the your quadrant
     #if not return true as you missed and thus forfeit your resources
-    return true unless quadrant == attacked_ship.the_sky_map_quadrant
+    unless quadrant == attacked_ship.the_sky_map_quadrant
+      the_sky_map_player.send_msg("Your Ship missed an attack on a #{attacked_ship.name}",quadrant: quadrant, tags: ['ship','attack'])
+      return true
+    end
 
     #attack the ship
     outcome = self.attack(attacked_ship)
 
     #send messages
     if outcome[:defender_killed] == true
-      msg_to_attacker = "Your ship (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage and destroyed the ship."
-      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and was destroyed."
+      msg_to_attacker = "Your #{self.name} attacked the #{attacked_ship.name} for #{outcome[:attack_damage]} damage and destroyed the ship."
+      msg_to_defender = "Your #{attacked_ship.name} was attacked by the #{self.name} for #{outcome[:attack_damage]} damage and was destroyed."
     elsif outcome[:attacker_killed] == true
-      msg_to_attacker = "Your ship (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage however the ship retaliated for #{outcome[:defend_damage]} damage killing your ship."
-      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage killing the ship."
+      msg_to_attacker = "Your #{self.name} attacked the #{attacked_ship.name} for #{outcome[:attack_damage]} damage however the ship retaliated for #{outcome[:defend_damage]} damage killing your ship."
+      msg_to_defender = "Your #{attacked_ship.name} was attacked by the #{self.name} for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage killing the ship."
     else
-      msg_to_attacker = "Your ship (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage and the ship retaliated for #{outcome[:defend_damage]} damage."
-      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the ship (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_attacker = "Your #{self.name} attacked the #{attacked_ship.name} for #{outcome[:attack_damage]} damage and the ship retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_defender = "Your #{attacked_ship.name} was attacked by the #{self.name} for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
     end
     the_sky_map_player.send_msg(msg_to_attacker,quadrant: quadrant, tags: ['ship','attack'])
     attacked_ship.the_sky_map_player.send_msg(msg_to_defender,quadrant: quadrant, tags: ['ship','attack'])
@@ -365,7 +371,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     #heal the ship
     outcome = healed_ship.heal(the_sky_map_ship_type.heal)
-    the_sky_map_player.send_msg("Your ship (#{healed_ship.id}) was healed #{the_sky_map_ship_type.heal} points by the ship #{id}", quadrant: quadrant, tags: ['ship','heal'])
+    the_sky_map_player.send_msg("Your #{healed_ship.name} was healed #{the_sky_map_ship_type.heal} points by the #{name}", quadrant: quadrant, tags: ['ship','heal'])
     return outcome
   end
   def heal_base_options(actor)
@@ -402,7 +408,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
 
     #heal the ship
     outcome = healed_base.heal(the_sky_map_ship_type.heal)
-    the_sky_map_player.send_msg("Your base (#{healed_base.id}) was healed #{the_sky_map_ship_type.heal} points by the ship #{id}", quadrant: quadrant, tags: ['ship','heal'])
+    the_sky_map_player.send_msg("Your #{healed_base.display_name} was healed #{the_sky_map_ship_type.heal} points by the #{name}", quadrant: quadrant, tags: ['ship','heal'])
     return outcome
   end
 

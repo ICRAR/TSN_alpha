@@ -60,7 +60,7 @@ class TheSkyMap::Base < ActiveRecord::Base
 
   #check that ships is attackable and then add the action
   def auto_attack(ship)
-    self.perform_action(the_sky_map_quadrant.owner,"attack_ship_#{ship.id}")
+    self.perform_action(the_sky_map_quadrant.owner,"auto_attack_ship_#{ship.id}")
   end
 
   #actions
@@ -69,7 +69,7 @@ class TheSkyMap::Base < ActiveRecord::Base
     the_sky_map_quadrant.nil? ? nil : the_sky_map_quadrant.owner
   end
   def actions_list
-    ['upgrade','build_ship', 'attack_ship']
+    ['upgrade','build_ship', 'attack_ship','auto_attack_ship']
   end
   def is_upgrading?
     !current_action.nil? && current_action.action == 'upgrade'
@@ -94,13 +94,14 @@ class TheSkyMap::Base < ActiveRecord::Base
     out_hash
   end
   def perform_upgrade(options)
+    old_name  = self.display_name
     upgrade = self.allowed_upgrades.find(options[:upgrade_id])
     return false if upgrade.nil?
     self.the_sky_map_base_upgrade_type = upgrade
     self.save
     the_sky_map_quadrant.update_totals
     PostToFaye.request_update('base',[self.id],self.the_sky_map_quadrant.game_map_id)
-    the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has upgraded to a #{upgrade.name}",quadrant: the_sky_map_quadrant, tags: ['base','upgrade'])
+    the_sky_map_quadrant.owner.send_msg("Your #{old_name} has upgraded to a #{upgrade.name}",quadrant: the_sky_map_quadrant, tags: ['base','upgrade'])
     true
   end
 
@@ -139,7 +140,7 @@ class TheSkyMap::Base < ActiveRecord::Base
     PostToFaye.request_update_player_only('mini_quadrant',update_quadrants,[player_id],self.the_sky_map_quadrant.game_map_id)
     PostToFaye.request_update('quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
 
-    the_sky_map_quadrant.owner.send_msg("Your base (#{self.id}) has finished building a new #{ship_type.name} ship.",quadrant: the_sky_map_quadrant, tags: ['base','build ship', 'ship'])
+    the_sky_map_quadrant.owner.send_msg("Your #{self.display_name} has finished building a new #{ship_type.name} ship.",quadrant: the_sky_map_quadrant, tags: ['base','build ship', 'ship'])
     return true
   end
 
@@ -171,20 +172,72 @@ class TheSkyMap::Base < ActiveRecord::Base
 
     #check if attacked ship is in the your quadrant
     #if not return true as you missed and thus forfeit your resources
-    return true unless quadrant == attacked_ship.the_sky_map_quadrant
+    unless quadrant == attacked_ship.the_sky_map_quadrant
+      the_sky_map_player.send_msg("Your #{self.display_name} missed an attack on a #{attacked_ship.name}",quadrant: quadrant, tags: ['base','attack'])
+      return true
+    end
+    #attack the ship
+    outcome = self.attack(attacked_ship)
+    #send messages
+    if outcome[:defender_killed] == true
+      msg_to_attacker = "Your #{self.display_name} attacked the #{attacked_ship.name} for #{outcome[:attack_damage]} damage and destroyed the ship."
+      msg_to_defender = "Your #{attacked_ship.name} was attacked by the #{self.display_name} for #{outcome[:attack_damage]} damage and was destroyed."
+    elsif outcome[:attacker_killed] == true
+      msg_to_attacker = "Your #{self.display_name} attacked the #{attacked_ship.name} for #{outcome[:attack_damage]} damage however the ship retaliated for #{outcome[:defend_damage]} damage destroying your base."
+      msg_to_defender = "Your #{attacked_ship.name} was attacked by the #{self.display_name} for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage destroying the base."
+    else
+      msg_to_attacker = "Your #{self.display_name} attacked the #{attacked_ship.name} for #{outcome[:attack_damage]} damage and the ship retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_defender = "Your #{attacked_ship.name} was attacked by the #{self.display_name} for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
+    end
+    the_sky_map_player.send_msg(msg_to_attacker,quadrant: quadrant, tags: ['base','attack'])
+    attacked_ship.the_sky_map_player.send_msg(msg_to_defender,quadrant: quadrant, tags: ['ship','attack'])
+    return outcome[:action_outcome]
+    end
+  def auto_attack_ship_options(actor)
+    quadrant = the_sky_map_quadrant
+
+    if quadrant.has_attackable_ships?(quadrant.owner)
+      available_ships = {}
+      quadrant.attackable_ships(quadrant.owner).each do |attacked_ship|
+        action_name = "attack_ship_#{attacked_ship.id}".to_sym
+        available_ships[action_name] = {
+            action: 'attack_ship',
+            name: "Attack the Ship: #{attacked_ship.id}",
+            cost: 100,
+            duration: 60,
+            options: {ship_id: attacked_ship.id},
+            allowed: true,
+            icon: 'glyphicon-screenshot',
+            display: false
+        }
+      end
+      available_ships
+    else
+      {}
+    end
+  end
+  def auto_perform_attack_ship(opts)
+    attacked_ship = TheSkyMap::Ship.find(opts[:ship_id])
+    quadrant = the_sky_map_quadrant
+
+    #check if attacked ship is in the your quadrant
+    unless quadrant == attacked_ship.the_sky_map_quadrant
+      the_sky_map_player.send_msg("Your Base missed an auto attack on a #{attacked_ship.name}",quadrant: quadrant, tags: ['base','attack'])
+      return false
+    end
 
     #attack the ship
     outcome = self.attack(attacked_ship)
     #send messages
     if outcome[:defender_killed] == true
-      msg_to_attacker = "Your base (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage and destroyed the ship."
-      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the base (#{self.id}) for #{outcome[:attack_damage]} damage and was destroyed."
+      msg_to_attacker = "Your #{self.display_name} auto attacked the #{attacked_ship.name} for #{outcome[:attack_damage]} damage and destroyed the ship."
+      msg_to_defender = "Your #{attacked_ship.name} was auto attacked by the #{self.display_name} for #{outcome[:attack_damage]} damage and was destroyed."
     elsif outcome[:attacker_killed] == true
-      msg_to_attacker = "Your base (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage however the ship retaliated for #{outcome[:defend_damage]} damage destroying your base."
-      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the base (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage destroying the base."
+      msg_to_attacker = "Your #{self.display_name} auto attacked the #{attacked_ship.name} for #{outcome[:attack_damage]} damage however the ship retaliated for #{outcome[:defend_damage]} damage destroying your base."
+      msg_to_defender = "Your #{attacked_ship.name} was auto attacked by the #{self.display_name} for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage destroying the base."
     else
-      msg_to_attacker = "Your base (#{self.id}) attacked the ship (#{attacked_ship.id}) for #{outcome[:attack_damage]} damage and the ship retaliated for #{outcome[:defend_damage]} damage."
-      msg_to_defender = "Your ship (#{attacked_ship.id}) was attacked by the base (#{self.id}) for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_attacker = "Your #{self.display_name} auto attacked the #{attacked_ship.name} for #{outcome[:attack_damage]} damage and the ship retaliated for #{outcome[:defend_damage]} damage."
+      msg_to_defender = "Your #{attacked_ship.name} was auto attacked by the #{self.display_name} for #{outcome[:attack_damage]} damage and then retaliated for #{outcome[:defend_damage]} damage."
     end
     the_sky_map_player.send_msg(msg_to_attacker,quadrant: quadrant, tags: ['base','attack'])
     attacked_ship.the_sky_map_player.send_msg(msg_to_defender,quadrant: quadrant, tags: ['ship','attack'])

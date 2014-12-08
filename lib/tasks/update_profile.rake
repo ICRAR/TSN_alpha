@@ -129,9 +129,9 @@ namespace :update_profiles do
   end
   desc "award trophies for galaxy"
   task :trophies_csv => :environment do
-    trophy_id = 191
+    trophy_id = 198
     trophy = Trophy.find trophy_id
-    galaxy_id = 17000
+    galaxy_id = 50000
 
     galaxy = Galaxy.find galaxy_id
     profiles = galaxy.profiles

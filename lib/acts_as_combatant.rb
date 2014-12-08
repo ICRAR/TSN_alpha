@@ -32,9 +32,17 @@ module ActsAsCombatant
       PostToFaye.request_update(self.model_name,[self.id],self.the_sky_map_quadrant.game_map_id)
       true
     end
+    #Attack takes place in teh following order
+    #step 1 attack deals damage to the defender
+    #step 2 if the defender survives it retaliates
+    #There are 3 possible outcomes
+    # outcome 1) The attacker kill the defender (in this case the attacker takes no damage)
+    # outcome 2) The attacker fails to kill the defender and the defender retaliates killing the attacker
+    # outcome 3) The attacker fails to kill the defender and the defender retaliates but does not kill the attacker
     def attack(defender)
       attacker = self
       quadrant = self.the_sky_map_quadrant
+      #step 1
       attack_chance = 50..100
       attack_damage = ((rand(attack_chance) * attacker.attack_value) / 100.0).round
       defender.take_damage(attack_damage)
@@ -42,11 +50,13 @@ module ActsAsCombatant
       if defender.is_healthy?
         defender_killed = false
         #defender retaliates
+        #step 2
         defend_chance = 25..75
         defend_damage = ((rand(defend_chance) * defender.attack_value) / 100.0).round
         attacker.take_damage(defend_damage)
         if attacker.is_healthy?
-          attacked_killed = false
+          # outcome 3) The attacker fails to kill the defender and the defender retaliates but does not kill the attacker
+          attacker_killed = false
           if attacker.model_name == defender.model_name
             PostToFaye.request_update(attacker.model_name,[attacker.id, defender.id],quadrant.game_map_id)
           else
@@ -54,14 +64,16 @@ module ActsAsCombatant
             PostToFaye.request_update(defender.model_name,[defender.id],quadrant.game_map_id)
           end
         else
+          # outcome 2) The attacker fails to kill the defender and the defender retaliates killing the attacker
           #destroy attacker
-          attacked_killed = true
+          attacker_killed = true
           attacker.killed_by(defender)
           PostToFaye.request_update('quadrant',[quadrant.id],quadrant.game_map_id)
           PostToFaye.remove_model_delayed(attacker.id,attacker.model_name,quadrant.game_map_id)
+          PostToFaye.request_update(defender.model_name,[defender.id],quadrant.game_map_id)
         end
       else
-        defender
+        # outcome 1) The attacker kill the defender (in this case the attacker takes no damage)
         defend_damage = 0
         #destroy defender
         defender.killed_by(attacker)
@@ -72,9 +84,9 @@ module ActsAsCombatant
       return {
         action_outcome: true,
         attack_damage: attack_damage,
-        defend_damge: defend_damage,
+        defend_damage: defend_damage,
         defender_killed: defender_killed,
-        attacked_killed: attacked_killed,
+        attacker_killed: attacker_killed,
       }
     end
   end

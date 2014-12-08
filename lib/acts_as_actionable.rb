@@ -8,21 +8,26 @@ module ActsAsActionable
     def acts_as_actionable(options = {})
       include ActsAsActionable::LocalInstanceMethods
       before_destroy :refund_all_pending_actions
-      has_many :actions, as: :actionable, class_name: 'Action', :dependent => :destroy
+      has_many :actions, as: :actionable, class_name: 'Action'
     end
   end
 
   module LocalInstanceMethods
     # an action hash should take the form:
-    # move_1_2_3: {
-    #     action: 'move',
-    #     name: 'move to Quadrant 1',
-    #     cost: 10,
-    #     duration: 300, #in seconds
-    #     options: {x: 1, y: 2,z: 3},
-    #     allowed: true,
+    # move_1_2_3: {                     #an identifying name
+    #     action: 'move',               #action method to be called
+    #     name: 'move to Quadrant 1',   #display name
+    #     cost: 10,                     #cost to perform
+    #     duration: 300, #in seconds    #delay before the action takes place
+    #     options: {x: 1, y: 2,z: 3},   #any options to be passed to the action method
+    #     allowed: true,                #Can the action be performed at the moment
+    #     display: true                 #Should the action be displayed in the GUI
     # }
-
+    def action_defaults
+    {
+      display: true
+    }
+    end
     def perform_action(actor, action_name)
       an = action_name.to_sym
       action_hash = actions_available(actor)[an]
@@ -35,6 +40,7 @@ module ActsAsActionable
       actions_all = self.all_actions(actor)
       actors_current_bank = actor.currency_available
       actions_all.each do |action, attributes|
+        actions_all[action].merge! self.action_defaults
         actions_all[action][:allowed] = false if actions_all[action][:cost] > actors_current_bank
       end
       actions_all

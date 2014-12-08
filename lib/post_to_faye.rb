@@ -44,7 +44,7 @@ class PostToFaye
     PostToFaye.delay.remove_model_delayed(model.id,model.ember_name,channel_id)
   end
   def self.remove_model_delayed(model_id,model_name,channel_id)
-    broadcast_json = {remove_models: {model_name => model_id}}.to_json
+    broadcast_json = {remove_models: {model_name => [model_id]}}.to_json
     faye_broadcast "/messages/from_rails/#{channel_id}", broadcast_json
   end
 
