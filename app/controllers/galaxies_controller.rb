@@ -26,20 +26,8 @@ class GalaxiesController < ApplicationController
       @request_new = Hdf5Request.new()
 
     end
-    per_page = params[:per_page]
-    per_page ||= 10
-    page_num = params[:page]
 
-    @galaxies = Galaxy.search_options(params)
-
-    if (@boinc_id == nil) || (@boinc_id == 'all')
-      @galaxies = @galaxies.page(page_num).per(per_page).order(sort_column + " " + sort_direction)
-    else
-      @galaxies = @galaxies.page(page_num).per(per_page).find_by_user_id(@boinc_id).order(sort_column("galaxy_id") + " " + sort_direction("desc"))
-    end
-
-
-
+    @galaxies = find_galaxies
   end
   def show
     @galaxy = Galaxy.where(:galaxy_id => params[:id]).first || not_found
@@ -89,6 +77,20 @@ class GalaxiesController < ApplicationController
     %w[asc desc].include?(params[:direction]) ? params[:direction] : default
   end
 
+  def find_galaxies
+    session[:galaxy_per_page] = params[:per_page] if params[:per_page]
+    per_page = session[:galaxy_per_page] if session[:galaxy_per_page]
+    per_page ||= 10
+    page_num = params[:page]
 
+    galaxies = Galaxy.search_options(params)
+
+    if (@boinc_id == nil) || (@boinc_id == 'all')
+      galaxies = galaxies.page(page_num).per(per_page).order(sort_column + " " + sort_direction)
+    else
+      galaxies = galaxies.page(page_num).per(per_page).find_by_user_id(@boinc_id).order(sort_column("galaxy_id") + " " + sort_direction("desc"))
+    end
+    galaxies
+  end
 
 end
