@@ -11,6 +11,10 @@
     .shadowed
       .inner-boundary
         #content-inner
+          -if @notice
+            .alert.fade.in.alert-success
+              %button.close{"data-dismiss" => "alert"} &times;
+              = @notice.html_safe
           .accordion#search-accordion
             .accordion-group
               .accordion-heading
@@ -27,18 +31,16 @@
                       = text_field_tag :tag, params[:tag], data: {}
                     -if @science_user == true
                       .control-group
-                        = label_tag :id_from do
-                          Galaxy ID from
-                          = text_field_tag :id_from, params[:id_from]
-                          to
-                          = text_field_tag :id_to, params[:id_to]
+                        Galaxy ID from
+                        = text_field_tag :id_from, params[:id_from]
+                        to
+                        = text_field_tag :id_to, params[:id_to]
 
                     .control-group
-                      = label_tag :ra_from do
-                        Right Ascension from
-                        = text_field_tag :ra_from, params[:ra_from]
-                        to
-                        = text_field_tag :ra_to, params[:ra_to]
+                      Right Ascension from
+                      = text_field_tag :ra_from, params[:ra_from]
+                      to
+                      = text_field_tag :ra_to, params[:ra_to]
 
                     .control-group
                       -# label_tag :dec_from do
@@ -55,7 +57,7 @@
                 .accordion-heading
                   %a.accordion-toggle{:data => {:toggle=> "collapse", :parent => "#search-accordion"},:href=>"#collapseRequest"} Gather Science Data
                   = link_to "Clear All Requests", clear_hdf5_requests_path, :class => "btn btn-tsn"
-                  = link_to "Add All Galaxy Requests", add_search_hdf5_requests_path(request.query_parameters), :class => "btn btn-tsn"
+                  = link_to "Add Current Page to Requests", add_search_hdf5_requests_path(request.query_parameters), :class => "btn btn-tsn"
 
                 #collapseRequest.accordion-body.collapse{:class => (@request_new.errors.empty? ? nil : 'in')}
                   .accordion-inner
@@ -116,10 +118,14 @@
                   %td= link_to "#{galaxy.per_complete}%", link
                   %td
                     -if @science_user == true
-                      - link_disabled = @hdf5_request_galaxies.any?{|i| i[:id] == galaxy.id} || ![3,4].include?(galaxy.status_id)
+                      - link_disabled = @hdf5_request_galaxies.any?{|i| i[:galaxy_id] == galaxy.id} || ![3,4].include?(galaxy.status_id)
                       - link_class = link_disabled ? "btn btn-tsn btn-mini disabled"  :"btn btn-tsn btn-mini"
                       = link_to "Add Request", add_hdf5_requests_path(request.query_parameters.merge(:galaxy_id => galaxy.id)), :class => link_class
                     = link_to "More Galaxy details", galaxy.more_info_url
           - @galaxies.total_count(:galaxy_id,:distinct => true)
-          = paginate @galaxies
+          = paginate @galaxies, params: {controller: "galaxies", action: "index"}
           = page_entries_info @galaxies, :entry_name => 'Galaxy'
+          -if @science_user == true
+            = render 'shared/per_page_selector', per_page_list: [10,20,50,100,200,500], extra_options: {controller: "galaxies", action: "index"}
+          -else
+            = render 'shared/per_page_selector', extra_options: {controller: "galaxies", action: "index"}

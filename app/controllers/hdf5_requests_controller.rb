@@ -1,4 +1,4 @@
-class Hdf5RequestsController < ApplicationController
+class Hdf5RequestsController < GalaxiesController
   before_filter :authorise
   def authorise
     unless user_signed_in? && current_user.profile.is_science_user?
@@ -60,27 +60,24 @@ class Hdf5RequestsController < ApplicationController
     @galaxy = Galaxy.where{galaxy_id == my{params[:galaxy_id]}}.first || not_found
     if [3,4].include? @galaxy.status_id
       if @hdf5_request_galaxies.any? {|i| i[:galaxy_id] == @galaxy.id}
-        flash.now[:alert] = "Sorry you've already added that galaxy."
-        @request_new = Hdf5Request.new()
-        render 'galaxies/show'
+        redirect_to galaxies_path(request.query_parameters.except(:galaxy_id)), alert: "Sorry you've already added that galaxy (#{@galaxy.name}: #{@galaxy.id})."
       else
         @hdf5_request_galaxies.push({:galaxy_id => @galaxy.id, :name => @galaxy.name})
         save_galaxy_cart
-        redirect_to galaxies_path(request.query_parameters.except(:galaxy_id)), notice: "Success you added #{@galaxy.name} to your shopping cart"
+        redirect_to galaxies_path(request.query_parameters.except(:galaxy_id)), notice: "Success you added #{@galaxy.name}: #{@galaxy.id} to your shopping cart"
       end
     else
-      flash.now[:alert] = "Sorry that galaxy is not ready yet."
-      @request_new = Hdf5Request.new()
-
-      render 'galaxies/show'
+      redirect_to galaxies_path(request.query_parameters.except(:galaxy_id)), alert: "Sorry that galaxy is not ready yet (#{@galaxy.name}: #{@galaxy.id})."
     end
     #redirect_to galaxy page
   end
   def add_search
     load_galaxy_cart
-    galaxies = Galaxy.search_options(params)
+    #load galaxies
+    @galaxies = find_galaxies
+
     galaxies_added_names = []
-    galaxies.each do |galaxy|
+    @galaxies.each do |galaxy|
       galaxy_name = "Galaxy: #{galaxy.name} (#{galaxy.id})"
       if [3,4].include? galaxy.status_id
         if @hdf5_request_galaxies.any? {|i| i[:galaxy_id] == galaxy.id}
@@ -95,8 +92,16 @@ class Hdf5RequestsController < ApplicationController
     end
     save_galaxy_cart
     notice = "The following modifications were made to the your galaxy cart: <br /> \n"
-    #notice << galaxies_added_names.join(" <br /> \n")
-    redirect_to galaxies_path(request.query_parameters), notice: notice
+    notice << galaxies_added_names.join(" <br /> \n")
+    @notice = notice
+
+    @science_user = check_science_user
+    if @science_user
+      load_galaxy_cart
+      @request_new = Hdf5Request.new()
+
+    end
+    render 'galaxies/index'
   end
   def clear
     #clears the 'shopping cart'
@@ -121,5 +126,6 @@ class Hdf5RequestsController < ApplicationController
       render 'hdf5_requests/new'
     end
   end
+
 
 end
