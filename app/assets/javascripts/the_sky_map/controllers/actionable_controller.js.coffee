@@ -18,28 +18,32 @@ TheSkyMap.ActionableController = Ember.ObjectController.extend
       $.post(action_path,
         {
           action_name: action_name
-        },
-        (data) ->
-          store.pushPayload('action', data)
-          new_action = store.getById('action', data.action.id)
-          actionable.get('actions').addObject(new_action)
-          save_this.send('update_actions')
-
+        }
+      ).done((data) ->
+        save_this.send('update_actions')
+      ).fail((error) ->
+        if error.status == 404
+          save_this.transitionToRoute('home')
       )
     update_actions: () ->
       store = @store
+      save_this = this
       actionable = @get('content')
       model_name = actionable.get('constructor.typeKey')
       actionable_path = store.adapterFor(this).buildURL(model_name,@.get('id'))
       action_update_path = "#{actionable_path}/game_actions_available"
-      $.get(action_update_path,
-        {},
-      (data) ->
-        for action in data['actions']
-          store.update('action',action)
-        #store.pushPayload('action', {actions: data['actions']})
-        store.update(model_name,data[model_name])
-        #store.pushPayload('action', data)
-        #actionable = action.get('actionable')
-        #actionable.reload()
-      )
+      if actionable.get('mine')
+        $.get(action_update_path,
+          {}
+        ).done((data) ->
+          for action in data['actions']
+            store.update('action',action)
+          #store.pushPayload('action', {actions: data['actions']})
+          store.update(model_name,data[model_name])
+          #store.pushPayload('action', data)
+          #actionable = action.get('actionable')
+          #actionable.reload()
+        ).fail((error) ->
+          if error.status == 404
+            save_this.transitionToRoute('home')
+        )

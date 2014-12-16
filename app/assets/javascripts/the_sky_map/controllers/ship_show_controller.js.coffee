@@ -6,5 +6,12 @@ TheSkyMap.ShipShowController = TheSkyMap.ActionableController.extend
       @get('controllers.board').send('transistion_to_quadrant', quad_id)
     reload: () ->
       save_this = @
-      @.get('model').reload().then () ->
+      @.get('model').reload().then(() ->
         save_this.send('update_actions')
+      ).catch((reason) ->
+        if reason.name == TheSkyMap.UnfoundError().name
+          save_this.transitionToRoute('home')
+          false
+        else
+          true
+      )

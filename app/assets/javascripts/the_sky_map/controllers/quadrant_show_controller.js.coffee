@@ -15,4 +15,10 @@ TheSkyMap.QuadrantShowController = Ember.ObjectController.extend
       }
       @get('controllers.board').send('scroll_to_position', pos)
     reload: () ->
-      @.get('model').reload()
+      @.get('model').reload().catch((reason) ->
+        if reason.name == TheSkyMap.UnfoundError().name
+          save_this.transitionToRoute('home')
+          false
+        else
+          true
+      )

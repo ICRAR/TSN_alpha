@@ -3,8 +3,14 @@
 TheSkyMap.UnauthorizedError = () ->
   tmp = Error.prototype.constructor.call(this, "The backend returned a 401: Unauthorized Error, : ")
   tmp.name = "UnauthorizedError"
+  tmp
+TheSkyMap.UnfoundError = () ->
+  tmp = Error.prototype.constructor.call(this, "The backend returned a 404: File Not Found Error, : ")
+  tmp.name = "UnfoundError"
+  tmp
 
 TheSkyMap.UnauthorizedError.prototype = Ember.create(Error.prototype)
+TheSkyMap.UnfoundError.prototype = Ember.create(Error.prototype)
 
 
 TheSkyMap.Store = DS.Store.extend
@@ -21,12 +27,14 @@ DS.ActiveModelAdapter.reopen
     token = $("meta[name=\"csrf-token\"]").attr("content")
     @headers = "X-CSRF-Token": token
   ajaxError: (jqXHR) ->
-    defaultAjaxError = @_super(jqXHR)
-    if jqXHR and jqXHR.status is 401
-      window.location.replace("/users/sign_in")
-      new TheSkyMap.UnauthorizedError()
+    if jqXHR
+      if jqXHR.status is 401
+        window.location.replace("/users/sign_in")
+        new TheSkyMap.UnauthorizedError()
+      else if jqXHR.status is 404
+        new TheSkyMap.UnfoundError()
     else
-      defaultAjaxError
+      @_super(jqXHR)
 
 TheSkyMap.RawTransform = DS.Transform.extend(
   deserialize: (serialized) ->

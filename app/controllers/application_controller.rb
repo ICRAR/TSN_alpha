@@ -23,7 +23,25 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   def record_not_found
-    redirect_to :controller => "/pages", :action => "show", :slug => "404"
+    slug = '404'
+    @page = Page.find_by_slug(slug)
+    if @page.nil?
+      @title = "404 - Page not found"
+      @links = []
+      @content = "Sorry, no page exists at the specified address."
+    else
+      @title = @page.title
+      @links = @page.sub_pages.for_links(false)
+      @content = @page.content.html_safe
+    end
+    respond_to do |format|
+      format.html {render 'pages/show', status: 404, layout: 'application'}
+      format.json {
+        @error = 404
+        render 'pages/show', status: 404, layout: 'application'
+      }
+    end
+
   end
 
 

@@ -26,7 +26,15 @@ TheSkyMap.Router.map ()->
 TheSkyMap.ApplicationRoute = Ember.Route.extend
   actions:
     error: (reason) ->
-      window.location.replace("/users/sign_in")  if reason instanceof TheSkyMap.UnauthorizedError
+      if reason.name == TheSkyMap.UnauthorizedError().name
+        window.location.replace("/users/sign_in")
+        false
+      else if reason.name == TheSkyMap.UnfoundError().name
+        @transitionTo('home')
+        false
+      else
+        true
+
 
 TheSkyMap.WithNameRoute = Ember.Route.extend
   renderTemplate: () ->
@@ -53,7 +61,7 @@ TheSkyMap.PmmRoute = Ember.Route.extend
 
 TheSkyMap.QuadrantShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   model: (params)->
-    quadrant = @store.reloadRecord(@store.recordForId('quadrant', params.quadrant_id))
+    TheSkyMap.RouteModelFind('quadrant',params.quadrant_id,@)
 
 
 TheSkyMap.ShipsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
@@ -63,7 +71,7 @@ TheSkyMap.ShipsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
 TheSkyMap.ShipShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   viewName: 'actionable_show'
   model: (params)->
-    ship = @store.reloadRecord(@store.recordForId('ship', params.ship_id))
+    TheSkyMap.RouteModelFind('ship',params.ship_id,@)
 
 TheSkyMap.BasesIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   model: (params) ->
@@ -71,7 +79,7 @@ TheSkyMap.BasesIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
 TheSkyMap.BaseShowRoute = Ember.Route.extend TheSkyMap.SelectableRoute,
   viewName: 'actionable_show'
   model: (params)->
-    base = @store.reloadRecord(@store.recordForId('base', params.base_id))
+    TheSkyMap.RouteModelFind('base',params.base_id,@)
 
 
 TheSkyMap.PlayersIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
@@ -79,7 +87,7 @@ TheSkyMap.PlayersIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
     @store.find('player', params)
 TheSkyMap.PlayerShowRoute = Ember.Route.extend
   model: (params)->
-    player = @store.reloadRecord(@store.recordForId('player', params.player_id))
+    TheSkyMap.RouteModelFind('player',params.player_id,@)
 
 TheSkyMap.ActionsIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   model: (params) ->
@@ -89,3 +97,11 @@ TheSkyMap.MessagesIndexRoute = Ember.Route.extend TheSkyMap.PaginateableRouter,
   model: (params) ->
     @store.find('message', params)
 
+
+
+TheSkyMap.RouteModelFind = (model_name,model_id,save_this) ->
+  obj = save_this.store.recordForId(model_name, model_id)
+  if obj.currentState.isEmpty
+    save_this.store.find(model_name,model_id)
+  else
+    obj.reload()

@@ -4,4 +4,10 @@ TheSkyMap.PlayerShowController = TheSkyMap.ActionableController.extend
   ).property('profile_id')
   actions:
     reload: () ->
-      @.get('model').reload()
+      @.get('model').reload().catch((reason) ->
+        if reason.name == TheSkyMap.UnfoundError().name
+          save_this.transitionToRoute('home')
+          false
+        else
+          true
+      )

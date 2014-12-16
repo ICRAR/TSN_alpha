@@ -35,9 +35,9 @@ class TheSkyMap::ActionsController < TheSkyMap::ApplicationController
     render :json =>  @actions, :each_serializer => ActionSerializer
   end
   def run_special
-    action = Action.find(params[:id])
+    action = Action.find(params[:id]) || not_found
     actor = current_player_object
-    not_found unless action.actor == actor
+    not_found unless action.actor == actor && !action.actionable.nil?
     action.run_special
     @actions = action.self_and_other_queued
     actions_json = ActiveModel::ArraySerializer.new(@actions, each_serializer: ActionSerializer)

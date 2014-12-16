@@ -27,6 +27,7 @@ TheSkyMap.ActionController = Ember.ObjectController.extend(TheSkyMap.Countdownab
   ).property('actionable')
   actions:
     run_special: () ->
+      save_this = @
       @stop_countdown()
       store = @store
       action_path = store.adapterFor(this).buildURL('action',@.get('id'))
@@ -34,8 +35,11 @@ TheSkyMap.ActionController = Ember.ObjectController.extend(TheSkyMap.Countdownab
       actionable_controller = @get('target')
       $.get(run_special_path,
         {},
-      (data) ->
+      ).done((data) ->
         store.pushPayload('action', data)
         actionable_controller.send('update_actions')if $.isFunction(actionable_controller._actions['update_actions'])
+      ).fail((error) ->
+        if error.status == 404
+          save_this.transitionToRoute('home')
       )
 })

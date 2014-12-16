@@ -89,7 +89,7 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     new_base = TheSkyMap::Base.first_base(quadrant,new_base_type)
     return false if new_base.nil?
     PostToFaye.request_update('quadrant',[quadrant.id],self.the_sky_map_quadrant.game_map_id)
-    the_sky_map_player.send_msg("You #{new_base.display_name} at (#{quadrant.x},#{quadrant.y}) has been completed", quadrant: quadrant, tags: ['ship','build base'])
+    the_sky_map_player.send_msg("Your new #{new_base.display_name} at (#{quadrant.x},#{quadrant.y}) has been completed", quadrant: quadrant, tags: ['ship','build base'])
     true
 
   end
