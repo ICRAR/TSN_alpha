@@ -1,7 +1,9 @@
 $(document).ready(
     jQuery ->
+      window.faye_url = "<%= APP_CONFIG['faye_protocol'] %>://<%= APP_CONFIG['faye_host']%>:<%= APP_CONFIG['faye_port']%>/faye"
       if (typeof Faye != "undefined" )
-        window.faye = new Faye.Client("<%= APP_CONFIG['faye_protocol'] %>://<%= APP_CONFIG['faye_host']%>:<%= APP_CONFIG['faye_port']%>/faye")
+
+        window.faye = new Faye.Client(window.faye_url)
         game_map_id = $('#data').data('currentPlayer').current_player.game_map_id
         window.faye.subscribe "/messages/from_rails/#{game_map_id}", (json_data) ->
           Ember.run () ->

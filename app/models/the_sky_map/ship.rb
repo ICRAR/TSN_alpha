@@ -345,16 +345,18 @@ class TheSkyMap::Ship < TheSkyMap::BaseModel
     if quadrant.has_healable_ships?(the_sky_map_player)
       available_ships = {}
       quadrant.healable_ships(the_sky_map_player).each do |healed_ship|
-        action_name = "heal_ship_#{healed_ship.id}".to_sym
-        available_ships[action_name] = {
-            action: 'heal_ship',
-            name: "Heal the Ship: #{healed_ship.id}",
-            cost: 100,
-            duration: 60,
-            options: {ship_id: healed_ship.id},
-            allowed: true,
-            icon: 'glyphicon-header'
-        }
+        unless healed_ship.id == id
+          action_name = "heal_ship_#{healed_ship.id}".to_sym
+          available_ships[action_name] = {
+              action: 'heal_ship',
+              name: "Heal the Ship: #{healed_ship.id}",
+              cost: 100,
+              duration: 60,
+              options: {ship_id: healed_ship.id},
+              allowed: true,
+              icon: 'glyphicon-header'
+          }
+        end
       end
       available_ships
     else

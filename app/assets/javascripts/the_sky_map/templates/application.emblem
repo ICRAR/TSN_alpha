@@ -20,6 +20,7 @@
       bs-pills contentBinding="navLinks"
       ul.nav.bavbar-nav.navbar-right
         li: a href='/users/sign_out' Sign Out
+        li: a href=faye_url Faye Link
   .row
       = outlet
 
