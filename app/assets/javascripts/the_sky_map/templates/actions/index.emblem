@@ -2,6 +2,13 @@
   .panel-heading All Actions
   .panel-body
     table.table.table-striped.table-hover.table-bordered
+      .well
+        .filters
+          h3 Filter by:
+          if filter_running_only
+            button.btn.btn-default click="clear_filter" All
+          else
+            button.btn.btn-default click="filter_by_running_only" Running Only
       thead: tr
         th Performed By:
         th Action
@@ -11,7 +18,7 @@
         th Time Remaining
 
       tbody
-        each action in model itemController="action"
+        each action in filteredContent itemController="action"
           tr
             td: link-to action.actionable_link action.actionable.id | {{action.actionable.name}}
             td | {{action.action}} ({{action.id}})

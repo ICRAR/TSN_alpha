@@ -7,6 +7,7 @@ class TheSkyMap::ActionsController < TheSkyMap::ApplicationController
     else
       @actions = actionable.actions
     end
+
     not_found unless actionable.the_sky_map_player_id == current_player_id
     render :json =>  @actions, :each_serializer => ActionSerializer
   end
@@ -15,6 +16,9 @@ class TheSkyMap::ActionsController < TheSkyMap::ApplicationController
     per_page = params[:per_page].to_i || 10
     actor = current_player_object
     @actions = actor.actions.page(page).per(per_page).includes(:actionable, :actor).order{updated_at.desc}
+    if params[:only_running] == 'true'
+      @actions = @actions.current_action
+    end
     render :json =>  @actions, :each_serializer => ActionSerializer, meta: pagination_meta(@actions)
   end
   def create
