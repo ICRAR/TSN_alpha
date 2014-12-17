@@ -23,12 +23,12 @@ module ActsAsActionable
     #     allowed: true,                #Can the action be performed at the moment
     #     display: true                 #Should the action be displayed in the GUI, in the new action selection
     #     instant: false                #If instant is true then run the action now skipping the action queue
-    #     skipable: true                #Marks the action as skippable with the use of special credit.
+    #     skippable: true                #Marks the action as skippable with the use of special credit.
     # }
     def action_defaults
     {
       display: true,
-      skipable: true,
+      skippable: true,
       instant: false
     }
     end

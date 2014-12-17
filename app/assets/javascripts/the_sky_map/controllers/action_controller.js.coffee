@@ -19,8 +19,8 @@ TheSkyMap.ActionController = Ember.ObjectController.extend(TheSkyMap.Countdownab
     (@get('special_cost') <= @get('controllers.currentPlayer.content.currency_available_special'))
   ).property('special_cost','controllers.currentPlayer.content.currency_available_special')
   show_special_button: (() ->
-    (@get('current_state') == 'queued_next') && !@get('run_special_clicked')
-  ).property('current_state','run_special_clicked')
+    (@get('current_state') == 'queued_next') && !@get('run_special_clicked') && @get('skippable') == true
+  ).property('current_state','run_special_clicked','skippable')
   actionable_link: (() ->
     model = @get('actionable')
     if model

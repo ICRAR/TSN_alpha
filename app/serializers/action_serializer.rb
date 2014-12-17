@@ -1,6 +1,6 @@
 class ActionSerializer < ActiveModel::Serializer
   attributes :id, :current_state, :action, :time_remaining, :valid, :options,
-             :run_at_time, :queued_at_time, :completed_at
+             :run_at_time, :queued_at_time, :completed_at, :skippable
   embed :ids
   #has_one :actionable, polymorphic: true
   #has_one :actor, polymorphic: true

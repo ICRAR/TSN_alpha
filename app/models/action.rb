@@ -1,6 +1,6 @@
 class Action < ActiveRecord::Base
   acts_as_paranoid
-  attr_accessible :action, :actor, :actionable,  :cost, :duration, :options, :queued_at, :queued_next_at, :run_at, :completed_at, :lock_version
+  attr_accessible :action, :actor, :actionable,  :cost, :duration, :options, :queued_at, :queued_next_at, :run_at, :completed_at, :lock_version, :skippable
 
   belongs_to :actor, polymorphic: true
   belongs_to :actionable, polymorphic: true
@@ -50,6 +50,7 @@ class Action < ActiveRecord::Base
                               options: action_hash[:options],
                               duration: action_hash[:duration],
                               cost: action_hash[:cost],
+                              skippable: action_hash[:skippable]
     })
     new_action.state = :queued
     if new_action.save
@@ -90,7 +91,11 @@ class Action < ActiveRecord::Base
     end
   end
   def special_cost
-    is_queued_next? ? ((time_remaining / 60).ceil) : 0
+    if skippable?
+      is_queued_next? ? ((time_remaining / 60).ceil) : 0
+    else
+      0
+    end
   end
   #queue the action
   def self.queue_next(actionable)
@@ -146,10 +151,12 @@ class Action < ActiveRecord::Base
   end
   #uses special currency to force an upcoming action to run now.
   def run_special
-    save_cost = special_cost
-    if save_cost > 0 && save_cost <= self.actor.currency_available_special
-      if self.run
-        self.actor.deduct_currency_special save_cost
+    if skippable?
+      save_cost = special_cost
+      if save_cost > 0 && save_cost <= self.actor.currency_available_special
+        if self.run
+          self.actor.deduct_currency_special save_cost
+        end
       end
     end
   end

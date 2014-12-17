@@ -3,6 +3,7 @@ TheSkyMap.Actionable = DS.Model.extend(
 )
 TheSkyMap.Action = DS.Model.extend(
   action: DS.attr("string")
+  skippable: DS.attr("boolean")
   current_state: DS.attr("string")
   completed_at: DS.attr("string")
   run_at_time: DS.attr("number")
