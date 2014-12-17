@@ -68,38 +68,3 @@
               button.btn.btn-default{action "zoom_1"} Zoom 1
               button.btn.btn-default{action "zoom_2"} Zoom 2
               button.btn.btn-default{action "zoom_3"} Zoom 3
-
-
-  .key.panel.panel-default
-    .panel-heading Map Key
-    .panel-body.quadrant_key
-      h3 Border Types (Information on who ownes this quadrant):
-      .grid-row.row
-        .col-md-4: .quadrant
-          a Unexplored
-          p The owner status of this quadrant is unknown.
-        .col-md-4: .quadrant.home
-          a Home
-          p This is your home base
-        .col-md-4: .quadrant.mine
-          a Yours
-          p You own this quadrant
-      .grid-row.row
-        .col-md-4: .quadrant.hostile
-          a Hostile
-          p Someone else owns this quadrant
-        .col-md-4: .quadrant.unowned
-          a Unowned
-          p This is quadrant is currently unowned
-      h3 Symobols
-      dl.dl-horizontal
-        dt: span.glyphicon.glyphicon-home
-        dd Contains your home base
-        dt: span.glyphicon.glyphicon-eye-open
-        dd You've fully explored this quadrant
-        dt: span.glyphicon.glyphicon-eye-close
-        dd You've partially explored this quadrant
-        dt: span.glyphicon.glyphicon-plane
-        dd You have a ship in this quadrant
-        dt: span.glyphicon.glyphicon-tower
-        dd You have a base in this quadrant

@@ -1,4 +1,5 @@
 TheSkyMap.ActionableController = Ember.ObjectController.extend
+  needs: ['currentPlayer']
   sorted_actions: (() ->
     all_actions = @get('actions')
     Ember.ArrayProxy.createWithMixins Ember.SortableMixin, {
@@ -20,6 +21,10 @@ TheSkyMap.ActionableController = Ember.ObjectController.extend
           action_name: action_name
         }
       ).done((data) ->
+        player_data = {
+          current_player: data.current_player
+        }
+        save_this.get('controllers.currentPlayer').send('update_from_data',player_data)
         save_this.send('update_actions')
       ).fail((error) ->
         if error.status == 404

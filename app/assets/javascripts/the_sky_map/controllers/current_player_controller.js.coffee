@@ -14,11 +14,13 @@ TheSkyMap.CurrentPlayerController = Ember.ObjectController.extend(TheSkyMap.Coun
     @send('update_details')
   actions:
     update_details: () ->
-      controller = this
+      save_this = this
       Ember.$.getJSON "/the_sky_map/map/current_player", (data) ->
-        controller.get('store').pushPayload 'currentPlayer', data
-        currentProfile =  controller.get('store').getById('currentPlayer',data.current_player.id)
-        controller.set "content", currentProfile
-        rat = controller.get('next_update_time')
-        controller.countdown_set(rat*1000) unless rat == 0
+        save_this.send('update_from_data', data)
+    update_from_data: (data) ->
+      @get('store').pushPayload 'currentPlayer', data
+      currentProfile =  @get('store').getById('currentPlayer',data.current_player.id)
+      @set "content", currentProfile
+      rat = @get('next_update_time')
+      @countdown_set(rat*1000) unless rat == 0
 })

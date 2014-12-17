@@ -21,7 +21,9 @@ class Action < ActiveRecord::Base
         1 => :queued_next,
         2 => :running,
         3 => :completed,
-        4 => :failed
+        4 => :failed,
+        5 => :instant,
+        6 => :instant_running
     }
   end
 
@@ -52,6 +54,22 @@ class Action < ActiveRecord::Base
     new_action.state = :queued
     if new_action.save
       self.queue_next(actionable)
+    end
+    new_action.reload
+  end
+  #Runs a new action without queuing it.
+  def self.instant_action(actionable, actor, action_hash)
+    new_action = self.new({
+                              actor: actor,
+                              actionable: actionable,
+                              action: action_hash[:action],
+                              options: action_hash[:options],
+                              duration: 0,
+                              cost: action_hash[:cost],
+    })
+    new_action.state = :instant
+    if new_action.save
+      new_action.run_instant
     end
     new_action.reload
   end
@@ -136,6 +154,25 @@ class Action < ActiveRecord::Base
     end
   end
 
+  #runs the action skipping the queue system
+  def run_instant
+    can_run = false
+    begin
+      #check that action is an instant action
+      if self.is_instant?
+        can_run = true
+        self.state = :instant_running
+        self.save
+      end
+    rescue ActiveRecord::StaleObjectError
+      can_run = false
+    end
+    if can_run
+      self.run_action
+      self.save
+    end
+    can_run
+  end
   #runs the action, we must ensure that this is the only process that is running the action
   def run
     can_run = false
@@ -151,46 +188,48 @@ class Action < ActiveRecord::Base
       can_run = false
     end
     if can_run
-      #check that actionable still exists
-      if self.actionable
-        #check that action is valid action type
-        if self.actionable.actions_list.include?(action)
-          #run action with options
-          begin
-            action_success = self.actionable.send("perform_#{action}".to_sym, self.options)
-          rescue Exception => e
-            self.state = :failed
-            self.actor.refund_currency(self.cost)
-            self.save
-            self.class.queue_next(actionable)
-            raise e
-          end
-          #update the state
-          if action_success
-            self.state = :completed
-          else
-            #reverse the 'payment' and cancel the action
-            self.state = :failed
-            self.actor.refund_currency(self.cost)
-          end
-        else
-          #reverse the 'payment' and cancel the action
-          self.state = :failed
-          self.actor.refund_currency(self.cost)
-        end
-      else
-        #reverse the 'payment' and delete the action
-        self.actor.refund_currency(self.cost)
-        self.destroy
-      end
-
+      self.run_action
       self.save
       #queue the next action if there is one
       self.class.queue_next(actionable)
     end
     can_run
   end
-
+  #performs action method on actionable if this fails refund the currency
+  def run_action
+    #check that actionable still exists
+    if self.actionable
+      #check that action is valid action type
+      if self.actionable.actions_list.include?(action)
+        #run action with options
+        begin
+          action_success = self.actionable.send("perform_#{action}".to_sym, self.options)
+        rescue Exception => e
+          self.state = :failed
+          self.actor.refund_currency(self.cost)
+          self.save
+          self.class.queue_next(actionable)
+          raise e
+        end
+        #update the state
+        if action_success
+          self.state = :completed
+        else
+          #reverse the 'payment' and cancel the action
+          self.state = :failed
+          self.actor.refund_currency(self.cost)
+        end
+      else
+        #reverse the 'payment' and cancel the action
+        self.state = :failed
+        self.actor.refund_currency(self.cost)
+      end
+    else
+      #reverse the 'payment' and delete the action
+      self.actor.refund_currency(self.cost)
+      self.destroy
+    end
+  end
   #state management
   def self.states_hash
     states.invert

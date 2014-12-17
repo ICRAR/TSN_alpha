@@ -199,9 +199,9 @@ class TheSkyMap::Base < ActiveRecord::Base
     if quadrant.has_attackable_ships?(quadrant.owner)
       available_ships = {}
       quadrant.attackable_ships(quadrant.owner).each do |attacked_ship|
-        action_name = "attack_ship_#{attacked_ship.id}".to_sym
+        action_name = "auto_attack_ship_#{attacked_ship.id}".to_sym
         available_ships[action_name] = {
-            action: 'attack_ship',
+            action: 'auto_attack_ship',
             name: "Attack the Ship: #{attacked_ship.id}",
             cost: 100,
             duration: 60,
@@ -216,7 +216,7 @@ class TheSkyMap::Base < ActiveRecord::Base
       {}
     end
   end
-  def auto_perform_attack_ship(opts)
+  def perform_auto_attack_ship(opts)
     attacked_ship = TheSkyMap::Ship.find(opts[:ship_id])
     quadrant = the_sky_map_quadrant
 

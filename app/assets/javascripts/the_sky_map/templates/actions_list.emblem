@@ -1,19 +1,23 @@
 each a in game_actions_available
-  .action_item class={a.allowed:enabled:disabled}
-    .name
-      span.glyphicon class=a.icon
-      = a.name
-    .costs
-      .cost
-        span.glyphicon.glyphicon-tint
-        = a.cost
-      .duration
-        span.glyphicon.glyphicon-time
-        = a.duration
-        ' s
-      .perform
-        if a.allowed
-          button click="perform_action a.action_name" Schedule Action
-        else
-          button disabled="true" Disabled
-    .clearfix
+  if a.display
+    .action_item class={a.allowed:enabled:disabled}
+      .name
+        span.glyphicon class=a.icon
+        = a.name
+      .costs
+        .cost
+          span.glyphicon.glyphicon-tint
+          = a.cost
+        .duration
+          span.glyphicon.glyphicon-time
+            if a.instant
+              | instant
+            else
+              = a.duration
+              ' s
+        .perform
+          if a.allowed
+            button click="perform_action a.action_name" Schedule Action
+          else
+            button disabled="true" Disabled
+      .clearfix
