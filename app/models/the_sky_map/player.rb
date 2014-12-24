@@ -1,7 +1,7 @@
 class TheSkyMap::Player < ActiveRecord::Base
   extend Memoist
   attr_accessible :rank, :score, :spent_points, :total_points, :game_map_id, :total_points_special,
-                  :colour_id, :spent_points_special, :current, as: [:admin]
+                  :colour_id, :spent_points_special, :current, :options, as: [:admin]
 
   belongs_to :profile
   scope :only_current, where{current == true}
@@ -156,15 +156,8 @@ class TheSkyMap::Player < ActiveRecord::Base
   end
 
   #options
-  def options_without_default
-    opt = self[:options] || '{}'
-    begin
-      opt_hash = JSON.parse opt
-    rescue TypeError, JSON::ParserError
-      opt_hash = {}
-    end
-  end
-  def self.options_default
+  acts_as_optionable
+  def options_default
     {
         'fog_of_war_on' => true,
         'mini_map_x_min' => 1,
@@ -174,19 +167,7 @@ class TheSkyMap::Player < ActiveRecord::Base
 
     }
   end
-  def options
-    TheSkyMap::Player.options_default.merge options_without_default
-  end
-  def set_options(hash)
-    new_hash = options_without_default.merge hash
-    self.options =  new_hash.to_json
-  end
-  def reset_option(key)
-    new_hash = options_without_default
-    new_hash.delete key
-    new_hash.delete key.to_s
-    self.options =  new_hash.to_json
-  end
+
 
   #currency_methods
   def currency_available
@@ -221,42 +202,4 @@ class TheSkyMap::Player < ActiveRecord::Base
     )
   end
 
-
-  #updates all players currency bassed on the hourly income rate and time since last update
-  def self.update_currency
-    current_time = Time.now
-    old_time_i = SiteStat.try_get('the_sky_map/last_currency_update_time', current_time.to_i).value
-    old_time = Time.at(old_time_i)
-    time_diff = current_time - old_time
-    time_diff_in_hours = time_diff/60/60
-    self.update_all("total_points_float = total_points_float + (total_income * #{time_diff_in_hours}),"+
-                        " total_points_special_float = total_points_special_float + (total_income_special * #{time_diff_in_hours})")
-    self.update_all("total_points = total_points_float, total_points_special = total_points_special_float")
-
-
-    SiteStat.set('the_sky_map/last_currency_update_time', current_time.to_i)
-  end
-  #updates the special income from RAC
-  def self.update_special_income
-    relation = TheSkyMap::Player.joins{profile.general_stats_item}
-
-    #####
-    # RAC to special currency is done here
-    # total_income_special = LOG(recent_avg_credit)
-    #####
-    relation.update_all("#{TheSkyMap::Player.table_name}.total_income_special = LOG(GREATEST(COALESCE(#{GeneralStatsItem.table_name}.recent_avg_credit,0),1))")
-  end
-  def update_special_income
-    rac = self.profile.general_stats_item.recent_avg_credit || 0
-    self.total_income_special = Math.log([rac,1].max)
-  end
-
-
-  #updates player rank
-  def self.update_rankings
-    TheSkyMap::Player.transaction do
-      TheSkyMap::Player.connection.execute 'SET @new_rank := 0'
-      TheSkyMap::Player.where{total_score > 0}.order{total_score.desc}.update_all('rank = @new_rank := @new_rank + 1')
-    end
-  end
 end

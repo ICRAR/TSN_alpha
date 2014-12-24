@@ -1,6 +1,6 @@
 class Action < ActiveRecord::Base
   acts_as_paranoid
-  attr_accessible :action, :actor, :actionable,  :cost, :duration, :options, :queued_at, :queued_next_at, :run_at, :completed_at, :lock_version, :skippable
+  attr_accessible :action, :actor, :actionable,  :cost, :duration, :options, :queued_at, :queued_next_at, :run_at, :completed_at, :lock_version, :skippable, :state
 
   belongs_to :actor, polymorphic: true
   belongs_to :actionable, polymorphic: true
@@ -15,7 +15,8 @@ class Action < ActiveRecord::Base
 
   serialize :options, Hash
 
-  def self.states  #do not change numbers only add new ones, order of numbers has no meaning
+
+  def states  #do not change numbers only add new ones, order of numbers has no meaning
     {
         0 => :queued,
         1 => :queued_next,
@@ -26,8 +27,10 @@ class Action < ActiveRecord::Base
         6 => :instant_running
     }
   end
+  acts_as_stateable
 
   scope :current_action, where{state.in [1,2]}
+  scope :pending, where{state.in [0,1,5]}
   validates_presence_of :action, :cost, :duration, :options, :state
 
   after_initialize :set_defaults
@@ -67,6 +70,7 @@ class Action < ActiveRecord::Base
                               options: action_hash[:options],
                               duration: 0,
                               cost: action_hash[:cost],
+                              skippable: action_hash[:skippable]
     })
     new_action.state = :instant
     if new_action.save
@@ -237,46 +241,18 @@ class Action < ActiveRecord::Base
       self.destroy
     end
   end
-  #state management
-  def self.states_hash
-    states.invert
-  end
-  def current_state
-    self.class.states[state]
-  end
-  def state
-    self[:state]
-  end
-  def state=(val)
-    if val.is_a? Integer
-      state_value = val
-      state_name = self.class.states[val]
-    elsif val.is_a? String
-      state_value = self.class.states_hash[val.to_sym]
-      state_name = val
-    elsif val.is_a? Symbol
-      state_value = self.class.states_hash[val]
-      state_name = val.to_s
-    else
-      raise "Invalid value for defining state"
-    end
-    self[:state] = state_value
-    state_at = "#{state_name}_at"
-    self[state_at] = Time.now.utc if self.has_attribute? state_at
-  end
-  Action.states_hash.each do |k,v|
-    define_method "is_#{k.to_s}?" do
-      (state == v)
-    end
-  end
+
 
   def self.refund_all_pending_actions(actionable,actor)
     #take all pending actions and sum total currency
-    queued_states = [
-        self.states_hash[:queued],
-        self.states_hash[:queued_next],
-    ]
-    total_refund = actionable.actions.where{state.in queued_states}.sum(:cost)
+    total_refund = actionable.actions.pending.sum(:cost)
+    actor.award_currency total_refund
     actionable.actions.destroy
   end
+  def self.refund_action_to_actor(actor)
+    total_refund = actor.actions.pending.sum(:cost)
+    actor.award_currency total_refund
+    actor.actions.destroy
+  end
+
 end

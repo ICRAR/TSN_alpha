@@ -28,6 +28,7 @@ class Profile < ActiveRecord::Base
   attr_accessible :trophy_ids, :new_profile_step, as: :admin
 
   #THESKYMAP functions
+  has_many :the_sky_map_game_maps, :class_name => 'TheSkyMap::GameMap', foreign_key: "manager_id"
   has_many :the_sky_map_players, :class_name => 'TheSkyMap::Player' do
     def current
       only_current.first
