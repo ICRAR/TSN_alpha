@@ -48,13 +48,17 @@ module ActsAsActionable
       end
     end
     def actions_available(actor)
-      actions_all = self.all_actions(actor)
-      actors_current_bank = actor.currency_available
-      actions_all.each do |action, attributes|
-        actions_all[action].reverse_merge! self.action_defaults
-        actions_all[action][:allowed] = false if actions_all[action][:cost] > actors_current_bank
+      if actor.can_perform_actions?
+        actions_all = self.all_actions(actor)
+        actors_current_bank = actor.currency_available
+        actions_all.each do |action, attributes|
+          actions_all[action].reverse_merge! self.action_defaults
+          actions_all[action][:allowed] = false if actions_all[action][:cost] > actors_current_bank
+        end
+        actions_all
+      else
+        {}
       end
-      actions_all
     end
     def actions_available_array(actor)
       array_out = []

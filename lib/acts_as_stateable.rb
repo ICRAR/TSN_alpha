@@ -27,6 +27,9 @@ module ActsAsStateable
   module ClassMethods
     def acts_as_stateable(options = {})
       include ActsAsStateable::LocalInstanceMethods
+      def  self.states_hash
+        states.invert
+      end
       states_hash.each do |k,v|
         define_method "is_#{k.to_s}?" do
           (state == v)
@@ -36,14 +39,17 @@ module ActsAsStateable
   end
 
   module LocalInstanceMethods
-    def states_hash
-      states.invert
-    end
     def current_state
       self.class.states[state]
     end
     def state
       self[:state]
+    end
+    def states
+      self.class.states
+    end
+    def states_hash
+      self.class.states_hash
     end
     def state=(val)
       if val.is_a? Integer
@@ -53,7 +59,7 @@ module ActsAsStateable
         state_value = self.states_hash[val.to_sym]
         state_name = val
       elsif val.is_a? Symbol
-        state_value = self.states_hash[val]
+        state_value = self.class.states_hash[val]
         state_name = val.to_s
       else
         raise "Invalid value for defining state"

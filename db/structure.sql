@@ -726,6 +726,11 @@ CREATE TABLE `the_sky_map_game_maps` (
   `y_max` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `options` text COLLATE utf8_unicode_ci,
+  `state` int(11) DEFAULT NULL,
+  `finished_at` datetime DEFAULT NULL,
+  `running_at` datetime DEFAULT NULL,
+  `manager_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1227,3 +1232,5 @@ INSERT INTO schema_migrations (version) VALUES ('20141203044548');
 INSERT INTO schema_migrations (version) VALUES ('20141204032005');
 
 INSERT INTO schema_migrations (version) VALUES ('20141217032202');
+
+INSERT INTO schema_migrations (version) VALUES ('20141219010319');

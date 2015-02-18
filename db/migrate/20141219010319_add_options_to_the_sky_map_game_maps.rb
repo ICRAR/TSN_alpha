@@ -4,7 +4,7 @@ class AddOptionsToTheSkyMapGameMaps < ActiveRecord::Migration
     add_column :the_sky_map_game_maps, :state, :integer
     add_column :the_sky_map_game_maps, :finished_at, :datetime
     add_column :the_sky_map_game_maps, :running_at, :datetime
-    add_column :manager_id, :running_at, :integer
+    add_column :the_sky_map_game_maps, :manager_id, :integer
 
 
   end

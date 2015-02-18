@@ -16,7 +16,7 @@ class Action < ActiveRecord::Base
   serialize :options, Hash
 
 
-  def states  #do not change numbers only add new ones, order of numbers has no meaning
+  def self.states  #do not change numbers only add new ones, order of numbers has no meaning
     {
         0 => :queued,
         1 => :queued_next,

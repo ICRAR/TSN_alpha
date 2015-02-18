@@ -14,6 +14,14 @@ module ActsAsOptionable
   end
 
   module LocalInstanceMethods
+    def options_without_default
+      opt = self[:options] || '{}'
+      begin
+        opt_hash = JSON.parse opt
+      rescue TypeError, JSON::ParserError
+        opt_hash = {}
+      end
+    end
     def options
       self.options_default.merge options_without_default
     end

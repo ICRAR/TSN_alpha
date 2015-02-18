@@ -10,7 +10,7 @@ class TheSkyMap::GameMap < ActiveRecord::Base
     Action.joins{actor(TheSkyMap::Player)}.where{actor_type == "TheSkyMap::Player"}.where{the_sky_map_players.game_map_id == my{self.id}}
   end
 
-  def states  #do not change numbers only add new ones, order of numbers has no meaning
+  def self.states  #do not change numbers only add new ones, order of numbers has no meaning
     {
         0 => :new,
         1 => :ready,
@@ -22,8 +22,8 @@ class TheSkyMap::GameMap < ActiveRecord::Base
   acts_as_stateable
   def joinable?
     self.options[:join_while_running] ?
-      [:ready, :running].include? current_state :
-      [:ready].include? current_state
+      [:ready, :running].include?(current_state):
+      [:ready].include?(current_state)
   end
   def x_size
     x_max - x_min + 1
@@ -54,7 +54,9 @@ class TheSkyMap::GameMap < ActiveRecord::Base
       self.set_player_colour player
     end
   end
-
+  def can_players_perform_actions?
+    is_running?
+  end
   #####Game update functions#######
   def update_map
     self.update_stats
@@ -114,7 +116,9 @@ class TheSkyMap::GameMap < ActiveRecord::Base
     end
   end
 
-  #checks if the end condtion has been met
+
+  ##handle end conditions
+  #checks if the end condition has been met
   def check_end_condition
     ended = false
     if is_running?
@@ -134,8 +138,6 @@ class TheSkyMap::GameMap < ActiveRecord::Base
     options = options.compile_options({
         required: [:x_size,:y_size,:game_options],
                            })
-    map_options = self.valid_game_options options[:game_options]
-
     #setup game map
     map = self.new({
                           x_min: 1,
@@ -144,21 +146,24 @@ class TheSkyMap::GameMap < ActiveRecord::Base
                           y_max: options[:y_size] + 1
                       })
     map.state = :new
-    map.set_options map_options
+    map.set_valid_game_options options[:game_options]
     map.manager = manager_profile
     map.save
-    map.build_tiles
-    #add initial player
-    map.add_player(manager_profile)
-    #mark map has ready
-    map.state = :ready
-    map.save
+    if map.valid?
+      map.build_tiles
+      #add initial player
+      map.add_player(manager_profile)
+      #mark map has ready
+      map.state = :ready
+      map.save
+    end
     map
   end
   #starts a game
   def start_game
     return false unless is_ready?
     #mark game as started
+
     self.state= :running
     self.save
     #notify all players
@@ -190,8 +195,9 @@ class TheSkyMap::GameMap < ActiveRecord::Base
       join_while_running:   false
     }
   end
+  validate :validates_game_options
   def validates_game_options
-    required_options = [:join_while_running,:end_condition]
+    required_options = [:join_while_running,:end_condition, :start_time]
     allowed_options = required_options + [:game_length]
     options.each_key do |key|
       errors.add(:options, "game option key:#{key} is not a valid key") unless allowed_options.include?(key)
@@ -200,11 +206,34 @@ class TheSkyMap::GameMap < ActiveRecord::Base
       errors.add(:options, "game option key:#{key} is missing") unless options.has_key?(key)
     end
 
-    if options[:end_condition] == 'time'
-      errors.add(:options, "game option key:#{:game_length} is missing") unless options.has_key?(:game_length)
-      errors.add(:options, "game option key:#{:game_length} is out of range, must be greater than 1 day") unless options[:game_length] > 1.day
-      errors.add(:options, "game option key:#{:game_length} is out of range, must be less than 30 days") unless options[:game_length] < 30.day
+  end
+
+  #takes a hash of 'new' game options and translates that to the required format for a new gameMap object
+  def set_valid_game_options(options_in)
+    required_options = [:join_while_running, :end_condition, :time_till_start]
+    allowed_options = required_options + [:game_length]
+    options_in.each_key do |key|
+      errors.add(:options, "new game option key:#{key} is not a valid key") unless allowed_options.include?(key)
     end
+    required_options.each do |key|
+      errors.add(:options, "new game option key:#{key} is missing") unless options_in.has_key?(key)
+    end
+    options_out = {
+        join_while_running: options_in[:join_while_running],
+        end_condition: options_in[:end_condition],
+    }
+    options_out[:start_time] = Time.now + options_in[:time_till_start]  if options_in.has_key?(:time_till_start)
+    if options_in[:end_condition] == 'time'
+      if options_in.has_key?(:game_length)
+        errors.add(:options, "game option key:#{:game_length} is out of range, must be greater than 1 day") unless options[:game_length] > 1.day
+        errors.add(:options, "game option key:#{:game_length} is out of range, must be less than 30 days") unless options[:game_length] < 30.day
+        options_out[:end_time] =  options_out[:start_time] + options_in[:game_length]   if options_out.has_key?(:start_time)
+      else
+        errors.add(:options, "game option key:#{:game_length} is missing")
+      end
+    end
+
+    set_options options_out
   end
 
 end

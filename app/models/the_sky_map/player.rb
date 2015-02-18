@@ -44,6 +44,10 @@ class TheSkyMap::Player < ActiveRecord::Base
     self.total_points_float = 0
   end
 
+  def can_perform_actions?
+    game_map.can_players_perform_actions?
+  end
+
   #sends the player a msg and links to the quadrant
   def send_msg(msg,opts = {})
     new_msg = TheSkyMap::Message.new_message(self,msg, opts)
