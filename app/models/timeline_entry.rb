@@ -57,10 +57,10 @@ class TimelineEntry < ActiveRecord::Base
     end
     where_string = where_strings.join(' OR ')
 
-    self.where(where_string).
+    TimelineEntry.where(where_string).where{posted_at > 1.month.ago}.
       group{[aggregate_type,TO_DAYS(posted_at)]}.
       order{posted_at.desc}.
-      select("#{self.table_name}.*").
+      select("#{TimelineEntry.table_name}.*").
       select{'count(*) as aggregate_count'}.
       select{'count(distinct aggregate_type_2) as type_count'}.
       select{'count(distinct CONCAT(timelineable_type,timelineable_id)) as distinct_aggregate_count'}.
