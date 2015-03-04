@@ -176,7 +176,7 @@ Finally the score value is set in the update action using the following formula:
 
                 num_members: {
                     join_option: :joins_alliance_active_members,
-                    handicap_query: 'challengers.handicap = 100 / GREATEST(IFupdate_queryNULL(count_table.count,0),1)'
+                    handicap_query: 'challengers.handicap = 100 / GREATEST(IFNULL(count_table.count,0),1)'
                 }
             }
         }
