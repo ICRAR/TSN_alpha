@@ -1,4 +1,5 @@
 class Hdf5RequestsController < GalaxiesController
+  skip_authorize_resource
   before_filter :authorise
   def authorise
     unless user_signed_in? && current_user.profile.is_science_user?
