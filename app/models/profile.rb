@@ -385,6 +385,9 @@ class Profile < ActiveRecord::Base
     begin
       update_index
     rescue Errno::ECONNREFUSED
+
+    rescue RestClient::RequestTimeout
+
     end
   end
 
