@@ -18,7 +18,7 @@ RailsAdmin.config do |config|
   ################  Global configuration  ################
 
   # Set the admin name here (optional second array element will appear in red). For example:
-  config.main_app_name = ['Tsn Alpha', 'Admin']
+  config.main_app_name = ['TheSkyNet', 'Admin']
   # or for a more dynamic name:
   # config.main_app_name = Proc.new { |controller| [Rails.application.engine_name.titleize, controller.params['action'].titleize] }
 
@@ -38,10 +38,13 @@ RailsAdmin.config do |config|
   # config.default_items_per_page = 20
 
   # Exclude specific models (keep the others):
-  config.excluded_models = ['Galaxy', 'GalaxyArea', 'GalaxyUser', 'GalaxyAreaUser', "GalaxyRegister","ProfileTrophy","Receipt","GalaxyImageFilter","BoincResult", "ChallengeData"]
+  #config.excluded_models = ['Galaxy', 'GalaxyArea', 'GalaxyUser', 'GalaxyAreaUser', "GalaxyRegister","ProfileTrophy","Receipt","GalaxyImageFilter","BoincResult", "ChallengeData"]
 
   # Include specific models (exclude the others):
-  # config.included_models = ['Page', 'User']
+
+  config.included_models = %W(Alliance BonusCredit Ckeditor::Asset
+                              Ckeditor::AttachmentFile Ckeditor::Picture Challenge Comment GeneralStatsItem News Page PageTranslation Profile ScienceLink
+                              SciencePortal SiteStat SpecialDay Trophy TrophySet User)
 
   # Label methods for model instances:
   # config.label_methods << :description # Default is [:name, :title]

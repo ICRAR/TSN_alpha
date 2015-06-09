@@ -25,6 +25,7 @@ class News < ActiveRecord::Base
     field :image
     field :long, :text do
       ckeditor true
+      ckeditor_location "#{Tsn::Application.config.action_controller.asset_host}#{Tsn::Application.config.assets.prefix}/ckeditor/ckeditor.js"
     end
   end
 
