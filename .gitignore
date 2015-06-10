@@ -6,6 +6,8 @@
 
 git
 
+#ignore rmv files
+.rvmrc
 
 # Ignore bundler config
 .bundle

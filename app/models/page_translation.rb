@@ -12,6 +12,7 @@ class PageTranslation < ActiveRecord::Base
     field :content , :text do
       ckeditor true
       ckeditor_location "#{Tsn::Application.config.action_controller.asset_host}#{Tsn::Application.config.assets.prefix}/ckeditor/ckeditor.js"
+      ckeditor_base_location "#{Tsn::Application.config.action_controller.asset_host}#{Tsn::Application.config.assets.prefix}/ckeditor/"
     end
   end
 end

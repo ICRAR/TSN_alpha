@@ -61,6 +61,8 @@ class SciencePortal < ActiveRecord::Base
     end
     field :desc, :text do
       ckeditor true
+      ckeditor_location "#{Tsn::Application.config.action_controller.asset_host}#{Tsn::Application.config.assets.prefix}/ckeditor/ckeditor.js"
+      ckeditor_base_location "#{Tsn::Application.config.action_controller.asset_host}#{Tsn::Application.config.assets.prefix}/ckeditor/"
     end
   end
 
