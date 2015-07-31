@@ -29,6 +29,8 @@ Tsn::Application.routes.draw do
     get 'advent'
     get 'advent_subscribe'
     get 'site_map'
+    get 'sf_demo_data'
+    get 'sourcefinder_demo'
   end
   resources :galaxy_mosaics, :only => [:index, :show]
   resources :contact_forms, :only => [:new, :create]

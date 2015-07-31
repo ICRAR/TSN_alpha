@@ -59,4 +59,15 @@ class MiscController < ApplicationController
 
   end
 
+  def sf_demo_data
+    params[:footnotes] = 'false'
+    render :sf_demo_data, {layout: false, format: :json}
+  end
+
+  def sourcefinder_demo
+    params[:footnotes] = 'false'
+    render :sourcefinder_demo
+  end
+
+
 end

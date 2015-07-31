@@ -13,6 +13,8 @@ if defined?(Bundler)
   Bundler.require(*Rails.groups(:assets => %w(production staging)))
   # If you want your assets lazily compiled in production, use this line
   # Bundler.require(:default, :assets, Rails.env)
+  require "browserify-rails"
+
 end
 
 module Tsn
@@ -90,6 +92,8 @@ module Tsn
       app.routes.append{match '*path', :to => 'pages#show', :format => false, :defaults => {:slug => '404'}}
     end
 
-
+    #for browserify
+    config.browserify_rails.commandline_options = "-t coffeeify --extension=\".js.coffee\""
+    config.browserify_rails.commandline_options = "-t coffeeify --extension=\".coffee\""
   end
 end

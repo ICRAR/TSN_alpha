@@ -41,3 +41,6 @@ public/assets_dev/*
 
 #ignore code coverage reports
 coverage*
+
+#nodejs
+node_modules
