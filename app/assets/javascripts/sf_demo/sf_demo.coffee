@@ -13,7 +13,7 @@ class SFRenderer
 
     #@renderer.setClearColorHex 0xFFFFFF, 0.0
     @camera = new (THREE.PerspectiveCamera)(45, @width / @height, 1, 10000)
-    @camera_zoom_default = 200
+    @camera_zoom_default = 250
     @camera_theta_default = Math.PI * 2
     @camera_phi_default = Math.PI / 2
     @camera_zoom = @camera_zoom_default
@@ -227,7 +227,7 @@ class SFRenderer
       text: 'Select parameter set:'
     })
     @menu.append $("<ul/>", {
-        class: 'list-unstyled'
+        class: 'unstyled'
     })
     for p_id in @param_list
       @add_param_toggle(p_id)
@@ -246,7 +246,7 @@ class SFRenderer
       class: 'selected'
     })
     menu_item.append $('<span/>',{
-      class: 'glyphicon glyphicon-ok'
+      class: 'icon icon-ok'
     })
     menu_item.append $('<u/>',{
       text: p_id,
@@ -256,7 +256,7 @@ class SFRenderer
     menu_item.click () ->
       save_this.toggle_param_group(p_id)
       menu_item.toggleClass('selected unselected')
-      menu_item.find('.glyphicon').toggleClass('glyphicon-ok glyphicon-remove')
+      menu_item.find('.icon').toggleClass('icon-ok icon-remove')
 
     @menu.find('ul').append menu_item
 
@@ -380,4 +380,4 @@ v = (x, y, z) ->
 
 #Run
 box = $('#graph')
-sf = new SFRenderer(box.width(),window.innerHeight - 300,'/misc/sf_demo_data.json')
+sf = new SFRenderer(box.width(),600,'/misc/sf_demo_data.json')
