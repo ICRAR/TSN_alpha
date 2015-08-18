@@ -19,7 +19,7 @@ begin
         json_error = JSON.generate(response, quirks_mode: true)
         restart_and_notify(json_error)
     end
-rescue Errno::ECONNREFUSED => e
+rescue Errno::ECONNREFUSED, Timeout::Error => e
     restart_and_notify(e.to_s)
 end
 
