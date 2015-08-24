@@ -32,6 +32,7 @@ Tsn::Application.routes.draw do
     get 'sf_demo_data'
     get 'sourcefinder_demo'
   end
+  get 'robots' => 'misc#robots'
   resources :galaxy_mosaics, :only => [:index, :show]
   resources :contact_forms, :only => [:new, :create]
   resources :stats, :only => [:index] do

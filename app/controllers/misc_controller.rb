@@ -69,5 +69,7 @@ class MiscController < ApplicationController
     render :sourcefinder_demo
   end
 
-
+  def robots
+    render :robots, {layout: false, format: :text}
+  end
 end
