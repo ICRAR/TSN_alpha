@@ -29,6 +29,10 @@
         - @request.layers.each do |layer|
           %dd
             %abbr{:title => layer.argument_name}= layer.description
+        %dt Pixel Types
+        - @request.pixel_types.each do |pixel_type|
+          %dd
+            %abbr{:title => pixel_type.argument_name}= pixel_type.description
         %dt Updated At
         %dd= @request.updated_at
         %dt Created At

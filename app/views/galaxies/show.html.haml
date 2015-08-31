@@ -81,6 +81,8 @@
                               = f.association :layers, label_method: :name_for_form, as: :check_boxes, include_blank: false
                             .span6.well.well-white
                               = f.association :features, label_method: :name_for_form, as: :check_boxes, include_hidden: false
+                            .span6.well.well-white
+                              = f.association :pixel_types, label_method: :name_for_form, as: :check_boxes, include_hidden: false
                           .row-fluid
                             .span12
                               = f.button :submit, "Submit All"

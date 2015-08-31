@@ -1,6 +1,6 @@
 class Hdf5Request < PogsModel
   self.table_name = 'hdf5_request'
-  attr_accessible :profile_id, :galaxy_ids, :email, :feature_ids, :layer_ids,  as: [:admin, :default]
+  attr_accessible :profile_id, :galaxy_ids, :email, :feature_ids, :layer_ids, :pixel_type_ids,  as: [:admin, :default]
   def readonly?
     return false
   end
@@ -21,6 +21,11 @@ class Hdf5Request < PogsModel
                           foreign_key: "hdf5_request_id",
                           association_foreign_key: "hdf5_layer_id",
                           join_table: "hdf5_request_layer"
+  has_and_belongs_to_many :pixel_types,
+                          class_name: "Hdf5PixelType",
+                          foreign_key: "hdf5_request_id",
+                          association_foreign_key: "hdf5_pixel_type_id",
+                          join_table: "hdf5_request_pixel_type"
 
   before_validation :add_email
   def add_email
@@ -38,6 +43,11 @@ class Hdf5Request < PogsModel
   validate :has_layer?
   def has_layer?
     errors.add(:layers, 'At least one layer must be selected.') if self.layers.empty?
+  end
+
+  validate :has_pixel_type?
+  def has_pixel_type?
+    errors.add(:pixel_types, 'At least one pixel type must be selected.') if self.pixel_types.empty?
   end
 
   validate :galaxies_exist?
@@ -98,6 +108,9 @@ class Hdf5Request < PogsModel
       help 'At least one must be selected.'
     end
     field :layers do
+      help 'At least one must be selected.'
+    end
+    field :pixel_types do
       help 'At least one must be selected.'
     end
     configure :block_grid_associations do
