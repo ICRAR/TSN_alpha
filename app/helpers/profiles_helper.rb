@@ -29,7 +29,7 @@ module ProfilesHelper
     out = []
     out << "<ul>"
     boinc_hosts.each do |host|
-      out << "<li>#{host.domain_name.to_s.force_encoding("UTF-8")}</li>"
+      out << "<li>#{host.domain_name.to_s.encode("UTF-8")}</li>"
     end
     out << "</ul>"
     out.join("\n").html_safe
