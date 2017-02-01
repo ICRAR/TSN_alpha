@@ -8,11 +8,12 @@ class BoincCopyJob < Delayed::BaseScheduledJob
       bench_time = Benchmark.bm do |bench|
         bench.report('users1') {
           next_id = SiteStat.try_get("boinc_copy_job_last_userid", 0).value
-          boinc_local_items = BoincStatsItem.where{boinc_id >= next_id}.all
-          boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
+          #boinc_local_items = BoincStatsItem.where{boinc_id >= next_id}.all
+          #boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
           # Only copy users who have credit, the others really don't matter.
           BoincRemoteUser.where{id >= my{next_id} & total_credit > 0}.find_in_batches do |b|
-            b.check_local boinc_hash[b.id]
+            stats_item = BoincStatsItem.where{boinc_id == my{b.id}}
+            b.check_local(stats_item)
           end
           SiteStat.set("boinc_copy_job_last_userid", BoincRemoteUser.maximum(:id))
         }
