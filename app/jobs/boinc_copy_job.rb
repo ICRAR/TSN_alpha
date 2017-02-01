@@ -11,7 +11,7 @@ class BoincCopyJob < Delayed::BaseScheduledJob
           #boinc_local_items = BoincStatsItem.where{boinc_id >= next_id}.all
           #boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
           # Only copy users who have credit, the others really don't matter.
-          BoincRemoteUser.where{id >= my{next_id} & total_credit > 0}.find_in_batches do |b|
+          BoincRemoteUser.where{id >= my{next_id} and total_credit > 0}.find_in_batches do |b|
             stats_item = BoincStatsItem.where{boinc_id == my{b.id}}
             b.check_local(stats_item)
           end
