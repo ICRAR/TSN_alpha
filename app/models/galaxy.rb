@@ -93,7 +93,7 @@ class Galaxy < PogsModel
   end
 
   def send_report(boinc_id)
-
+    return false # disabled temporarily
     #check if user has already requested a report
     #a user can only request 5 reports at time
     boinc_item = BoincStatsItem.find_by_boinc_id(boinc_id)
@@ -111,6 +111,7 @@ class Galaxy < PogsModel
 
   #connects to docmosis to generate a report then emails the report users email
   def self.send_report(galaxy_id, boinc_id)
+    return false
     boinc_item = BoincStatsItem.find_by_boinc_id(boinc_id)
     galaxy_item = Galaxy.find(galaxy_id)
     if boinc_item.nil? || galaxy_item.nil?
@@ -119,6 +120,9 @@ class Galaxy < PogsModel
 
       #gets a hash of user details contain
       user_info = boinc_item.get_name_and_email
+      if user_info.nil?
+        return false 
+      end
       galaxy_info = galaxy_item.get_galaxy_info
 
       template = 'Report.doc'

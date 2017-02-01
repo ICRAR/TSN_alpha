@@ -10,8 +10,8 @@ class ContactForm < MailForm::Base
   def headers
     {
         :subject => "Contact Support Ticket from theSkyNet",
-        :to => "help.theskynet@gmail.com",
-        :from => %("#{name}" <#{email}>)
+        :to => "icrar.tsn.website@gmail.com",
+        :from => "theSkyNet <admin@theSkyNet.org>" # %("#{name}" <#{email}>)
     }
   end
 
@@ -26,7 +26,9 @@ class ContactForm < MailForm::Base
 
     #send email to help desk
     contact = ContactForm.new(params)
-    contact.message = contact.message.html_safe
+    contact.email = 'icrar.tsn.website@gmail.com'
+    contact.name = 'theSkyNet'
+    contact.message = "#{params["email"]}: #{contact.message.html_safe}" #contact.message = contact.message.html_safe
     contact.deliver
   end
 end

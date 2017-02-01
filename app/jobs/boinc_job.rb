@@ -12,7 +12,7 @@ class BoincJob < Delayed::BaseScheduledJob
         total_users = 0
 
 
-        BoincRemoteUser.select([:id,:total_credit,:expavg_credit]).find_in_batches do |boinc_remote|
+        BoincRemoteUser.select([:id,:total_credit,:expavg_credit]).where('total_credit > 0 and expavg_credit > 0').find_in_batches do |boinc_remote|
           boinc_local_items = BoincStatsItem.where{(boinc_id <= boinc_remote.max_by(&:id)) & (boinc_id >= boinc_remote.min_by(&:id))}
           boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
           BoincStatsItem.transaction do
@@ -33,14 +33,18 @@ class BoincJob < Delayed::BaseScheduledJob
               id = remote.id
               statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.credit",remote.total_credit)
               statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.rac",remote.expavg_credit)
-              #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.jobs", BoincResult.total_in_progress(id))
+              statsd_batch.flush
+              sleep(0.0001)
+	      #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.jobs", BoincResult.total_in_progress(id))
               #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.pending_jobs", BoincResult.total_pending(id))
               #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.connected_copmuters_count", BoincResult.running_computers(id))
 
               local.save
             end
+	    puts "Completed 1000 batch"
           end
-        end
+       end
+
         statsd_batch.gauge("boinc.stat.total_credit",total_credit)
         statsd_batch.gauge("boinc.stat.total_rac",total_RAC)
         SiteStat.set("boinc_TFLOPS",(total_RAC*0.000005).round(2))
