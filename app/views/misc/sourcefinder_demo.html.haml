@@ -1,0 +1,19 @@
+- my_meta :title => "TheSkyNet: SourceFinder",
+    :description => "A page describing theSkyNet.org"
+-content_for(:title_bar) do
+  #intro-sml-wrap
+    %h1.fontface= "TheSkyNet: SourceFinder"
+
+
+-content_for(:content) do
+  #content-wrap
+    .row-fluid
+      .span12.well.well-white
+        %h4 Sources found by your computer.
+        .well
+          #graph
+        .well
+          %h4 Controls:
+          .well
+            #sf_render_menu
+    =javascript_include_tag "sf_demo/application"

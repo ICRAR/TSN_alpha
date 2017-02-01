@@ -6,7 +6,7 @@ class GalaxyMosaic < ActiveRecord::Base
   serialize :options, Hash
   has_attached_file :image, :styles => {:thumb => "300" }
   validates_attachment_content_type :image, :content_type => /\Aimage\/.*\Z/
-  scope :for_show, where{display == true}
+  scope :for_show, where{display == true}.order{id.desc}
   def self.new_with_defaults
     gm = self.new
     gm.options[:cols] = 5
