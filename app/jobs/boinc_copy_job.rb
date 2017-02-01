@@ -10,7 +10,8 @@ class BoincCopyJob < Delayed::BaseScheduledJob
           next_id = SiteStat.try_get("boinc_copy_job_last_userid", 0).value
           boinc_local_items = BoincStatsItem.where{boinc_id >= next_id}.all
           boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
-          BoincRemoteUser.where{id >= my{next_id}}.each do |b|
+          # Only copy users who have credit, the others really don't matter.
+          BoincRemoteUser.where{id >= my{next_id} & total_credit > 0}.find_in_batches do |b|
             b.check_local boinc_hash[b.id]
           end
           SiteStat.set("boinc_copy_job_last_userid", BoincRemoteUser.maximum(:id))
