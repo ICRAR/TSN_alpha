@@ -21,7 +21,21 @@ class BoincMigrateJob < Delayed::BaseScheduledJob
 
   def clean_stats_items(dry_run=false)
     # Find all boinc stats items where the corresponding general stats item doesn't exist.
-    res = BoincStatsItem.where("general_stats_item_id not in (select id from theskynet.general_stats_items)")
+
+    # All boinc stats items
+    delete_count = 0
+    BoincStatsItem.find_in_batches do |boinc_stats_item|
+      boinc_stats_item.each do |single_stats_items|
+
+        # find the general stats item that this boinc stats item is pointing to
+        general_item = GeneralStatsItem.where{id == single_stats_items.general_stats_item_id}
+        if general_item.nil?
+          delete_count += 1
+        end
+      end
+    end
+    puts "To delete: #{delete_count}"
+    return
 
     if dry_run
       count = res.count
@@ -34,18 +48,8 @@ class BoincMigrateJob < Delayed::BaseScheduledJob
       puts "After deletion: #{count_boinc - count}"
       puts "Correct? #{(count_boinc - count <= count_general)}"
 
-      num_dups = 0
-      BoincStatsItem.find_each do |b|
-        count = GeneralStatsItem.where("id = #{b.general_stats_item_id}").count
-        if count > 1
-          puts 'Found one'
-          num_dups += 1
-        end
-      end
-
       puts num_dups
     else
-      res.delete_all
     end
   end
 end
