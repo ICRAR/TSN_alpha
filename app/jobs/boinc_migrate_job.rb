@@ -35,7 +35,7 @@ class BoincMigrateJob < Delayed::BaseScheduledJob
       puts "Correct? #{(count_boinc - count <= count_general)}"
 
       num_dups = 0
-      BoincStatsItem.all do |b|
+      BoincStatsItem.find_in_batches do |b|
         count = GeneralStatsItem.where("id = #{b.general_stats_item_id}").count
         if count > 1
           puts 'Found one'
