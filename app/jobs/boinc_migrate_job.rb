@@ -28,7 +28,7 @@ class BoincMigrateJob < Delayed::BaseScheduledJob
       boinc_stats_item.each do |single_stats_items|
 
         # find the general stats item that this boinc stats item is pointing to
-        general_item = GeneralStatsItem.where{id == single_stats_items.general_stats_item_id}
+        general_item = GeneralStatsItem.where("id = #{single_stats_items.general_stats_item_id}")
         if general_item.nil?
           delete_count += 1
         end
