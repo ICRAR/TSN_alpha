@@ -21,20 +21,22 @@ class BoincRemoteUser < BoincPogsModel
 
   #looks for a local versions of the user, if it can't find one it will create it
   def check_local(boinc_item = nil)
-    #check for boinc item, if not create
+    # Find a local boinc stats item. Can find via the boinc_id
     boinc_item ||= BoincStatsItem.where(:boinc_id => self.id).first
     if boinc_item.nil?
-      #create new item
+      # Doesn't exist, so we create it
+      puts "Creating BoincStatsItem for user #{self.email_addr}"
       boinc_item = BoincStatsItem.new
       boinc_item.boinc_id = self.id
       boinc_item.credit = self.total_credit
       boinc_item.RAC = self.expavg_credit
       boinc_item.save
     end
-    #check if the users are already joined if so do nothing
-    return true unless boinc_item.general_stats_item_id.nil?
 
-    #else look for corresponding user.
+    #check if the users are already joined if so do nothing
+    # return true unless boinc_item.general_stats_item_id.nil?
+
+    # Look for a local user by their email address
     email_encoded = self.email_addr
     begin
       email_check = email_encoded.dup
@@ -45,16 +47,16 @@ class BoincRemoteUser < BoincPogsModel
 
     local_user = User.where{email == my{email_encoded}}.first
 
-
+    # If there's no local user, create them
     if local_user.nil?
-      #no local user therefore create one
+      puts "Copying user #{self.email_addr}to local..."
       self.copy_to_local(self.passwd_hash,false)
     elsif local_user.profile.general_stats_item.boinc_stats_item.nil?
-      #link users
+      puts "Linking users #{self.email_addr} with #{boinc_item.id}"
+      # If there is a local user, link their data together
       local_user.profile.general_stats_item.boinc_stats_item = boinc_item
       local_user.profile.general_stats_item.update_credit
-                                                    self.email_addr
-    #if user is already linked do nothing
+      self.email_addr
     end
 
   end
