@@ -23,7 +23,7 @@ class BoincMigrateJob < Delayed::BaseScheduledJob
     # Find all boinc stats items where the corresponding general stats item doesn't exist.
 
     res = BoincStatsItem.where("general_stats_item_id not in (select id from theskynet.general_stats_items)")
-    distinct_res = select("select count(distinct general_stats_item_id) from theskynet.boinc_stats_items;").first
+    distinct_res = ActiveRecordExtension::Base.connection.execute("select count(distinct general_stats_item_id) from theskynet.boinc_stats_items;").first
 
     if dry_run
       count = res.count
