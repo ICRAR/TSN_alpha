@@ -31,6 +31,8 @@ class BoincRemoteUser < BoincPogsModel
       boinc_item.credit = self.total_credit
       boinc_item.RAC = self.expavg_credit
       boinc_item.save
+    else
+      puts "Boinc stats item already exists for #{self.email_addr}"
     end
 
     #check if the users are already joined if so do nothing
@@ -57,6 +59,8 @@ class BoincRemoteUser < BoincPogsModel
       local_user.profile.general_stats_item.boinc_stats_item = boinc_item
       local_user.profile.general_stats_item.update_credit
       self.email_addr
+    else
+      puts "User is ok"
     end
 
   end
