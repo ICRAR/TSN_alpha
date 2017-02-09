@@ -45,6 +45,7 @@ class BoincMigrateJob < Delayed::BaseScheduledJob
 
       puts num_dups
     else
+      res.delete_all
     end
   end
 end
