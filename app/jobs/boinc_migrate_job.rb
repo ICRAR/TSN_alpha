@@ -32,7 +32,18 @@ class BoincMigrateJob < Delayed::BaseScheduledJob
       puts "Count General: #{count_general}. Count Boinc: #{count_boinc}"
       puts "Should be one, or zero boinc stats items for each general stats item"
       puts "After deletion: #{count_boinc - count}"
-      puts "Correct? #{(count_boinc - count).to_s}"
+      puts "Correct? #{(count_boinc - count <= count_general)}"
+
+      num_dups = 0
+      BoincStatsItem.all do |b|
+        count = GeneralStatsItem.where("id = #{b.general_stats_item_id}").count
+        if count > 1
+          puts 'Found one'
+          num_dups += 1
+        end
+      end
+
+      puts num_dups
     else
     end
   end
