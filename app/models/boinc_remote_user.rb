@@ -71,6 +71,7 @@ class BoincRemoteUser < BoincPogsModel
     name = self.name
     i = nil
 
+    puts 'Encoding email'
     email_encoded = self.email_addr
     begin
       email_check = email_encoded.dup
@@ -79,6 +80,7 @@ class BoincRemoteUser < BoincPogsModel
       email_encoded = URI.encode(email_encoded)
     end
 
+    puts 'Encoding name'
     begin
       name_check = name.dup
       name_check.force_encoding("UTF-8").encode("cp1252")
@@ -86,12 +88,15 @@ class BoincRemoteUser < BoincPogsModel
       name = 'unknown_name'
     end
     base_name = name
+
+    puts 'Working out POGS user name...'
     while !User.where{username == name}.first.nil? do
       name =  base_name + '_pogs' + i.to_s
       i ||= 0
       i += 1
     end
 
+    puts 'Making new user...'
     new_user = User.new(
         :email => email_encoded,
         :username => name,
@@ -129,6 +134,7 @@ class BoincRemoteUser < BoincPogsModel
       new_user.profile.general_stats_item.update_credit
     end
 
+    puts 'User complete'
     return new_user
   end
 
