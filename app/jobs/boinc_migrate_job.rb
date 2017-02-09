@@ -21,7 +21,7 @@ class BoincMigrateJob < Delayed::BaseScheduledJob
 
   def clean_stats_items(dry_run=false)
     # Find all boinc stats items where the corresponding general stats item doesn't exist.
-    res = BoincStatsItem.where("general_stats_item_id not in (select id from theskynet.general_stats_items")
+    res = BoincStatsItem.where("general_stats_item_id not in (select id from theskynet.general_stats_items)")
 
     if dry_run
       count = res.count
