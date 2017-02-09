@@ -24,14 +24,16 @@ class BoincMigrateJob < Delayed::BaseScheduledJob
 
     # All boinc stats items
     delete_count = 0
-    BoincStatsItem.each  do |boinc_stats_item|
+    BoincStatsItem.find_in_batches do |group|
 
+      group.each { |stats|
+        puts "Checking general stats item"
+        general_item = GeneralStatsItem.where("id = #{stats.general_stats_item_id}")
+        if general_item.nil?
+          delete_count += 1
+        end
+      }
         # find the general stats item that this boinc stats item is pointing to
-      puts "Checking general stats item"
-      general_item = GeneralStatsItem.where("id = #{boinc_stats_item.general_stats_item_id}")
-      if general_item.nil?
-        delete_count += 1
-      end
     end
 
     puts "To delete: #{delete_count}"
