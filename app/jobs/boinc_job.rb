@@ -26,6 +26,7 @@ class BoincJob < Delayed::BaseScheduledJob
               if local.nil?
                 # Don't make a new boinc stats item if it's not associated with a user.
                 # Let the BoincCopyJob do that.
+                puts 'No boinc stats item found! Run BoincCopyJob!'
                 next
               end
 
@@ -38,6 +39,7 @@ class BoincJob < Delayed::BaseScheduledJob
               total_users += 1
 
               if changed
+                puts 'Credit changed, updating...'
                 local.credit = remote.total_credit
                 local.RAC = remote.expavg_credit
                 local.save
@@ -45,41 +47,12 @@ class BoincJob < Delayed::BaseScheduledJob
                 statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(remote.id)}.credit",remote.total_credit)
                 statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(remote.id)}.rac",remote.expavg_credit)
                 statsd_batch.flush
+              else
+                puts 'Credit un-changed'
               end
             end
           end
         end
-=begin
-        BoincRemoteUser.select([:id,:total_credit,:expavg_credit]).where('total_credit > 0 and expavg_credit > 0').find_in_batches do |boinc_remote|
-          boinc_local_items = BoincStatsItem.where{(boinc_id <= boinc_remote.max_by(&:id)) & (boinc_id >= boinc_remote.min_by(&:id))}
-          boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
-          BoincStatsItem.transaction do
-            boinc_remote.each do |remote|
-              local = boinc_hash[remote.id]
-              if local.nil?
-                local = BoincStatsItem.new
-                local.boinc_id = remote.id
-                local.report_count = 0
-              end
-              local.credit = remote.total_credit
-              local.RAC = remote.expavg_credit
-              total_credit += remote.total_credit
-              total_RAC += remote.expavg_credit
-              users_with_RAC += (remote.expavg_credit > 10) ? 1 : 0
-              total_users += 1
-              id = remote.id
-              statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.credit",remote.total_credit)
-              statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.rac",remote.expavg_credit)
-              statsd_batch.flush
-              sleep(0.0001)
-	            #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.jobs", BoincResult.total_in_progress(id))
-              #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.pending_jobs", BoincResult.total_pending(id))
-              #statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.connected_copmuters_count", BoincResult.running_computers(id))
-              local.save
-            end
-          end
-       end
-=end
 
         statsd_batch.gauge("boinc.stat.total_credit",total_credit)
         statsd_batch.gauge("boinc.stat.total_rac",total_RAC)
@@ -87,7 +60,7 @@ class BoincJob < Delayed::BaseScheduledJob
         statsd_batch.gauge("boinc.stat.total_users",total_users)
         statsd_batch.gauge("boinc.stat.active_users",users_with_RAC)
         statsd_batch.flush
-
+        puts "Site stats: Total Credit: #{total_credit}, Total Rac: #{total_RAC}, Total Users: #{total_users}, Users with RAC: #{users_with_RAC}"
       }
     end
     puts bench_time.to_yaml
