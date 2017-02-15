@@ -9,9 +9,9 @@ class BoincRemoteUser < BoincPogsModel
 
   # Creates a boinc stats item if one doesn't exist for this boinc ID.
   # Returns the stats item associated with this boinc ID,
-  def check_stats_item(boinc_item = nil)
+  def check_stats_item
     # Find a local boinc stats item. Can find via the boinc_id
-    boinc_item ||= BoincStatsItem.where(:boinc_id => self.id).first
+    boinc_item = BoincStatsItem.where(:boinc_id => self.id).first
     if boinc_item.nil?
       # Doesn't exist, so we create it
       puts "Creating BoincStatsItem for user #{self.email_addr}"
@@ -70,11 +70,11 @@ class BoincRemoteUser < BoincPogsModel
   end
 
   #looks for a local versions of the user, if it can't find one it will create it
-  def check_local(boinc_item = nil)
+  def check_local
     local_user = User.where("boinc_id = #{self.id}").first
 
     # Get or create a boinc stats item for this boinc id
-    boinc_item = check_stats_item(boinc_item)
+    boinc_item = check_stats_item
 
     if local_user != nil
       # A user with this Boinc ID already exists locally, try to patch up any local links

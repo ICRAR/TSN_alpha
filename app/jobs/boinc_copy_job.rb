@@ -1,5 +1,5 @@
 class BoincCopyJob < Delayed::BaseScheduledJob
-  run_every 1.hour
+  run_every 24.hours
 
   def perform
     #start statsd batch
@@ -16,9 +16,8 @@ class BoincCopyJob < Delayed::BaseScheduledJob
           to_kill = BoincStatsItem.where("credit = 0 and general_stats_item_id not in (select id from theskynet.general_stats_items)")
           to_kill.delete_all
 
-          BoincRemoteUser.where("total_credit > 0").each do |b|
-            stats_item = BoincStatsItem.where("boinc_id = #{b.id}").first
-            b.check_local(stats_item)
+          BoincRemoteUser.where("total_credit > 0 and id > #{next_id}").each do |b|
+            b.check_local
           end
           SiteStat.set("boinc_copy_job_last_userid", BoincRemoteUser.maximum(:id))
         }
