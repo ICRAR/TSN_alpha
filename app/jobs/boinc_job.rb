@@ -31,6 +31,9 @@ class BoincJob < Delayed::BaseScheduledJob
               end
 
               # Has this one changed?
+              puts "Credit Local: #{local.credit} Remote: #{remote.total_credit}"
+              puts "RAC Local: #{local.RAC} Remote: #{remote.expavg_credit}"
+
               changed = (local.credit == remote.total_credit && local.RAC == remote.expavg_credit) ? false : true
 
               total_credit += remote.total_credit
