@@ -16,7 +16,7 @@ class BoincJob < Delayed::BaseScheduledJob
           # For each remote user in the batch
 
           # Grab the associated stats item for each user in the batch
-          boinc_local_items = BoincStatsItem.where{(boinc_id <= boinc_remote.max_by(&:id)) & (boinc_id >= boinc_remote.min_by(&:id))}
+          boinc_local_items = BoincStatsItem.where{(boinc_id <= remote_user.max_by(&:id)) & (boinc_id >= remote_user.min_by(&:id))}
           boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
 
           BoincStatsItem.transaction do
