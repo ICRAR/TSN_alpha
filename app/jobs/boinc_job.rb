@@ -34,7 +34,8 @@ class BoincJob < Delayed::BaseScheduledJob
               puts "Credit Local: #{local.credit} Remote: #{remote.total_credit}"
               puts "RAC Local: #{local.RAC} Remote: #{remote.expavg_credit}"
 
-              changed = (local.credit == remote.total_credit && local.RAC == remote.expavg_credit) ? false : true
+              # Convert to integer because local stores credit and RAC as ints.
+              changed = (local.credit == remote.total_credit.to_i && local.RAC == remote.expavg_credit.to_i) ? false : true
 
               total_credit += remote.total_credit
               total_RAC += remote.expavg_credit
