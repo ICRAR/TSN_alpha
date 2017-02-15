@@ -12,7 +12,7 @@ class BoincJob < Delayed::BaseScheduledJob
         total_users = 0
 
         # For each batch of remote users
-        BoincRemoteUser.where('total_credit > 0').find_in_batches do |remote_user|
+        BoincRemoteUser.select([:id,:total_credit,:expavg_credit]).where('total_credit > 0 and expavg_credit > 0').find_in_batches do |remote_user|
           # For each remote user in the batch
 
           # Grab the associated stats item for each user in the batch
