@@ -42,8 +42,8 @@ class BoincJob < Delayed::BaseScheduledJob
                 local.RAC = remote.expavg_credit
                 local.save
 
-                statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.credit",remote.total_credit)
-                statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(id)}.rac",remote.expavg_credit)
+                statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(remote.id)}.credit",remote.total_credit)
+                statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(remote.id)}.rac",remote.expavg_credit)
                 statsd_batch.flush
               end
             end
