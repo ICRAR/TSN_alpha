@@ -4,6 +4,7 @@ class BoincJob < Delayed::BaseScheduledJob
   def perform
     #start statsd batch
     statsd_batch = Statsd::Batch.new($statsd)
+
     bench_time = Benchmark.bm do |bench|
       bench.report('stats') {
         total_credit = 0
@@ -13,6 +14,7 @@ class BoincJob < Delayed::BaseScheduledJob
 
         # For each batch of remote users
         BoincRemoteUser.select([:id,:total_credit,:expavg_credit]).where('total_credit > 0 and expavg_credit > 0').find_in_batches do |remote_user|
+
           # For each remote user in the batch
 
           # Grab the associated stats item for each user in the batch
