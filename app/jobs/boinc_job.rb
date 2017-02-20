@@ -50,12 +50,13 @@ class BoincJob < Delayed::BaseScheduledJob
 
                 statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(remote.id)}.credit",remote.total_credit)
                 statsd_batch.gauge("boinc.users.#{GraphitePathModule.path_for_stats(remote.id)}.rac",remote.expavg_credit)
-                statsd_batch.flush
               else
                 puts 'Credit un-changed'
               end
             end
           end
+          # Flush batches of users together
+          statsd_batch.flush
         end
 
         statsd_batch.gauge("boinc.stat.total_credit",total_credit)
