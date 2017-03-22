@@ -1,5 +1,5 @@
 class BoincCopyJob < Delayed::BaseScheduledJob
-  run_every 1.hour
+  run_every 24.hours
 
   def perform
     #start statsd batch
@@ -11,9 +11,13 @@ class BoincCopyJob < Delayed::BaseScheduledJob
           #boinc_local_items = BoincStatsItem.where{boinc_id >= next_id}.all
           #boinc_hash = Hash[*boinc_local_items.map{|b| [b.boinc_id, b]}.flatten]
           # Only copy users who have credit, the others really don't matter.
-          BoincRemoteUser.where{id >= my{next_id} and total_credit > 0}.each do |b|
-            stats_item = BoincStatsItem.where{boinc_id == my{b.id}}.first
-            b.check_local(stats_item)
+
+          # Kill all local BoincStatsItems without any credit
+          to_kill = BoincStatsItem.where("credit = 0 and general_stats_item_id not in (select id from theskynet.general_stats_items)")
+          to_kill.delete_all
+
+          BoincRemoteUser.where("total_credit > 0 and id > #{next_id}").each do |b|
+            b.check_local
           end
           SiteStat.set("boinc_copy_job_last_userid", BoincRemoteUser.maximum(:id))
         }
