@@ -93,11 +93,10 @@ class Galaxy < PogsModel
   end
 
   def send_report(boinc_id)
-    return false # disabled temporarily
     #check if user has already requested a report
-    #a user can only request 5 reports at time
+    #a user can only request 1 report at time
     boinc_item = BoincStatsItem.find_by_boinc_id(boinc_id)
-    if boinc_item.nil? || boinc_item.get_report_count > 4
+    if boinc_item.nil? || boinc_item.get_report_count >= 1
       return false
 
     else
