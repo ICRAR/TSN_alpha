@@ -110,7 +110,6 @@ class Galaxy < PogsModel
 
   #connects to docmosis to generate a report then emails the report users email
   def self.send_report(galaxy_id, boinc_id)
-    return false
     boinc_item = BoincStatsItem.find_by_boinc_id(boinc_id)
     galaxy_item = Galaxy.find(galaxy_id)
     if boinc_item.nil? || galaxy_item.nil?
