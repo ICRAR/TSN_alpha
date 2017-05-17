@@ -120,9 +120,14 @@ class BoincStatsItem < ActiveRecord::Base
 
   def get_name_and_email
     return_hash = {}
-    if general_stats_item_id.nil?
+    if general_stats_item.nil? or general_stats_item_id.nil?
       #we need to get the stats from the boinc DB
       remote_item = BoincRemoteUser.find(boinc_id)
+
+      if remote_item.nil?
+        return nil
+      end
+
       return_hash[:name] = remote_item.name
       return_hash[:email] = remote_item.email_addr
     else
