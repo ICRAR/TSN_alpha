@@ -1,4 +1,4 @@
-class TrophiesJob < Delayed::BaseScheduledJob
+  class TrophiesJob < Delayed::BaseScheduledJob
   run_every 1.hour
   def perform
     @statsd_batch = Statsd::Batch.new($statsd)
@@ -43,7 +43,7 @@ class TrophiesJob < Delayed::BaseScheduledJob
             trophy.award_by_leader_board()
           end
         end
-
+        /*
         #update galaxy count trophies
         galaxy_count_sets = TrophySet.where{set_type == 'galaxy_count_active'}
         galaxy_user_count_array = GalaxyUser.all_users_count
@@ -52,7 +52,7 @@ class TrophiesJob < Delayed::BaseScheduledJob
             trophy.award_by_galaxy_count(nil, galaxy_user_count_array)
           end
         end
-
+        */
 
         #finally aggregate all trophy notifications so users to do get spammed
         Trophy.aggregate_notifications

@@ -1,4 +1,38 @@
 namespace :update_profiles do
+  desc "delete an account including hiding details in boinc as needed."
+  task :delete_user => :enviroment do
+    profile_id_to_delete = '122245'
+    are_you_sure = '122245'
+    Profile.find(profile_id_to_delete).user.email
+
+    if profile_id_to_delete  == are_you_sure
+      p = Profile.find profile_id_to_delete
+      if !p.nil?
+        user = p.user
+        general = p.general_stats_item
+        #dettach from nereus
+        if general.nereus_stats_item != nil
+          general.nereus_stats_item = nil
+        end
+        #dettach from pogs
+        if general.boinc_stats_item != nil
+          boinc_id = general.boinc_stats_item.boinc_id
+          boinc_db =  BoincRemoteUser.connection.instance_variable_get(:@connection)
+          if boinc_id > 1
+            #update boinc db, note this must be run by hand on the boinc DB
+            #new fake email
+            fake_email = "#{Time.now.to_i}@deleted_boinc_user.fake"
+            sql = "Update user set show_hosts=0, postal_code='', name='', country='', email_addr='#{fake_email}' where id = #{boinc_id}"
+            boinc_db.query sql
+            boinc_remote_user = BoincRemoteUser.find boinc_id
+            general.boinc_stats_item = nil
+          end
+        end
+        #delete local account
+        user.my_destroy
+      end
+    end
+  end
   desc "recent nereus users"
   task :recent_nereus_users => :environment do
     remote_sql = NereusStatsItem.connect_to_backend_db
@@ -513,4 +547,5 @@ namespace :update_profiles do
 
 
   end
+
 end
