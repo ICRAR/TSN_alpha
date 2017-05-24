@@ -43,7 +43,8 @@
             trophy.award_by_leader_board()
           end
         end
-        /*
+
+=begin
         #update galaxy count trophies
         galaxy_count_sets = TrophySet.where{set_type == 'galaxy_count_active'}
         galaxy_user_count_array = GalaxyUser.all_users_count
@@ -52,7 +53,8 @@
             trophy.award_by_galaxy_count(nil, galaxy_user_count_array)
           end
         end
-        */
+=end
+
 
         #finally aggregate all trophy notifications so users to do get spammed
         Trophy.aggregate_notifications
