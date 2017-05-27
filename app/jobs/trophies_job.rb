@@ -57,7 +57,7 @@
 
 
         #finally aggregate all trophy notifications so users to do get spammed
-        Trophy.aggregate_notifications
+        #Trophy.aggregate_notifications
 
       }
 
