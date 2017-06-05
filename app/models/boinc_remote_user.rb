@@ -40,7 +40,7 @@ class BoincRemoteUser < BoincPogsModel
 
     local_user = User.where{email == my{email_encoded}}.first
     if local_user.nil?
-      local_user = User.where{boinc_id == my{self.id}}
+      local_user = User.where{boinc_id == my{self.id}}.first
     end
 
     local_user
