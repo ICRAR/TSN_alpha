@@ -136,6 +136,7 @@ gem 'upsert'
 
 #stats tracking
 gem "statsd-ruby", :require => "statsd"
+gem 'influxdb'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
