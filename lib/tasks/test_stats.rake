@@ -11,7 +11,8 @@ namespace :test_stats do
 
   desc 'Queries a stat metric from the stats server and displays it'
   task :get => :environment do
-    influxdb = InfluxDB::Client.new host: '52.23.237.154', database: 'tsn-stats'
+    influxdb = InfluxDB::Client.new host: APP_CONFIG['influx-address'], database: APP_CONFIG['influx-database'],
+                                    username: APP_CONFIG['influx-username'], password: APP_CONFIG['influx-password']
 
     influxdb.query 'select * from TSN_dev_test_stat0' do |name, tags, points|
       printf "%s [ %p ]\n", name, tags
