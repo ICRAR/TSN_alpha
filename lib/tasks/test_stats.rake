@@ -13,7 +13,7 @@ namespace :test_stats do
   task :get => :environment do
     influxdb = InfluxDB::Client.new host: '52.23.237.154', database: 'tsn-stats'
 
-    influxdb.query 'select * from TSN_dev_test_stat_0' do |name, tags, points|
+    influxdb.query 'select * from TSN_dev_test_stat0' do |name, tags, points|
       printf "%s [ %p ]\n", name, tags
       points.each do |pt|
         printf "  -> %p\n", pt
