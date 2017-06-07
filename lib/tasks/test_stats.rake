@@ -3,7 +3,7 @@ namespace :test_stats do
   desc 'Sends a stat metric to the stats server'
   task :send => :environment do
     statsd_batch = Statsd::Batch.new($statsd)
-    statsd_batch.gauge('test.stat0', Time.now)
+    statsd_batch.gauge('test.stat0', Time.now.to_f)
     statsd_batch.flush
   end
 
