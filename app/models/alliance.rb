@@ -136,7 +136,7 @@ class Alliance < ActiveRecord::Base
       indexes :name, analyzer: 'snowball', tokenizer: 'nGram'
       indexes :tags, :as => 'tag_list.to_s', analyzer: 'snowball', tokenizer: 'nGram'
     end
-  rescue Errno::EHOSTUNREACH
+  rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ETIMEDOUT
   end
   
  def self.search(query,page,per_page)
