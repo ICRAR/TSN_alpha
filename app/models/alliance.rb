@@ -131,12 +131,15 @@ class Alliance < ActiveRecord::Base
     end
   end
 
-  mapping do
-    indexes :name, analyzer: 'snowball', tokenizer: 'nGram'
-    indexes :tags, :as => 'tag_list.to_s', analyzer: 'snowball', tokenizer: 'nGram'
+  begin
+    mapping do
+      indexes :name, analyzer: 'snowball', tokenizer: 'nGram'
+      indexes :tags, :as => 'tag_list.to_s', analyzer: 'snowball', tokenizer: 'nGram'
+    end
+  rescue Errno::EHOSTUNREACH
   end
-
-  def self.search(query,page,per_page)
+  
+ def self.search(query,page,per_page)
     tire.search(:page => (page || 1), :per_page => per_page, :load => {:include => 'leader'}) do
       query do
         boolean(:minimum_number_should_match => 1) do
