@@ -409,12 +409,14 @@ class Profile < ActiveRecord::Base
     aggregation_text = "#{link_follower} <br />"
     ProfileNotification.notify_with_aggrigation(self,subject,body,aggregation_subject,aggregation_body,'class_id',self, aggregation_text, 'follow')
   end
-
-  mapping do
-    indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
-    indexes :id
+  begin
+    mapping do
+      indexes :name, :as => 'name', analyzer: 'snowball', tokenizer: 'nGram'
+      indexes :id
+    end
+  rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ETIMEDOUT
   end
-
+  
   def friends_search(name)
     ids = self.friends_ids
     Profile.name_search(name, ids)
